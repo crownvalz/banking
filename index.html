@@ -78,7 +78,7 @@
           <div>
             <span class="text-[10px] font-bold text-blue-300 uppercase tracking-widest bg-blue-900/60 px-2.5 py-1 rounded-full border border-blue-700/50">Reducing Balance</span>
             <p class="text-xs text-slate-400 mt-2">Principal Loan Amount</p>
-            <h2 class="text-3xl sm:text-4xl font-black tracking-tight" id="loanBannerPrincipal">0 TZS</h2>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight" id="loanBannerPrincipal">0.00 TZS</h2>
           </div>
           <button onclick="openLoanModal()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white p-3 rounded-2xl shadow-lg transition-all flex items-center justify-center border border-blue-400/30">
             <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
@@ -160,7 +160,7 @@
           <div>
             <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest bg-emerald-900/60 px-2.5 py-1 rounded-full border border-emerald-700/50">Fixed Income Bond</span>
             <p class="text-xs text-slate-400 mt-2">Investment Principal Amount</p>
-            <h2 class="text-3xl sm:text-4xl font-black tracking-tight" id="bondBannerPrincipal">0 TZS</h2>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight" id="bondBannerPrincipal">0.00 TZS</h2>
           </div>
           <button onclick="openBondModal()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white p-3 rounded-2xl shadow-lg transition-all flex items-center justify-center border border-emerald-400/30">
             <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
@@ -303,8 +303,8 @@
   </footer>
 
   <!-- LOAN MODAL -->
-  <div id="loanModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm hidden transition-opacity">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5 animate-in slide-in-from-bottom sm:zoom-in duration-150">
+  <div id="loanModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden transition-opacity">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5 my-auto">
       
       <div class="flex justify-between items-center border-b border-slate-100 pb-3.5">
         <div class="flex items-center space-x-2.5">
@@ -322,17 +322,17 @@
       <div class="space-y-3.5">
         <div class="space-y-1">
           <label for="loanAmount" class="text-xs font-bold text-slate-700">Principal Amount (TZS)</label>
-          <input type="number" id="loanAmount" value="0" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <input type="number" id="loanAmount" value="" placeholder="e.g. 17000000" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1">
             <label for="loanRate" class="text-xs font-bold text-slate-700">Annual Rate (%)</label>
-            <input type="number" id="loanRate" value="13" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="loanRate" value="" placeholder="13" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
           <div class="space-y-1">
             <label for="loanFeeRate" class="text-xs font-bold text-slate-700">Admin Fee (%)</label>
-            <input type="number" id="loanFeeRate" value="0" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <input type="number" id="loanFeeRate" value="" placeholder="0" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
           </div>
         </div>
 
@@ -361,8 +361,8 @@
   </div>
 
   <!-- BOND MODAL -->
-  <div id="bondModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm hidden transition-opacity">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5 animate-in slide-in-from-bottom sm:zoom-in duration-150">
+  <div id="bondModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden transition-opacity">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full p-6 space-y-5 my-auto">
       
       <div class="flex justify-between items-center border-b border-slate-100 pb-3.5">
         <div class="flex items-center space-x-2.5">
@@ -380,7 +380,7 @@
       <div class="space-y-3.5">
         <div class="space-y-1">
           <label for="bondAmount" class="text-xs font-bold text-slate-700">Investment Principal (TZS)</label>
-          <input type="number" id="bondAmount" value="0" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <input type="number" id="bondAmount" value="" placeholder="e.g. 10000000" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -396,11 +396,11 @@
           </div>
           <div class="space-y-1" id="customRateContainer" style="display: none;">
             <label for="bondCustomRate" class="text-xs font-bold text-slate-700">Custom Rate (%)</label>
-            <input type="number" id="bondCustomRate" value="12" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <input type="number" id="bondCustomRate" value="" placeholder="12" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
           </div>
           <div class="space-y-1">
             <label for="bondTaxRate" class="text-xs font-bold text-slate-700">Tax Deduction (%)</label>
-            <input type="number" id="bondTaxRate" value="10" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <input type="number" id="bondTaxRate" value="" placeholder="10" step="any" min="0" inputmode="decimal" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
           </div>
         </div>
 
@@ -431,6 +431,10 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
+      // Set default initial values for form inputs if blank
+      if(document.getElementById('loanRate').value === '') document.getElementById('loanRate').value = '13';
+      if(document.getElementById('loanFeeRate').value === '') document.getElementById('loanFeeRate').value = '0';
+      if(document.getElementById('bondTaxRate').value === '') document.getElementById('bondTaxRate').value = '10';
       calculateAll();
     });
 
@@ -473,18 +477,23 @@
     }
 
     function calculateAll() {
-      // 1. Fetch Loan Inputs
+      // 1. Fetch Loan Inputs (default to 0 if blank)
       const loanPrincipal = parseFloat(document.getElementById('loanAmount').value) || 0;
-      const loanRate = parseFloat(document.getElementById('loanRate').value) || 0;
+      const loanRate = parseFloat(document.getElementById('loanRate').value) || 13;
       const loanTenor = parseInt(document.getElementById('loanTenor').value) || 12;
       const loanFeeRate = parseFloat(document.getElementById('loanFeeRate').value) || 0;
 
-      // 2. Fetch Bond Inputs
+      // 2. Fetch Bond Inputs (default to 0 if blank)
       const bondPrincipal = parseFloat(document.getElementById('bondAmount').value) || 0;
       const rateSelectVal = document.getElementById('bondRateSelect').value;
-      const bondRate = rateSelectVal === 'custom' ? (parseFloat(document.getElementById('bondCustomRate').value) || 0) : parseFloat(rateSelectVal);
+      let bondRate = 12;
+      if (rateSelectVal === 'custom') {
+        bondRate = parseFloat(document.getElementById('bondCustomRate').value) || 0;
+      } else {
+        bondRate = parseFloat(rateSelectVal) || 12;
+      }
       const bondTenor = parseInt(document.getElementById('bondTenor').value) || 12;
-      const bondTaxRate = parseFloat(document.getElementById('bondTaxRate').value) || 0;
+      const bondTaxRate = parseFloat(document.getElementById('bondTaxRate').value) || 10;
 
       // Banners
       document.getElementById('loanBannerPrincipal').innerText = fmt(loanPrincipal);
@@ -631,5 +640,3 @@
   </script>
 </body>
 </html>
-
-```
