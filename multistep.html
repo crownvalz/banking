@@ -9,8 +9,9 @@
         @media print {
             body { background: white; color: black; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
             .no-print { display: none !important; }
-            .step-section { display: block !important; page-break-after: always; }
-            input, select, textarea { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+            .step-section { display: block !important; }
+            input, select, textarea { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; appearance: none; }
+            textarea { resize: none; }
             .print-border { border: 1px solid #cbd5e1 !important; }
             .print-container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; }
         }
@@ -23,7 +24,7 @@
         <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
             <div>
                 <h1 class="text-base sm:text-lg font-bold tracking-wide">AZANIA BANK PLC</h1>
-                <p class="text-xs text-blue-200">Consumer Loan Appraisal Multi-Step System</p>
+                <p class="text-xs text-blue-200">Consumer Loan Appraisal System</p>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="resetForm()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded font-medium transition">Reset</button>
@@ -45,14 +46,32 @@
                 <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-0.5" id="header_entity_title">TANZANIA REVENUE AUTHORITY (TRA)</p>
             </div>
 
-            <!-- Step Progress Indicator (Hidden on Print) -->
-            <div class="flex justify-between items-center mb-6 no-print bg-slate-50 p-3 rounded-lg border">
+            <!-- Step Progress Indicator (Hidden on Print & Preview Mode) -->
+            <div id="wizard-progress-bar" class="flex justify-between items-center mb-6 no-print bg-slate-50 p-3 rounded-lg border">
                 <div class="flex items-center gap-2">
                     <span id="step-badge" class="bg-blue-900 text-white text-xs font-bold px-2.5 py-1 rounded-full">Step 1 of 4</span>
                     <span id="step-title" class="text-xs sm:text-sm font-bold text-slate-700">1. Institution & Employee</span>
                 </div>
                 <div class="text-xs text-slate-500 font-medium">
                     Progress: <span id="progress-pct">25%</span>
+                </div>
+            </div>
+
+            <!-- Review Mode Banner (Only visible on Step 4) -->
+            <div id="review-banner" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-lg no-print flex flex-wrap justify-between items-center gap-3">
+                <div>
+                    <h4 class="font-bold text-sm">Review & Print Ready Mode</h4>
+                    <p class="text-xs text-emerald-700">All sections are now displayed below together. You can inspect everything, print, download, or jump back to edit.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                        Print Now
+                    </button>
+                    <button type="button" onclick="downloadHTML()" class="bg-blue-900 hover:bg-blue-800 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download File
+                    </button>
                 </div>
             </div>
 
@@ -241,7 +260,7 @@
                 </div>
             </div>
 
-            <!-- ================= STEP 4: SCHEDULE & APPROVALS ================= -->
+            <!-- ================= STEP 4: SCHEDULE & APPROVALS (AND PREVIEW ALL) ================= -->
             <div id="step-4" class="step-section space-y-5 hidden">
                 <div class="space-y-4">
                     <h3 class="text-xs font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">7. Recommendations and Approval</h3>
@@ -315,15 +334,30 @@
     <script>
         let currentStep = 1;
         const totalSteps = 4;
+        let isPreviewMode = false;
 
         function showStep(step) {
+            if (isPreviewMode) {
+                // Show all steps for preview & print
+                for (let i = 1; i <= totalSteps; i++) {
+                    document.getElementById(`step-${i}`).classList.remove('hidden');
+                }
+                document.getElementById('wizard-progress-bar').classList.add('hidden');
+                document.getElementById('review-banner').classList.remove('hidden');
+                document.getElementById('prevBtn').classList.remove('hidden');
+                document.getElementById('nextBtn').innerText = "Back to Wizard";
+                return;
+            }
+
+            // Normal wizard step
+            document.getElementById('wizard-progress-bar').classList.remove('hidden');
+            document.getElementById('review-banner').classList.add('hidden');
+
             for (let i = 1; i <= totalSteps; i++) {
-                const el = document.getElementById(`step-${i}`);
-                if (el) el.classList.add('hidden');
+                document.getElementById(`step-${i}`).classList.add('hidden');
             }
             document.getElementById(`step-${step}`).classList.remove('hidden');
 
-            // Update step badge & progress
             const titles = [
                 "1. Institution & Employee",
                 "2. Income & Proposed Loan",
@@ -334,7 +368,6 @@
             document.getElementById('step-title').innerText = titles[step - 1];
             document.getElementById('progress-pct').innerText = `${Math.round((step / totalSteps) * 100)}%`;
 
-            // Buttons
             document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
             const nextBtn = document.getElementById('nextBtn');
             if (step === totalSteps) {
@@ -346,12 +379,27 @@
         }
 
         function nextPrev(n) {
-            if (n === 1 && currentStep < totalSteps) {
-                currentStep++;
+            if (isPreviewMode) {
+                // If in preview mode and clicking back or toggle
+                isPreviewMode = false;
+                currentStep = totalSteps;
+                showStep(currentStep);
+                return;
+            }
+
+            if (n === 1) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    // Reached last step, activate review & print ready mode (show all)
+                    isPreviewMode = true;
+                    showStep(currentStep);
+                }
             } else if (n === -1 && currentStep > 1) {
                 currentStep--;
+                showStep(currentStep);
             }
-            showStep(currentStep);
         }
 
         function updateHeaderTitle() {
@@ -371,7 +419,6 @@
         }
 
         function calculateAll() {
-            // Income
             const basic = parseFloat(document.getElementById('basic_salary').value) || 0;
             const housing = parseFloat(document.getElementById('housing').value) || 0;
             const transport = parseFloat(document.getElementById('transport').value) || 0;
@@ -389,14 +436,12 @@
             const grandTotalIncome = basic + sub_fixed + sub_variable;
             document.getElementById('grand_total_income').innerText = formatNumber(grandTotalIncome);
 
-            // Loan
             const applied = parseFloat(document.getElementById('applied_amount').value) || 0;
             const existing = parseFloat(document.getElementById('existing_balance').value) || 0;
             const totalExposure = applied + existing;
             document.getElementById('total_exposure').innerText = formatNumber(totalExposure);
             document.getElementById('footer_amount').innerText = formatNumber(applied);
 
-            // Schedule Table computations
             const tenorMonths = parseFloat(document.getElementById('tenor_months').value) || 96;
             const years = tenorMonths / 12;
             const annualRate = parseFloat(document.getElementById('interest_rate').value) || 0.13;
@@ -422,7 +467,6 @@
             document.getElementById('sched_ins').innerText = formatNumber(insurance);
             document.getElementById('sched_net').innerText = formatNumber(netProposed);
 
-            // Compliance
             const netSalarySlip = parseFloat(document.getElementById('net_salary_slip').value) || 0;
             const ablExisting = parseFloat(document.getElementById('abl_existing_inst').value) || 0;
             const totalAllowancesAB = sub_fixed + sub_variable;
@@ -456,6 +500,19 @@
             }
 
             saveToStorage();
+        }
+
+        function downloadHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Consumer_Appraisal_' + (document.getElementById('emp_name').value || 'Report') + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function saveToStorage() {
