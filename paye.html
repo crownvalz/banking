@@ -920,7 +920,6 @@
                 });
                 localStorage.setItem('azania_loan_appraisal_v5', JSON.stringify(formData));
             }
-
             loadDraft() {
                 const saved = localStorage.getItem('azania_loan_appraisal_v5');
                 if (saved) {
@@ -934,7 +933,6 @@
                     } catch(e) {}
                 }
             }
-
             resetForm() {
                 if (confirm('Are you sure you want to reset all form fields?')) {
                     localStorage.removeItem('azania_loan_appraisal_v5');
@@ -945,7 +943,6 @@
                 }
             }
         }
-
         const app = new LoanAppraisalApp();
     </script>
 </body>
