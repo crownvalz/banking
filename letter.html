@@ -18,6 +18,7 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: #f8fafc;
     color: #0f172a;
+    overflow-x: hidden;
   }
   .field {
     width: 100%;
@@ -50,9 +51,6 @@
     box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
     transition: all 0.2s ease;
   }
-  .panel:hover {
-    box-shadow: 0 8px 30px -4px rgba(15, 23, 42, 0.08);
-  }
   .section-title {
     font-size: 14px;
     font-weight: 800;
@@ -69,12 +67,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    border-radius: 12px;
-    padding: 10px 16px;
-    font-size: 12px;
+    gap: 6px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11px;
     font-weight: 700;
     transition: all 0.2s ease;
+  }
+  @media(min-width: 640px) {
+    .action { padding: 10px 16px; font-size: 12px; }
   }
   .action-primary {
     background: #2563eb;
@@ -83,26 +84,26 @@
   }
   .action-primary:hover {
     background: #1d4ed8;
-    transform: translateY(-1px);
   }
   .action-light {
     background: #fff;
     border: 1px solid #cbd5e1;
     color: #334155;
   }
-  .action-light:hover {
-    background: #f1f5f9;
-  }
+  .action-light:hover { background: #f1f5f9; }
   
   /* Tab Navigation Styling */
   .tab-btn {
-    padding: 9px 18px;
-    font-size: 12px;
+    padding: 8px 14px;
+    font-size: 11px;
     font-weight: 700;
     border-radius: 10px;
     transition: all 0.2s ease;
     cursor: pointer;
     border: 1px solid transparent;
+  }
+  @media(min-width: 640px) {
+    .tab-btn { padding: 9px 18px; font-size: 12px; }
   }
   .tab-btn.active {
     background: #2563eb;
@@ -114,10 +115,7 @@
     color: #64748b;
     border-color: #e2e8f0;
   }
-  .tab-btn.inactive:hover {
-    background: #f1f5f9;
-    color: #0f172a;
-  }
+  .tab-btn.inactive:hover { background: #f1f5f9; color: #0f172a; }
 
   /* A4 Canvas styling - Squeezed down by ~1 inch (68mm top padding) */
   .a4-canvas {
@@ -129,9 +127,9 @@
     box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
     overflow: hidden;
     border-radius: 4px;
+    transform-origin: top center;
   }
   
-  /* Flexible flow layout for content & signature */
   .letter-content {
     font-family: "Bookman Old Style", Bookman, Georgia, serif;
     font-size: 10.5pt;
@@ -165,24 +163,22 @@
     background: #eff6ff;
     box-shadow: 0 0 0 2px #bfdbfe;
   }
+  
   .preview-wrap {
     width: 100%;
     overflow: auto;
-    padding: 10px 8px 30px;
+    padding: 10px 4px 30px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
   }
-  #letterPaper { flex: 0 0 210mm; }
 
-  @media(max-width: 1100px) {
-    .preview-wrap { justify-content: flex-start; }
-    .workspace { grid-template-columns: 1fr; }
+  @media(max-width: 850px) {
+    .preview-wrap {
+      justify-content: flex-start;
+    }
   }
-  @media(max-width: 760px) {
-    .preview-wrap { padding-left: 0; padding-right: 0; }
-    .a4-canvas { margin-left: 0; margin-right: 0; }
-  }
+
   @media print {
     @page { size: A4; margin: 0; }
     body { background: #fff !important; }
@@ -197,6 +193,7 @@
       margin: 0 !important;
       box-shadow: none !important;
       border-radius: 0 !important;
+      transform: none !important;
     }
     .no-print { display: none !important; }
   }
@@ -206,48 +203,50 @@
 
 <!-- TOP APP NAVIGATION -->
 <header class="no-print sticky top-0 z-30 bg-[#0f172a] text-white border-b border-slate-800 backdrop-blur-md bg-opacity-95">
-  <div class="max-w-[1600px] mx-auto px-6 h-[72px] flex items-center justify-between gap-4">
-    <div class="flex items-center gap-3.5 min-w-0">
-      <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 grid place-items-center font-black text-sm tracking-tight text-white shadow-lg shadow-blue-900/30">AZ</div>
+  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 grid place-items-center font-black text-xs sm:text-sm tracking-tight text-white shadow-lg shadow-blue-900/30 shrink-0">AZ</div>
       <div class="min-w-0">
-        <div class="font-extrabold text-sm tracking-wide text-slate-100">AZANIA BANK PLC</div>
-        <div class="text-[10px] text-blue-400 font-medium tracking-wider uppercase">Professional Letter Suite</div>
+        <div class="font-extrabold text-xs sm:text-sm tracking-wide text-slate-100 truncate">AZANIA BANK PLC</div>
+        <div class="text-[9px] sm:text-[10px] text-blue-400 font-medium tracking-wider uppercase truncate">Letter Suite</div>
       </div>
     </div>
-    <div class="flex items-center gap-2.5">
-      <button class="action bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="generateRef()">↻ <span class="hidden sm:inline">New reference</span></button>
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <button class="action bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="generateRef()" title="New Reference">↻ <span class="hidden md:inline">Ref</span></button>
       <button class="action bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="resetForm()">Reset</button>
-      <button class="action bg-white/10 hover:bg-white/20 text-white font-bold" onclick="window.print()">Print</button>
-      <button id="pdfButton" class="action action-primary" onclick="downloadPDF()">↓ <span class="hidden sm:inline">Download PDF</span><span class="sm:hidden">PDF</span></button>
+      <button class="action bg-white/10 hover:bg-white/20 text-white font-bold hidden xs:inline-flex" onclick="window.print()">Print</button>
+      <button id="pdfButton" class="action action-primary" onclick="downloadPDF()">↓ PDF</button>
     </div>
   </div>
 </header>
 
-<main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<main class="max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
   
   <!-- WORKSPACE HEADER & TABS -->
-  <div class="mb-8 flex flex-wrap items-center justify-between gap-4 no-print border-b border-slate-200/80 pb-6">
+  <div class="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-b border-slate-200/80 pb-6">
     <div>
       <div class="section-kicker mb-1">Document Generation Suite</div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900" id="pageTitle">Create Custom Letter</h1>
-      <p class="text-sm text-slate-500 mt-1">Select your template, customize the information, and review the live A4 preview.</p>
+      <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight text-slate-900" id="pageTitle">Create Custom Letter</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">Select your template, customize information, and review the live A4 preview.</p>
     </div>
 
     <!-- Letter Type Selector Tabs -->
-    <div class="flex items-center gap-2 bg-white p-2 rounded-2xl border border-slate-200 shadow-sm">
+    <div class="flex items-center gap-1.5 bg-white p-1.5 sm:p-2 rounded-2xl border border-slate-200 shadow-sm self-start md:self-auto">
       <button id="tabCustom" class="tab-btn active" onclick="switchLetterType('custom')">Custom Letter</button>
       <button id="tabBalance" class="tab-btn inactive" onclick="switchLetterType('balance')">Outstanding Balance</button>
     </div>
   </div>
 
-  <div class="workspace grid grid-cols-[minmax(360px,480px)_minmax(0,1fr)] gap-8 items-start">
-    <section class="space-y-5 no-print">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+    
+    <!-- LEFT FORM CONTROLS (Responsive Width Grid) -->
+    <section class="lg:col-span-5 xl:col-span-4 space-y-5 no-print">
       
       <!-- RECIPIENT PANEL -->
-      <div class="panel p-6">
-        <div class="flex items-center justify-between mb-5">
-          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving institution details</h2></div>
-          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 shadow-sm">Required</span>
+      <div class="panel p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-4 sm:mb-5">
+          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving institution</h2></div>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Required</span>
         </div>
         <div class="space-y-4">
           <div>
@@ -275,7 +274,7 @@
               </div>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" placeholder="e.g. Chake Chake"></div>
             <div><label class="field-label" for="poBox">Postal Address</label><input class="field" id="poBox" placeholder="e.g. P.O. Box 67"></div>
           </div>
@@ -283,11 +282,11 @@
       </div>
 
       <!-- SUBJECT & REFERENCE -->
-      <div class="panel p-6">
-        <div class="mb-5"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-1">Subject headings & accounts</h2></div>
+      <div class="panel p-5 sm:p-6">
+        <div class="mb-4 sm:mb-5"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-1">Subject & accounts</h2></div>
         <div class="space-y-4">
           <div><label class="field-label" for="subjectText">Letter Subject Heading</label><input class="field font-semibold" id="subjectText" placeholder="e.g. RE: GENERAL INQUIRY"></div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div><label class="field-label" for="customerName">Customer Name</label><input class="field uppercase" id="customerName" placeholder="JOHN DOE"></div>
             <div><label class="field-label" for="accountNumber">Account / Ref No.</label><input class="field font-mono" id="accountNumber" placeholder="012345678901"></div>
           </div>
@@ -295,9 +294,9 @@
       </div>
 
       <!-- LETTER CONTENT -->
-      <div class="panel p-6">
-        <div class="mb-5"><div class="section-kicker">03 / Content</div><h2 class="section-title mt-1">Letter body & salutation</h2></div>
-        <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="panel p-5 sm:p-6">
+        <div class="mb-4 sm:mb-5"><div class="section-kicker">03 / Content</div><h2 class="section-title mt-1">Letter body & salutation</h2></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           <div><label class="field-label" for="customDate">Letter Date</label><input class="field" type="date" id="customDate"></div>
         </div>
         <div class="space-y-4">
@@ -308,15 +307,15 @@
       </div>
 
       <!-- SIGNATORIES -->
-      <div class="panel p-6">
-        <div class="mb-5"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-1">Institution and signatories</h2></div>
+      <div class="panel p-5 sm:p-6">
+        <div class="mb-4 sm:mb-5"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-1">Institution & signatories</h2></div>
         <div class="space-y-4">
           <div><label class="field-label" for="senderBank">Issuing Institution</label><input class="field font-semibold" id="senderBank" value="AZANIA BANK PLC"></div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div><label class="field-label" for="sig1Title">Signatory 1 Title</label><input class="field" id="sig1Title" value="Branch Manager"></div>
             <div><label class="field-label" for="sig1Name">Signatory 1 Name</label><input class="field" id="sig1Name" placeholder="Enter name"></div>
           </div>
-          <div class="grid grid-cols-2 gap-3 pt-1">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div><label class="field-label" for="sig2Title">Signatory 2 Title</label><input class="field" id="sig2Title" value="Branch Operations Executive"></div>
             <div><label class="field-label" for="sig2Name">Signatory 2 Name</label><input class="field" id="sig2Name" placeholder="Enter name"></div>
           </div>
@@ -324,29 +323,29 @@
       </div>
 
       <!-- BRANDING / LETTERHEAD -->
-      <div class="panel p-6">
+      <div class="panel p-5 sm:p-6">
         <div class="flex items-center justify-between gap-3">
-          <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-1">Letterhead image</h2><p class="text-[11px] text-slate-500 mt-1">Optional. Upload full-page A4 background.</p></div>
-          <label class="action action-light cursor-pointer shadow-sm">Upload image<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
+          <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-1">Letterhead image</h2><p class="text-[11px] text-slate-500 mt-1">Optional background image.</p></div>
+          <label class="action action-light cursor-pointer shadow-sm">Upload<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
         </div>
         <button class="text-[11px] text-rose-600 font-semibold mt-3 hidden" id="removeLetterhead" onclick="removeLetterhead()">Remove letterhead</button>
       </div>
 
       <!-- REFERENCE CODE CARD -->
-      <div class="rounded-2xl bg-blue-50/70 border border-blue-100 p-5 shadow-sm">
+      <div class="rounded-2xl bg-blue-50/70 border border-blue-100 p-4 sm:p-5 shadow-sm">
         <div class="text-[10px] uppercase tracking-widest text-blue-700 font-extrabold">Document reference</div>
-        <div class="font-mono font-bold text-sm text-blue-950 mt-1.5 break-all" id="sidebarRef"></div>
-        <p class="text-[10px] text-blue-700/80 mt-1.5">Automatically generated reference code ensuring document uniqueness.</p>
+        <div class="font-mono font-bold text-xs sm:text-sm text-blue-950 mt-1.5 break-all" id="sidebarRef"></div>
       </div>
     </section>
 
-    <!-- PREVIEW A4 SECTION -->
-    <section class="min-w-0">
+    <!-- RIGHT A4 PREVIEW SECTION (Fully Responsive Scaled Viewport) -->
+    <section class="lg:col-span-7 xl:col-span-8 min-w-0">
       <div class="no-print flex items-center justify-between gap-3 mb-3">
         <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-slate-800 mt-1" id="previewSubtitle">A4 — Custom Letter Preview</h2></div>
-        <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-xl px-3 py-1.5 shadow-sm font-medium">Live sync enabled</span>
+        <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-xl px-3 py-1.5 shadow-sm font-medium">Live sync</span>
       </div>
-      <div class="preview-wrap">
+      
+      <div class="preview-wrap" id="previewContainer">
         <div id="letterPaper" class="a4-canvas shrink-0">
           <img id="letterheadImage" class="letterhead hidden" alt="">
           <div class="letter-content">
@@ -388,7 +387,7 @@
           </div>
         </div>
       </div>
-      <p class="no-print text-center text-[10px] text-slate-400 mt-2 font-medium">Tip: Click text directly on the A4 letter preview to make final adjustments on the fly.</p>
+      <p class="no-print text-center text-[10px] text-slate-400 mt-2 font-medium">Tip: Click text directly on the A4 letter preview to make final adjustments.</p>
     </section>
   </div>
 </main>
@@ -546,12 +545,37 @@ $("previewRef").addEventListener("input", e => {
   currentRef = e.currentTarget.textContent;
 });
 
+// Responsive A4 Preview Scale Adjuster for small screens
+function adjustCanvasScale() {
+  const container = document.getElementById('previewContainer');
+  const canvas = document.getElementById('letterPaper');
+  if(!container || !canvas) return;
+  const containerWidth = container.clientWidth - 16;
+  const A4WidthPx = 794; // 210mm in pixels at standard resolution
+  if (containerWidth < A4WidthPx) {
+    const scale = containerWidth / A4WidthPx;
+    canvas.style.transform = `scale(${scale})`;
+    canvas.style.marginBottom = `-${(1 - scale) * canvas.offsetHeight}px`;
+  } else {
+    canvas.style.transform = 'none';
+    canvas.style.marginBottom = '0';
+  }
+}
+
+window.addEventListener('resize', adjustCanvasScale);
+window.addEventListener('DOMContentLoaded', adjustCanvasScale);
+
 async function downloadPDF(){
   const btn = $("pdfButton");
   const old = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = "Preparing PDF…";
+  btn.textContent = "…";
   const paper = $("letterPaper");
+  
+  // Temporarily reset transform scale for crisp PDF render
+  const originalTransform = paper.style.transform;
+  paper.style.transform = 'none';
+
   try{
     if(!window.html2pdf) throw new Error("PDF library unavailable");
     const acc = $("accountNumber").value || "Letter";
@@ -566,6 +590,7 @@ async function downloadPDF(){
   } catch(err) {
     alert("PDF export could not be completed. Please use Print and select Save as PDF.");
   } finally {
+    paper.style.transform = originalTransform;
     btn.disabled = false;
     btn.innerHTML = old;
   }
@@ -578,6 +603,7 @@ function initializeApp(){
   $("customDate").value = localDateValue();
   generateRef();
   switchLetterType('custom');
+  setTimeout(adjustCanvasScale, 100);
 }
 
 if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeApp);
