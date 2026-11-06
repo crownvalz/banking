@@ -96,26 +96,44 @@
           <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Details</span>
         </div>
         <div class="space-y-4">
-          <div>
-            <label class="field-label" for="recipientBank">Recipient name / Bank</label>
-            <select class="field" id="recipientBank">
-              <option value="">-- Select Recipient Bank --</option>
-              <option value="People's Bank of Zanzibar (PBZ Bank)">People's Bank of Zanzibar (PBZ Bank)</option>
-              <option value="CRDB Bank PLC">CRDB Bank PLC</option>
-              <option value="NMB Bank PLC">NMB Bank PLC</option>
-              <option value="National Bank of Commerce (NBC)">National Bank of Commerce (NBC)</option>
-              <option value="Tanzania Commercial Bank (TCB)">Tanzania Commercial Bank (TCB)</option>
-              <option value="Absa Bank Tanzania">Absa Bank Tanzania</option>
-              <option value="Standard Chartered Bank Tanzania">Standard Chartered Bank Tanzania</option>
-              <option value="Stanbic Bank Tanzania">Stanbic Bank Tanzania</option>
-              <option value="Diamond Trust Bank (DTB) Tanzania">Diamond Trust Bank (DTB) Tanzania</option>
-              <option value="Exim Bank Tanzania">Exim Bank Tanzania</option>
-              <option value="KCB Bank Tanzania">KCB Bank Tanzania</option>
-              <option value="Bank of Africa Tanzania (BOA)">Bank of Africa Tanzania (BOA)</option>
-              <option value="Equity Bank Tanzania">Equity Bank Tanzania</option>
-              <option value="I&M Bank Tanzania">I&M Bank Tanzania</option>
-            </select>
-          </div>
+<div class="w-full">
+    <label for="recipientBank" class="block text-sm font-semibold text-slate-700 mb-2">
+        Recipient Name / Bank
+    </label>
+
+    <div class="relative">
+        <select
+            id="recipientBank"
+            name="recipientBank"
+            class="w-full appearance-none rounded-lg border border-slate-300 bg-white px-4 py-3 pr-10 text-sm text-slate-700 shadow-sm outline-none transition-all duration-200 hover:border-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 cursor-pointer"
+            required
+        >
+            <option value="" selected disabled>-- Select Recipient Bank --</option>
+            <option value="People's Bank of Zanzibar (PBZ Bank)">People's Bank of Zanzibar (PBZ Bank)</option>
+            <option value="CRDB Bank PLC">CRDB Bank PLC</option>
+            <option value="NMB Bank PLC">NMB Bank PLC</option>
+            <option value="National Bank of Commerce (NBC)">National Bank of Commerce (NBC)</option>
+            <option value="Tanzania Commercial Bank (TCB)">Tanzania Commercial Bank (TCB)</option>
+            <option value="Absa Bank Tanzania">Absa Bank Tanzania</option>
+            <option value="Standard Chartered Bank Tanzania">Standard Chartered Bank Tanzania</option>
+            <option value="Stanbic Bank Tanzania">Stanbic Bank Tanzania</option>
+            <option value="Diamond Trust Bank (DTB) Tanzania">Diamond Trust Bank (DTB) Tanzania</option>
+            <option value="Exim Bank Tanzania">Exim Bank Tanzania</option>
+            <option value="KCB Bank Tanzania">KCB Bank Tanzania</option>
+            <option value="Bank of Africa Tanzania (BOA)">Bank of Africa Tanzania (BOA)</option>
+            <option value="Equity Bank Tanzania">Equity Bank Tanzania</option>
+            <option value="I&M Bank Tanzania">I&M Bank Tanzania</option>
+        </select>
+
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                 viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="2" d="m6 9 6 6 6-6"/>
+            </svg>
+        </div>
+    </div>
+</div>
           <div class="grid grid-cols-2 gap-3">
             <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" placeholder="e.g. Chake Chake Branch"></div>
             <div><label class="field-label" for="poBox">Postal address</label><input class="field" id="poBox" placeholder="e.g. P.O. Box 67, Pemba"></div>
