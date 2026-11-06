@@ -1,39 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azania Bank | Professional Letter Generation Suite</title>
+<title>Official Letter Writer - Mono Apps Solutions</title>
+
+<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50: '#f0f6ff', 100: '#e0ecff', 500: '#0284c7', 600: '#0284c7', 700: '#0369a1', 900: '#0f172a'
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Lucide Icons & Google Fonts -->
+<script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --navy: #0f1e36;
-    --blue: #2563eb;
-    --muted: #64748b;
-    --line: #e2e8f0;
-  }
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #f1f5f9;
-    color: #0f172a;
-    overflow-x: hidden;
-  }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  
   .field {
     width: 100%;
     border: 1px solid #cbd5e1;
     border-radius: 12px;
-    padding: 12px 14px;
-    background: #fff;
-    font-size: 13px;
+    padding: 10px 14px;
+    background: #ffffff;
+    font-size: 12px;
     color: #0f172a;
     outline: none;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
+  }
+  .dark .field {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
   }
   .field:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
   }
   .field-label {
     display: block;
@@ -44,75 +61,65 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+  .dark .field-label {
+    color: #94a3b8;
+  }
+
   .panel {
     background: #ffffff;
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04);
     transition: all 0.3s ease;
   }
-  .panel:hover {
-    box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.07);
+  .dark .panel {
+    background: #0f172a;
+    border-color: #1e293b;
+    box-shadow: none;
   }
+
   .section-title {
     font-size: 14px;
     font-weight: 800;
     color: #0f172a;
   }
+  .dark .section-title {
+    color: #ffffff;
+  }
+
   .section-kicker {
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #2563eb;
+    color: #0284c7;
     font-weight: 800;
   }
-  .action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border-radius: 10px;
-    padding: 9px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-  }
-  .action:active { transform: scale(0.97); }
-  .action-primary {
-    background: #2563eb;
-    color: white;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-  }
-  .action-primary:hover { background: #1d4ed8; }
-  .action-light {
-    background: #fff;
-    border: 1px solid #cbd5e1;
-    color: #334155;
-  }
-  .action-light:hover { background: #f8fafc; }
-  
+
   /* Tab Navigation Styling */
   .tab-btn {
-    padding: 9px 16px;
+    padding: 8px 16px;
     font-size: 12px;
     font-weight: 700;
-    border-radius: 10px;
+    border-radius: 12px;
     transition: all 0.25s ease;
     cursor: pointer;
     border: 1px solid transparent;
   }
   .tab-btn.active {
-    background: #2563eb;
+    background: #0284c7;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
   }
   .tab-btn.inactive {
     background: #f8fafc;
     color: #64748b;
     border-color: #e2e8f0;
   }
-  .tab-btn.inactive:hover { background: #f1f5f9; color: #0f172a; }
+  .dark .tab-btn.inactive {
+    background: #1e293b;
+    color: #94a3b8;
+    border-color: #334155;
+  }
 
   /* Fluid A4 Preview Canvas Container */
   .preview-stage {
@@ -171,6 +178,15 @@
     box-shadow: 0 0 0 2px #bfdbfe;
   }
 
+  /* Custom Scrollbars */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+  .dark ::-webkit-scrollbar-thumb { background: #334155; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  #leftEdgeTrigger { position: fixed; top: 0; left: 0; width: 18px; height: 100vh; z-index: 45; }
+
   @media print {
     @page { size: A4; margin: 0; }
     body { background: #fff !important; }
@@ -191,416 +207,541 @@
   }
 </style>
 </head>
-<body>
+<body class="bg-sky-50/50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white">
 
-<!-- TOP APP NAVIGATION -->
-<header class="no-print sticky top-0 z-40 bg-[#0f172a] text-white border-b border-slate-800 backdrop-blur-md bg-opacity-95">
-  <div class="max-w-[1700px] mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-3">
-    <div class="flex items-center gap-3 min-w-0">
-      <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 grid place-items-center font-black text-xs sm:text-sm tracking-tight text-white shadow-lg shadow-blue-900/30 shrink-0">AZ</div>
-      <div class="min-w-0">
-        <div class="font-extrabold text-xs sm:text-sm tracking-wide text-slate-100 truncate">AZANIA BANK PLC</div>
-        <div class="text-[9px] sm:text-[10px] text-blue-400 font-medium tracking-wider uppercase truncate">Professional Letter Suite</div>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="action bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="generateRef()">↻ <span class="hidden md:inline">New Ref</span></button>
-      <button class="action bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="resetForm()">Reset</button>
-      <button class="action bg-white/10 hover:bg-white/20 text-white font-bold hidden xs:inline-flex" onclick="window.print()">Print</button>
-      <button id="pdfButton" class="action action-primary" onclick="downloadPDF()">↓ <span class="hidden sm:inline">Download PDF</span><span class="sm:hidden">PDF</span></button>
-    </div>
-  </div>
-</header>
+  <!-- INJECT HEADER -->
+  <div id="include-header"></div>
 
-<main class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-  
-  <!-- WORKSPACE HEADER & TABS -->
-  <div class="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-b border-slate-200/80 pb-6">
-    <div>
-      <div class="section-kicker mb-1">Document Generation Suite</div>
-      <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight text-slate-900" id="pageTitle">Create Custom Letter</h1>
-      <p class="text-xs sm:text-sm text-slate-500 mt-1">Select your template, customize the information, and review the live A4 preview.</p>
-    </div>
+  <!-- INJECT SIDEBAR & FIXED NAVBAR -->
+  <div id="include-sidebar"></div>
 
-    <!-- Letter Type Selector Tabs -->
-    <div class="flex items-center gap-1.5 bg-white p-1.5 sm:p-2 rounded-2xl border border-slate-200 shadow-sm self-start md:self-auto">
-      <button id="tabCustom" class="tab-btn active" onclick="switchLetterType('custom')">Custom Letter</button>
-      <button id="tabBalance" class="tab-btn inactive" onclick="switchLetterType('balance')">Outstanding Balance</button>
-    </div>
-  </div>
+  <!-- CONTENT WRAPPER -->
+  <div id="contentWrapper" class="flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ease-in-out pt-20">
 
-  <!-- FLUID RESPONSIVE WORKSPACE GRID -->
-  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
-    
-    <!-- LEFT FORM CONTROLS -->
-    <section class="xl:col-span-5 space-y-5 no-print">
-      
-      <!-- RECIPIENT PANEL -->
-      <div class="panel p-5 sm:p-6">
-        <div class="flex items-center justify-between mb-4 sm:mb-5">
-          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving institution details</h2></div>
-          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Required</span>
+    <!-- MAIN WORKSPACE CONTAINER -->
+    <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col overflow-hidden space-y-6">
+
+      <!-- PAGE HEADING BAR WITH TEMPLATE TABS & ACTIONS -->
+      <div class="no-print bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-widest bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full">Suite 04 Module</span>
+          <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1" id="pageTitle">Create Custom Letter</h1>
         </div>
-        <div class="space-y-4">
-          <div>
-            <label for="recipientBank" class="field-label">Recipient Name / Bank</label>
-            <div class="relative">
-              <select id="recipientBank" class="field appearance-none pr-10 cursor-pointer">
-                <option value="" selected disabled>-- Select Recipient Bank --</option>
-                <option value="People's Bank of Zanzibar (PBZ Bank)">People's Bank of Zanzibar (PBZ Bank)</option>
-                <option value="CRDB Bank PLC">CRDB Bank PLC</option>
-                <option value="NMB Bank PLC">NMB Bank PLC</option>
-                <option value="National Bank of Commerce (NBC)">National Bank of Commerce (NBC)</option>
-                <option value="Tanzania Commercial Bank (TCB)">Tanzania Commercial Bank (TCB)</option>
-                <option value="Absa Bank Tanzania">Absa Bank Tanzania</option>
-                <option value="Standard Chartered Bank Tanzania">Standard Chartered Bank Tanzania</option>
-                <option value="Stanbic Bank Tanzania">Stanbic Bank Tanzania</option>
-                <option value="Diamond Trust Bank (DTB) Tanzania">Diamond Trust Bank (DTB) Tanzania</option>
-                <option value="Exim Bank Tanzania">Exim Bank Tanzania</option>
-                <option value="KCB Bank Tanzania">KCB Bank Tanzania</option>
-                <option value="Bank of Africa Tanzania (BOA)">Bank of Africa Tanzania (BOA)</option>
-                <option value="Equity Bank Tanzania">Equity Bank Tanzania</option>
-                <option value="I&M Bank Tanzania">I&M Bank Tanzania</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="m6 9 6 6 6-6"/></svg>
-              </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Template Selector Tabs -->
+          <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+            <button id="tabCustom" class="tab-btn active" onclick="switchLetterType('custom')">Custom Letter</button>
+            <button id="tabBalance" class="tab-btn inactive" onclick="switchLetterType('balance')">Outstanding Balance</button>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex items-center gap-2">
+            <button onclick="generateRef()" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition" title="Generate New Reference">
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-sky-600"></i>
+            </button>
+            <button onclick="resetForm()" class="p-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 transition" title="Reset Form">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            </button>
+            <button id="pdfButton" onclick="downloadPDF()" class="inline-flex items-center gap-2 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition shadow-md shadow-sky-600/20 active:scale-95">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Download PDF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSPACE GRID -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
+        
+        <!-- LEFT FORM CONTROLS -->
+        <section class="xl:col-span-5 space-y-5 no-print">
+          
+          <!-- RECIPIENT PANEL -->
+          <div class="panel p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-0.5">Receiving institution details</h2></div>
+              <span class="text-[10px] font-bold text-sky-700 bg-sky-50 dark:bg-sky-950/60 dark:text-sky-300 px-2.5 py-1 rounded-full border border-sky-100 dark:border-sky-800">Required</span>
             </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" placeholder="e.g. Chake Chake"></div>
-            <div><label class="field-label" for="poBox">Postal Address</label><input class="field" id="poBox" placeholder="e.g. P.O. Box 67"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SUBJECT & REFERENCE -->
-      <div class="panel p-5 sm:p-6">
-        <div class="mb-4 sm:mb-5"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-1">Subject headings & accounts</h2></div>
-        <div class="space-y-4">
-          <div><label class="field-label" for="subjectText">Letter Subject Heading</label><input class="field font-semibold" id="subjectText" placeholder="e.g. RE: GENERAL INQUIRY"></div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div><label class="field-label" for="customerName">Customer Name</label><input class="field uppercase" id="customerName" placeholder="JOHN DOE"></div>
-            <div><label class="field-label" for="accountNumber">Account / Ref No.</label><input class="field font-mono" id="accountNumber" placeholder="012345678901"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LETTER CONTENT -->
-      <div class="panel p-5 sm:p-6">
-        <div class="mb-4 sm:mb-5"><div class="section-kicker">03 / Content</div><h2 class="section-title mt-1">Letter body & salutation</h2></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-          <div><label class="field-label" for="customDate">Letter Date</label><input class="field" type="date" id="customDate"></div>
-        </div>
-        <div class="space-y-4">
-          <div><label class="field-label" for="salutationText">Salutation</label><input class="field" id="salutationText" value="Dear Sir/Madam,"></div>
-          <div><label class="field-label" for="bodyParagraph">Main Message Body</label><textarea class="field leading-relaxed" id="bodyParagraph" rows="6" placeholder="Type your letter content here..."></textarea><p class="text-[10px] text-slate-400 mt-1.5 font-medium">Tip: Use {ACCOUNT_NO} to dynamically inject account numbers.</p></div>
-          <div><label class="field-label" for="closingParagraph">Closing Paragraph</label><textarea class="field" id="closingParagraph" rows="2" placeholder="e.g. Thanking you in advance."></textarea></div>
-        </div>
-      </div>
-
-      <!-- SIGNATORIES -->
-      <div class="panel p-5 sm:p-6">
-        <div class="mb-4 sm:mb-5"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-1">Institution and signatories</h2></div>
-        <div class="space-y-4">
-          <div><label class="field-label" for="senderBank">Issuing Institution</label><input class="field font-semibold" id="senderBank" value="AZANIA BANK PLC"></div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div><label class="field-label" for="sig1Title">Signatory 1 Title</label><input class="field" id="sig1Title" value="Branch Manager"></div>
-            <div><label class="field-label" for="sig1Name">Signatory 1 Name</label><input class="field" id="sig1Name" placeholder="Enter name"></div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div><label class="field-label" for="sig2Title">Signatory 2 Title</label><input class="field" id="sig2Title" value="Branch Operations Executive"></div>
-            <div><label class="field-label" for="sig2Name">Signatory 2 Name</label><input class="field" id="sig2Name" placeholder="Enter name"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- BRANDING / LETTERHEAD -->
-      <div class="panel p-5 sm:p-6">
-        <div class="flex items-center justify-between gap-3">
-          <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-1">Letterhead image</h2><p class="text-[11px] text-slate-500 mt-1">Optional background image.</p></div>
-          <label class="action action-light cursor-pointer shadow-sm">Upload<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
-        </div>
-        <button class="text-[11px] text-rose-600 font-semibold mt-3 hidden" id="removeLetterhead" onclick="removeLetterhead()">Remove letterhead</button>
-      </div>
-
-      <!-- REFERENCE CODE CARD -->
-      <div class="rounded-2xl bg-blue-50/70 border border-blue-100 p-4 sm:p-5 shadow-sm">
-        <div class="text-[10px] uppercase tracking-widest text-blue-700 font-extrabold">Document reference</div>
-        <div class="font-mono font-bold text-xs sm:text-sm text-blue-950 mt-1.5 break-all" id="sidebarRef"></div>
-      </div>
-    </section>
-
-    <!-- RIGHT A4 PREVIEW SECTION -->
-    <section class="xl:col-span-7 min-w-0">
-      <div class="no-print flex items-center justify-between gap-3 mb-3">
-        <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-slate-800 mt-1" id="previewSubtitle">A4 — Custom Letter Preview</h2></div>
-        <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-xl px-3 py-1.5 shadow-sm font-medium">Live sync</span>
-      </div>
-      
-      <div class="preview-stage" id="previewContainer">
-        <div id="letterPaper" class="a4-canvas">
-          <img id="letterheadImage" class="letterhead hidden" alt="">
-          <div class="letter-content">
-            <div class="space-y-3.5">
-              <div class="flex justify-between items-start gap-5 font-bold text-[10pt] pb-1">
-                <div><span class="text-[#0082C3]">Date: </span><span id="previewDate" class="editable" contenteditable="true"></span></div>
-                <div class="text-right"><span class="text-[#0082C3]">Ref: </span><span id="previewRef" class="font-mono editable" contenteditable="true"></span></div>
-              </div>
-              <div class="space-y-0.5">
-                <p class="font-bold editable" contenteditable="true">The Branch Manager,</p>
-                <p id="previewRecipientBank" class="font-bold editable" contenteditable="true"></p>
-                <p id="previewBranchLocation" class="editable" contenteditable="true"></p>
-                <p id="previewPoBox" class="editable" contenteditable="true"></p>
-              </div>
-              <p id="previewSalutation" class="pt-1 editable" contenteditable="true"></p>
-              <div id="previewSubject" class="font-bold uppercase tracking-wide border-b border-slate-900 pb-1.5 pt-1 text-[10.5pt] editable" contenteditable="true"></div>
-              <p id="previewBody" class="text-justify leading-relaxed pt-1 editable" contenteditable="true"></p>
-              <p id="previewClosing" class="pt-1.5 editable" contenteditable="true"></p>
-            </div>
-            
-            <!-- FLEXIBLE SIGNATURE BLOCK -->
-            <div class="signature-block pt-8 space-y-3">
-              <div class="space-y-0.5">
-                <p class="font-medium editable" contenteditable="true">Yours faithfully,</p>
-                <p id="previewSenderBank" class="font-bold editable" contenteditable="true"></p>
-              </div>
-              <div class="grid grid-cols-2 gap-10 pt-10">
-                <div class="border-t border-slate-500 pt-2 space-y-0.5">
-                  <p id="previewSig1Name" class="font-semibold text-slate-700 text-[10pt] editable" contenteditable="true"></p>
-                  <p id="previewSig1Title" class="font-bold text-slate-900 editable" contenteditable="true"></p>
-                </div>
-                <div class="border-t border-slate-500 pt-2 space-y-0.5">
-                  <p id="previewSig2Name" class="font-semibold text-slate-700 text-[10pt] editable" contenteditable="true"></p>
-                  <p id="previewSig2Title" class="font-bold text-slate-900 editable" contenteditable="true"></p>
+            <div class="space-y-4">
+              <div>
+                <label for="recipientBank" class="field-label">Recipient Name / Bank</label>
+                <div class="relative">
+                  <select id="recipientBank" class="field appearance-none pr-10 cursor-pointer">
+                    <option value="" selected disabled>-- Select Recipient Bank --</option>
+                    <option value="People's Bank of Zanzibar (PBZ Bank)">People's Bank of Zanzibar (PBZ Bank)</option>
+                    <option value="CRDB Bank PLC">CRDB Bank PLC</option>
+                    <option value="NMB Bank PLC">NMB Bank PLC</option>
+                    <option value="National Bank of Commerce (NBC)">National Bank of Commerce (NBC)</option>
+                    <option value="Tanzania Commercial Bank (TCB)">Tanzania Commercial Bank (TCB)</option>
+                    <option value="Absa Bank Tanzania">Absa Bank Tanzania</option>
+                    <option value="Standard Chartered Bank Tanzania">Standard Chartered Bank Tanzania</option>
+                    <option value="Stanbic Bank Tanzania">Stanbic Bank Tanzania</option>
+                    <option value="Diamond Trust Bank (DTB) Tanzania">Diamond Trust Bank (DTB) Tanzania</option>
+                    <option value="Exim Bank Tanzania">Exim Bank Tanzania</option>
+                    <option value="KCB Bank Tanzania">KCB Bank Tanzania</option>
+                    <option value="Bank of Africa Tanzania (BOA)">Bank of Africa Tanzania (BOA)</option>
+                    <option value="Equity Bank Tanzania">Equity Bank Tanzania</option>
+                    <option value="I&M Bank Tanzania">I&M Bank Tanzania</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                  </div>
                 </div>
               </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" placeholder="e.g. Chake Chake"></div>
+                <div><label class="field-label" for="poBox">Postal Address</label><input class="field" id="poBox" placeholder="e.g. P.O. Box 67"></div>
+              </div>
             </div>
-
           </div>
-        </div>
+
+          <!-- SUBJECT & REFERENCE -->
+          <div class="panel p-5 sm:p-6">
+            <div class="mb-4"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-0.5">Subject headings & accounts</h2></div>
+            <div class="space-y-4">
+              <div><label class="field-label" for="subjectText">Letter Subject Heading</label><input class="field font-semibold" id="subjectText" placeholder="e.g. RE: GENERAL INQUIRY"></div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div><label class="field-label" for="customerName">Customer Name</label><input class="field uppercase" id="customerName" placeholder="JOHN DOE"></div>
+                <div><label class="field-label" for="accountNumber">Account / Ref No.</label><input class="field font-mono" id="accountNumber" placeholder="012345678901"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LETTER CONTENT -->
+          <div class="panel p-5 sm:p-6">
+            <div class="mb-4"><div class="section-kicker">03 / Content</div><h2 class="section-title mt-0.5">Letter body & salutation</h2></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div><label class="field-label" for="customDate">Letter Date</label><input class="field" type="date" id="customDate"></div>
+            </div>
+            <div class="space-y-4">
+              <div><label class="field-label" for="salutationText">Salutation</label><input class="field" id="salutationText" value="Dear Sir/Madam,"></div>
+              <div><label class="field-label" for="bodyParagraph">Main Message Body</label><textarea class="field leading-relaxed" id="bodyParagraph" rows="6" placeholder="Type your letter content here..."></textarea><p class="text-[10px] text-slate-400 mt-1.5 font-medium">Tip: Use {ACCOUNT_NO} to dynamically inject account numbers.</p></div>
+              <div><label class="field-label" for="closingParagraph">Closing Paragraph</label><textarea class="field" id="closingParagraph" rows="2" placeholder="e.g. Thanking you in advance."></textarea></div>
+            </div>
+          </div>
+
+          <!-- SIGNATORIES -->
+          <div class="panel p-5 sm:p-6">
+            <div class="mb-4"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-0.5">Institution and signatories</h2></div>
+            <div class="space-y-4">
+              <div><label class="field-label" for="senderBank">Issuing Institution</label><input class="field font-semibold" id="senderBank" value="AZANIA BANK PLC"></div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div><label class="field-label" for="sig1Title">Signatory 1 Title</label><input class="field" id="sig1Title" value="Branch Manager"></div>
+                <div><label class="field-label" for="sig1Name">Signatory 1 Name</label><input class="field" id="sig1Name" placeholder="Enter name"></div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div><label class="field-label" for="sig2Title">Signatory 2 Title</label><input class="field" id="sig2Title" value="Branch Operations Executive"></div>
+                <div><label class="field-label" for="sig2Name">Signatory 2 Name</label><input class="field" id="sig2Name" placeholder="Enter name"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BRANDING / LETTERHEAD -->
+          <div class="panel p-5 sm:p-6">
+            <div class="flex items-center justify-between gap-3">
+              <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-0.5">Letterhead image</h2><p class="text-[11px] text-slate-400 mt-0.5">Optional background image.</p></div>
+              <label class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold border border-slate-200 dark:border-slate-700 cursor-pointer shadow-xs transition">Upload<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
+            </div>
+            <button class="text-[11px] text-rose-600 font-bold mt-3 hidden" id="removeLetterhead" onclick="removeLetterhead()">Remove letterhead</button>
+          </div>
+
+          <!-- REFERENCE CODE CARD -->
+          <div class="rounded-2xl bg-sky-50/70 dark:bg-slate-900 border border-sky-100 dark:border-slate-800 p-4 sm:p-5 shadow-xs">
+            <div class="text-[10px] uppercase tracking-widest text-sky-700 dark:text-sky-400 font-extrabold">Document reference</div>
+            <div class="font-mono font-bold text-xs sm:text-sm text-slate-900 dark:text-white mt-1 break-all" id="sidebarRef"></div>
+          </div>
+
+        </section>
+
+        <!-- RIGHT A4 PREVIEW SECTION -->
+        <section class="xl:col-span-7 min-w-0">
+          <div class="no-print flex items-center justify-between gap-3 mb-3">
+            <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-slate-900 dark:text-white mt-0.5" id="previewSubtitle">A4 — Custom Letter Preview</h2></div>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-xl px-3 py-1.5 shadow-xs font-semibold">Live sync</span>
+          </div>
+          
+          <div class="preview-stage" id="previewContainer">
+            <div id="letterPaper" class="a4-canvas">
+              <img id="letterheadImage" class="letterhead hidden" alt="">
+              <div class="letter-content">
+                <div class="space-y-3.5">
+                  <div class="flex justify-between items-start gap-5 font-bold text-[10pt] pb-1">
+                    <div><span class="text-[#0082C3]">Date: </span><span id="previewDate" class="editable" contenteditable="true"></span></div>
+                    <div class="text-right"><span class="text-[#0082C3]">Ref: </span><span id="previewRef" class="font-mono editable" contenteditable="true"></span></div>
+                  </div>
+                  <div class="space-y-0.5">
+                    <p class="font-bold editable" contenteditable="true">The Branch Manager,</p>
+                    <p id="previewRecipientBank" class="font-bold editable" contenteditable="true"></p>
+                    <p id="previewBranchLocation" class="editable" contenteditable="true"></p>
+                    <p id="previewPoBox" class="editable" contenteditable="true"></p>
+                  </div>
+                  <p id="previewSalutation" class="pt-1 editable" contenteditable="true"></p>
+                  <div id="previewSubject" class="font-bold uppercase tracking-wide border-b border-slate-900 pb-1.5 pt-1 text-[10.5pt] editable" contenteditable="true"></div>
+                  <p id="previewBody" class="text-justify leading-relaxed pt-1 editable" contenteditable="true"></p>
+                  <p id="previewClosing" class="pt-1.5 editable" contenteditable="true"></p>
+                </div>
+                
+                <!-- FLEXIBLE SIGNATURE BLOCK -->
+                <div class="signature-block pt-8 space-y-3">
+                  <div class="space-y-0.5">
+                    <p class="font-medium editable" contenteditable="true">Yours faithfully,</p>
+                    <p id="previewSenderBank" class="font-bold editable" contenteditable="true"></p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-10 pt-10">
+                    <div class="border-t border-slate-500 pt-2 space-y-0.5">
+                      <p id="previewSig1Name" class="font-semibold text-slate-700 text-[10pt] editable" contenteditable="true"></p>
+                      <p id="previewSig1Title" class="font-bold text-slate-900 editable" contenteditable="true"></p>
+                    </div>
+                    <div class="border-t border-slate-500 pt-2 space-y-0.5">
+                      <p id="previewSig2Name" class="font-semibold text-slate-700 text-[10pt] editable" contenteditable="true"></p>
+                      <p id="previewSig2Title" class="font-bold text-slate-900 editable" contenteditable="true"></p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <p class="no-print text-center text-[10px] text-slate-400 mt-2 font-medium">Tip: Click text directly on the A4 letter preview to make final adjustments.</p>
+        </section>
+
       </div>
-      <p class="no-print text-center text-[10px] text-slate-400 mt-2 font-medium">Tip: Click text directly on the A4 letter preview to make final adjustments.</p>
-    </section>
+    </main>
+
+    <!-- INJECT FOOTER -->
+    <div id="include-footer"></div>
+
   </div>
-</main>
 
-<footer class="no-print border-t border-slate-200 bg-white py-5 mt-8">
-  <div class="max-w-[1700px] mx-auto px-6 text-center text-xs text-slate-400">
-    Mono Apps Solutions Financial Suite <span class="mx-1.5 text-slate-300">·</span> Designed by <strong class="text-slate-600">Godfrey Abraham Mono</strong> <span class="mx-1.5 text-slate-300">·</span> © 2026
-  </div>
-</footer>
+  <!-- JAVASCRIPT SYSTEM ENGINE & INCLUDES LOADER -->
+  <script>
+    async function loadIncludes() {
+      const includes = [
+        { id: 'include-header', file: 'includes/header.html' },
+        { id: 'include-sidebar', file: 'includes/sidebar.html' },
+        { id: 'include-footer', file: 'includes/footer.html' }
+      ];
 
-<script>
-let currentLetterType = 'custom';
+      for (let item of includes) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          try {
+            const response = await fetch(item.file);
+            if (response.ok) {
+              el.outerHTML = await response.text();
+            }
+          } catch (error) {
+            console.error(`Error loading ${item.file}:`, error);
+          }
+        }
+      }
 
-const balanceTemplate = {
-  recipientBank: "People's Bank of Zanzibar (PBZ Bank)",
-  branchLocation: "Chake Chake Branch",
-  poBox: "P.O. Box 67, Pemba",
-  subjectText: "RE: REQUEST FOR OUTSTANDING LOAN BALANCE",
-  customerName: "JOHN SIMON MONO",
-  accountNumber: "012345678901",
-  salutationText: "Dear Sir/Madam,",
-  bodyParagraph: "We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.",
-  closingParagraph: "Thanking you in advance for your continued cooperation and prompt assistance.",
-  senderBank: "AZANIA BANK PLC",
-  sig1Title: "Branch Manager",
-  sig1Name: "Amina Juma",
-  sig2Title: "Branch Operations Executive",
-  sig2Name: "Baraka Kassim"
-};
+      lucide.createIcons();
+      initThemeSystem();
+      setupLeftEdgeHover();
+    }
 
-const customTemplate = {
-  recipientBank: "",
-  branchLocation: "",
-  poBox: "",
-  subjectText: "",
-  customerName: "",
-  accountNumber: "",
-  salutationText: "Dear Sir/Madam,",
-  bodyParagraph: "",
-  closingParagraph: "",
-  senderBank: "AZANIA BANK PLC",
-  sig1Title: "Branch Manager",
-  sig1Name: "",
-  sig2Title: "Branch Operations Executive",
-  sig2Name: ""
-};
+    document.addEventListener('DOMContentLoaded', loadIncludes);
 
-let currentRef = "";
-const fieldIds = Object.keys(customTemplate);
-const $ = id => document.getElementById(id);
+    let sidebarOpen = false;
+    let autoCloseTimer = null;
+    let progressInterval = null;
+    const AUTO_CLOSE_DELAY = 20000;
+    let startTime = 0;
 
-function localDateValue(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-function formatDate(v){if(!v)return "";const [y,m,d]=v.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString("en-GB",{day:"2-digit",month:"long",year:"numeric"})}
+    function initThemeSystem() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
 
-function generateRef(){
-  const d=localDateValue().replaceAll("-","");
-  const suffix=Array.from(crypto.getRandomValues(new Uint8Array(2))).map(x=>x.toString(16).padStart(2,"0")).join("").toUpperCase();
-  currentRef=`AZB/AZN/LTR/${d}-${suffix}`;
-  $("sidebarRef").textContent=currentRef;
-  $("previewRef").textContent=currentRef;
-}
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
 
-function switchLetterType(type) {
-  currentLetterType = type;
-  const data = type === 'balance' ? balanceTemplate : customTemplate;
+    function toggleSidebar(forceState) {
+      const sidebar = document.getElementById('desktopSidebar');
+      const contentWrapper = document.getElementById('contentWrapper');
+      const topNavbar = document.getElementById('topNavbar');
+      
+      sidebarOpen = typeof forceState === 'boolean' ? forceState : !sidebarOpen;
 
-  if(type === 'custom') {
-    $("tabCustom").className = "tab-btn active";
-    $("tabBalance").className = "tab-btn inactive";
-    $("pageTitle").textContent = "Create Custom Letter";
-    $("previewSubtitle").textContent = "A4 — Custom Letter Preview";
-  } else {
-    $("tabBalance").className = "tab-btn active";
-    $("tabCustom").className = "tab-btn inactive";
-    $("pageTitle").textContent = "Outstanding Balance Request";
-    $("previewSubtitle").textContent = "A4 — Outstanding Balance Request Preview";
-  }
+      if (sidebarOpen) {
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (contentWrapper) contentWrapper.classList.add('lg:pl-80');
+        if (topNavbar) topNavbar.classList.add('lg:pl-80');
+        startAutoCloseCountdown();
+      } else {
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (contentWrapper) contentWrapper.classList.remove('lg:pl-80');
+        if (topNavbar) topNavbar.classList.remove('lg:pl-80');
+        stopAutoCloseCountdown();
+      }
+    }
 
-  fieldIds.forEach(id => {
-    if($(id)) $(id).value = data[id];
-  });
+    function setupLeftEdgeHover() {
+      const trigger = document.getElementById('leftEdgeTrigger');
+      const sidebar = document.getElementById('desktopSidebar');
+      if (!trigger || !sidebar) return;
 
-  updatePreview();
-}
+      trigger.addEventListener('mouseenter', () => { if (!sidebarOpen) toggleSidebar(true); });
+      sidebar.addEventListener('mousemove', () => { if (sidebarOpen) resetAutoCloseTimer(); });
+    }
 
-function updatePreview(){
-  const v = id => ($(id)?.value ?? "").trim();
-  
-  $("previewRecipientBank").textContent = v("recipientBank") ? (v("recipientBank").replace(/,$/,"") + ",") : "";
-  $("previewBranchLocation").textContent = v("branchLocation") ? (v("branchLocation").replace(/,$/,"") + ",") : "";
-  $("previewPoBox").textContent = v("poBox") ? (v("poBox").replace(/[.,]+$/,"") + ".") : "";
-  
-  const subj = v("subjectText");
-  const cust = v("customerName").toUpperCase();
-  const acc = v("accountNumber");
-  
-  if (currentLetterType === 'balance') {
-    $("previewSubject").textContent = `RE: REQUEST FOR OUTSTANDING LOAN BALANCE FOR ${cust || "[CUSTOMER NAME]"} - ACCOUNT NO. ${acc || "[ACCOUNT NO]"}`;
-  } else {
-    $("previewSubject").textContent = subj ? subj : (cust || acc ? `${subj} ${cust} ${acc}` : "");
-  }
+    function startAutoCloseCountdown() {
+      stopAutoCloseCountdown();
+      startTime = Date.now();
+      const progressBar = document.getElementById('autoCloseProgressBar');
+      const textDisplay = document.getElementById('autoCloseText');
+      
+      progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, AUTO_CLOSE_DELAY - elapsed);
+        const percent = (remaining / AUTO_CLOSE_DELAY) * 100;
+        if (progressBar) progressBar.style.width = percent + '%';
+        if (textDisplay) textDisplay.innerText = `Auto-hide: ${Math.ceil(remaining / 1000)}s`;
+        if (remaining <= 0) toggleSidebar(false);
+      }, 100);
+    }
 
-  $("previewSalutation").textContent = v("salutationText");
-  $("previewClosing").textContent = v("closingParagraph");
-  $("previewSenderBank").textContent = v("senderBank");
-  
-  $("previewSig1Title").textContent = v("sig1Title");
-  $("previewSig1Name").textContent = v("sig1Name");
-  $("previewSig2Title").textContent = v("sig2Title");
-  $("previewSig2Name").textContent = v("sig2Name");
+    function resetAutoCloseTimer() { startTime = Date.now(); }
+    function stopAutoCloseCountdown() {
+      if (progressInterval) clearInterval(progressInterval);
+      const progressBar = document.getElementById('autoCloseProgressBar');
+      if (progressBar) progressBar.style.width = '100%';
+    }
 
-  $("previewDate").textContent = formatDate($("customDate").value);
-  
-  const rawBody = v("bodyParagraph");
-  const formattedBody = rawBody.replaceAll("{ACCOUNT_NO}", acc || "[ACCOUNT NO]");
-  $("previewBody").innerHTML = formattedBody;
-  
-  $("previewRef").textContent = currentRef;
-}
+    function toggleMobileDrawer() {
+      const drawer = document.getElementById('mobileDrawerContainer');
+      if (drawer) {
+        if (drawer.classList.contains('grid-rows-[0fr]')) {
+          drawer.classList.remove('grid-rows-[0fr]');
+          drawer.classList.add('grid-rows-[1fr]');
+        } else {
+          drawer.classList.remove('grid-rows-[1fr]');
+          drawer.classList.add('grid-rows-[0fr]');
+        }
+      }
+    }
 
-function resetForm(){
-  switchLetterType(currentLetterType);
-  $("customDate").value = localDateValue();
-  removeLetterhead();
-  generateRef();
-}
+    // LETTER WRITER BUSINESS LOGIC
+    let currentLetterType = 'custom';
 
-function removeLetterhead(){
-  $("letterheadImage").src = "";
-  $("letterheadImage").classList.add("hidden");
-  $("removeLetterhead").classList.add("hidden");
-  $("letterheadInput").value = "";
-}
+    const balanceTemplate = {
+      recipientBank: "People's Bank of Zanzibar (PBZ Bank)",
+      branchLocation: "Chake Chake Branch",
+      poBox: "P.O. Box 67, Pemba",
+      subjectText: "RE: REQUEST FOR OUTSTANDING LOAN BALANCE",
+      customerName: "JOHN SIMON MONO",
+      accountNumber: "012345678901",
+      salutationText: "Dear Sir/Madam,",
+      bodyParagraph: "We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.",
+      closingParagraph: "Thanking you in advance for your continued cooperation and prompt assistance.",
+      senderBank: "AZANIA BANK PLC",
+      sig1Title: "Branch Manager",
+      sig1Name: "Amina Juma",
+      sig2Title: "Branch Operations Executive",
+      sig2Name: "Baraka Kassim"
+    };
 
-$("letterheadInput").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if(!file) return;
-  if(!file.type.startsWith("image/")){ alert("Please select an image file."); return; }
-  const reader = new FileReader();
-  reader.onload = () => {
-    $("letterheadImage").src = reader.result;
-    $("letterheadImage").classList.remove("hidden");
-    $("removeLetterhead").classList.remove("hidden");
-  };
-  reader.readAsDataURL(file);
-});
+    const customTemplate = {
+      recipientBank: "",
+      branchLocation: "",
+      poBox: "",
+      subjectText: "",
+      customerName: "",
+      accountNumber: "",
+      salutationText: "Dear Sir/Madam,",
+      bodyParagraph: "",
+      closingParagraph: "",
+      senderBank: "AZANIA BANK PLC",
+      sig1Title: "Branch Manager",
+      sig1Name: "",
+      sig2Title: "Branch Operations Executive",
+      sig2Name: ""
+    };
 
-fieldIds.forEach(id => {
-  if($(id)) $(id).addEventListener("input", updatePreview);
-  if($(id)) $(id).addEventListener("change", updatePreview);
-});
-$("customDate").addEventListener("change", updatePreview);
-$("previewRef").addEventListener("input", e => {
-  $("sidebarRef").textContent = e.currentTarget.textContent;
-  currentRef = e.currentTarget.textContent;
-});
+    let currentRef = "";
+    const fieldIds = Object.keys(customTemplate);
+    const $ = id => document.getElementById(id);
 
-// Dynamic responsive scaling for mobile screens without shrinking or clipping content
-function adjustCanvasScale() {
-  const container = document.getElementById('previewContainer');
-  const canvas = document.getElementById('letterPaper');
-  if(!container || !canvas) return;
-  const containerWidth = container.clientWidth - 16;
-  const A4WidthPx = 794; 
-  if (containerWidth < A4WidthPx) {
-    const scale = containerWidth / A4WidthPx;
-    canvas.style.transform = `scale(${scale})`;
-    canvas.style.transformOrigin = 'top center';
-    canvas.style.marginBottom = `-${(1 - scale) * canvas.offsetHeight}px`;
-  } else {
-    canvas.style.transform = 'none';
-    canvas.style.marginBottom = '0';
-  }
-}
+    function localDateValue(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+    function formatDate(v){if(!v)return "";const [y,m,d]=v.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString("en-GB",{day:"2-digit",month:"long",year:"numeric"})}
 
-window.addEventListener('resize', adjustCanvasScale);
-window.addEventListener('DOMContentLoaded', adjustCanvasScale);
+    function generateRef(){
+      const d=localDateValue().replaceAll("-","");
+      const suffix=Array.from(crypto.getRandomValues(new Uint8Array(2))).map(x=>x.toString(16).padStart(2,"0")).join("").toUpperCase();
+      currentRef=`AZB/AZN/LTR/${d}-${suffix}`;
+      if($("sidebarRef")) $("sidebarRef").textContent=currentRef;
+      if($("previewRef")) $("previewRef").textContent=currentRef;
+    }
 
-async function downloadPDF(){
-  const btn = $("pdfButton");
-  const old = btn.innerHTML;
-  btn.disabled = true;
-  btn.textContent = "Preparing PDF…";
-  const paper = $("letterPaper");
-  
-  const originalTransform = paper.style.transform;
-  paper.style.transform = 'none';
+    function switchLetterType(type) {
+      currentLetterType = type;
+      const data = type === 'balance' ? balanceTemplate : customTemplate;
 
-  try{
-    if(!window.html2pdf) throw new Error("PDF library unavailable");
-    const acc = $("accountNumber").value || "Letter";
-    await html2pdf().set({
-      margin: 0,
-      filename: `Azania_Bank_Document_${acc.replace(/[^a-z0-9]/gi,"_")}.pdf`,
-      image: { type: "jpeg", quality: .98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      pagebreak: { mode: ["avoid-all", "css", "legacy"] }
-    }).from(paper).save();
-  } catch(err) {
-    alert("PDF export could not be completed. Please use Print and select Save as PDF.");
-  } finally {
-    paper.style.transform = originalTransform;
-    btn.disabled = false;
-    btn.innerHTML = old;
-  }
-}
+      if(type === 'custom') {
+        $("tabCustom").className = "tab-btn active";
+        $("tabBalance").className = "tab-btn inactive";
+        $("pageTitle").textContent = "Create Custom Letter";
+        $("previewSubtitle").textContent = "A4 — Custom Letter Preview";
+      } else {
+        $("tabBalance").className = "tab-btn active";
+        $("tabCustom").className = "tab-btn inactive";
+        $("pageTitle").textContent = "Outstanding Balance Request";
+        $("previewSubtitle").textContent = "A4 — Outstanding Balance Request Preview";
+      }
 
-let initialized = false;
-function initializeApp(){
-  if(initialized) return;
-  initialized = true;
-  $("customDate").value = localDateValue();
-  generateRef();
-  switchLetterType('custom');
-  setTimeout(adjustCanvasScale, 100);
-}
+      fieldIds.forEach(id => {
+        if($(id)) $(id).value = data[id];
+      });
 
-if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeApp);
-else initializeApp();
-</script>
+      updatePreview();
+    }
+
+    function updatePreview(){
+      const v = id => ($(id)?.value ?? "").trim();
+      
+      $("previewRecipientBank").textContent = v("recipientBank") ? (v("recipientBank").replace(/,$/,"") + ",") : "";
+      $("previewBranchLocation").textContent = v("branchLocation") ? (v("branchLocation").replace(/,$/,"") + ",") : "";
+      $("previewPoBox").textContent = v("poBox") ? (v("poBox").replace(/[.,]+$/,"") + ".") : "";
+      
+      const subj = v("subjectText");
+      const cust = v("customerName").toUpperCase();
+      const acc = v("accountNumber");
+      
+      if (currentLetterType === 'balance') {
+        $("previewSubject").textContent = `RE: REQUEST FOR OUTSTANDING LOAN BALANCE FOR ${cust || "[CUSTOMER NAME]"} - ACCOUNT NO. ${acc || "[ACCOUNT NO]"}`;
+      } else {
+        $("previewSubject").textContent = subj ? subj : (cust || acc ? `${subj} ${cust} ${acc}` : "");
+      }
+
+      $("previewSalutation").textContent = v("salutationText");
+      $("previewClosing").textContent = v("closingParagraph");
+      $("previewSenderBank").textContent = v("senderBank");
+      
+      $("previewSig1Title").textContent = v("sig1Title");
+      $("previewSig1Name").textContent = v("sig1Name");
+      $("previewSig2Title").textContent = v("sig2Title");
+      $("previewSig2Name").textContent = v("sig2Name");
+
+      $("previewDate").textContent = formatDate($("customDate").value);
+      
+      const rawBody = v("bodyParagraph");
+      const formattedBody = rawBody.replaceAll("{ACCOUNT_NO}", acc || "[ACCOUNT NO]");
+      $("previewBody").innerHTML = formattedBody;
+      
+      $("previewRef").textContent = currentRef;
+    }
+
+    function resetForm(){
+      switchLetterType(currentLetterType);
+      $("customDate").value = localDateValue();
+      removeLetterhead();
+      generateRef();
+    }
+
+    function removeLetterhead(){
+      $("letterheadImage").src = "";
+      $("letterheadImage").classList.add("hidden");
+      $("removeLetterhead").classList.add("hidden");
+      $("letterheadInput").value = "";
+    }
+
+    if($("letterheadInput")) {
+      $("letterheadInput").addEventListener("change", e => {
+        const file = e.target.files[0];
+        if(!file) return;
+        if(!file.type.startsWith("image/")){ alert("Please select an image file."); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+          $("letterheadImage").src = reader.result;
+          $("letterheadImage").classList.remove("hidden");
+          $("removeLetterhead").classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    fieldIds.forEach(id => {
+      if($(id)) $(id).addEventListener("input", updatePreview);
+      if($(id)) $(id).addEventListener("change", updatePreview);
+    });
+    if($("customDate")) $("customDate").addEventListener("change", updatePreview);
+    if($("previewRef")) {
+      $("previewRef").addEventListener("input", e => {
+        if($("sidebarRef")) $("sidebarRef").textContent = e.currentTarget.textContent;
+        currentRef = e.currentTarget.textContent;
+      });
+    }
+
+    // Dynamic responsive scaling for mobile preview
+    function adjustCanvasScale() {
+      const container = document.getElementById('previewContainer');
+      const canvas = document.getElementById('letterPaper');
+      if(!container || !canvas) return;
+      const containerWidth = container.clientWidth - 16;
+      const A4WidthPx = 794; 
+      if (containerWidth < A4WidthPx) {
+        const scale = containerWidth / A4WidthPx;
+        canvas.style.transform = `scale(${scale})`;
+        canvas.style.transformOrigin = 'top center';
+        canvas.style.marginBottom = `-${(1 - scale) * canvas.offsetHeight}px`;
+      } else {
+        canvas.style.transform = 'none';
+        canvas.style.marginBottom = '0';
+      }
+    }
+
+    window.addEventListener('resize', adjustCanvasScale);
+
+    async function downloadPDF(){
+      const btn = $("pdfButton");
+      const old = btn.innerHTML;
+      btn.disabled = true;
+      btn.textContent = "Preparing PDF…";
+      const paper = $("letterPaper");
+      
+      const originalTransform = paper.style.transform;
+      paper.style.transform = 'none';
+
+      try{
+        if(!window.html2pdf) throw new Error("PDF library unavailable");
+        const acc = $("accountNumber").value || "Letter";
+        await html2pdf().set({
+          margin: 0,
+          filename: `Azania_Bank_Document_${acc.replace(/[^a-z0-9]/gi,"_")}.pdf`,
+          image: { type: "jpeg", quality: .98 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+        }).from(paper).save();
+      } catch(err) {
+        alert("PDF export could not be completed. Please use Print and select Save as PDF.");
+      } finally {
+        paper.style.transform = originalTransform;
+        btn.disabled = false;
+        btn.innerHTML = old;
+      }
+    }
+
+    let initialized = false;
+    function initializeApp(){
+      if(initialized) return;
+      initialized = true;
+      if($("customDate")) $("customDate").value = localDateValue();
+      generateRef();
+      switchLetterType('custom');
+      setTimeout(adjustCanvasScale, 100);
+    }
+
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeApp);
+    else initializeApp();
+  </script>
 </body>
 </html>
