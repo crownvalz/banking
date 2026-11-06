@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azania Bank PLC - Consumer Loan Appraisal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            body { background: white; color: black; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            input, select, textarea { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+            .print-border { border: 1px solid #cbd5e1 !important; }
+            .print-container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased">
+
+    <!-- Top Action Bar -->
+    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50 no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div>
+                <h1 class="text-lg font-bold tracking-wide">AZANIA BANK PLC</h1>
+                <p class="text-xs text-blue-200">Consumer Loan Appraisal Automation</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="resetForm()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded font-medium transition">Reset Form</button>
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded font-semibold shadow flex items-center gap-1.5 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    Print / Save PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-3 sm:px-6 py-6 print-container">
+        <form id="appraisalForm" class="bg-white shadow-xl rounded-xl p-4 sm:p-8 space-y-6 print-border">
+            
+            <!-- Document Header -->
+            <div class="text-center border-b pb-4">
+                <h2 class="text-xl sm:text-2xl font-black text-blue-900 uppercase tracking-wider">Azania Bank PLC</h2>
+                <p class="text-sm font-semibold text-slate-600 mt-0.5">Consumer Loan Appraisal System</p>
+            </div>
+
+            <!-- 1. INSTITUTION -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">1. Institution</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">1.1 Entity Name</label>
+                        <input type="text" id="entity_name" value="TANZANIA REVENUE AUTHORITY (TRA)" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">1.2 Entity Code</label>
+                        <input type="text" id="entity_code" value="123456" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">1.3 Approved Interest Rate p.a. (Reducing)</label>
+                        <input type="number" step="0.01" id="interest_rate" value="0.13" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">1.4 Approved Tenor (In Months)</label>
+                        <input type="number" id="tenor_months" value="96" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. EMPLOYEE -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">2. Employee</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">2.1 Employee Name</label>
+                        <input type="text" id="emp_name" value="gody mono" oninput="syncNames()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">2.2 Employee Number</label>
+                        <input type="text" id="emp_number" value="011087" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">2.3 Employee ABL Account Number</label>
+                        <input type="text" id="emp_abl_acc" value="" placeholder="Enter Account No." class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. INCOME -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">3. Income</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm items-center">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">3.1 Basic Salary (Tzs)</label>
+                        <input type="number" id="basic_salary" value="3100000" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <p class="text-xs font-bold text-slate-700 mb-2">3.2 Fixed Allowances:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.2.1 Housing</label>
+                            <input type="number" id="housing" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.2.2 Transport</label>
+                            <input type="number" id="transport" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.2.3 Others</label>
+                            <input type="number" id="fixed_others" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2 mt-2 rounded text-xs font-bold">
+                        <span>(a) SUB-TOTAL FIXED ALLOWANCES</span>
+                        <span id="sub_fixed">0.00</span>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <p class="text-xs font-bold text-slate-700 mb-2">3.3 Variable Allowances:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.3.1 Utility</label>
+                            <input type="number" id="utility" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.3.2 Airtime</label>
+                            <input type="number" id="airtime" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.3.3 Overtime/Extra duty</label>
+                            <input type="number" id="overtime" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-500 mb-1">3.3.4 Others</label>
+                            <input type="number" id="var_others" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-sm">
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2 mt-2 rounded text-xs font-bold">
+                        <span>(b) SUB-TOTAL VARIABLE ALLOWANCES</span>
+                        <span id="sub_variable">0.00</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center bg-blue-50 border border-blue-200 p-3 rounded font-bold text-blue-900 text-sm">
+                    <span>GRAND-TOTAL INCOME</span>
+                    <span id="grand_total_income">3,100,000.00</span>
+                </div>
+            </section>
+
+            <!-- 4. PROPOSED LOAN AMOUNT / EXPOSURE -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">4. Proposed Loan Amount / Exposure</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">4.1 Applied Facility Amount (Tzs)</label>
+                        <input type="number" id="applied_amount" value="40000000" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">4.2 Existing Facility Balance (Tzs)</label>
+                        <input type="number" id="existing_balance" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                </div>
+                <div class="flex justify-between items-center bg-blue-50 border border-blue-200 p-3 rounded font-bold text-blue-900 text-sm">
+                    <span>TOTAL EXPOSURE</span>
+                    <span id="total_exposure">40,000,000.00</span>
+                </div>
+            </section>
+
+            <!-- 5. COMPLIANCE -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">5. Compliance</h3>
+                <div class="space-y-2 text-sm bg-slate-50 p-4 rounded border">
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">5.1 Net Salary (From Current Salary Slips)</span>
+                        <input type="number" id="net_salary_slip" value="2077400" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">Add: ABL existing Monthly Instalment</span>
+                        <input type="number" id="abl_existing_inst" value="0" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">Less: Items 3.2-3.3 above (Total allowances a+b)</span>
+                        <span id="total_allowances_deduct" class="font-medium">0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
+                        <span>Adjusted Net Fixed Salary</span>
+                        <span id="adjusted_net_fixed">2,077,400.00</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">5.2 Deduction Limit 1/3 of Basic Salary</span>
+                        <span id="limit_one_third" class="font-medium">1,033,333.33</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">5.3 Monthly Instalments - ABL (Calculated PMT)</span>
+                        <span id="monthly_inst_abl" class="font-medium text-blue-700">672,290.20</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">- Other Bank(s)</span>
+                        <input type="number" id="other_banks_inst" value="0" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
+                        <span>Total Deductions</span>
+                        <span id="total_deductions">672,290.20</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
+                        <span>Net Salary After Deductions</span>
+                        <span id="net_after_deductions">1,405,109.80</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b">
+                        <span class="text-slate-600 text-xs sm:text-sm">5.3 Debt Ratio</span>
+                        <span id="debt_ratio" class="font-medium">0.55</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 font-bold text-base">
+                        <span>5.4 Within/Above Limit</span>
+                        <span id="limit_status" class="px-3 py-1 rounded text-xs tracking-wide bg-emerald-100 text-emerald-800">WITHIN LIMIT</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. RELATIONSHIP WITH OTHER BANKS -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">6. Relationship with Other Banks</h3>
+                <div>
+                    <textarea id="rel_other_banks" rows="3" placeholder="Enter notes on relationship with other banks..." class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+            </section>
+
+            <!-- 7. RECOMMENDATIONS AND APPROVAL -->
+            <section class="space-y-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-blue-900 text-white px-3 py-1.5 rounded">7. Recommendations and Approval</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">7.1 CA Recommendations</label>
+                        <textarea id="ca_recommendations" rows="3" placeholder="Enter Credit Analyst recommendations..." class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">7.5 BM Approval</label>
+                        <textarea id="bm_approval" rows="3" placeholder="Enter Branch Manager approval notes..." class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCHEDULE TABLE (SHEET1) -->
+            <section class="space-y-3 pt-4 border-t">
+                <h3 class="text-sm font-bold uppercase tracking-wider bg-slate-800 text-white px-3 py-1.5 rounded">Loan Breakdown Schedule (Sheet1)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-slate-200 text-slate-700">
+                                <th class="p-2 border">No of Years</th>
+                                <th class="p-2 border">Proposed Amount</th>
+                                <th class="p-2 border">Monthly Installment</th>
+                                <th class="p-2 border">Processing Fee (1.6%)</th>
+                                <th class="p-2 border">VAT 18% of Processing</th>
+                                <th class="p-2 border">Insurance (0.4% p.a)</th>
+                                <th class="p-2 border">Net Proposed Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedule_body">
+                            <tr class="bg-white">
+                                <td class="p-2 border" id="sched_years">2.5</td>
+                                <td class="p-2 border" id="sched_amount">40,000,000.00</td>
+                                <td class="p-2 border" id="sched_pmT">672,290.20</td>
+                                <td class="p-2 border" id="sched_fee">640,000.00</td>
+                                <td class="p-2 border" id="sched_vat">115,200.00</td>
+                                <td class="p-2 border" id="sched_ins">400,000.00</td>
+                                <td class="p-2 border font-bold text-blue-900" id="sched_net">38,844,800.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Bottom Signatures -->
+            <div class="grid grid-cols-2 gap-4 pt-6 border-t text-sm">
+                <div>
+                    <p class="text-xs font-semibold text-slate-500">Name</p>
+                    <p id="footer_name" class="font-bold text-slate-800">gody mono</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs font-semibold text-slate-500">Amount (Tzs)</p>
+                    <p id="footer_amount" class="font-bold text-slate-800">40,000,000.00</p>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <script>
+        function formatNumber(num) {
+            return Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function syncNames() {
+            const name = document.getElementById('emp_name').value;
+            document.getElementById('footer_name').innerText = name;
+            saveToStorage();
+        }
+
+        function calculateAll() {
+            // Income
+            const basic = parseFloat(document.getElementById('basic_salary').value) || 0;
+            const housing = parseFloat(document.getElementById('housing').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+            const fixed_others = parseFloat(document.getElementById('fixed_others').value) || 0;
+            const sub_fixed = housing + transport + fixed_others;
+            document.getElementById('sub_fixed').innerText = formatNumber(sub_fixed);
+
+            const utility = parseFloat(document.getElementById('utility').value) || 0;
+            const airtime = parseFloat(document.getElementById('airtime').value) || 0;
+            const overtime = parseFloat(document.getElementById('overtime').value) || 0;
+            const var_others = parseFloat(document.getElementById('var_others').value) || 0;
+            const sub_variable = utility + airtime + overtime + var_others;
+            document.getElementById('sub_variable').innerText = formatNumber(sub_variable);
+
+            const grandTotalIncome = basic + sub_fixed + sub_variable;
+            document.getElementById('grand_total_income').innerText = formatNumber(grandTotalIncome);
+
+            // Loan
+            const applied = parseFloat(document.getElementById('applied_amount').value) || 0;
+            const existing = parseFloat(document.getElementById('existing_balance').value) || 0;
+            const totalExposure = applied + existing;
+            document.getElementById('total_exposure').innerText = formatNumber(totalExposure);
+            document.getElementById('footer_amount').innerText = formatNumber(applied);
+
+            // Schedule Table computations
+            const tenorMonths = parseFloat(document.getElementById('tenor_months').value) || 96;
+            const years = tenorMonths / 12;
+            const annualRate = parseFloat(document.getElementById('interest_rate').value) || 0.13;
+            const monthlyRate = annualRate / 12;
+            
+            // PMT formula: P * r * (1+r)^n / ((1+r)^n - 1)
+            let pmt = 0;
+            if (monthlyRate === 0) {
+                pmt = applied / tenorMonths;
+            } else {
+                pmt = (applied * monthlyRate * Math.pow(1 + monthlyRate, tenorMonths)) / (Math.pow(1 + monthlyRate, tenorMonths) - 1);
+            }
+
+            const procFee = applied * 0.016;
+            const vat = procFee * 0.18;
+            const insurance = applied * 0.004 * years;
+            const netProposed = applied - procFee - vat - insurance;
+
+            document.getElementById('sched_years').innerText = years.toFixed(1);
+            document.getElementById('sched_amount').innerText = formatNumber(applied);
+            document.getElementById('sched_pmT').innerText = formatNumber(pmt);
+            document.getElementById('sched_fee').innerText = formatNumber(procFee);
+            document.getElementById('sched_vat').innerText = formatNumber(vat);
+            document.getElementById('sched_ins').innerText = formatNumber(insurance);
+            document.getElementById('sched_net').innerText = formatNumber(netProposed);
+
+            // Compliance
+            const netSalarySlip = parseFloat(document.getElementById('net_salary_slip').value) || 0;
+            const ablExisting = parseFloat(document.getElementById('abl_existing_inst').value) || 0;
+            const totalAllowancesAB = sub_fixed + sub_variable;
+            document.getElementById('total_allowances_deduct').innerText = formatNumber(totalAllowancesAB);
+
+            const adjustedNetFixed = netSalarySlip - totalAllowancesAB;
+            document.getElementById('adjusted_net_fixed').innerText = formatNumber(adjustedNetFixed);
+
+            const limitOneThird = basic / 3;
+            document.getElementById('limit_one_third').innerText = formatNumber(limitOneThird);
+
+            document.getElementById('monthly_inst_abl').innerText = formatNumber(pmt);
+
+            const otherBanksInst = parseFloat(document.getElementById('other_banks_inst').value) || 0;
+            const totalDeductions = pmt + otherBanksInst + ablExisting;
+            document.getElementById('total_deductions').innerText = formatNumber(totalDeductions);
+
+            const netAfterDeductions = adjustedNetFixed - totalDeductions;
+            document.getElementById('net_after_deductions').innerText = formatNumber(netAfterDeductions);
+
+            const debtRatio = basic > 0 ? (totalDeductions / basic) : 0;
+            document.getElementById('debt_ratio').innerText = debtRatio.toFixed(6);
+
+            const limitStatus = document.getElementById('limit_status');
+            if (totalDeductions <= limitOneThird) {
+                limitStatus.innerText = "WITHIN LIMIT";
+                limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-emerald-100 text-emerald-800";
+            } else {
+                limitStatus.innerText = "ABOVE LIMIT";
+                limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-rose-100 text-rose-800";
+            }
+
+            saveToStorage();
+        }
+
+        function saveToStorage() {
+            const formData = {};
+            document.querySelectorAll('#appraisalForm input, #appraisalForm textarea').forEach(el => {
+                if (el.id) formData[el.id] = el.value;
+            });
+            localStorage.setItem('azania_consumer_appraisal', JSON.stringify(formData));
+        }
+
+        function loadFromStorage() {
+            const saved = localStorage.getItem('azania_consumer_appraisal');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    for (const [id, val] of Object.entries(data)) {
+                        const el = document.getElementById(id);
+                        if (el) el.value = val;
+                    }
+                } catch(e) {}
+            }
+            syncNames();
+            calculateAll();
+        }
+
+        function resetForm() {
+            if (confirm("Are you sure you want to reset all fields?")) {
+                localStorage.removeItem('azania_consumer_appraisal');
+                location.reload();
+            }
+        }
+
+        window.onload = loadFromStorage;
+    </script>
+</body>
+</html>
