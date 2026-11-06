@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Azania Bank PLC - Consumer Loan Appraisal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2pdf.js library for direct PDF file generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @media print {
             body { background: white; color: black; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
@@ -23,14 +25,14 @@
     <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50 no-print">
         <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
             <div>
-                <h1 class="text-base sm:text-lg font-bold tracking-wide">AZANIA BANK PLC</h1>
+                <h1 class="text-base sm:text-lg font-bold tracking-wide">gAZANIA BANK PLC</h1>
                 <p class="text-xs text-blue-200">Consumer Loan Appraisal System</p>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="resetForm()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded font-medium transition">Reset</button>
-                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded font-semibold shadow flex items-center gap-1.5 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                    Print / PDF
+                <button onclick="downloadPDF()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded font-semibold shadow flex items-center gap-1.5 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Download Direct PDF
                 </button>
             </div>
         </div>
@@ -60,17 +62,16 @@
             <!-- Review Mode Banner (Only visible on Step 4) -->
             <div id="review-banner" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-lg no-print flex flex-wrap justify-between items-center gap-3">
                 <div>
-                    <h4 class="font-bold text-sm">Review & Print Ready Mode</h4>
-                    <p class="text-xs text-emerald-700">All sections are displayed below. Click Download PDF to save or Print Now.</p>
+                    <h4 class="font-bold text-sm">Review & Direct PDF Download Ready</h4>
+                    <p class="text-xs text-emerald-700">All sections are displayed below. Click Download PDF to save directly to your device.</p>
                 </div>
                 <div class="flex gap-2">
-                    <button type="button" onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                        Print Now
-                    </button>
-                    <button type="button" onclick="downloadPDF()" class="bg-blue-900 hover:bg-blue-800 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
+                    <button type="button" onclick="downloadPDF()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs px-4 py-2 rounded font-semibold flex items-center gap-1 shadow">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Download PDF
+                        Download PDF File
+                    </button>
+                    <button type="button" onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded font-medium flex items-center gap-1">
+                        Print Options
                     </button>
                 </div>
             </div>
@@ -369,7 +370,7 @@
             document.getElementById('prevBtn').classList.toggle('hidden', step === 1);
             const nextBtn = document.getElementById('nextBtn');
             if (step === totalSteps) {
-                nextBtn.innerText = "Review & Print Ready";
+                nextBtn.innerText = "Review & Direct PDF Download";
             } else {
                 nextBtn.innerText = "Next Step";
             }
@@ -452,93 +453,4 @@
 
             const procFee = applied * 0.016;
             const vat = procFee * 0.18;
-            const insurance = applied * 0.004 * years;
-            const netProposed = applied - procFee - vat - insurance;
-
-            document.getElementById('sched_years').innerText = years.toFixed(1);
-            document.getElementById('sched_amount').innerText = formatNumber(applied);
-            document.getElementById('sched_pmT').innerText = formatNumber(pmt);
-            document.getElementById('sched_fee').innerText = formatNumber(procFee);
-            document.getElementById('sched_vat').innerText = formatNumber(vat);
-            document.getElementById('sched_ins').innerText = formatNumber(insurance);
-            document.getElementById('sched_net').innerText = formatNumber(netProposed);
-
-            const netSalarySlip = parseFloat(document.getElementById('net_salary_slip').value) || 0;
-            const ablExisting = parseFloat(document.getElementById('abl_existing_inst').value) || 0;
-            const totalAllowancesAB = sub_fixed + sub_variable;
-            document.getElementById('total_allowances_deduct').innerText = formatNumber(totalAllowancesAB);
-
-            const adjustedNetFixed = netSalarySlip - totalAllowancesAB;
-            document.getElementById('adjusted_net_fixed').innerText = formatNumber(adjustedNetFixed);
-
-            const limitOneThird = basic / 3;
-            document.getElementById('limit_one_third').innerText = formatNumber(limitOneThird);
-
-            document.getElementById('monthly_inst_abl').innerText = formatNumber(pmt);
-
-            const otherBanksInst = parseFloat(document.getElementById('other_banks_inst').value) || 0;
-            const totalDeductions = pmt + otherBanksInst + ablExisting;
-            document.getElementById('total_deductions').innerText = formatNumber(totalDeductions);
-
-            const netAfterDeductions = adjustedNetFixed - totalDeductions;
-            document.getElementById('net_after_deductions').innerText = formatNumber(netAfterDeductions);
-
-            let debtRatio = 0;
-            if (basic > 0) {
-                debtRatio = (totalDeductions + (basic - netSalarySlip)) / basic;
-            }
-            document.getElementById('debt_ratio').innerText = (debtRatio * 100).toFixed(2) + "%";
-
-            const limitStatus = document.getElementById('limit_status');
-            if (totalDeductions <= limitOneThird) {
-                limitStatus.innerText = "WITHIN LIMIT";
-                limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-emerald-100 text-emerald-800";
-            } else {
-                limitStatus.innerText = "ABOVE LIMIT";
-                limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-rose-100 text-rose-800";
-            }
-
-            saveToStorage();
-        }
-
-        function downloadPDF() {
-            // Automatically open print dialog configured for PDF export
-            window.print();
-        }
-
-        function saveToStorage() {
-            const formData = {};
-            document.querySelectorAll('#appraisalForm input, #appraisalForm textarea').forEach(el => {
-                if (el.id) formData[el.id] = el.value;
-            });
-            localStorage.setItem('azania_consumer_appraisal_multistep', JSON.stringify(formData));
-        }
-
-        function loadFromStorage() {
-            const saved = localStorage.getItem('azania_consumer_appraisal_multistep');
-            if (saved) {
-                try {
-                    const data = JSON.parse(saved);
-                    for (const [id, val] of Object.entries(data)) {
-                        const el = document.getElementById(id);
-                        if (el) el.value = val;
-                    }
-                } catch(e) {}
-            }
-            updateHeaderTitle();
-            syncNames();
-            calculateAll();
-            showStep(1);
-        }
-
-        function resetForm() {
-            if (confirm("Are you sure you want to reset all fields?")) {
-                localStorage.removeItem('azania_consumer_appraisal_multistep');
-                location.reload();
-            }
-        }
-
-        window.onload = loadFromStorage;
-    </script>
-</body>
-</html>
+            const insurance = applied * 0.004 *
