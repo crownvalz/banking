@@ -9,14 +9,14 @@
 <style>
   :root {
     --navy: #0f1e36;
-    --blue: #1d4ed8;
+    --blue: #2563eb;
     --muted: #64748b;
     --line: #e2e8f0;
   }
   * { box-sizing: border-box; }
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #f8fafc;
+    background: #f1f5f9;
     color: #0f172a;
     overflow-x: hidden;
   }
@@ -24,16 +24,16 @@
     width: 100%;
     border: 1px solid #cbd5e1;
     border-radius: 12px;
-    padding: 11px 14px;
+    padding: 12px 14px;
     background: #fff;
     font-size: 13px;
     color: #0f172a;
     outline: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .field:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
   }
   .field-label {
     display: block;
@@ -41,15 +41,18 @@
     font-weight: 700;
     color: #475569;
     margin-bottom: 6px;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
   .panel {
     background: #ffffff;
     border: 1px solid var(--line);
     border-radius: 20px;
-    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
-    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+    transition: all 0.3s ease;
+  }
+  .panel:hover {
+    box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.07);
   }
   .section-title {
     font-size: 14px;
@@ -60,7 +63,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: #3b82f6;
+    color: #2563eb;
     font-weight: 800;
   }
   .action {
@@ -69,46 +72,40 @@
     justify-content: center;
     gap: 6px;
     border-radius: 10px;
-    padding: 8px 12px;
-    font-size: 11px;
+    padding: 9px 14px;
+    font-size: 12px;
     font-weight: 700;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
   }
-  @media(min-width: 640px) {
-    .action { padding: 10px 16px; font-size: 12px; }
-  }
+  .action:active { transform: scale(0.97); }
   .action-primary {
     background: #2563eb;
     color: white;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
   }
-  .action-primary:hover {
-    background: #1d4ed8;
-  }
+  .action-primary:hover { background: #1d4ed8; }
   .action-light {
     background: #fff;
     border: 1px solid #cbd5e1;
     color: #334155;
   }
-  .action-light:hover { background: #f1f5f9; }
+  .action-light:hover { background: #f8fafc; }
   
   /* Tab Navigation Styling */
   .tab-btn {
-    padding: 8px 14px;
-    font-size: 11px;
+    padding: 9px 16px;
+    font-size: 12px;
     font-weight: 700;
     border-radius: 10px;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     cursor: pointer;
     border: 1px solid transparent;
-  }
-  @media(min-width: 640px) {
-    .tab-btn { padding: 9px 18px; font-size: 12px; }
   }
   .tab-btn.active {
     background: #2563eb;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
   }
   .tab-btn.inactive {
     background: #f8fafc;
@@ -117,17 +114,27 @@
   }
   .tab-btn.inactive:hover { background: #f1f5f9; color: #0f172a; }
 
-  /* A4 Canvas styling - Squeezed down by ~1 inch (68mm top padding) */
+  /* Fluid A4 Preview Canvas Container */
+  .preview-stage {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px 0 40px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .a4-canvas {
     width: 210mm;
     min-height: 297mm;
     background: #fff;
     position: relative;
-    padding: 68mm 20mm 25mm 25mm; 
-    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+    padding: 68mm 20mm 25mm 25mm; /* Squeezed down by 1 inch for letterhead clearance */
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18);
     overflow: hidden;
-    border-radius: 4px;
-    transform-origin: top center;
+    border-radius: 6px;
+    flex-shrink: 0;
   }
   
   .letter-content {
@@ -163,21 +170,6 @@
     background: #eff6ff;
     box-shadow: 0 0 0 2px #bfdbfe;
   }
-  
-  .preview-wrap {
-    width: 100%;
-    overflow: auto;
-    padding: 10px 4px 30px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  @media(max-width: 850px) {
-    .preview-wrap {
-      justify-content: flex-start;
-    }
-  }
 
   @media print {
     @page { size: A4; margin: 0; }
@@ -202,32 +194,32 @@
 <body>
 
 <!-- TOP APP NAVIGATION -->
-<header class="no-print sticky top-0 z-30 bg-[#0f172a] text-white border-b border-slate-800 backdrop-blur-md bg-opacity-95">
-  <div class="max-w-[1600px] mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-2">
-    <div class="flex items-center gap-2.5 min-w-0">
+<header class="no-print sticky top-0 z-40 bg-[#0f172a] text-white border-b border-slate-800 backdrop-blur-md bg-opacity-95">
+  <div class="max-w-[1700px] mx-auto px-4 sm:px-8 h-[72px] flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
       <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-400/30 grid place-items-center font-black text-xs sm:text-sm tracking-tight text-white shadow-lg shadow-blue-900/30 shrink-0">AZ</div>
       <div class="min-w-0">
         <div class="font-extrabold text-xs sm:text-sm tracking-wide text-slate-100 truncate">AZANIA BANK PLC</div>
-        <div class="text-[9px] sm:text-[10px] text-blue-400 font-medium tracking-wider uppercase truncate">Letter Suite</div>
+        <div class="text-[9px] sm:text-[10px] text-blue-400 font-medium tracking-wider uppercase truncate">Professional Letter Suite</div>
       </div>
     </div>
-    <div class="flex items-center gap-1.5 sm:gap-2">
-      <button class="action bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="generateRef()" title="New Reference">↻ <span class="hidden md:inline">Ref</span></button>
-      <button class="action bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="resetForm()">Reset</button>
+    <div class="flex items-center gap-2">
+      <button class="action bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="generateRef()">↻ <span class="hidden md:inline">New Ref</span></button>
+      <button class="action bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700" onclick="resetForm()">Reset</button>
       <button class="action bg-white/10 hover:bg-white/20 text-white font-bold hidden xs:inline-flex" onclick="window.print()">Print</button>
-      <button id="pdfButton" class="action action-primary" onclick="downloadPDF()">↓ PDF</button>
+      <button id="pdfButton" class="action action-primary" onclick="downloadPDF()">↓ <span class="hidden sm:inline">Download PDF</span><span class="sm:hidden">PDF</span></button>
     </div>
   </div>
 </header>
 
-<main class="max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
+<main class="max-w-[1700px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
   
   <!-- WORKSPACE HEADER & TABS -->
   <div class="mb-6 sm:mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-b border-slate-200/80 pb-6">
     <div>
       <div class="section-kicker mb-1">Document Generation Suite</div>
       <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight text-slate-900" id="pageTitle">Create Custom Letter</h1>
-      <p class="text-xs sm:text-sm text-slate-500 mt-1">Select your template, customize information, and review the live A4 preview.</p>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">Select your template, customize the information, and review the live A4 preview.</p>
     </div>
 
     <!-- Letter Type Selector Tabs -->
@@ -237,15 +229,16 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+  <!-- FLUID RESPONSIVE WORKSPACE GRID -->
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-start">
     
-    <!-- LEFT FORM CONTROLS (Responsive Width Grid) -->
-    <section class="lg:col-span-5 xl:col-span-4 space-y-5 no-print">
+    <!-- LEFT FORM CONTROLS -->
+    <section class="xl:col-span-5 space-y-5 no-print">
       
       <!-- RECIPIENT PANEL -->
       <div class="panel p-5 sm:p-6">
         <div class="flex items-center justify-between mb-4 sm:mb-5">
-          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving institution</h2></div>
+          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving institution details</h2></div>
           <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Required</span>
         </div>
         <div class="space-y-4">
@@ -283,7 +276,7 @@
 
       <!-- SUBJECT & REFERENCE -->
       <div class="panel p-5 sm:p-6">
-        <div class="mb-4 sm:mb-5"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-1">Subject & accounts</h2></div>
+        <div class="mb-4 sm:mb-5"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-1">Subject headings & accounts</h2></div>
         <div class="space-y-4">
           <div><label class="field-label" for="subjectText">Letter Subject Heading</label><input class="field font-semibold" id="subjectText" placeholder="e.g. RE: GENERAL INQUIRY"></div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -308,7 +301,7 @@
 
       <!-- SIGNATORIES -->
       <div class="panel p-5 sm:p-6">
-        <div class="mb-4 sm:mb-5"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-1">Institution & signatories</h2></div>
+        <div class="mb-4 sm:mb-5"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-1">Institution and signatories</h2></div>
         <div class="space-y-4">
           <div><label class="field-label" for="senderBank">Issuing Institution</label><input class="field font-semibold" id="senderBank" value="AZANIA BANK PLC"></div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -338,15 +331,15 @@
       </div>
     </section>
 
-    <!-- RIGHT A4 PREVIEW SECTION (Fully Responsive Scaled Viewport) -->
-    <section class="lg:col-span-7 xl:col-span-8 min-w-0">
+    <!-- RIGHT A4 PREVIEW SECTION -->
+    <section class="xl:col-span-7 min-w-0">
       <div class="no-print flex items-center justify-between gap-3 mb-3">
         <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-slate-800 mt-1" id="previewSubtitle">A4 — Custom Letter Preview</h2></div>
         <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-xl px-3 py-1.5 shadow-sm font-medium">Live sync</span>
       </div>
       
-      <div class="preview-wrap" id="previewContainer">
-        <div id="letterPaper" class="a4-canvas shrink-0">
+      <div class="preview-stage" id="previewContainer">
+        <div id="letterPaper" class="a4-canvas">
           <img id="letterheadImage" class="letterhead hidden" alt="">
           <div class="letter-content">
             <div class="space-y-3.5">
@@ -393,7 +386,7 @@
 </main>
 
 <footer class="no-print border-t border-slate-200 bg-white py-5 mt-8">
-  <div class="max-w-[1600px] mx-auto px-6 text-center text-xs text-slate-400">
+  <div class="max-w-[1700px] mx-auto px-6 text-center text-xs text-slate-400">
     Mono Apps Solutions Financial Suite <span class="mx-1.5 text-slate-300">·</span> Designed by <strong class="text-slate-600">Godfrey Abraham Mono</strong> <span class="mx-1.5 text-slate-300">·</span> © 2026
   </div>
 </footer>
@@ -545,16 +538,17 @@ $("previewRef").addEventListener("input", e => {
   currentRef = e.currentTarget.textContent;
 });
 
-// Responsive A4 Preview Scale Adjuster for small screens
+// Dynamic responsive scaling for mobile screens without shrinking or clipping content
 function adjustCanvasScale() {
   const container = document.getElementById('previewContainer');
   const canvas = document.getElementById('letterPaper');
   if(!container || !canvas) return;
   const containerWidth = container.clientWidth - 16;
-  const A4WidthPx = 794; // 210mm in pixels at standard resolution
+  const A4WidthPx = 794; 
   if (containerWidth < A4WidthPx) {
     const scale = containerWidth / A4WidthPx;
     canvas.style.transform = `scale(${scale})`;
+    canvas.style.transformOrigin = 'top center';
     canvas.style.marginBottom = `-${(1 - scale) * canvas.offsetHeight}px`;
   } else {
     canvas.style.transform = 'none';
@@ -569,10 +563,9 @@ async function downloadPDF(){
   const btn = $("pdfButton");
   const old = btn.innerHTML;
   btn.disabled = true;
-  btn.textContent = "…";
+  btn.textContent = "Preparing PDF…";
   const paper = $("letterPaper");
   
-  // Temporarily reset transform scale for crisp PDF render
   const originalTransform = paper.style.transform;
   paper.style.transform = 'none';
 
