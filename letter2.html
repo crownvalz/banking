@@ -24,17 +24,16 @@
 
     .letter-font {
       font-family: 'Bookman Old Style', 'Bookman', serif;
-      font-size: 11pt;
-      line-height: 1.5;
+      font-size: 10.5pt;
+      line-height: 1.45;
     }
 
     /* A4 Canvas with letter_head.png background */
     .a4-canvas {
       width: 210mm;
       min-height: 297mm;
-      height: 297mm;
-      /* Top 54mm clears header logo/tagline; Bottom 42mm clears footer graphics */
-      padding: 54mm 22mm 42mm 30mm; 
+      /* Adjusted padding to perfectly clear header graphics & footer without page overflow */
+      padding: 48mm 20mm 35mm 26mm; 
       position: relative;
       background-color: #ffffff;
       background-image: url('letter_head.png');
@@ -78,7 +77,7 @@
         width: 210mm;
         height: 297mm;
         margin: 0;
-        padding: 54mm 22mm 42mm 30mm !important;
+        padding: 48mm 20mm 35mm 26mm !important;
         box-shadow: none;
         background-image: url('letter_head.png') !important;
         background-size: 210mm 297mm !important;
@@ -114,7 +113,7 @@
         </div>
       </div>
 
-      <!-- Action Buttons: Ref, Reset, Print & Download PDF -->
+      <!-- Action Buttons -->
       <div class="flex items-center space-x-2 sm:space-x-3">
         <button onclick="generateRefNumber()" class="inline-flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition" title="Generate New Reference Number">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
@@ -223,16 +222,13 @@
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <label class="font-bold text-slate-700">Salutation</label>
-              <span class="text-[10px] text-slate-400">Customizable</span>
             </div>
             <input type="text" id="salutationText" value="Dear Sir/Madam," oninput="updatePreview()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
 
             <div class="flex items-center justify-between pt-1">
               <label class="font-bold text-slate-700">Body Paragraph</label>
-              <span class="text-[10px] text-slate-400">Full Text Editable</span>
             </div>
-            <textarea id="bodyParagraph" rows="4" oninput="updatePreview()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-normal text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none leading-relaxed">We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.</textarea>
-            <p class="text-[10px] text-slate-400">Tip: Use <code>{ACCOUNT_NO}</code> to auto-inject the account number in body text.</p>
+            <textarea id="bodyParagraph" rows="3" oninput="updatePreview()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-normal text-slate-900 focus:ring-2 focus:ring-blue-500 focus:outline-none leading-relaxed">We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.</textarea>
 
             <div class="flex items-center justify-between pt-1">
               <label class="font-bold text-slate-700">Closing Paragraph</label>
@@ -278,17 +274,15 @@
       <div id="letterPaper" class="a4-canvas letter-font text-slate-900 flex flex-col justify-between">
         
         <!-- TOP SECTION: HEADER METADATA & RECIPIENT -->
-        <div class="space-y-3">
+        <div class="space-y-2.5">
 
-          <!-- DATE & REFERENCE - OPPOSITE ALIGNMENT BELOW LOGO -->
+          <!-- DATE & REFERENCE -->
           <div class="flex justify-between items-center w-full font-bold pb-1">
-            <!-- Date on Left -->
             <div class="text-left">
               <span class="text-[#0082C3]">Date: </span>
               <span id="previewDate" class="text-slate-900 editable-field" contenteditable="true">06 November 2026</span>
             </div>
 
-            <!-- Reference Number on Right -->
             <div class="text-right">
               <span class="text-[#0082C3]">Ref: </span>
               <span id="previewRef" class="text-slate-900 font-mono editable-field" contenteditable="true">AZB/PBZ/OBR/20261106-9A4F</span>
@@ -306,20 +300,20 @@
           <p id="previewSalutation" class="pt-0.5 font-medium editable-field" contenteditable="true">Dear Sir/Madam,</p>
 
           <!-- SUBJECT HEADING -->
-          <div class="font-bold uppercase tracking-wide border-b border-slate-900 pb-1 pt-0.5 editable-field" id="previewSubject" contenteditable="true">
+          <div class="font-bold uppercase tracking-wide border-b border-slate-900 pb-1 pt-0.5 editable-field text-[10.5pt]" id="previewSubject" contenteditable="true">
             RE: REQUEST FOR OUTSTANDING LOAN BALANCE FOR <span id="previewCustomerName">JOHN SIMON MONO</span> - ACCOUNT NO. <span id="previewAccountNumber">012345678901</span>
           </div>
 
           <!-- SINGLE JUSTIFIED BODY PARAGRAPH -->
-          <p id="previewBody" class="text-justify leading-relaxed editable-field" contenteditable="true">
+          <p id="previewBody" class="text-justify leading-relaxed editable-field pt-1" contenteditable="true">
             We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number <strong id="inlineAccount">012345678901</strong> with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.
           </p>
 
-          <p id="previewClosing" class="pt-0.5 editable-field" contenteditable="true">Thanking you in advance for your continued cooperation and prompt assistance.</p>
+          <p id="previewClosing" class="pt-1 editable-field" contenteditable="true">Thanking you in advance for your continued cooperation and prompt assistance.</p>
         </div>
 
         <!-- BOTTOM SECTION: COMPACT SIGN-OFF & DUAL SIGNATURE BLOCKS -->
-        <div class="pt-4 space-y-3">
+        <div class="pt-3 space-y-2.5">
           <div class="space-y-0.5">
             <p class="font-medium editable-field" contenteditable="true">Yours faithfully,</p>
             <p id="previewSenderBank" class="font-bold text-slate-900 editable-field" contenteditable="true">AZANIA BANK PLC</p>
@@ -332,7 +326,7 @@
           </div>
 
           <!-- DUAL SIGNATURE BLOCKS WITH PLACE OF SIGNATURE -->
-          <div class="grid grid-cols-2 gap-8 pt-4">
+          <div class="grid grid-cols-2 gap-8 pt-6">
             
             <!-- Signature 1: Branch Manager -->
             <div class="space-y-1 border-t border-slate-400 pt-2">
@@ -444,23 +438,19 @@
       document.getElementById('previewCustomerName').innerText = name;
       document.getElementById('previewAccountNumber').innerText = account;
 
-      // Salutation, Closing, Sender & Titles
       document.getElementById('previewSalutation').innerText = document.getElementById('salutationText').value || 'Dear Sir/Madam,';
       document.getElementById('previewClosing').innerText = document.getElementById('closingParagraph').value || '';
       document.getElementById('previewSenderBank').innerText = document.getElementById('senderBank').value || 'AZANIA BANK PLC';
       document.getElementById('previewSig1').innerText = document.getElementById('sig1Title').value || 'Branch Manager';
       document.getElementById('previewSig2').innerText = document.getElementById('sig2Title').value || 'Branch Operations Executive';
 
-      // Place mapping
       const p1 = document.getElementById('previewPlace1');
       if (p1) p1.innerText = place;
 
-      // Body Paragraph dynamic interpolation
       const rawBodyText = document.getElementById('bodyParagraph').value || '';
       const formattedBody = rawBodyText.replace(/\{ACCOUNT_NO\}/g, `<strong id="inlineAccount">${account}</strong>`);
       document.getElementById('previewBody').innerHTML = formattedBody;
 
-      // Date & Ref
       const customDateVal = document.getElementById('customDate').value;
       document.getElementById('previewDate').innerText = formatDate(customDateVal);
       document.getElementById('previewRef').innerText = currentRefNumber;
@@ -477,7 +467,7 @@
         margin:       0,
         filename:     `Azania_Bank_Balance_Request_${accountNumber.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 794 },
+        html2canvas:  { scale: 1.5, useCORS: true, logging: false, windowWidth: 794 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
