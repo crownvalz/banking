@@ -9,7 +9,7 @@
         @media print {
             body { background: white; color: black; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
             .no-print { display: none !important; }
-            .step-section { display: block !important; }
+            .step-section { display: block !important; page-break-after: avoid; }
             input, select, textarea { border: none !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; appearance: none; }
             textarea { resize: none; }
             .print-border { border: 1px solid #cbd5e1 !important; }
@@ -61,16 +61,16 @@
             <div id="review-banner" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-lg no-print flex flex-wrap justify-between items-center gap-3">
                 <div>
                     <h4 class="font-bold text-sm">Review & Print Ready Mode</h4>
-                    <p class="text-xs text-emerald-700">All sections are now displayed below together. You can inspect everything, print, download, or jump back to edit.</p>
+                    <p class="text-xs text-emerald-700">All sections are displayed below. Click Download PDF to save or Print Now.</p>
                 </div>
                 <div class="flex gap-2">
                     <button type="button" onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                         Print Now
                     </button>
-                    <button type="button" onclick="downloadHTML()" class="bg-blue-900 hover:bg-blue-800 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
+                    <button type="button" onclick="downloadPDF()" class="bg-blue-900 hover:bg-blue-800 text-white text-xs px-3 py-2 rounded font-semibold flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Download File
+                        Download PDF
                     </button>
                 </div>
             </div>
@@ -483,7 +483,6 @@
             const netAfterDeductions = adjustedNetFixed - totalDeductions;
             document.getElementById('net_after_deductions').innerText = formatNumber(netAfterDeductions);
 
-            // Exact Excel Debt Ratio calculation: (Total Deductions + (Basic Salary - Net Salary Slip)) / Basic Salary
             let debtRatio = 0;
             if (basic > 0) {
                 debtRatio = (totalDeductions + (basic - netSalarySlip)) / basic;
@@ -502,17 +501,9 @@
             saveToStorage();
         }
 
-        function downloadHTML() {
-            const htmlContent = document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'Consumer_Appraisal_' + (document.getElementById('emp_name').value || 'Report') + '.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        function downloadPDF() {
+            // Automatically open print dialog configured for PDF export
+            window.print();
         }
 
         function saveToStorage() {
