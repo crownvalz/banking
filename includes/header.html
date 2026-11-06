@@ -1,2 +1,58 @@
-<!-- Desktop Left Edge Hover Trigger Area -->
-<div id="leftEdgeTrigger" class="hidden lg:block"></div>
+<!-- FIXED TOP NAVBAR -->
+<header id="topNavbar" class="fixed top-0 inset-x-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 transition-all duration-300">
+  <div class="max-w-[1700px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-4">
+    
+    <!-- Left Controls & Brand -->
+    <div class="flex items-center space-x-3.5 shrink-0">
+      <button onclick="toggleSidebar()" class="hidden lg:inline-flex p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/60 shadow-xs transition active:scale-95" title="Toggle Sidebar">
+        <i data-lucide="panel-left" class="w-5 h-5 text-sky-600 dark:text-sky-400"></i>
+      </button>
+      <button onclick="toggleMobileDrawer()" class="lg:hidden p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/60 shadow-xs transition active:scale-95" title="Toggle Mobile Navigation">
+        <i data-lucide="menu" class="w-5 h-5 text-sky-600 dark:text-sky-400"></i>
+      </button>
+      
+      <a href="index.html" class="flex items-center space-x-3 group">
+        <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-sky-600 via-blue-600 to-indigo-600 p-2 shadow-lg shadow-sky-500/20 flex items-center justify-center text-white font-black text-base tracking-wider group-hover:scale-105 transition-transform">
+          M
+        </div>
+        <div class="hidden xs:block">
+          <span class="text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white block leading-tight">Mono Apps</span>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-sky-600 dark:text-sky-400 block -mt-0.5">Solutions</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Desktop Center Nav Links -->
+    <nav class="hidden lg:flex items-center space-x-1.5 bg-slate-100/80 dark:bg-slate-800/60 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/50 shadow-inner text-xs font-bold">
+      <a href="index.html" class="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-sky-600 dark:hover:text-white transition shadow-xs flex items-center space-x-1.5">
+        <i data-lucide="calculator" class="w-3.5 h-3.5 text-sky-500"></i>
+        <span>Calculator Suite</span>
+      </a>
+      <a href="bondloan.html" class="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-cyan-600 dark:hover:text-white transition flex items-center space-x-1.5">
+        <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-500"></i>
+        <span>Loan & Bond</span>
+      </a>
+      <a href="paye.html" class="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-emerald-600 dark:hover:text-white transition flex items-center space-x-1.5">
+        <i data-lucide="file-signature" class="w-3.5 h-3.5 text-emerald-500"></i>
+        <span>Appraisals</span>
+      </a>
+      <a href="letter.html" class="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-purple-600 dark:hover:text-white transition flex items-center space-x-1.5">
+        <i data-lucide="file-text" class="w-3.5 h-3.5 text-purple-500"></i>
+        <span>Letter Writer</span>
+      </a>
+    </nav>
+
+    <!-- Right Quick Actions -->
+    <div class="flex items-center space-x-2.5 shrink-0">
+      <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700/60 shadow-xs transition active:scale-95" title="Toggle Theme">
+        <i data-lucide="sun" class="w-4 h-4 text-amber-500 hidden dark:block"></i>
+        <i data-lucide="moon" class="w-4 h-4 text-slate-700 block dark:hidden"></i>
+      </button>
+      <button onclick="window.print()" class="hidden sm:inline-flex items-center space-x-2 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition shadow-md shadow-sky-600/20 active:scale-95">
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        <span>Print</span>
+      </button>
+    </div>
+
+  </div>
+</header>

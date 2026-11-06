@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=no">
+  <title>Financial Calculator Suite - Mono Apps Solutions</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f6ff', 100: '#e0ecff', 500: '#0284c7', 600: '#0284c7', 700: '#0369a1', 900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    #leftEdgeTrigger { position: fixed; top: 0; left: 0; width: 18px; height: 100vh; z-index: 45; }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 10px; background: white !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-sky-50/50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- INJECT HEADER -->
+    <div id="include-header"></div>
+
+    <!-- INJECT SIDEBAR & FIXED NAVBAR -->
+    <div id="include-sidebar"></div>
+
+    <!-- CONTENT WRAPPER -->
+    <div id="contentWrapper" class="flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ease-in-out pt-20">
+
+        <!-- Main Workspace Container -->
+        <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col overflow-hidden space-y-6" id="printableArea">
+            
+            <!-- Page Heading Bar with Tab Selector & Quick Actions -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col sm:flex-row justify-between items-center gap-4 no-print">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 px-3 py-1 rounded-full">Suite 01 Module</span>
+                    <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1">Financial Calculator Suite</h1>
+                </div>
+
+                <!-- Simple Loan / Bond Selector Tabs -->
+                <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 w-full sm:w-auto">
+                    <button id="navTabLoan" onclick="switchModule('loan')" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-sky-600 text-white shadow-md transition-all">
+                        <i data-lucide="landmark" class="w-4 h-4"></i> Loan Calculator
+                    </button>
+                    <button id="navTabBond" onclick="switchModule('bond')" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i> Bond Calculator
+                    </button>
+                </div>
+            </div>
+
+            <!-- MODULE 1: LOAN CALCULATOR -->
+            <div id="moduleLoan" class="space-y-6">
+                
+                <!-- Principal Header Card -->
+                <div class="bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-800 space-y-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-sky-300 uppercase tracking-widest bg-sky-900/60 px-3 py-1 rounded-full border border-sky-700/50">Reducing Balance Loan</span>
+                            <p class="text-xs text-slate-400 mt-2 font-medium">Principal Loan Amount</p>
+                            <h2 class="text-3xl sm:text-4xl font-black tracking-tight mt-1" id="loanBannerPrincipal">0.00 TZS</h2>
+                        </div>
+                        <button onclick="openLoanModal()" class="bg-sky-600 hover:bg-sky-500 active:scale-95 text-white p-3 rounded-2xl shadow-lg transition-all flex items-center justify-center border border-sky-400/30" title="Configure Loan Parameters">
+                            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-300 border-t border-slate-800/80 pt-4" id="loanBannerDetails">
+                        <span>Rate: <strong>13% Annual</strong></span> • 
+                        <span>Tenure: <strong>60 Months (5 Yrs)</strong></span> • 
+                        <span>Admin Fee: <strong>0% (0 TZS)</strong></span>
+                    </div>
+                </div>
+
+                <!-- KPI Summary Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Monthly Payment</span>
+                        <p class="text-xl sm:text-2xl font-black text-sky-600 dark:text-sky-400 tracking-tight" id="loanMonthlyPmt">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Fixed Monthly PMT</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Net Disbursed</span>
+                        <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight" id="loanNetDisbursed">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">After Admin Fee</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Total Interest</span>
+                        <p class="text-xl sm:text-2xl font-black text-amber-500 tracking-tight" id="loanTotalInterest">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Total Borrowing Cost</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Total Repayment</span>
+                        <p class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight" id="loanTotalRepayment">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Principal + Interest</p>
+                    </div>
+                </div>
+
+                <!-- Amortization Schedule Table -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Amortization Schedule</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Monthly reducing balance breakdown</p>
+                        </div>
+                        <button onclick="exportLoanCSV()" class="inline-flex items-center gap-1.5 text-xs font-bold bg-sky-50 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-slate-700 text-sky-700 dark:text-sky-300 px-3.5 py-2 rounded-xl transition border border-sky-200 dark:border-slate-700 shadow-xs">
+                            <i data-lucide="download" class="w-4 h-4 text-sky-500"></i> Export CSV
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 max-h-96">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider sticky top-0 z-10">
+                                <tr>
+                                    <th class="py-3 px-4">Month</th>
+                                    <th class="py-3 px-4">Opening</th>
+                                    <th class="py-3 px-4">Payment</th>
+                                    <th class="py-3 px-4">Interest</th>
+                                    <th class="py-3 px-4">Principal</th>
+                                    <th class="py-3 px-4 text-right">Closing</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loanScheduleBody" class="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900 font-medium text-slate-700 dark:text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- MODULE 2: BOND INVESTMENT CALCULATOR -->
+            <div id="moduleBond" class="space-y-6 hidden">
+                
+                <!-- Principal Header Card -->
+                <div class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-800 space-y-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-widest bg-emerald-900/60 px-3 py-1 rounded-full border border-emerald-700/50">Fixed Income Bond</span>
+                            <p class="text-xs text-slate-400 mt-2 font-medium">Investment Principal Amount</p>
+                            <h2 class="text-3xl sm:text-4xl font-black tracking-tight mt-1" id="bondBannerPrincipal">0.00 TZS</h2>
+                        </div>
+                        <button onclick="openBondModal()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white p-3 rounded-2xl shadow-lg transition-all flex items-center justify-center border border-emerald-400/30" title="Configure Bond Parameters">
+                            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-300 border-t border-slate-800/80 pt-4" id="bondBannerDetails">
+                        <span>Rate: <strong>12% Annual</strong></span> • 
+                        <span>Tenure: <strong>12 Months (1 Yr)</strong></span> • 
+                        <span>Tax Deduction: <strong>10%</strong></span>
+                    </div>
+                </div>
+
+                <!-- KPI Summary Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Gross Interest</span>
+                        <p class="text-xl sm:text-2xl font-black text-sky-600 dark:text-sky-400 tracking-tight" id="bondGrossInterest">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Before Tax</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Tax Withheld (10%)</span>
+                        <p class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight" id="bondTaxWithheld">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Deducted Tax</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Net Interest</span>
+                        <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight" id="bondNetInterest">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Net Return</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Maturity Payout</span>
+                        <p class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight" id="bondTotalPayout">0.00 TZS</p>
+                        <p class="text-[10px] text-slate-400">Principal + Net Interest</p>
+                    </div>
+                </div>
+
+                <!-- Bond Tier Matrix Table -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Bond Tier Matrix</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Standard TZS investment tiers comparison</p>
+                        </div>
+                        <button onclick="exportBondCSV()" class="inline-flex items-center gap-1.5 text-xs font-bold bg-emerald-50 dark:bg-slate-800 hover:bg-emerald-100 dark:hover:bg-slate-700 text-emerald-700 dark:text-emerald-300 px-3.5 py-2 rounded-xl transition border border-emerald-200 dark:border-slate-700 shadow-xs">
+                            <i data-lucide="download" class="w-4 h-4 text-emerald-500"></i> Export CSV
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 max-h-96">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider sticky top-0 z-10">
+                                <tr>
+                                    <th class="py-3 px-4">Principal</th>
+                                    <th class="py-3 px-4">Rate</th>
+                                    <th class="py-3 px-4">Tenure</th>
+                                    <th class="py-3 px-4">Gross Int</th>
+                                    <th class="py-3 px-4">Tax</th>
+                                    <th class="py-3 px-4 text-right">Net Return</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bondMatrixBody" class="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900 font-medium text-slate-700 dark:text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Official Disclaimer Box -->
+            <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-3xl p-5 text-amber-900 dark:text-amber-200 text-xs shadow-xs no-print">
+                <div class="flex items-start gap-3">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
+                    <div>
+                        <strong class="font-bold block text-amber-950 dark:text-amber-100 mb-1">Official Notice & Disclaimer</strong>
+                        <span>This is just a rough calculation. Please contact <strong class="underline">+255763099290</strong>, <strong class="underline">+255692200000</strong>, or <strong class="underline">+255765068057</strong> for proper calculations and formal offers.</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- INJECT FOOTER -->
+        <div id="include-footer"></div>
+
+    </div>
+
+    <!-- LOAN MODAL -->
+    <div id="loanModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden transition-opacity">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 sm:p-8 space-y-6 my-auto">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 grid place-items-center font-black">
+                        <i data-lucide="landmark" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Loan Parameters</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Configure reducing balance settings</p>
+                    </div>
+                </div>
+                <button onclick="closeLoanModal()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="loanAmount" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Principal Amount (TZS)</label>
+                    <input type="number" id="loanAmount" value="17000000" placeholder="e.g. 17000000" step="any" min="0" inputmode="decimal" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-sky-600 dark:text-sky-400 text-sm outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="loanRate" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Annual Rate (%)</label>
+                        <input type="number" id="loanRate" value="13" placeholder="13" step="any" min="0" inputmode="decimal" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none">
+                    </div>
+                    <div>
+                        <label for="loanFeeRate" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Admin Fee (%)</label>
+                        <input type="number" id="loanFeeRate" value="0" placeholder="0" step="any" min="0" inputmode="decimal" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="loanTenor" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Tenure (Months)</label>
+                    <select id="loanTenor" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none cursor-pointer">
+                        <option value="12">12 Months (1 Year)</option>
+                        <option value="24">24 Months (2 Years)</option>
+                        <option value="36">36 Months (3 Years)</option>
+                        <option value="48">48 Months (4 Years)</option>
+                        <option value="60" selected>60 Months (5 Years)</option>
+                        <option value="72">72 Months (6 Years)</option>
+                        <option value="84">84 Months (7 Years)</option>
+                        <option value="96">96 Months (8 Years)</option>
+                        <option value="108">108 Months (9 Years)</option>
+                        <option value="120">120 Months (10 Years)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                <button onclick="closeLoanModal()" class="w-1/2 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Cancel</button>
+                <button onclick="applyLoanModal()" class="w-1/2 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-xs font-bold text-white shadow-lg shadow-sky-600/20 transition active:scale-95">Calculate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOND MODAL -->
+    <div id="bondModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden transition-opacity">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 sm:p-8 space-y-6 my-auto">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 grid place-items-center font-black">
+                        <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Bond Parameters</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Configure fixed income bond settings</p>
+                    </div>
+                </div>
+                <button onclick="closeBondModal()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-xl transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="bondAmount" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Investment Principal (TZS)</label>
+                    <input type="number" id="bondAmount" value="10000000" placeholder="e.g. 10000000" step="any" min="0" inputmode="decimal" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-emerald-600 dark:text-emerald-400 text-sm outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="bondRateSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Annual Rate (%)</label>
+                        <select id="bondRateSelect" onchange="handleBondRateChange()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none cursor-pointer">
+                            <option value="4">4%</option>
+                            <option value="7">7%</option>
+                            <option value="9">9%</option>
+                            <option value="12" selected>12%</option>
+                            <option value="custom">Custom Rate...</option>
+                        </select>
+                    </div>
+                    <div id="customRateContainer" style="display: none;">
+                        <label for="bondCustomRate" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Custom Rate (%)</label>
+                        <input type="number" id="bondCustomRate" value="12" placeholder="12" step="any" min="0" inputmode="decimal" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none">
+                    </div>
+                    <div>
+                        <label for="bondTaxRate" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Tax Deduction (%)</label>
+                        <input type="number" id="bondTaxRate" value="10" placeholder="10" step="any" min="0" inputmode="decimal" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="bondTenor" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">Tenure (Months)</label>
+                    <select id="bondTenor" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-slate-900 dark:text-white text-sm outline-none cursor-pointer">
+                        <option value="3">3 Months (0.25 Year)</option>
+                        <option value="6">6 Months (0.5 Year)</option>
+                        <option value="9">9 Months (0.75 Year)</option>
+                        <option value="12" selected>12 Months (1 Year)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                <button onclick="closeBondModal()" class="w-1/2 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">Cancel</button>
+                <button onclick="applyBondModal()" class="w-1/2 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-xs font-bold text-white shadow-lg shadow-emerald-600/20 transition active:scale-95">Calculate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT SYSTEM ENGINE & INCLUDES LOADER -->
+    <script>
+        async function loadIncludes() {
+            const includes = [
+                { id: 'include-header', file: 'includes/header.html' },
+                { id: 'include-sidebar', file: 'includes/sidebar.html' },
+                { id: 'include-footer', file: 'includes/footer.html' }
+            ];
+
+            for (let item of includes) {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    try {
+                        const response = await fetch(item.file);
+                        if (response.ok) {
+                            el.outerHTML = await response.text();
+                        }
+                    } catch (error) {
+                        console.error(`Error loading ${item.file}:`, error);
+                    }
+                }
+            }
+
+            lucide.createIcons();
+            initThemeSystem();
+            setupLeftEdgeHover();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadIncludes();
+            calculateAll();
+        });
+
+        let sidebarOpen = false;
+        let autoCloseTimer = null;
+        let progressInterval = null;
+        const AUTO_CLOSE_DELAY = 20000;
+        let startTime = 0;
+
+        function initThemeSystem() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        function toggleSidebar(forceState) {
+            const sidebar = document.getElementById('desktopSidebar');
+            const contentWrapper = document.getElementById('contentWrapper');
+            const topNavbar = document.getElementById('topNavbar');
+            
+            sidebarOpen = typeof forceState === 'boolean' ? forceState : !sidebarOpen;
+
+            if (sidebarOpen) {
+                if (sidebar) sidebar.classList.remove('-translate-x-full');
+                if (contentWrapper) contentWrapper.classList.add('lg:pl-80');
+                if (topNavbar) topNavbar.classList.add('lg:pl-80');
+                startAutoCloseCountdown();
+            } else {
+                if (sidebar) sidebar.classList.add('-translate-x-full');
+                if (contentWrapper) contentWrapper.classList.remove('lg:pl-80');
+                if (topNavbar) topNavbar.classList.remove('lg:pl-80');
+                stopAutoCloseCountdown();
+            }
+        }
+
+        function setupLeftEdgeHover() {
+            const trigger = document.getElementById('leftEdgeTrigger');
+            const sidebar = document.getElementById('desktopSidebar');
+            if (!trigger || !sidebar) return;
+
+            trigger.addEventListener('mouseenter', () => { if (!sidebarOpen) toggleSidebar(true); });
+            sidebar.addEventListener('mousemove', () => { if (sidebarOpen) resetAutoCloseTimer(); });
+        }
+
+        function startAutoCloseCountdown() {
+            stopAutoCloseCountdown();
+            startTime = Date.now();
+            const progressBar = document.getElementById('autoCloseProgressBar');
+            const textDisplay = document.getElementById('autoCloseText');
+            
+            progressInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, AUTO_CLOSE_DELAY - elapsed);
+                const percent = (remaining / AUTO_CLOSE_DELAY) * 100;
+                if (progressBar) progressBar.style.width = percent + '%';
+                if (textDisplay) textDisplay.innerText = `Auto-hide: ${Math.ceil(remaining / 1000)}s`;
+                if (remaining <= 0) toggleSidebar(false);
+            }, 100);
+        }
+
+        function resetAutoCloseTimer() { startTime = Date.now(); }
+        function stopAutoCloseCountdown() {
+            if (progressInterval) clearInterval(progressInterval);
+            const progressBar = document.getElementById('autoCloseProgressBar');
+            if (progressBar) progressBar.style.width = '100%';
+        }
+
+        function toggleMobileDrawer() {
+            const drawer = document.getElementById('mobileDrawerContainer');
+            if (drawer) {
+                if (drawer.classList.contains('grid-rows-[0fr]')) {
+                    drawer.classList.remove('grid-rows-[0fr]');
+                    drawer.classList.add('grid-rows-[1fr]');
+                } else {
+                    drawer.classList.remove('grid-rows-[1fr]');
+                    drawer.classList.add('grid-rows-[0fr]');
+                }
+            }
+        }
+
+        // FINANCIAL CALCULATOR ENGINE
+        let loanSchedule = [];
+        let bondMatrix = [];
+        const sampleTiers = [500000, 1000000, 5000000, 10000000, 17000000, 25000000, 50000000];
+
+        function openLoanModal() { document.getElementById('loanModal').classList.remove('hidden'); }
+        function closeLoanModal() { document.getElementById('loanModal').classList.add('hidden'); }
+        function openBondModal() { document.getElementById('bondModal').classList.remove('hidden'); }
+        function closeBondModal() { document.getElementById('bondModal').classList.add('hidden'); }
+
+        function applyLoanModal() { closeLoanModal(); calculateAll(); }
+        function applyBondModal() { closeBondModal(); calculateAll(); }
+
+        function handleBondRateChange() {
+            const val = document.getElementById('bondRateSelect').value;
+            const customContainer = document.getElementById('customRateContainer');
+            if (val === 'custom') {
+                customContainer.style.display = 'block';
+            } else {
+                customContainer.style.display = 'none';
+                document.getElementById('bondCustomRate').value = val;
+            }
+        }
+
+        function switchModule(mod) {
+            const loanModule = document.getElementById('moduleLoan');
+            const bondModule = document.getElementById('moduleBond');
+            const tabLoan = document.getElementById('navTabLoan');
+            const tabBond = document.getElementById('navTabBond');
+
+            if (mod === 'loan') {
+                loanModule.classList.remove('hidden');
+                bondModule.classList.add('hidden');
+                tabLoan.className = 'flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-sky-600 text-white shadow-md transition-all';
+                tabBond.className = 'flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all';
+            } else {
+                bondModule.classList.remove('hidden');
+                loanModule.classList.add('hidden');
+                tabBond.className = 'flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-emerald-600 text-white shadow-md transition-all';
+                tabLoan.className = 'flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all';
+            }
+            calculateAll();
+        }
+
+        function fmt(val) {
+            return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val) + ' TZS';
+        }
+
+        function calculateAll() {
+            const loanPrincipal = parseFloat(document.getElementById('loanAmount').value) || 0;
+            const loanRate = parseFloat(document.getElementById('loanRate').value) || 13;
+            const loanTenor = parseInt(document.getElementById('loanTenor').value) || 60;
+            const loanFeeRate = parseFloat(document.getElementById('loanFeeRate').value) || 0;
+
+            const bondPrincipal = parseFloat(document.getElementById('bondAmount').value) || 0;
+            const rateSelectVal = document.getElementById('bondRateSelect').value;
+            let bondRate = 12;
+            if (rateSelectVal === 'custom') {
+                bondRate = parseFloat(document.getElementById('bondCustomRate').value) || 12;
+            } else {
+                bondRate = parseFloat(rateSelectVal) || 12;
+            }
+            const bondTenor = parseInt(document.getElementById('bondTenor').value) || 12;
+            const bondTaxRate = parseFloat(document.getElementById('bondTaxRate').value) || 10;
+
+            document.getElementById('loanBannerPrincipal').innerText = fmt(loanPrincipal);
+            document.getElementById('loanBannerDetails').innerHTML = `
+                <span>Rate: <strong>${loanRate}% Annual</strong></span> • 
+                <span>Tenure: <strong>${loanTenor} Months (${(loanTenor/12).toFixed(1)} Yrs)</strong></span> • 
+                <span>Admin Fee: <strong>${loanFeeRate}% (${fmt(loanPrincipal * (loanFeeRate/100))})</strong></span>
+            `;
+
+            document.getElementById('bondBannerPrincipal').innerText = fmt(bondPrincipal);
+            document.getElementById('bondBannerDetails').innerHTML = `
+                <span>Rate: <strong>${bondRate}% Annual</strong></span> • 
+                <span>Tenure: <strong>${bondTenor} Months (${(bondTenor/12).toFixed(2)} Yrs)</strong></span> • 
+                <span>Tax Deduction: <strong>${bondTaxRate}%</strong></span>
+            `;
+
+            const monthlyRate = (loanRate / 100) / 12;
+            let pmt = 0;
+            if (loanPrincipal > 0 && monthlyRate > 0) {
+                pmt = (loanPrincipal * monthlyRate * Math.pow(1 + monthlyRate, loanTenor)) / (Math.pow(1 + monthlyRate, loanTenor) - 1);
+            } else if (loanPrincipal > 0) {
+                pmt = loanPrincipal / loanTenor;
+            }
+
+            const adminFee = loanPrincipal * (loanFeeRate / 100);
+            const netDisbursed = loanPrincipal - adminFee;
+
+            loanSchedule = [];
+            let balance = loanPrincipal;
+            let totalInterest = 0;
+            const loanTbody = document.getElementById('loanScheduleBody');
+            loanTbody.innerHTML = '';
+
+            for (let m = 1; m <= loanTenor; m++) {
+                const interest = balance * monthlyRate;
+                let principalPaid = pmt - interest;
+
+                if (m === loanTenor) {
+                    principalPaid = balance;
+                    pmt = principalPaid + interest;
+                }
+
+                const closing = Math.max(0, balance - principalPaid);
+                totalInterest += interest;
+
+                loanSchedule.push({ month: m, opening: balance, pmt, interest, principalPaid, closing });
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition border-b border-slate-200/60 dark:border-slate-800';
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">${m}</td>
+                    <td class="py-3 px-4">${fmt(balance)}</td>
+                    <td class="py-3 px-4 font-bold text-sky-600 dark:text-sky-400">${fmt(pmt)}</td>
+                    <td class="py-3 px-4 text-amber-600 dark:text-amber-400">${fmt(interest)}</td>
+                    <td class="py-3 px-4 text-emerald-600 dark:text-emerald-400">${fmt(principalPaid)}</td>
+                    <td class="py-3 px-4 text-right font-medium">${fmt(closing)}</td>
+                `;
+                loanTbody.appendChild(row);
+
+                balance = closing;
+            }
+
+            const totalRepayment = loanPrincipal + totalInterest;
+            document.getElementById('loanMonthlyPmt').innerText = fmt(pmt);
+            document.getElementById('loanNetDisbursed').innerText = fmt(netDisbursed);
+            document.getElementById('loanTotalInterest').innerText = fmt(totalInterest);
+            document.getElementById('loanTotalRepayment').innerText = fmt(totalRepayment);
+
+            const grossInterest = bondPrincipal * (bondRate / 100) * (bondTenor / 12);
+            const taxWithheld = grossInterest * (bondTaxRate / 100);
+            const netInterest = grossInterest - taxWithheld;
+            const totalPayout = bondPrincipal + netInterest;
+
+            document.getElementById('bondGrossInterest').innerText = fmt(grossInterest);
+            document.getElementById('bondTaxWithheld').innerText = fmt(taxWithheld);
+            document.getElementById('bondNetInterest').innerText = fmt(netInterest);
+            document.getElementById('bondTotalPayout').innerText = fmt(totalPayout);
+
+            renderBondMatrix(bondRate, bondTenor, bondTaxRate);
+        }
+
+        function renderBondMatrix(rate, tenor, taxRate) {
+            const tbody = document.getElementById('bondMatrixBody');
+            tbody.innerHTML = '';
+            bondMatrix = [];
+
+            sampleTiers.forEach(tier => {
+                const gross = tier * (rate / 100) * (tenor / 12);
+                const tax = gross * (taxRate / 100);
+                const net = gross - tax;
+                bondMatrix.push({ tier, rate, tenor, gross, tax, net });
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition border-b border-slate-200/60 dark:border-slate-800';
+                row.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">${fmt(tier)}</td>
+                    <td class="py-3 px-4">${rate}%</td>
+                    <td class="py-3 px-4">${tenor} Mos</td>
+                    <td class="py-3 px-4">${fmt(gross)}</td>
+                    <td class="py-3 px-4 text-rose-600 dark:text-rose-400">${fmt(tax)}</td>
+                    <td class="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400">${fmt(net)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function exportLoanCSV() {
+            let csv = 'Month,Opening Balance,Payment,Interest Paid,Principal Paid,Closing Balance\n';
+            loanSchedule.forEach(r => {
+                csv += `${r.month},${r.opening.toFixed(2)},${r.pmt.toFixed(2)},${r.interest.toFixed(2)},${r.principalPaid.toFixed(2)},${r.closing.toFixed(2)}\n`;
+            });
+            downloadFile(csv, 'Loan_Amortization_Schedule.csv');
+        }
+
+        function exportBondCSV() {
+            let csv = 'Principal Amount,Annual Rate,Tenure (Months),Gross Interest,Tax Amount,Net Return\n';
+            bondMatrix.forEach(r => {
+                csv += `${r.tier},${r.rate}%,${r.tenor},${r.gross.toFixed(2)},${r.tax.toFixed(2)},${r.net.toFixed(2)}\n`;
+            });
+            downloadFile(csv, 'Bond_Tier_Matrix.csv');
+        }
+
+        function downloadFile(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', filename);
+            a.click();
+        }
+    </script>
+</body>
+</html>
