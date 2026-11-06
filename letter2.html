@@ -107,7 +107,6 @@
         <div class="mb-5"><div class="section-kicker">03 / Letter</div><h2 class="section-title mt-1">Date and message</h2></div>
         <div class="grid grid-cols-2 gap-3 mb-4">
           <div><label class="field-label" for="customDate">Letter date</label><input class="field" type="date" id="customDate"></div>
-          <div><label class="field-label" for="signingPlace">Place of issue</label><input class="field" id="signingPlace" value="Dar es Salaam"></div>
         </div>
         <div class="space-y-3">
           <div><label class="field-label" for="salutationText">Salutation</label><input class="field" id="salutationText" value="Dear Sir/Madam,"></div>
@@ -193,7 +192,7 @@
 <script>
 const defaults = {
   recipientBank:"People's Bank of Zanzibar (PBZ Bank)", branchLocation:"Chake Chake Branch", poBox:"P.O. Box 67, Pemba",
-  customerName:"JOHN SIMON MONO", accountNumber:"012345678901", signingPlace:"Dar es Salaam",
+  customerName:"JOHN SIMON MONO", accountNumber:"012345678901",
   salutationText:"Dear Sir/Madam,",
   bodyParagraph:"We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.",
   closingParagraph:"Thanking you in advance for your continued cooperation and prompt assistance.",
@@ -220,7 +219,6 @@ function updatePreview(){
   $("previewSenderBank").textContent=v("senderBank");
   $("previewSig1").textContent=v("sig1Title");
   $("previewSig2").textContent=v("sig2Title");
-  $("previewPlace").textContent=v("signingPlace");
   $("previewDate").textContent=formatDate($("customDate").value);
   const body=v("bodyParagraph").replaceAll("{ACCOUNT_NO}",v("accountNumber")||"[ACCOUNT NO]");
   $("previewBody").textContent=body;
