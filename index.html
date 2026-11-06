@@ -30,348 +30,199 @@
 
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-    /* Custom Scrollbars */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
     .dark ::-webkit-scrollbar-thumb { background: #334155; }
-
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    /* Left Edge Hover Detection Zone */
-    #leftEdgeTrigger {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 18px;
-      height: 100vh;
-      z-index: 45;
-    }
+    #leftEdgeTrigger { position: fixed; top: 0; left: 0; width: 18px; height: 100vh; z-index: 45; }
   </style>
 </head>
 <body class="bg-sky-50/50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white">
 
-  <!-- Desktop Left Edge Hover Trigger Area -->
-  <div id="leftEdgeTrigger" class="hidden lg:block"></div>
+  <!-- INJECT HEADER -->
+  <div id="include-header"></div>
 
-  <!-- MAIN FLEX CONTAINER -->
-  <div class="flex flex-1 min-h-screen relative w-full overflow-x-hidden">
+  <!-- INJECT SIDEBAR & FIXED NAVBAR -->
+  <div id="include-sidebar"></div>
 
-    <!-- DESKTOP LEFT SIDEBAR (Organic, Beautiful Look) -->
-    <aside id="desktopSidebar" 
-      class="hidden lg:flex flex-col fixed top-0 left-0 h-screen w-80 bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl text-slate-800 dark:text-slate-200 z-50 border-r border-slate-200/80 dark:border-slate-800/80 shadow-2xl transition-transform duration-300 ease-in-out -translate-x-full">
-      
-      <!-- Sidebar Header -->
-      <div class="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80">
-        <div class="flex items-center space-x-3.5">
-          <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-sky-600 to-blue-500 p-2 shadow-md shadow-sky-500/20 flex items-center justify-center text-white font-black text-base">
-            M
-          </div>
-          <div>
-            <h2 class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">Mono Suite</h2>
-            <p class="text-[10px] text-sky-600 dark:text-sky-400 font-bold uppercase tracking-widest">Enterprise Hub</p>
-          </div>
+  <!-- CONTENT WRAPPER -->
+  <div id="contentWrapper" class="flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ease-in-out pt-20">
+
+    <!-- MAIN LANDING CONTENT CONTAINER -->
+    <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 py-8 space-y-8" id="printableArea">
+
+      <!-- Welcome Banner -->
+      <section class="bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-800 relative overflow-hidden">
+        <div class="max-w-2xl space-y-4 relative z-10">
+          <span class="text-[10px] font-black uppercase tracking-widest bg-sky-500/20 text-sky-300 px-3.5 py-1.5 rounded-full border border-sky-400/35">Enterprise Financial OS</span>
+          <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">Mono Apps Solutions</h1>
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">Centralized financial calculation suites, tax appraisals, bond investment matrices, and official correspondence management.</p>
         </div>
-        <button onclick="toggleSidebar(false)" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
+      </section>
 
-      <!-- Auto-Close Progress Countdown Bar -->
-      <div id="autoCloseProgressContainer" class="w-full bg-slate-100 dark:bg-slate-800 h-1 relative overflow-hidden">
-        <div id="autoCloseProgressBar" class="bg-sky-500 h-full w-full transition-all duration-100 ease-linear"></div>
-      </div>
-
-      <!-- Navigation Links (Pill Style) -->
-      <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6 no-scrollbar">
+      <!-- APP LAUNCHER CARDS GRID -->
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
-        <div class="space-y-1.5">
-          <span class="px-3 text-[10px] font-black uppercase text-slate-400 tracking-wider">Application Suite</span>
-          <nav class="space-y-1.5 pt-1">
-            <a href="index.html#loanSection" class="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800/60 hover:text-sky-600 dark:hover:text-white transition group">
-              <div class="p-2 rounded-xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 group-hover:scale-110 transition">
-                <i data-lucide="calculator" class="w-4 h-4"></i>
+        <!-- App 1: Loan Calculator Suite -->
+        <div id="loanSection" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-sky-500 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="p-3.5 rounded-2xl bg-sky-50 dark:bg-sky-950/50 border border-sky-100 dark:border-sky-800/60 text-sky-600 dark:text-sky-400">
+                <i data-lucide="calculator" class="w-6 h-6"></i>
               </div>
-              <span class="flex-1">Loan Calculator</span>
-            </a>
-            <a href="index.html#bondSection" class="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800/60 hover:text-amber-600 dark:hover:text-white transition group">
-              <div class="p-2 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition">
-                <i data-lucide="trending-up" class="w-4 h-4"></i>
-              </div>
-              <span class="flex-1">Fixed Income Bond</span>
-            </a>
-            <a href="paye.html" class="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-slate-800/60 hover:text-emerald-600 dark:hover:text-white transition group">
-              <div class="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition">
-                <i data-lucide="file-signature" class="w-4 h-4"></i>
-              </div>
-              <span class="flex-1">Consumer Appraisals</span>
-            </a>
-            <a href="letter.html" class="flex items-center space-x-3 px-4 py-3 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-800/60 hover:text-purple-600 dark:hover:text-white transition group">
-              <div class="p-2 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition">
-                <i data-lucide="file-text" class="w-4 h-4"></i>
-              </div>
-              <span class="flex-1">Official Letter Writer</span>
-            </a>
-          </nav>
-        </div>
-
-        <div class="space-y-2">
-          <span class="px-3 text-[10px] font-black uppercase text-slate-400 tracking-wider">Support Lines</span>
-          <div class="p-4 bg-sky-50/70 dark:bg-slate-800/50 rounded-2xl border border-sky-100 dark:border-slate-800 space-y-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
-            <p class="text-sky-600 dark:text-sky-400 font-bold">+255 763 099 290</p>
-            <p class="text-sky-600 dark:text-sky-400 font-bold">+255 692 200 000</p>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 px-3 py-1 rounded-full">Suite 01</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-sky-600 transition">Loan Calculator</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Reducing balance principal computations, monthly payments (PMT), and amortization schedule breakdowns.</p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
+            <span>View Module</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
           </div>
         </div>
 
-      </div>
-
-      <!-- Sidebar Footer -->
-      <div class="p-5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/60 flex items-center justify-between text-xs">
-        <div class="flex items-center space-x-2 text-slate-400">
-          <i data-lucide="clock" class="w-3.5 h-3.5 text-sky-500"></i>
-          <span id="autoCloseText" class="text-[10px] font-semibold">Auto-hide: 20s</span>
+        <!-- App 2: Fixed Income Bond Suite -->
+        <div id="bondSection" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 transition-all duration-300 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-100 dark:border-amber-800/60 text-amber-600 dark:text-amber-400">
+                <i data-lucide="trending-up" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full">Suite 02</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition">Bond Yields</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Fixed income investment yields, statutory tax deductions (10%), maturity returns, and tier lookups.</p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+            <span>View Yields</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
+          </div>
         </div>
-        <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-xs transition">
-          <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
-          <i data-lucide="sun" class="w-4 h-4 block dark:hidden text-amber-500"></i>
-        </button>
-      </div>
 
-    </aside>
-
-    <!-- CONTENT WRAPPER -->
-    <div id="contentWrapper" class="flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ease-in-out">
-
-      <!-- TOP NAVBAR -->
-      <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/70 dark:border-slate-800 transition-colors">
-        <div class="max-w-[1700px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between gap-4">
-          
-          <!-- Left Controls & Logo -->
-          <div class="flex items-center space-x-3.5">
-            <button onclick="toggleSidebar()" class="hidden lg:inline-flex p-2.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 shadow-xs transition" title="Toggle Sidebar">
-              <i data-lucide="panel-left" class="w-5 h-5 text-sky-600 dark:text-sky-400"></i>
-            </button>
-            <button onclick="toggleMobileDrawer()" class="lg:hidden p-2.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 shadow-xs transition" title="Toggle Navigation">
-              <i data-lucide="menu" class="w-5 h-5 text-sky-600 dark:text-sky-400"></i>
-            </button>
-            
-            <div class="flex items-center space-x-3">
-              <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-sky-600 to-blue-500 p-2 shadow-md shadow-sky-500/20 flex items-center justify-center text-white font-black text-sm">
-                M
+        <!-- App 3: Consumer Appraisals -->
+        <a href="paye.html" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 transition-all duration-300 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400">
+                <i data-lucide="file-signature" class="w-6 h-6"></i>
               </div>
-              <div>
-                <span class="text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white block">Mono Apps</span>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400 block -mt-1">Solutions</span>
-              </div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full">Suite 03</span>
             </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">Consumer Appraisals</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">PAYE tax schedule computations, statutory net pay evaluation, and employee loan affordability matrices.</p>
           </div>
-
-          <!-- Middle Navigation Links -->
-          <nav class="hidden md:flex items-center space-x-2 bg-slate-100/80 dark:bg-slate-800/60 p-1.5 rounded-2xl border border-slate-200/70 dark:border-slate-700/50">
-            <a href="#loanSection" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-sky-600 dark:hover:text-white transition shadow-xs">Loan Suite</a>
-            <a href="#bondSection" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-amber-600 dark:hover:text-white transition">Bond Yields</a>
-            <a href="paye.html" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-emerald-600 dark:hover:text-white transition">Appraisals</a>
-            <a href="letter.html" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-900 hover:text-purple-600 dark:hover:text-white transition">Letter Writer</a>
-          </nav>
-
-          <!-- Right Action Controls -->
-          <div class="flex items-center space-x-2.5">
-            <button onclick="toggleTheme()" class="p-2.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 shadow-xs transition" title="Toggle Theme">
-              <i data-lucide="sun" class="w-4 h-4 text-amber-500 hidden dark:block"></i>
-              <i data-lucide="moon" class="w-4 h-4 text-slate-700 block dark:hidden"></i>
-            </button>
-
-            <button onclick="window.print()" class="hidden sm:inline-flex items-center space-x-2 bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition shadow-md shadow-sky-600/20 active:scale-95">
-              <i data-lucide="printer" class="w-4 h-4"></i>
-              <span>Print</span>
-            </button>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span>Launch App</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
           </div>
+        </a>
 
+        <!-- App 4: Official Letter Writer -->
+        <a href="letter.html" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/50 border border-purple-100 dark:border-purple-800/60 text-purple-600 dark:text-purple-400">
+                <i data-lucide="file-text" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full">Suite 04</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Letter Writer</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Generate print-ready corporate banking communications, loan offer confirmations, and formal letters.</p>
+          </div>
+          <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-purple-600 dark:text-purple-400">
+            <span>Open Writer</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
+          </div>
+        </a>
+
+      </section>
+
+      <!-- FINANCIAL ANALYSIS HUB SECTION -->
+      <section id="compareSection" class="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-widest bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 px-3 py-1 rounded-full">Side-by-Side Analysis</span>
+            <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-2">Borrowing Outflows vs Investment Yields</h2>
+          </div>
+          <span class="text-xs font-bold text-slate-400 font-mono">TZS Portfolio Hub</span>
         </div>
-      </header>
 
-      <!-- MOBILE TOP SLIDING DRAWER MENU -->
-      <div id="mobileDrawer" class="lg:hidden hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 shadow-2xl transition-all duration-300">
-        <div class="max-w-md mx-auto p-6 space-y-2.5">
-          <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Navigation Hub</span>
-          <a href="#loanSection" onclick="toggleMobileDrawer()" class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 text-xs font-bold text-slate-900 dark:text-white">
-            <span class="flex items-center space-x-3"><i data-lucide="calculator" class="w-4 h-4 text-sky-600"></i><span>Loan Calculator Suite</span></span>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
-          </a>
-          <a href="#bondSection" onclick="toggleMobileDrawer()" class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 text-xs font-bold text-slate-900 dark:text-white">
-            <span class="flex items-center space-x-3"><i data-lucide="trending-up" class="w-4 h-4 text-amber-500"></i><span>Fixed Income Bond Yields</span></span>
-            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
-          </a>
-          <a href="paye.html" class="flex items-center justify-between p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs font-bold text-slate-900 dark:text-white">
-            <span class="flex items-center space-x-3"><i data-lucide="file-signature" class="w-4 h-4 text-emerald-600"></i><span>Consumer Appraisals (PAYE)</span></span>
-            <i data-lucide="arrow-right" class="w-4 h-4 text-emerald-600"></i>
-          </a>
-          <a href="letter.html" class="flex items-center justify-between p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 text-xs font-bold text-slate-900 dark:text-white">
-            <span class="flex items-center space-x-3"><i data-lucide="file-text" class="w-4 h-4 text-purple-600"></i><span>Official Letter Writer</span></span>
-            <i data-lucide="arrow-right" class="w-4 h-4 text-purple-600"></i>
-          </a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200/70 dark:border-slate-700 space-y-2.5">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center space-x-2">
+              <i data-lucide="calculator" class="w-4 h-4 text-sky-600"></i>
+              <span>Loan Borrowing Outflow Summary</span>
+            </h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Calculates total interest incurred across reducing balance payment schedules with customizable administration fees.</p>
+          </div>
+
+          <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200/70 dark:border-slate-700 space-y-2.5">
+            <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center space-x-2">
+              <i data-lucide="trending-up" class="w-4 h-4 text-amber-500"></i>
+              <span>Fixed Income Return Summary</span>
+            </h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Computes net interest yields on sovereign and corporate bonds after statutory withholding tax deductions.</p>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <!-- MAIN LANDING CONTENT CONTAINER -->
-      <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 py-8 space-y-8" id="printableArea">
-
-        <!-- Welcome Banner -->
-        <section class="bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-800 relative overflow-hidden">
-          <div class="max-w-2xl space-y-4 relative z-10">
-            <span class="text-[10px] font-black uppercase tracking-widest bg-sky-500/20 text-sky-300 px-3.5 py-1.5 rounded-full border border-sky-400/30">Enterprise Financial OS</span>
-            <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">Mono Apps Solutions</h1>
-            <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">Centralized financial calculation suites, tax appraisals, bond investment matrices, and official correspondence management.</p>
-          </div>
-        </section>
-
-        <!-- APP LAUNCHER CARDS GRID -->
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          
-          <!-- App 1: Loan Calculator Suite -->
-          <div id="loanSection" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-sky-500 dark:hover:border-sky-500 transition-all duration-300 flex flex-col justify-between space-y-6">
-            <div class="space-y-4">
-              <div class="flex justify-between items-start">
-                <div class="p-3.5 rounded-2xl bg-sky-50 dark:bg-sky-950/50 border border-sky-100 dark:border-sky-800/60 text-sky-600 dark:text-sky-400">
-                  <i data-lucide="calculator" class="w-6 h-6"></i>
-                </div>
-                <span class="text-[10px] font-extrabold uppercase tracking-widest bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300 px-3 py-1 rounded-full">Suite 01</span>
-              </div>
-              <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-sky-600 transition">Loan Calculator</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Reducing balance principal computations, monthly payments (PMT), and amortization schedule breakdowns.</p>
-            </div>
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>View Module</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
+      <!-- OFFICIAL SUPPORT & ADVISORY NOTICE BOX -->
+      <section class="w-full pt-2">
+        <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-3xl p-6 text-amber-900 dark:text-amber-200 text-xs shadow-xs">
+          <div class="flex items-start space-x-4">
+            <i data-lucide="alert-circle" class="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
+            <div class="space-y-1">
+              <strong class="font-bold text-sm block text-amber-950 dark:text-amber-100">Official Notice & Assistance</strong>
+              <p class="leading-relaxed font-medium">For verified bank offers, official schedules, and custom enterprise deployments, contact our administrative support team directly at <strong>+255763099290</strong>, <strong>+255692200000</strong>, or <strong>+255765068057</strong>.</p>
             </div>
           </div>
-
-          <!-- App 2: Fixed Income Bond Suite -->
-          <div id="bondSection" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 transition-all duration-300 flex flex-col justify-between space-y-6">
-            <div class="space-y-4">
-              <div class="flex justify-between items-start">
-                <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-100 dark:border-amber-800/60 text-amber-600 dark:text-amber-400">
-                  <i data-lucide="trending-up" class="w-6 h-6"></i>
-                </div>
-                <span class="text-[10px] font-extrabold uppercase tracking-widest bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full">Suite 02</span>
-              </div>
-              <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition">Bond Yields</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Fixed income investment yields, statutory tax deductions (10%), maturity returns, and tier lookups.</p>
-            </div>
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
-              <span>View Yields</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
-            </div>
-          </div>
-
-          <!-- App 3: Consumer Appraisals -->
-          <a href="paye.html" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-emerald-500 dark:hover:border-emerald-500 transition-all duration-300 flex flex-col justify-between space-y-6">
-            <div class="space-y-4">
-              <div class="flex justify-between items-start">
-                <div class="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400">
-                  <i data-lucide="file-signature" class="w-6 h-6"></i>
-                </div>
-                <span class="text-[10px] font-extrabold uppercase tracking-widest bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full">Suite 03</span>
-              </div>
-              <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">Consumer Appraisals</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">PAYE tax schedule computations, statutory net pay evaluation, and employee loan affordability matrices.</p>
-            </div>
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              <span>Launch App</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
-            </div>
-          </a>
-
-          <!-- App 4: Official Letter Writer -->
-          <a href="letter.html" class="group relative overflow-hidden bg-white dark:bg-slate-900 p-7 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300 flex flex-col justify-between space-y-6">
-            <div class="space-y-4">
-              <div class="flex justify-between items-start">
-                <div class="p-3.5 rounded-2xl bg-purple-50 dark:bg-purple-950/50 border border-purple-100 dark:border-purple-800/60 text-purple-600 dark:text-purple-400">
-                  <i data-lucide="file-text" class="w-6 h-6"></i>
-                </div>
-                <span class="text-[10px] font-extrabold uppercase tracking-widest bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full">Suite 04</span>
-              </div>
-              <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-purple-600 transition">Letter Writer</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Generate print-ready corporate banking communications, loan offer confirmations, and formal letters.</p>
-            </div>
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-purple-600 dark:text-purple-400">
-              <span>Open Writer</span>
-              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1.5 transition"></i>
-            </div>
-          </a>
-
-        </section>
-
-        <!-- FINANCIAL ANALYSIS HUB SECTION -->
-        <section id="compareSection" class="bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
-            <div>
-              <span class="text-[10px] font-black uppercase tracking-widest bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 px-3 py-1 rounded-full">Side-by-Side Analysis</span>
-              <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-2">Borrowing Outflows vs Investment Yields</h2>
-            </div>
-            <span class="text-xs font-bold text-slate-400 font-mono">TZS Portfolio Hub</span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200/70 dark:border-slate-700 space-y-2.5">
-              <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center space-x-2">
-                <i data-lucide="calculator" class="w-4 h-4 text-sky-600"></i>
-                <span>Loan Borrowing Outflow Summary</span>
-              </h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Calculates total interest incurred across reducing balance payment schedules with customizable administration fees.</p>
-            </div>
-
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200/70 dark:border-slate-700 space-y-2.5">
-              <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center space-x-2">
-                <i data-lucide="trending-up" class="w-4 h-4 text-amber-500"></i>
-                <span>Fixed Income Return Summary</span>
-              </h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">Computes net interest yields on sovereign and corporate bonds after statutory withholding tax deductions.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- OFFICIAL SUPPORT & ADVISORY NOTICE BOX -->
-        <section class="w-full pt-2">
-          <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-3xl p-6 text-amber-900 dark:text-amber-200 text-xs shadow-xs">
-            <div class="flex items-start space-x-4">
-              <i data-lucide="alert-circle" class="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"></i>
-              <div class="space-y-1">
-                <strong class="font-bold text-sm block text-amber-950 dark:text-amber-100">Official Notice & Assistance</strong>
-                <p class="leading-relaxed font-medium">For verified bank offers, official schedules, and custom enterprise deployments, contact our administrative support team directly at <strong>+255763099290</strong>, <strong>+255692200000</strong>, or <strong>+255765068057</strong>.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      </main>
-
-      <!-- FOOTER -->
-      <footer class="bg-white dark:bg-slate-900 border-t border-slate-200/70 dark:border-slate-800 py-5 mt-auto">
-        <div class="max-w-[1700px] mx-auto px-4 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
-          Designed & Powered by <strong class="text-slate-800 dark:text-slate-200 font-bold">Mono Apps Solutions</strong> © 2026. All rights reserved.
         </div>
-      </footer>
+      </section>
 
-    </div>
+    </main>
+
+    <!-- INJECT FOOTER -->
+    <div id="include-footer"></div>
 
   </div>
 
   <!-- JAVASCRIPT SYSTEM ENGINE -->
   <script>
-    let sidebarOpen = false;
-    let autoCloseTimer = null;
-    let progressInterval = null;
-    const AUTO_CLOSE_DELAY = 20000; // 20 seconds
-    let startTime = 0;
+    async function loadIncludes() {
+      const includes = [
+        { id: 'include-header', file: 'includes/header.html' },
+        { id: 'include-sidebar', file: 'includes/sidebar.html' },
+        { id: 'include-footer', file: 'includes/footer.html' }
+      ];
 
-    document.addEventListener('DOMContentLoaded', () => {
+      for (let item of includes) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          try {
+            const response = await fetch(item.file);
+            if (response.ok) {
+              el.outerHTML = await response.text();
+            }
+          } catch (error) {
+            console.error(`Error loading ${item.file}:`, error);
+          }
+        }
+      }
+
       lucide.createIcons();
       initThemeSystem();
       setupLeftEdgeHover();
-    });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadIncludes);
+
+    let sidebarOpen = false;
+    let autoCloseTimer = null;
+    let progressInterval = null;
+    const AUTO_CLOSE_DELAY = 20000;
+    let startTime = 0;
 
     function initThemeSystem() {
       const savedTheme = localStorage.getItem('theme');
@@ -380,16 +231,6 @@
       } else {
         document.documentElement.classList.remove('dark');
       }
-
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('theme')) {
-          if (e.matches) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        }
-      });
     }
 
     function toggleTheme() {
@@ -400,16 +241,19 @@
     function toggleSidebar(forceState) {
       const sidebar = document.getElementById('desktopSidebar');
       const contentWrapper = document.getElementById('contentWrapper');
+      const topNavbar = document.getElementById('topNavbar');
       
       sidebarOpen = typeof forceState === 'boolean' ? forceState : !sidebarOpen;
 
       if (sidebarOpen) {
-        sidebar.classList.remove('-translate-x-full');
-        contentWrapper.classList.add('lg:pl-80');
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (contentWrapper) contentWrapper.classList.add('lg:pl-80');
+        if (topNavbar) topNavbar.classList.add('lg:pl-80');
         startAutoCloseCountdown();
       } else {
-        sidebar.classList.add('-translate-x-full');
-        contentWrapper.classList.remove('lg:pl-80');
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (contentWrapper) contentWrapper.classList.remove('lg:pl-80');
+        if (topNavbar) topNavbar.classList.remove('lg:pl-80');
         stopAutoCloseCountdown();
       }
     }
@@ -417,24 +261,15 @@
     function setupLeftEdgeHover() {
       const trigger = document.getElementById('leftEdgeTrigger');
       const sidebar = document.getElementById('desktopSidebar');
+      if (!trigger || !sidebar) return;
 
-      trigger.addEventListener('mouseenter', () => {
-        if (!sidebarOpen) {
-          toggleSidebar(true);
-        }
-      });
-
-      sidebar.addEventListener('mousemove', () => {
-        if (sidebarOpen) {
-          resetAutoCloseTimer();
-        }
-      });
+      trigger.addEventListener('mouseenter', () => { if (!sidebarOpen) toggleSidebar(true); });
+      sidebar.addEventListener('mousemove', () => { if (sidebarOpen) resetAutoCloseTimer(); });
     }
 
     function startAutoCloseCountdown() {
       stopAutoCloseCountdown();
       startTime = Date.now();
-      
       const progressBar = document.getElementById('autoCloseProgressBar');
       const textDisplay = document.getElementById('autoCloseText');
       
@@ -442,19 +277,13 @@
         const elapsed = Date.now() - startTime;
         const remaining = Math.max(0, AUTO_CLOSE_DELAY - elapsed);
         const percent = (remaining / AUTO_CLOSE_DELAY) * 100;
-        
         if (progressBar) progressBar.style.width = percent + '%';
         if (textDisplay) textDisplay.innerText = `Auto-hide: ${Math.ceil(remaining / 1000)}s`;
-
-        if (remaining <= 0) {
-          toggleSidebar(false);
-        }
+        if (remaining <= 0) toggleSidebar(false);
       }, 100);
     }
-    function resetAutoCloseTimer() {
-      startTime = Date.now();
-    }
 
+    function resetAutoCloseTimer() { startTime = Date.now(); }
     function stopAutoCloseCountdown() {
       if (progressInterval) clearInterval(progressInterval);
       const progressBar = document.getElementById('autoCloseProgressBar');
@@ -462,8 +291,16 @@
     }
 
     function toggleMobileDrawer() {
-      const drawer = document.getElementById('mobileDrawer');
-      drawer.classList.toggle('hidden');
+      const drawer = document.getElementById('mobileDrawerContainer');
+      if (drawer) {
+        if (drawer.classList.contains('grid-rows-[0fr]')) {
+          drawer.classList.remove('grid-rows-[0fr]');
+          drawer.classList.add('grid-rows-[1fr]');
+        } else {
+          drawer.classList.remove('grid-rows-[1fr]');
+          drawer.classList.add('grid-rows-[0fr]');
+        }
+      }
     }
   </script>
 </body>

@@ -3,37 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consumer Loan Appraisal System</title>
+    <title>Consumer Loan Appraisal System - Mono Apps Solutions</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
                     colors: {
                         brand: {
-                            50: '#eef6ff',
-                            100: '#d9eafd',
-                            500: '#0284c7',
-                            600: '#026aa7',
-                            700: '#035388',
-                            800: '#07416e',
-                            900: '#0b3254',
-                            950: '#072038',
+                            50: '#f0f6ff', 100: '#e0ecff', 500: '#0284c7', 600: '#0284c7', 700: '#0369a1', 900: '#0f172a'
                         }
                     }
                 }
             }
         }
     </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         @media print {
             body * {
                 visibility: hidden;
@@ -55,376 +49,377 @@
                 display: none !important;
             }
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        #leftEdgeTrigger { position: fixed; top: 0; left: 0; width: 18px; height: 100vh; z-index: 45; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans h-full flex flex-col antialiased">
+<body class="bg-sky-50/50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-300 antialiased selection:bg-sky-500 selection:text-white">
 
-    <!-- Top Navigation Header -->
-    <header class="bg-brand-900 text-white shadow-md no-print shrink-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-brand-700 p-2 rounded-xl border border-brand-600 flex items-center justify-center shadow-inner">
-                    <i data-lucide="calculator" class="w-6 h-6 text-cyan-300"></i>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="app.saveDraft()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-800 hover:bg-brand-700 text-xs font-medium rounded-lg transition border border-brand-600 shadow-sm text-slate-100">
-                    <i data-lucide="save" class="w-3.5 h-3.5 text-cyan-400"></i> Save Draft
-                </button>
-                <a href="index.html" class="bg-blue-600 text-white p-2 rounded-xl flex items-center justify-center font-bold text-lg hover:bg-blue-500 transition" title="Back to Home">
-          <i data-lucide="home" class="w-5 h-5"></i>
-        </a>
-                <button onclick="app.loadDraft()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-800 hover:bg-brand-700 text-xs font-medium rounded-lg transition border border-brand-600 shadow-sm text-slate-100">
-                    <i data-lucide="folder-open" class="w-3.5 h-3.5 text-amber-400"></i> Load
-                </button>
-                <button onclick="app.resetForm()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-900/50 hover:bg-rose-900 text-xs font-medium rounded-lg transition border border-rose-700/50 shadow-sm text-rose-200">
-                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
-                </button>
-            </div>
-        </div>
-    </header>
+    <!-- INJECT HEADER -->
+    <div id="include-header"></div>
 
-    <!-- Main Workspace Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col overflow-hidden no-print">
-        
-        <!-- Wizard Navigation Steps -->
-        <nav aria-label="Progress" class="mb-6 shrink-0">
-            <ol id="wizard-steps-indicator" class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <!-- Injected via JS -->
-            </ol>
-        </nav>
+    <!-- INJECT SIDEBAR & FIXED NAVBAR -->
+    <div id="include-sidebar"></div>
 
-        <!-- Dynamic Form & Content Card -->
-        <div class="flex-1 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+    <!-- CONTENT WRAPPER -->
+    <div id="contentWrapper" class="flex-1 flex flex-col min-w-0 w-full transition-all duration-300 ease-in-out pt-20">
+
+        <!-- Main Workspace Container -->
+        <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col overflow-hidden no-print space-y-6">
             
-            <div class="flex-1 overflow-y-auto p-4 sm:p-8">
-                <form id="appraisal-form" onsubmit="event.preventDefault();" class="max-w-4xl mx-auto">
-                    
-                    <!-- STEP 1: INSTITUTION & EMPLOYEE DETAILS -->
-                    <div id="step-1" class="step-content space-y-6">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <i data-lucide="building-2" class="w-5 h-5 text-brand-600"></i> 1. Institution & Employee Details
-                            </h2>
-                            <p class="text-sm text-slate-500 mt-1">Select public institution entity and specify applicant details.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">1.1 Entity Name *</label>
-                                <select id="entityName" name="entityName" onchange="app.updateEntityTitle()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition bg-white">
-                                    <option value="">-- Select Public Institution --</option>
-                                    <option value="TANZANIA REVENUE AUTHORITY (TRA)">TANZANIA REVENUE AUTHORITY (TRA)</option>
-                                    <option value="TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)">TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)</option>
-                                    <option value="TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)">TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)</option>
-                                    <option value="DAR ES SALAAM WATER SUPPLY AND SANITATION AUTHORITY (DAWASA)">DAR ES SALAAM WATER SUPPLY AND SANITATION AUTHORITY (DAWASA)</option>
-                                    <option value="TANZANIA PORTS AUTHORITY (TPA)">TANZANIA PORTS AUTHORITY (TPA)</option>
-                                    <option value="TANZANIA PETROLEUM DEVELOPMENT CORPORATION (TPDC)">TANZANIA PETROLEUM DEVELOPMENT CORPORATION (TPDC)</option>
-                                    <option value="TANZANIA RAILWAYS CORPORATION (TRC)">TANZANIA RAILWAYS CORPORATION (TRC)</option>
-                                    <option value="NATIONAL HOUSING CORPORATION (NHC)">NATIONAL HOUSING CORPORATION (NHC)</option>
-                                    <option value="PUBLIC SERVICE SOCIAL SECURITY FUND (PSSSF)">PUBLIC SERVICE SOCIAL SECURITY FUND (PSSSF)</option>
-                                    <option value="NATIONAL SOCIAL SECURITY FUND (NSSF)">NATIONAL SOCIAL SECURITY FUND (NSSF)</option>
-                                    <option value="TANZANIA AGRICULTURAL DEVELOPMENT BANK (TADB)">TANZANIA AGRICULTURAL DEVELOPMENT BANK (TADB)</option>
-                                    <option value="ZANZIBAR REVENUE BOARD (ZRB)">ZANZIBAR REVENUE BOARD (ZRB)</option>
-                                    <option value="MINISTRY OF FINANCE">MINISTRY OF FINANCE</option>
-                                    <option value="MINISTRY OF HEALTH">MINISTRY OF HEALTH</option>
-                                    <option value="MINISTRY OF EDUCATION">MINISTRY OF EDUCATION</option>
-                                    <option value="OTHER PUBLIC INSTITUTION">OTHER PUBLIC INSTITUTION</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">1.2 Entity Code</label>
-                                <input type="text" id="entityCode" name="entityCode" placeholder="Enter entity code" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">1.3 Approved Interest Rate (% p.a. Reducing)</label>
-                                <input type="number" step="0.01" id="interestRate" name="interestRate" placeholder="e.g. 13.0" oninput="app.calculate()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">1.4 Approved Tenor (In Months)</label>
-                                <input type="number" id="loanTenor" name="loanTenor" placeholder="e.g. 96" oninput="app.calculate()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition">
-                            </div>
-
-                            <div class="md:col-span-2 pt-2 border-t border-slate-100">
-                                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide mb-3">2. Employee Information</h3>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">2.1 Employee Name *</label>
-                                <input type="text" id="applicantName" name="applicantName" placeholder="Enter employee full name" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">2.2 Employee Number</label>
-                                <input type="text" id="checkNumber" name="checkNumber" placeholder="Enter employee number" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">2.3 Employee ABL Account Number</label>
-                                <input type="text" id="accountNumber" name="accountNumber" placeholder="Optional" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none transition">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 2: INCOME & PROPOSED LOAN EXPOSURE -->
-                    <div id="step-2" class="step-content space-y-6 hidden">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <i data-lucide="wallet" class="w-5 h-5 text-brand-600"></i> 3. Income & 4. Proposed Loan Exposure
-                            </h2>
-                            <p class="text-sm text-slate-500 mt-1">Specify basic salary, allowances, and facility exposure.</p>
-                        </div>
-
-                        <!-- 3. Income Section -->
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">3.1 Basic Salary (TZS) *</label>
-                                <input type="number" id="basicSalary" name="basicSalary" placeholder="0.00" oninput="app.calculate()" class="w-full sm:w-1/2 px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 font-semibold text-brand-900 text-sm outline-none">
-                            </div>
-
-                            <!-- Fixed Allowances (3.2) -->
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">3.2 Fixed Allowances</h4>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.2.1 Housing</label>
-                                        <input type="number" id="housing" name="housing" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.2.2 Transport</label>
-                                        <input type="number" id="transport" name="transport" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.2.3 Others</label>
-                                        <input type="number" id="fixedOthers" name="fixedOthers" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border text-xs font-bold text-slate-800">
-                                    <span>(a) SUB-TOTAL FIXED ALLOWANCES</span>
-                                    <span id="sub-fixed">TZS 0.00</span>
-                                </div>
-                            </div>
-
-                            <!-- Variable Allowances (3.3) -->
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700">3.3 Variable Allowances</h4>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs sm:text-sm">
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.3.1 Utility</label>
-                                        <input type="number" id="utility" name="utility" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.3.2 Airtime</label>
-                                        <input type="number" id="airtime" name="airtime" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.3.3 Overtime/Extra duty</label>
-                                        <input type="number" id="overtime" name="overtime" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[11px] text-slate-500 mb-1">3.3.4 Others</label>
-                                        <input type="number" id="varOthers" name="varOthers" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white border border-slate-300 rounded-lg p-2">
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center bg-white p-2.5 rounded-lg border text-xs font-bold text-slate-800">
-                                    <span>(b) SUB-TOTAL VARIABLE ALLOWANCES</span>
-                                    <span id="sub-variable">TZS 0.00</span>
-                                </div>
-                            </div>
-
-                            <div class="flex justify-between items-center bg-brand-50 border border-brand-200 p-3.5 rounded-xl font-bold text-brand-900 text-sm">
-                                <span>GRAND-TOTAL INCOME</span>
-                                <span id="grand-total-income">TZS 0.00</span>
-                            </div>
-                        </div>
-
-                        <!-- 4. Proposed Loan Exposure Section -->
-                        <div class="space-y-4 pt-3 border-t border-slate-100">
-                            <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wide">4. Proposed Loan Amount / Exposure</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">4.1 Applied Facility Amount (TZS) *</label>
-                                    <input type="number" id="appliedAmount" name="appliedAmount" placeholder="0.00" oninput="app.calculate()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 font-semibold text-brand-900 text-sm outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">4.2 Existing Facility Balance (TZS)</label>
-                                    <input type="number" id="existingBalance" name="existingBalance" placeholder="0.00" oninput="app.calculate()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 font-semibold text-brand-900 text-sm outline-none">
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center bg-brand-900 text-white p-4 rounded-xl font-bold text-sm">
-                                <span>TOTAL EXPOSURE</span>
-                                <span id="total-exposure" class="text-cyan-300 text-base">TZS 0.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- STEP 3: COMPLIANCE & BANK RELATIONS -->
-                    <div id="step-3" class="step-content space-y-6 hidden">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <i data-lucide="shield-check" class="w-5 h-5 text-brand-600"></i> 5. Compliance & 6. Bank Relations
-                            </h2>
-                            <p class="text-sm text-slate-500 mt-1">Review 1/3 statutory basic salary compliance and debt service ratios.</p>
-                        </div>
-
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs sm:text-sm">
-                            <div class="flex justify-between items-center py-1.5 border-b">
-                                <span class="text-slate-600">5.1 Net Salary (From Current Salary Slips)</span>
-                                <input type="number" id="netSalarySlip" name="netSalarySlip" placeholder="0.00" oninput="app.calculate()" class="w-36 bg-white border border-slate-300 rounded px-2 py-1 text-right font-medium">
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b">
-                                <span class="text-slate-600">Add: ABL existing Monthly Instalment</span>
-                                <input type="number" id="ablExistingInst" name="ablExistingInst" placeholder="0.00" oninput="app.calculate()" class="w-36 bg-white border border-slate-300 rounded px-2 py-1 text-right font-medium">
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b text-slate-600">
-                                <span>Less: Items 3.2-3.3 above (Total allowances a+b)</span>
-                                <span id="total-allowances-deduct" class="font-medium text-slate-800">TZS 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b font-semibold text-slate-800">
-                                <span>Adjusted Net Fixed Salary</span>
-                                <span id="adjusted-net-fixed">TZS 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b text-slate-600">
-                                <span>5.2 Deduction Limit 1/3 of Basic Salary</span>
-                                <span id="limit-one-third" class="font-bold text-amber-700">TZS 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b">
-                                <span class="text-slate-600">5.3 Monthly Instalments - ABL (PMT)</span>
-                                <span id="monthly-inst-abl" class="font-bold text-brand-700">TZS 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b">
-                                <span class="text-slate-600">- Other Bank(s) Instalment</span>
-                                <input type="number" id="otherBanksInst" name="otherBanksInst" placeholder="0.00" oninput="app.calculate()" class="w-36 bg-white border border-slate-300 rounded px-2 py-1 text-right font-medium">
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b font-semibold text-slate-800">
-                                <span>Total Deductions</span>
-                                <span id="total-deductions">TZS 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b font-semibold text-slate-800">
-                                <span>Net Salary After Deductions</span>
-                                <span id="net-after-deductions">TZS 0.00</span>
-                            </div>
-                            <div class="flex justify-between items-center py-1.5 border-b">
-                                <span class="text-slate-600">5.3 Debt Ratio</span>
-                                <span id="debt-ratio" class="font-bold text-slate-900">0.00%</span>
-                            </div>
-                            <div class="flex justify-between items-center pt-2 font-bold text-base">
-                                <span>5.4 Within/Above Limit</span>
-                                <span id="limit-status" class="px-3 py-1 rounded text-xs tracking-wide bg-slate-200 text-slate-700">PENDING</span>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600">6. Relationship with Other Banks</label>
-                            <textarea id="relOtherBanks" name="relOtherBanks" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none" placeholder="Relationship with other Banks"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- STEP 4: RECOMMENDATIONS, SCHEDULE & APPROVAL -->
-                    <div id="step-4" class="step-content space-y-6 hidden">
-                        <div class="border-b border-slate-100 pb-4">
-                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                                <i data-lucide="award" class="w-5 h-5 text-brand-600"></i> 7. Recommendations, Schedule & Approval
-                            </h2>
-                            <p class="text-sm text-slate-500 mt-1">Review breakdown schedule, credit notes, and print official report.</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">7.1 CA Recommendations:</label>
-                                <textarea id="caRecommendations" name="caRecommendations" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none" placeholder="Enter CA recommendations..."></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">7.5 BM Approval:</label>
-                                <textarea id="bmApproval" name="bmApproval" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 text-sm outline-none" placeholder="Enter BM approval..."></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Schedule Table (Sheet1) -->
-                        <div class="space-y-2 pt-2 border-t border-slate-100">
-                            <h3 class="text-xs font-bold uppercase tracking-wider bg-slate-800 text-white px-3 py-2 rounded-lg flex items-center gap-1.5">
-                                <i data-lucide="table" class="w-4 h-4 text-cyan-400"></i> Loan Breakdown Schedule (Sheet1)
-                            </h3>
-                            <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                                <table class="w-full text-left text-xs border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
-                                            <th class="p-2.5 font-semibold">No of Years</th>
-                                            <th class="p-2.5 font-semibold">Proposed Amount</th>
-                                            <th class="p-2.5 font-semibold">Monthly Installment</th>
-                                            <th class="p-2.5 font-semibold">Processing Fee 1.6%</th>
-                                            <th class="p-2.5 font-semibold">VAT 18% of Fee</th>
-                                            <th class="p-2.5 font-semibold">Insurance 0.4% p.a</th>
-                                            <th class="p-2.5 font-semibold text-right">Net Proposed Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-200 bg-white">
-                                        <tr>
-                                            <td id="sched-years" class="p-2.5 font-medium">0.0</td>
-                                            <td id="sched-amount" class="p-2.5">TZS 0.00</td>
-                                            <td id="sched-pmt" class="p-2.5 font-semibold text-brand-700">TZS 0.00</td>
-                                            <td id="sched-fee" class="p-2.5">TZS 0.00</td>
-                                            <td id="sched-vat" class="p-2.5">TZS 0.00</td>
-                                            <td id="sched-ins" class="p-2.5">TZS 0.00</td>
-                                            <td id="sched-net" class="p-2.5 text-right font-bold text-emerald-600">TZS 0.00</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="pt-4 border-t border-slate-100 flex justify-end">
-                            <button type="button" onclick="app.showPrintableReport()" class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition transform active:scale-95">
-                                <i data-lucide="printer" class="w-5 h-5"></i> Generate Official Printable Report & Document
-                            </button>
-                        </div>
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- Bottom Step Navigation Footer -->
-            <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex justify-between items-center shrink-0">
-                <button id="prev-btn" onclick="app.prevStep()" class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-sm font-semibold rounded-xl transition shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Previous
-                </button>
-                <div id="step-indicator-text" class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    Step 1 of 4
+            <!-- Page Heading Bar with Quick Actions -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full">Suite 03 Module</span>
+                    <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1">Consumer Loan Appraisal</h1>
                 </div>
-                <button id="next-btn" onclick="app.nextStep()" class="inline-flex items-center gap-2 px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
-                    Next Step <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="app.saveDraft()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-sky-50 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-slate-700 text-xs font-bold rounded-xl transition border border-sky-200 dark:border-slate-700 text-sky-700 dark:text-sky-300 shadow-xs">
+                        <i data-lucide="save" class="w-4 h-4 text-sky-500"></i> Save Draft
+                    </button>
+                    <button onclick="app.loadDraft()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-bold rounded-xl transition border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 shadow-xs">
+                        <i data-lucide="folder-open" class="w-4 h-4 text-amber-500"></i> Load
+                    </button>
+                    <button onclick="app.resetForm()" class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-xs font-bold rounded-xl transition border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 shadow-xs">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset
+                    </button>
+                </div>
             </div>
 
-        </div>
-    </main>
+            <!-- Wizard Navigation Steps -->
+            <nav aria-label="Progress" class="shrink-0">
+                <ol id="wizard-steps-indicator" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <!-- Injected via JS -->
+                </ol>
+            </nav>
+
+            <!-- Dynamic Form & Content Card -->
+            <div class="flex-1 bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 flex flex-col overflow-hidden">
+                
+                <div class="flex-1 overflow-y-auto p-6 sm:p-10">
+                    <form id="appraisal-form" onsubmit="event.preventDefault();" class="max-w-4xl mx-auto space-y-6">
+                        
+                        <!-- STEP 1: INSTITUTION & EMPLOYEE DETAILS -->
+                        <div id="step-1" class="step-content space-y-6">
+                            <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+                                <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="building-2" class="w-5 h-5 text-sky-600"></i> 1. Institution & Employee Details
+                                </h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Select public institution entity and specify applicant details.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">1.1 Entity Name *</label>
+                                    <select id="entityName" name="entityName" onchange="app.updateEntityTitle()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                        <option value="">-- Select Public Institution --</option>
+                                        <option value="TANZANIA REVENUE AUTHORITY (TRA)">TANZANIA REVENUE AUTHORITY (TRA)</option>
+                                        <option value="TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)">TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)</option>
+                                        <option value="TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)">TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)</option>
+                                        <option value="DAR ES SALAAM WATER SUPPLY AND SANITATION AUTHORITY (DAWASA)">DAR ES SALAAM WATER SUPPLY AND SANITATION AUTHORITY (DAWASA)</option>
+                                        <option value="TANZANIA PORTS AUTHORITY (TPA)">TANZANIA PORTS AUTHORITY (TPA)</option>
+                                        <option value="TANZANIA PETROLEUM DEVELOPMENT CORPORATION (TPDC)">TANZANIA PETROLEUM DEVELOPMENT CORPORATION (TPDC)</option>
+                                        <option value="TANZANIA RAILWAYS CORPORATION (TRC)">TANZANIA RAILWAYS CORPORATION (TRC)</option>
+                                        <option value="NATIONAL HOUSING CORPORATION (NHC)">NATIONAL HOUSING CORPORATION (NHC)</option>
+                                        <option value="PUBLIC SERVICE SOCIAL SECURITY FUND (PSSSF)">PUBLIC SERVICE SOCIAL SECURITY FUND (PSSSF)</option>
+                                        <option value="NATIONAL SOCIAL SECURITY FUND (NSSF)">NATIONAL SOCIAL SECURITY FUND (NSSF)</option>
+                                        <option value="TANZANIA AGRICULTURAL DEVELOPMENT BANK (TADB)">TANZANIA AGRICULTURAL DEVELOPMENT BANK (TADB)</option>
+                                        <option value="ZANZIBAR REVENUE BOARD (ZRB)">ZANZIBAR REVENUE BOARD (ZRB)</option>
+                                        <option value="MINISTRY OF FINANCE">MINISTRY OF FINANCE</option>
+                                        <option value="MINISTRY OF HEALTH">MINISTRY OF HEALTH</option>
+                                        <option value="MINISTRY OF EDUCATION">MINISTRY OF EDUCATION</option>
+                                        <option value="OTHER PUBLIC INSTITUTION">OTHER PUBLIC INSTITUTION</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">1.2 Entity Code</label>
+                                    <input type="text" id="entityCode" name="entityCode" placeholder="Enter entity code" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">1.3 Approved Interest Rate (% p.a. Reducing)</label>
+                                    <input type="number" step="0.01" id="interestRate" name="interestRate" placeholder="e.g. 13.0" oninput="app.calculate()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">1.4 Approved Tenor (In Months)</label>
+                                    <input type="number" id="loanTenor" name="loanTenor" placeholder="e.g. 96" oninput="app.calculate()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                </div>
+
+                                <div class="md:col-span-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                    <h3 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">2. Employee Information</h3>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">2.1 Employee Name *</label>
+                                    <input type="text" id="applicantName" name="applicantName" placeholder="Enter employee full name" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">2.2 Employee Number</label>
+                                    <input type="text" id="checkNumber" name="checkNumber" placeholder="Enter employee number" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">2.3 Employee ABL Account Number</label>
+                                    <input type="text" id="accountNumber" name="accountNumber" placeholder="Optional" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500 text-xs font-semibold outline-none transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: INCOME & PROPOSED LOAN EXPOSURE -->
+                        <div id="step-2" class="step-content space-y-6 hidden">
+                            <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+                                <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="wallet" class="w-5 h-5 text-sky-600"></i> 3. Income & 4. Proposed Loan Exposure
+                                </h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Specify basic salary, allowances, and facility exposure.</p>
+                            </div>
+
+                            <!-- 3. Income Section -->
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">3.1 Basic Salary (TZS) *</label>
+                                    <input type="number" id="basicSalary" name="basicSalary" placeholder="0.00" oninput="app.calculate()" class="w-full sm:w-1/2 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-sky-600 dark:text-sky-400 text-sm outline-none">
+                                </div>
+
+                                <!-- Fixed Allowances (3.2) -->
+                                <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 space-y-3">
+                                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3.2 Fixed Allowances</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.2.1 Housing</label>
+                                            <input type="number" id="housing" name="housing" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.2.2 Transport</label>
+                                            <input type="number" id="transport" name="transport" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.2.3 Others</label>
+                                            <input type="number" id="fixedOthers" name="fixedOthers" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200">
+                                        <span>(a) SUB-TOTAL FIXED ALLOWANCES</span>
+                                        <span id="sub-fixed">TZS 0.00</span>
+                                    </div>
+                                </div>
+
+                                <!-- Variable Allowances (3.3) -->
+                                <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 space-y-3">
+                                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">3.3 Variable Allowances</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs sm:text-sm">
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.3.1 Utility</label>
+                                            <input type="number" id="utility" name="utility" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.3.2 Airtime</label>
+                                            <input type="number" id="airtime" name="airtime" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.3.3 Overtime/Extra duty</label>
+                                            <input type="number" id="overtime" name="overtime" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-slate-500 mb-1">3.3.4 Others</label>
+                                            <input type="number" id="varOthers" name="varOthers" placeholder="0.00" oninput="app.calculate()" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs">
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-200">
+                                        <span>(b) SUB-TOTAL VARIABLE ALLOWANCES</span>
+                                        <span id="sub-variable">TZS 0.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/60 p-4 rounded-2xl font-bold text-sky-900 dark:text-sky-200 text-xs">
+                                    <span>GRAND-TOTAL INCOME</span>
+                                    <span id="grand-total-income">TZS 0.00</span>
+                                </div>
+                            </div>
+
+                            <!-- 4. Proposed Loan Exposure Section -->
+                            <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <h3 class="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">4. Proposed Loan Amount / Exposure</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">4.1 Applied Facility Amount (TZS) *</label>
+                                        <input type="number" id="appliedAmount" name="appliedAmount" placeholder="0.00" oninput="app.calculate()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-sky-600 dark:text-sky-400 text-xs outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">4.2 Existing Facility Balance (TZS)</label>
+                                        <input type="number" id="existingBalance" name="existingBalance" placeholder="0.00" oninput="app.calculate()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold text-sky-600 dark:text-sky-400 text-xs outline-none">
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center bg-slate-900 text-white p-4 rounded-2xl font-bold text-xs">
+                                    <span>TOTAL EXPOSURE</span>
+                                    <span id="total-exposure" class="text-cyan-300 text-sm font-black">TZS 0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: COMPLIANCE & BANK RELATIONS -->
+                        <div id="step-3" class="step-content space-y-6 hidden">
+                            <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+                                <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-sky-600"></i> 5. Compliance & 6. Bank Relations
+                                </h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Review 1/3 statutory basic salary compliance and debt service ratios.</p>
+                            </div>
+
+                            <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 space-y-3 text-xs sm:text-sm">
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
+                                    <span class="text-slate-600 dark:text-slate-300 font-medium">5.1 Net Salary (From Current Salary Slips)</span>
+                                    <input type="number" id="netSalarySlip" name="netSalarySlip" placeholder="0.00" oninput="app.calculate()" class="w-40 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-right font-bold text-xs">
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
+                                    <span class="text-slate-600 dark:text-slate-300 font-medium">Add: ABL existing Monthly Instalment</span>
+                                    <input type="number" id="ablExistingInst" name="ablExistingInst" placeholder="0.00" oninput="app.calculate()" class="w-40 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-right font-bold text-xs">
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium">
+                                    <span>Less: Items 3.2-3.3 above (Total allowances a+b)</span>
+                                    <span id="total-allowances-deduct" class="font-bold text-slate-800 dark:text-slate-200">TZS 0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700 font-black text-slate-900 dark:text-white">
+                                    <span>Adjusted Net Fixed Salary</span>
+                                    <span id="adjusted-net-fixed">TZS 0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                                    <span class="font-medium">5.2 Deduction Limit 1/3 of Basic Salary</span>
+                                    <span id="limit-one-third" class="font-black text-amber-600 dark:text-amber-400">TZS 0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
+                                    <span class="text-slate-600 dark:text-slate-300 font-medium">5.3 Monthly Instalments - ABL (PMT)</span>
+                                    <span id="monthly-inst-abl" class="font-black text-sky-600 dark:text-sky-400">TZS 0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
+                                    <span class="text-slate-600 dark:text-slate-300 font-medium">- Other Bank(s) Instalment</span>
+                                    <input type="number" id="otherBanksInst" name="otherBanksInst" placeholder="0.00" oninput="app.calculate()" class="w-40 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-right font-bold text-xs">
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700 font-black text-slate-900 dark:text-white">
+                                    <span>Total Deductions</span>
+                                    <span id="total-deductions">TZS 0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700 font-black text-slate-900 dark:text-white">
+                                    <span>Net Salary After Deductions</span>
+                                    <span id="net-after-deductions">TZS 0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-700">
+                                    <span class="text-slate-600 dark:text-slate-300 font-medium">5.3 Debt Ratio</span>
+                                    <span id="debt-ratio" class="font-black text-slate-900 dark:text-white">0.00%</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-3 font-black text-sm">
+                                    <span class="text-slate-800 dark:text-slate-200">5.4 Within/Above Limit</span>
+                                    <span id="limit-status" class="px-3.5 py-1.5 rounded-xl text-xs tracking-wider bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-xs">PENDING</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">6. Relationship with Other Banks</label>
+                                <textarea id="relOtherBanks" name="relOtherBanks" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none" placeholder="Relationship with other Banks"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: RECOMMENDATIONS, SCHEDULE & APPROVAL -->
+                        <div id="step-4" class="step-content space-y-6 hidden">
+                            <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+                                <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="award" class="w-5 h-5 text-sky-600"></i> 7. Recommendations, Schedule & Approval
+                                </h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">Review breakdown schedule, credit notes, and print official report.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">7.1 CA Recommendations:</label>
+                                    <textarea id="caRecommendations" name="caRecommendations" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none" placeholder="Enter CA recommendations..."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">7.5 BM Approval:</label>
+                                    <textarea id="bmApproval" name="bmApproval" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs outline-none" placeholder="Enter BM approval..."></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Schedule Table (Sheet1) -->
+                            <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <h3 class="text-xs font-black uppercase tracking-wider bg-slate-900 text-white px-4 py-3 rounded-2xl flex items-center gap-2 shadow-sm">
+                                    <i data-lucide="table" class="w-4 h-4 text-cyan-400"></i> Loan Breakdown Schedule (Sheet1)
+                                </h3>
+                                <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                                    <table class="w-full text-left text-xs border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700 font-bold">
+                                                <th class="p-3">No of Years</th>
+                                                <th class="p-3">Proposed Amount</th>
+                                                <th class="p-3">Monthly Installment</th>
+                                                <th class="p-3">Processing Fee 1.6%</th>
+                                                <th class="p-3">VAT 18% of Fee</th>
+                                                <th class="p-3">Insurance 0.4% p.a</th>
+                                                <th class="p-3 text-right">Net Proposed Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-900 font-medium">
+                                            <tr>
+                                                <td id="sched-years" class="p-3 font-bold">0.0</td>
+                                                <td id="sched-amount" class="p-3">TZS 0.00</td>
+                                                <td id="sched-pmt" class="p-3 font-bold text-sky-600 dark:text-sky-400">TZS 0.00</td>
+                                                <td id="sched-fee" class="p-3">TZS 0.00</td>
+                                                <td id="sched-vat" class="p-3">TZS 0.00</td>
+                                                <td id="sched-ins" class="p-3">TZS 0.00</td>
+                                                <td id="sched-net" class="p-3 text-right font-black text-emerald-600 dark:text-emerald-400">TZS 0.00</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                                <button type="button" onclick="app.showPrintableReport()" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-2xl shadow-lg shadow-emerald-600/20 transition transform active:scale-95">
+                                    <i data-lucide="printer" class="w-4 h-4"></i> Generate Official Printable Report & Document
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Bottom Step Navigation Footer -->
+                <div class="bg-slate-50 dark:bg-slate-800/60 px-6 sm:px-10 py-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0">
+                    <button id="prev-btn" onclick="app.prevStep()" class="inline-flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition shadow-xs disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Previous
+                    </button>
+                    <div id="step-indicator-text" class="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        Step 1 of 4
+                    </div>
+                    <button id="next-btn" onclick="app.nextStep()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white text-xs font-bold rounded-xl transition shadow-md shadow-sky-600/20 active:scale-95">
+                        Next Step <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- INJECT FOOTER -->
+        <div id="include-footer"></div>
+
+    </div>
 
     <!-- PRINTABLE APPRAISAL REPORT MODAL -->
-    <div id="printable-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden overflow-y-auto p-2 sm:p-6 flex justify-center items-start">
-        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto border border-slate-200">
+    <div id="printable-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden overflow-y-auto p-2 sm:p-6 flex justify-center items-start">
+        <div class="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto border border-slate-200">
             
             <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center no-print">
                 <div class="flex items-center gap-2">
                     <i data-lucide="file-text" class="w-5 h-5 text-cyan-400"></i>
-                    <span class="font-bold text-sm">Official Consumer Loan Appraisal Document</span>
+                    <span class="font-bold text-xs uppercase tracking-wider">Official Consumer Loan Appraisal Document</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg transition shadow">
+                    <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition shadow">
                         <i data-lucide="printer" class="w-4 h-4"></i> Print Document
                     </button>
-                    <button onclick="app.closePrintableReport()" class="p-2 hover:bg-slate-800 text-slate-300 hover:text-white rounded-lg transition">
+                    <button onclick="app.closePrintableReport()" class="p-2 hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl transition">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
@@ -433,93 +428,93 @@
             <!-- Printable Document Body -->
             <div id="printable-report" class="p-8 sm:p-12 space-y-6 bg-white text-slate-800 text-xs sm:text-sm">
                 
-                <div class="text-center border-b-2 border-brand-900 pb-4">
-                    <h2 class="font-black text-xl tracking-wide text-brand-900 uppercase">CONSUMER APPRAISAL CALCULATOR</h2>
+                <div class="text-center border-b-2 border-slate-900 pb-4">
+                    <h2 class="font-black text-xl tracking-wide text-slate-900 uppercase">CONSUMER APPRAISAL CALCULATOR</h2>
                     <p id="rep-header-entity" class="text-xs font-bold text-slate-600 mt-1 uppercase">SELECT PUBLIC INSTITUTION</p>
                 </div>
 
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-brand-900 bg-slate-100 px-3 py-1.5 rounded mb-3 border-l-4 border-brand-600">1. Institution & Employee Details</h4>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 bg-slate-100 px-3.5 py-2 rounded-xl mb-3 border-l-4 border-sky-600">1. Institution & Employee Details</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">
                         <div>
-                            <span class="text-slate-500 text-xs block">1.1 Entity Name</span>
-                            <span id="rep-entityName" class="font-semibold text-slate-900">-</span>
+                            <span class="text-slate-500 text-[10px] uppercase font-bold block">1.1 Entity Name</span>
+                            <span id="rep-entityName" class="font-bold text-slate-900 text-xs">-</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">1.2 Entity Code</span>
-                            <span id="rep-entityCode" class="font-semibold text-slate-900">-</span>
+                            <span class="text-slate-500 text-[10px] uppercase font-bold block">1.2 Entity Code</span>
+                            <span id="rep-entityCode" class="font-bold text-slate-900 text-xs">-</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">2.1 Employee Name</span>
-                            <span id="rep-applicantName" class="font-semibold text-slate-900">-</span>
+                            <span class="text-slate-500 text-[10px] uppercase font-bold block">2.1 Employee Name</span>
+                            <span id="rep-applicantName" class="font-bold text-slate-900 text-xs">-</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">2.2 Employee Number</span>
-                            <span id="rep-checkNumber" class="font-semibold text-slate-900">-</span>
+                            <span class="text-slate-500 text-[10px] uppercase font-bold block">2.2 Employee Number</span>
+                            <span id="rep-checkNumber" class="font-bold text-slate-900 text-xs">-</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">2.3 ABL Account No.</span>
-                            <span id="rep-accountNumber" class="font-semibold text-slate-900">-</span>
+                            <span class="text-slate-500 text-[10px] uppercase font-bold block">2.3 ABL Account No.</span>
+                            <span id="rep-accountNumber" class="font-bold text-slate-900 text-xs">-</span>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-brand-900 bg-slate-100 px-3 py-1.5 rounded mb-3 border-l-4 border-brand-600">3. Income & 4. Proposed Exposure</h4>
-                    <table class="w-full text-left border-collapse border border-slate-200 text-xs sm:text-sm">
-                        <tbody class="divide-y divide-slate-200">
-                            <tr><td class="p-2 font-medium">Basic Salary</td><td id="rep-basicSalary" class="p-2 text-right">0.00</td></tr>
-                            <tr><td class="p-2">Fixed Allowances (Housing, Transport, Others)</td><td id="rep-subFixed" class="p-2 text-right">0.00</td></tr>
-                            <tr><td class="p-2">Variable Allowances (Utility, Airtime, Overtime, Others)</td><td id="rep-subVariable" class="p-2 text-right">0.00</td></tr>
-                            <tr class="bg-slate-50 font-bold"><td class="p-2">GRAND-TOTAL INCOME</td><td id="rep-grandTotalIncome" class="p-2 text-right">0.00</td></tr>
-                            <tr><td class="p-2 font-medium">Applied Facility Amount</td><td id="rep-appliedAmount" class="p-2 text-right font-semibold">0.00</td></tr>
-                            <tr class="bg-brand-50 font-bold text-brand-900"><td class="p-2">TOTAL EXPOSURE</td><td id="rep-totalExposure" class="p-2 text-right">0.00</td></tr>
+                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 bg-slate-100 px-3.5 py-2 rounded-xl mb-3 border-l-4 border-sky-600">3. Income & 4. Proposed Exposure</h4>
+                    <table class="w-full text-left border-collapse border border-slate-200 text-xs sm:text-sm rounded-xl overflow-hidden">
+                        <tbody class="divide-y divide-slate-200 font-medium">
+                            <tr><td class="p-2.5 font-semibold">Basic Salary</td><td id="rep-basicSalary" class="p-2.5 text-right font-bold">0.00</td></tr>
+                            <tr><td class="p-2.5">Fixed Allowances (Housing, Transport, Others)</td><td id="rep-subFixed" class="p-2.5 text-right">0.00</td></tr>
+                            <tr><td class="p-2.5">Variable Allowances (Utility, Airtime, Overtime, Others)</td><td id="rep-subVariable" class="p-2.5 text-right">0.00</td></tr>
+                            <tr class="bg-slate-50 font-black"><td class="p-2.5">GRAND-TOTAL INCOME</td><td id="rep-grandTotalIncome" class="p-2.5 text-right">0.00</td></tr>
+                            <tr><td class="p-2.5 font-semibold">Applied Facility Amount</td><td id="rep-appliedAmount" class="p-2.5 text-right font-bold">0.00</td></tr>
+                            <tr class="bg-sky-50 font-black text-sky-900"><td class="p-2.5">TOTAL EXPOSURE</td><td id="rep-totalExposure" class="p-2.5 text-right">0.00</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-brand-900 bg-slate-100 px-3 py-1.5 rounded mb-3 border-l-4 border-brand-600">5. Compliance Evaluation</h4>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 bg-slate-100 px-3.5 py-2 rounded-xl mb-3 border-l-4 border-sky-600">5. Compliance Evaluation</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
                         <div>
-                            <span class="text-slate-500 text-xs block">Adjusted Net Fixed Salary</span>
-                            <span id="rep-adjustedNetFixed" class="font-bold text-slate-900">0.00</span>
+                            <span class="text-slate-500 font-bold block">Adjusted Net Fixed Salary</span>
+                            <span id="rep-adjustedNetFixed" class="font-black text-slate-900 text-sm">0.00</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">1/3 Basic Salary Limit</span>
-                            <span id="rep-limitOneThird" class="font-bold text-amber-700">0.00</span>
+                            <span class="text-slate-500 font-bold block">1/3 Basic Salary Limit</span>
+                            <span id="rep-limitOneThird" class="font-black text-amber-600 text-sm">0.00</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">Monthly Instalments - ABL</span>
-                            <span id="rep-monthlyInst" class="font-bold text-brand-700">0.00</span>
+                            <span class="text-slate-500 font-bold block">Monthly Instalments - ABL</span>
+                            <span id="rep-monthlyInst" class="font-black text-sky-600 text-sm">0.00</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">Total Deductions</span>
-                            <span id="rep-totalDeductions" class="font-bold text-slate-900">0.00</span>
+                            <span class="text-slate-500 font-bold block">Total Deductions</span>
+                            <span id="rep-totalDeductions" class="font-black text-slate-900 text-sm">0.00</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">Net Salary After Deductions</span>
-                            <span id="rep-netAfterDeductions" class="font-bold text-emerald-700">0.00</span>
+                            <span class="text-slate-500 font-bold block">Net Salary After Deductions</span>
+                            <span id="rep-netAfterDeductions" class="font-black text-emerald-600 text-sm">0.00</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 text-xs block">Debt Ratio</span>
-                            <span id="rep-debtRatio" class="font-bold text-slate-900">0.00%</span>
+                            <span class="text-slate-500 font-bold block">Debt Ratio</span>
+                            <span id="rep-debtRatio" class="font-black text-slate-900 text-sm">0.00%</span>
                         </div>
-                        <div class="sm:col-span-3 pt-2 border-t border-slate-200 flex justify-between items-center">
-                            <span class="text-xs font-semibold text-slate-700 uppercase">Within/Above Limit:</span>
-                            <span id="rep-compliance-badge" class="px-3 py-1 rounded text-xs font-bold bg-slate-200 text-slate-700">PENDING</span>
+                        <div class="sm:col-span-3 pt-3 border-t border-slate-200 flex justify-between items-center">
+                            <span class="text-xs font-black text-slate-700 uppercase">Within/Above Limit:</span>
+                            <span id="rep-compliance-badge" class="px-3.5 py-1 rounded-xl text-xs font-black bg-slate-200 text-slate-700">PENDING</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6 pt-6 border-t border-slate-200">
+                <div class="grid grid-cols-2 gap-6 pt-6 border-t border-slate-200 text-xs">
                     <div>
-                        <p class="text-xs font-semibold text-slate-500">Name</p>
-                        <p id="sign-applicant-name" class="font-bold text-slate-900">-</p>
+                        <p class="font-bold text-slate-500 uppercase">Name</p>
+                        <p id="sign-applicant-name" class="font-black text-slate-900 text-sm mt-0.5">-</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-xs font-semibold text-slate-500">Amount [Tzs]</p>
-                        <p id="sign-facility-amount" class="font-bold text-slate-900">0.00</p>
+                        <p class="font-bold text-slate-500 uppercase">Amount [TZS]</p>
+                        <p id="sign-facility-amount" class="font-black text-slate-900 text-sm mt-0.5">0.00</p>
                     </div>
                 </div>
 
@@ -529,6 +524,121 @@
 
     <!-- Application Controller Logic -->
     <script>
+        // Fetch and load includes dynamically
+        async function loadIncludes() {
+            const includes = [
+                { id: 'include-header', file: 'includes/header.html' },
+                { id: 'include-sidebar', file: 'includes/sidebar.html' },
+                { id: 'include-footer', file: 'includes/footer.html' }
+            ];
+
+            for (let item of includes) {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    try {
+                        const response = await fetch(item.file);
+                        if (response.ok) {
+                            el.outerHTML = await response.text();
+                        }
+                    } catch (error) {
+                        console.error(`Error loading ${item.file}:`, error);
+                    }
+                }
+            }
+
+            lucide.createIcons();
+            initThemeSystem();
+            setupLeftEdgeHover();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadIncludes);
+
+        let sidebarOpen = false;
+        let autoCloseTimer = null;
+        let progressInterval = null;
+        const AUTO_CLOSE_DELAY = 20000;
+        let startTime = 0;
+
+        function initThemeSystem() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        function toggleSidebar(forceState) {
+            const sidebar = document.getElementById('desktopSidebar');
+            const contentWrapper = document.getElementById('contentWrapper');
+            const topNavbar = document.getElementById('topNavbar');
+            
+            sidebarOpen = typeof forceState === 'boolean' ? forceState : !sidebarOpen;
+
+            if (sidebarOpen) {
+                if (sidebar) sidebar.classList.remove('-translate-x-full');
+                if (contentWrapper) contentWrapper.classList.add('lg:pl-80');
+                if (topNavbar) topNavbar.classList.add('lg:pl-80');
+                startAutoCloseCountdown();
+            } else {
+                if (sidebar) sidebar.classList.add('-translate-x-full');
+                if (contentWrapper) contentWrapper.classList.remove('lg:pl-80');
+                if (topNavbar) topNavbar.classList.remove('lg:pl-80');
+                stopAutoCloseCountdown();
+            }
+        }
+
+        function setupLeftEdgeHover() {
+            const trigger = document.getElementById('leftEdgeTrigger');
+            const sidebar = document.getElementById('desktopSidebar');
+            if (!trigger || !sidebar) return;
+
+            trigger.addEventListener('mouseenter', () => { if (!sidebarOpen) toggleSidebar(true); });
+            sidebar.addEventListener('mousemove', () => { if (sidebarOpen) resetAutoCloseTimer(); });
+        }
+
+        function startAutoCloseCountdown() {
+            stopAutoCloseCountdown();
+            startTime = Date.now();
+            const progressBar = document.getElementById('autoCloseProgressBar');
+            const textDisplay = document.getElementById('autoCloseText');
+            
+            progressInterval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, AUTO_CLOSE_DELAY - elapsed);
+                const percent = (remaining / AUTO_CLOSE_DELAY) * 100;
+                if (progressBar) progressBar.style.width = percent + '%';
+                if (textDisplay) textDisplay.innerText = `Auto-hide: ${Math.ceil(remaining / 1000)}s`;
+                if (remaining <= 0) toggleSidebar(false);
+            }, 100);
+        }
+
+        function resetAutoCloseTimer() { startTime = Date.now(); }
+        function stopAutoCloseCountdown() {
+            if (progressInterval) clearInterval(progressInterval);
+            const progressBar = document.getElementById('autoCloseProgressBar');
+            if (progressBar) progressBar.style.width = '100%';
+        }
+
+        function toggleMobileDrawer() {
+            const drawer = document.getElementById('mobileDrawerContainer');
+            if (drawer) {
+                if (drawer.classList.contains('grid-rows-[0fr]')) {
+                    drawer.classList.remove('grid-rows-[0fr]');
+                    drawer.classList.add('grid-rows-[1fr]');
+                } else {
+                    drawer.classList.remove('grid-rows-[1fr]');
+                    drawer.classList.add('grid-rows-[0fr]');
+                }
+            }
+        }
+
+        // Core Loan Appraisal Application Logic
         class LoanAppraisalApp {
             constructor() {
                 this.currentStep = 1;
@@ -540,7 +650,6 @@
                 this.renderSteps();
                 this.loadDraft();
                 this.calculate();
-                lucide.createIcons();
             }
 
             renderSteps() {
@@ -558,19 +667,19 @@
                     const isActive = i === this.currentStep;
                     const isCompleted = i < this.currentStep;
 
-                    let bgClass = "bg-white border-slate-200 text-slate-500";
-                    let iconHtml = `<span class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs font-bold">${i}</span>`;
+                    let bgClass = "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400";
+                    let iconHtml = `<span class="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs font-black">${i}</span>`;
 
                     if (isActive) {
-                        bgClass = "bg-brand-50 border-brand-500 text-brand-900 shadow-sm ring-1 ring-brand-500";
-                        iconHtml = `<span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold">${i}</span>`;
+                        bgClass = "bg-sky-50 dark:bg-sky-950/40 border-sky-500 text-sky-900 dark:text-sky-200 shadow-sm ring-1 ring-sky-500/50";
+                        iconHtml = `<span class="w-7 h-7 rounded-xl bg-sky-600 text-white flex items-center justify-center text-xs font-black">${i}</span>`;
                     } else if (isCompleted) {
-                        bgClass = "bg-emerald-50/60 border-emerald-300 text-emerald-900";
-                        iconHtml = `<span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</span>`;
+                        bgClass = "bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200";
+                        iconHtml = `<span class="w-7 h-7 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xs font-black">✓</span>`;
                     }
 
                     const li = document.createElement('li');
-                    li.className = `p-3 rounded-xl border flex items-center gap-3 transition ${bgClass}`;
+                    li.className = `p-3.5 rounded-2xl border flex items-center gap-3.5 transition ${bgClass}`;
                     li.innerHTML = `
                         ${iconHtml}
                         <div class="overflow-hidden">
@@ -631,7 +740,6 @@
             }
 
             calculate() {
-                // Income calculations
                 const basic = parseFloat(document.getElementById('basicSalary').value) || 0;
                 
                 const housing = parseFloat(document.getElementById('housing').value) || 0;
@@ -650,13 +758,11 @@
                 const grandTotalIncome = basic + subFixed + subVariable;
                 document.getElementById('grand-total-income').innerText = this.formatCurrency(grandTotalIncome);
 
-                // Proposed Loan Exposure
                 const applied = parseFloat(document.getElementById('appliedAmount').value) || 0;
                 const existingBal = parseFloat(document.getElementById('existingBalance').value) || 0;
                 const totalExposure = applied + existingBal;
                 document.getElementById('total-exposure').innerText = this.formatCurrency(totalExposure);
 
-                // PMT & Schedule Table computations
                 const tenorMonths = parseFloat(document.getElementById('loanTenor').value) || 96;
                 const years = tenorMonths / 12;
                 const annualRate = (parseFloat(document.getElementById('interestRate').value) || 13) / 100;
@@ -680,7 +786,6 @@
                 document.getElementById('sched-ins').innerText = this.formatCurrency(insurance);
                 document.getElementById('sched-net').innerText = this.formatCurrency(netProposed);
 
-                // Compliance calculations matching Excel TRA Sheet
                 const netSalarySlip = parseFloat(document.getElementById('netSalarySlip').value) || 0;
                 const ablExistingInst = parseFloat(document.getElementById('ablExistingInst').value) || 0;
                 const totalAllowancesAB = subFixed + subVariable;
@@ -700,7 +805,6 @@
                 const netAfterDeductions = adjustedNetFixed - totalDeductions;
                 document.getElementById('net-after-deductions').innerText = this.formatCurrency(netAfterDeductions);
 
-                // Debt Ratio formula from Excel
                 let debtRatio = 0;
                 if (basic > 0) {
                     debtRatio = ((totalDeductions + (basic - netSalarySlip)) / basic) * 100;
@@ -710,13 +814,13 @@
                 const limitStatus = document.getElementById('limit-status');
                 if (basic === 0 && applied === 0) {
                     limitStatus.innerText = "PENDING";
-                    limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-slate-200 text-slate-700";
+                    limitStatus.className = "px-3.5 py-1.5 rounded-xl text-xs tracking-wider bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-xs";
                 } else if (totalDeductions <= limitOneThird) {
                     limitStatus.innerText = "WITHIN LIMIT";
-                    limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    limitStatus.className = "px-3.5 py-1.5 rounded-xl text-xs tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold";
                 } else {
                     limitStatus.innerText = "ABOVE LIMIT";
-                    limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-rose-100 text-rose-800 border border-rose-300";
+                    limitStatus.className = "px-3.5 py-1.5 rounded-xl text-xs tracking-wider bg-rose-100 text-rose-800 border border-rose-300 font-bold";
                 }
 
                 this.saveDraft();
@@ -788,13 +892,13 @@
 
                 const compBadge = document.getElementById('rep-compliance-badge');
                 if (basic === 0 && applied === 0) {
-                    compBadge.className = "px-3 py-1 rounded text-xs font-bold bg-slate-200 text-slate-700";
+                    compBadge.className = "px-3.5 py-1 rounded-xl text-xs font-black bg-slate-200 text-slate-700";
                     compBadge.innerText = "PENDING";
                 } else if (totalDeductions <= limitOneThird) {
-                    compBadge.className = "px-3 py-1 rounded text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    compBadge.className = "px-3.5 py-1 rounded-xl text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300";
                     compBadge.innerText = "WITHIN LIMIT";
                 } else {
-                    compBadge.className = "px-3 py-1 rounded text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                    compBadge.className = "px-3.5 py-1 rounded-xl text-xs font-black bg-rose-100 text-rose-800 border border-rose-300";
                     compBadge.innerText = "ABOVE LIMIT";
                 }
 
