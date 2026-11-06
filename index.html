@@ -26,45 +26,59 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-blue-600 selection:text-white pb-6">
 
-  <!-- Mobile-First Header Bar -->
-  <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md border-b border-slate-800">
-    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-      
-      <!-- Logo & Brand Header -->
-      <div class="flex items-center space-x-3">
-        <img src="mono.png" alt="Mono Apps Solutions Logo" class="h-9 w-auto rounded-lg object-contain bg-white/10 p-1 border border-white/10 shadow-xs" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/ffffff?text=MONO';">
-        <div>
-          <h1 class="text-base font-extrabold tracking-tight text-white leading-tight">Mono Apps Solutions</h1>
-          <p class="text-[10px] text-blue-300 font-semibold tracking-wide uppercase">Financial Calculator</p>
-        </div>
+<!-- Mobile-First Header Bar -->
+<header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md border-b border-slate-800">
+  <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+    
+    <!-- Logo & Brand Header -->
+    <div class="flex items-center space-x-3">
+      <img src="mono.png" alt="Mono Apps Solutions Logo" class="h-9 w-auto rounded-lg object-contain bg-white/10 p-1 border border-white/10 shadow-xs" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1e293b/ffffff?text=MONO';">
+      <div>
+        <h1 class="text-base font-extrabold tracking-tight text-white leading-tight">Mono Apps Solutions</h1>
+        <p class="text-[10px] text-blue-300 font-semibold tracking-wide uppercase">Financial Calculator</p>
       </div>
+    </div>
 
-      <!-- Action: Print Offer -->
+    <!-- Header Actions -->
+    <div class="flex items-center space-x-2">
+      <!-- Direct Navigation to Letter Page -->
+      <a href="letter.html" class="inline-flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm">
+        <i data-lucide="file-signature" class="w-3.5 h-3.5"></i>
+        <span class="hidden sm:inline">Official Letter</span>
+      </a>
+
+      <!-- Print Action -->
       <button onclick="window.print()" class="inline-flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm">
         <i data-lucide="printer" class="w-3.5 h-3.5"></i>
         <span class="hidden sm:inline">Print</span>
       </button>
-
     </div>
-  </header>
 
-  <!-- Mobile Segmented Navigation Tabs -->
-  <div class="bg-white border-b border-slate-200 sticky top-16 z-20 shadow-xs">
-    <div class="max-w-4xl mx-auto px-4 flex space-x-2 py-2 overflow-x-auto no-scrollbar">
-      <button id="navTabLoan" onclick="switchModule('loan')" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 bg-blue-50 text-blue-700 border border-blue-200 shadow-xs transition-all">
-        <i data-lucide="landmark" class="w-4 h-4"></i>
-        <span>Loan Calculator</span>
-      </button>
-      <button id="navTabBond" onclick="switchModule('bond')" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition-all">
-        <i data-lucide="trending-up" class="w-4 h-4"></i>
-        <span>Bond Calculator</span>
-      </button>
-      <button id="navTabCompare" onclick="switchModule('compare')" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition-all">
-        <i data-lucide="git-compare" class="w-4 h-4"></i>
-        <span>Loan vs Bond</span>
-      </button>
-    </div>
   </div>
+</header>
+
+<!-- Mobile Segmented Navigation Tabs -->
+<div class="bg-white border-b border-slate-200 sticky top-16 z-20 shadow-xs">
+  <div class="max-w-4xl mx-auto px-4 flex space-x-2 py-2 overflow-x-auto no-scrollbar">
+    <button id="navTabLoan" onclick="switchModule('loan')" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 bg-blue-50 text-blue-700 border border-blue-200 shadow-xs transition-all">
+      <i data-lucide="landmark" class="w-4 h-4"></i>
+      <span>Loan Calculator</span>
+    </button>
+    <button id="navTabBond" onclick="switchModule('bond')" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition-all">
+      <i data-lucide="trending-up" class="w-4 h-4"></i>
+      <span>Bond Calculator</span>
+    </button>
+    <button id="navTabCompare" onclick="switchModule('compare')" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition-all">
+      <i data-lucide="git-compare" class="w-4 h-4"></i>
+      <span>Loan vs Bond</span>
+    </button>
+    <!-- Letter Tab Link -->
+    <a href="letter.html" id="navTabLetter" class="flex-1 min-w-[130px] px-3.5 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 text-slate-600 hover:bg-slate-100 transition-all border border-transparent">
+      <i data-lucide="file-signature" class="w-4 h-4 text-blue-600"></i>
+      <span>Letter Writer</span>
+    </a>
+  </div>
+</div>
 
   <!-- Main Container -->
   <main class="max-w-4xl mx-auto px-4 py-5 flex-grow space-y-5 w-full" id="printableArea">
