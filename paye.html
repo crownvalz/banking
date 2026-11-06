@@ -86,6 +86,7 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">1.1 Entity name</label>
                             <select id="entity_name" onchange="updateHeaderTitle()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">-- Select Public Institution --</option>
                                 <option value="TANZANIA REVENUE AUTHORITY (TRA)">TANZANIA REVENUE AUTHORITY (TRA)</option>
                                 <option value="TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)">TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)</option>
                                 <option value="TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)">TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)</option>
@@ -106,7 +107,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">1.2 Entity code</label>
-                            <input type="text" id="entity_code" value="123456" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="text" id="entity_code" value="" placeholder="Enter entity code" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">1.3 Approved Interest rate p.a. (reducing balance)</label>
@@ -124,11 +125,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">2.1 Employee Name</label>
-                            <input type="text" id="emp_name" value="gody mono" oninput="syncNames()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="text" id="emp_name" value="" placeholder="Enter employee name" oninput="syncNames()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">2.2 Employee Number</label>
-                            <input type="text" id="emp_number" value="011087" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="text" id="emp_number" value="" placeholder="Enter employee no." class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">2.3 Employee ABL Account Number</label>
@@ -145,15 +146,15 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">3.1 Basic Salary (Tzs)</label>
-                            <input type="number" id="basic_salary" value="3670000" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="number" id="basic_salary" value="" placeholder="0.00" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">3.2 Housing Allowance (Tzs)</label>
-                            <input type="number" id="housing" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="number" id="housing" value="" placeholder="0.00" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">3.3 Responsibility Allowance</label>
-                            <input type="number" id="responsibility" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="number" id="responsibility" value="" placeholder="0.00" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                     </div>
 
@@ -161,31 +162,31 @@
                     <div class="bg-slate-50 p-4 rounded border space-y-2 text-sm mt-3">
                         <div class="flex justify-between items-center py-1 border-b font-semibold text-blue-900">
                             <span>Cost To Company</span>
-                            <span id="cost_to_company">3,670,000.00</span>
+                            <span id="cost_to_company">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b text-slate-600">
                             <span>Taxable Pay (Gross - 5% Pension)</span>
-                            <span id="taxable_pay">3,486,500.00</span>
+                            <span id="taxable_pay">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b text-slate-600">
                             <span>Calculated PAYE (TRA Brackets)</span>
-                            <span id="calc_paye" class="text-red-600 font-semibold">873,950.00</span>
+                            <span id="calc_paye" class="text-red-600 font-semibold">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b text-slate-600">
                             <span>Pension (5%)</span>
-                            <span id="calc_pension">183,500.00</span>
+                            <span id="calc_pension">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">Loan/Salary Advance Recovery</span>
-                            <input type="number" id="loan_advance_recovery" value="1340546.99" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
+                            <input type="number" id="loan_advance_recovery" value="" placeholder="0.00" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
                         </div>
                         <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
                             <span>Total Deductions (PAYE + Pension + Recovery)</span>
-                            <span id="paye_total_deductions">2,397,996.99</span>
+                            <span id="paye_total_deductions">0.00</span>
                         </div>
                         <div class="flex justify-between items-center pt-1 font-bold text-base text-emerald-700">
                             <span>Net Salary (PAYE Model)</span>
-                            <span id="paye_net_salary">1,272,003.01</span>
+                            <span id="paye_net_salary">0.00</span>
                         </div>
                     </div>
                 </div>
@@ -195,16 +196,16 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">4.1 Applied Facility Amount</label>
-                            <input type="number" id="applied_amount" value="40000000" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="number" id="applied_amount" value="" placeholder="0.00" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">4.2 Existing Facility Balance</label>
-                            <input type="number" id="existing_balance" value="0" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="number" id="existing_balance" value="" placeholder="0.00" oninput="calculateAll()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-blue-50 border border-blue-200 p-3 rounded font-bold text-blue-900 text-sm">
                         <span>TOTAL EXPOSURE</span>
-                        <span id="total_exposure">40,000,000.00</span>
+                        <span id="total_exposure">0.00</span>
                     </div>
                 </div>
             </div>
@@ -216,43 +217,43 @@
                     <div class="space-y-2 text-sm bg-slate-50 p-4 rounded border">
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">5.1 Net salary (Linked from Net Salary / PAYE Model)</span>
-                            <span id="compliance_net_slip" class="font-medium">1,272,003.01</span>
+                            <span id="compliance_net_slip" class="font-medium">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">Add: ABL existing Monthly Instalment</span>
-                            <input type="number" id="abl_existing_inst" value="0" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
+                            <input type="number" id="abl_existing_inst" value="" placeholder="0.00" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
                         </div>
                         <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
                             <span>Adjusted Net Fixed Salary</span>
-                            <span id="adjusted_net_fixed">1,272,003.01</span>
+                            <span id="adjusted_net_fixed">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">5.2 Deduction Limit 1/3 of Basic Salary</span>
-                            <span id="limit_one_third" class="font-medium">1,223,333.33</span>
+                            <span id="limit_one_third" class="font-medium">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">5.3 Monthly Instalments - ABL</span>
-                            <span id="monthly_inst_abl" class="font-medium text-blue-700">672,290.20</span>
+                            <span id="monthly_inst_abl" class="font-medium text-blue-700">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">- Other Bank(s)</span>
-                            <input type="number" id="other_banks_inst" value="0" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
+                            <input type="number" id="other_banks_inst" value="" placeholder="0.00" oninput="calculateAll()" class="w-36 bg-white border border-slate-300 rounded p-1 text-right text-sm font-medium">
                         </div>
                         <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
                             <span>Total deductions</span>
-                            <span id="total_deductions">672,290.20</span>
+                            <span id="total_deductions">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b font-semibold text-slate-800">
                             <span>Net Salary after deductions</span>
-                            <span id="net_after_deductions">599,712.81</span>
+                            <span id="net_after_deductions">0.00</span>
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">5.3 Debt ratio</span>
-                            <span id="debt_ratio" class="font-medium">54.67%</span>
+                            <span id="debt_ratio" class="font-medium">0.00%</span>
                         </div>
                         <div class="flex justify-between items-center pt-2 font-bold text-base">
                             <span>5.4 Within/Above Limit</span>
-                            <span id="limit_status" class="px-3 py-1 rounded text-xs tracking-wide bg-emerald-100 text-emerald-800">WITHIN LIMIT</span>
+                            <span id="limit_status" class="px-3 py-1 rounded text-xs tracking-wide bg-slate-200 text-slate-700">PENDING</span>
                         </div>
                     </div>
                 </div>
@@ -299,13 +300,13 @@
                             </thead>
                             <tbody>
                                 <tr class="bg-white">
-                                    <td class="p-2 border" id="sched_years">2.5</td>
-                                    <td class="p-2 border" id="sched_amount">40,000,000.00</td>
-                                    <td class="p-2 border" id="sched_pmT">672,290.20</td>
-                                    <td class="p-2 border" id="sched_fee">640,000.00</td>
-                                    <td class="p-2 border" id="sched_vat">115,200.00</td>
-                                    <td class="p-2 border" id="sched_ins">400,000.00</td>
-                                    <td class="p-2 border font-bold text-blue-900" id="sched_net">38,844,800.00</td>
+                                    <td class="p-2 border" id="sched_years">0.0</td>
+                                    <td class="p-2 border" id="sched_amount">0.00</td>
+                                    <td class="p-2 border" id="sched_pmT">0.00</td>
+                                    <td class="p-2 border" id="sched_fee">0.00</td>
+                                    <td class="p-2 border" id="sched_vat">0.00</td>
+                                    <td class="p-2 border" id="sched_ins">0.00</td>
+                                    <td class="p-2 border font-bold text-blue-900" id="sched_net">0.00</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -316,11 +317,11 @@
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t text-sm">
                     <div>
                         <p class="text-xs font-semibold text-slate-500">Name</p>
-                        <p id="footer_name" class="font-bold text-slate-800">gody mono</p>
+                        <p id="footer_name" class="font-bold text-slate-800">-</p>
                     </div>
                     <div class="text-right">
                         <p class="text-xs font-semibold text-slate-500">Amount[Tzs]</p>
-                        <p id="footer_amount" class="font-bold text-slate-800">40,000,000.00</p>
+                        <p id="footer_amount" class="font-bold text-slate-800">0.00</p>
                     </div>
                 </div>
             </div>
@@ -405,7 +406,7 @@
 
         function updateHeaderTitle() {
             const selectEl = document.getElementById('entity_name');
-            const name = selectEl.options[selectEl.selectedIndex].text;
+            const name = selectEl.value ? selectEl.options[selectEl.selectedIndex].text : "Select Institution";
             document.getElementById('header_entity_title').innerText = name;
             saveToStorage();
         }
@@ -416,11 +417,11 @@
 
         function syncNames() {
             const name = document.getElementById('emp_name').value;
-            document.getElementById('footer_name').innerText = name;
+            document.getElementById('footer_name').innerText = name || "-";
             saveToStorage();
         }
 
-        // Tanzania PAYE Calculation Engine matching Excel formula
+        // Tanzania PAYE Calculation Engine
         function calculatePAYE(taxablePay) {
             if (taxablePay <= 270000) return 0;
             if (taxablePay <= 520000) return (taxablePay - 270000) * 0.08;
@@ -471,7 +472,7 @@
             let pmt = 0;
             if (monthlyRate === 0) {
                 pmt = applied / tenorMonths;
-            } else {
+            } else if (applied > 0 && tenorMonths > 0) {
                 pmt = (applied * monthlyRate * Math.pow(1 + monthlyRate, tenorMonths)) / (Math.pow(1 + monthlyRate, tenorMonths) - 1);
             }
 
@@ -513,7 +514,10 @@
             document.getElementById('debt_ratio').innerText = (debtRatio * 100).toFixed(2) + "%";
 
             const limitStatus = document.getElementById('limit_status');
-            if (totalDeductions <= limitOneThird) {
+            if (basic === 0 && applied === 0) {
+                limitStatus.innerText = "PENDING";
+                limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-slate-200 text-slate-700";
+            } else if (totalDeductions <= limitOneThird) {
                 limitStatus.innerText = "WITHIN LIMIT";
                 limitStatus.className = "px-3 py-1 rounded text-xs tracking-wide bg-emerald-100 text-emerald-800";
             } else {
@@ -531,7 +535,7 @@
             showStep(currentStep);
 
             const noPrintElements = document.querySelectorAll('.no-print');
-            noPrintElements.forEach(el => el.style.display = 'none');
+            noPrintElements.forEach(el => el.style.divStyle = el.style.display, el.style.display = 'none');
 
             const empName = document.getElementById('emp_name').value.trim().replace(/\s+/g, '_') || 'Applicant';
             const element = document.getElementById('pdf-container');
@@ -561,11 +565,11 @@
             document.querySelectorAll('#appraisalForm input, #appraisalForm select, #appraisalForm textarea').forEach(el => {
                 if (el.id) formData[el.id] = el.value;
             });
-            localStorage.setItem('consumer_appraisal_calc_v2', JSON.stringify(formData));
+            localStorage.setItem('consumer_appraisal_calc_v3', JSON.stringify(formData));
         }
 
         function loadFromStorage() {
-            const saved = localStorage.getItem('consumer_appraisal_calc_v2');
+            const saved = localStorage.getItem('consumer_appraisal_calc_v3');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -582,8 +586,8 @@
         }
 
         function resetForm() {
-            if (confirm("Are you sure you want to reset all fields?")) {
-                localStorage.removeItem('consumer_appraisal_calc_v2');
+            if (confirm("Are you sure you want to clear all fields?")) {
+                localStorage.removeItem('consumer_appraisal_calc_v3');
                 location.reload();
             }
         }
