@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azania Bank | Outstanding Balance Request</title>
+<title>Azania Bank | Professional Letter Generation Suite</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
@@ -20,6 +20,12 @@
   .action-primary{background:#2458a6;color:white}.action-primary:hover{background:#1c4789}
   .action-light{background:#fff;border:1px solid #dce3ec;color:#34445a}.action-light:hover{background:#f7f9fc}
   
+  /* Tab Navigation Styling */
+  .tab-btn { padding: 8px 16px; font-size: 12px; font-weight: 700; border-radius: 8px; transition: all 0.2s ease; cursor: pointer; border: 1px solid transparent; }
+  .tab-btn.active { background: #2458a6; color: #ffffff; box-shadow: 0 2px 4px rgba(36, 88, 166, 0.2); }
+  .tab-btn.inactive { background: #ffffff; color: #536176; border-color: #dce3ec; }
+  .tab-btn.inactive:hover { background: #f8fafc; color: #172338; }
+
   /* A4 Canvas styling with dynamic vertical expansion */
   .a4-canvas{width:210mm;min-height:297mm;background:#fff;position:relative;padding:43mm 20mm 27mm 25mm;box-shadow:0 12px 35px #17233818;overflow:hidden}
   
@@ -31,11 +37,9 @@
   .editable{outline:none;border-radius:3px}
   .editable:focus{background:#eff6ff;box-shadow:0 0 0 2px #bfdbfe}
   .preview-wrap{width:100%;overflow:auto;padding:10px 8px 24px;display:flex;justify-content:center;align-items:flex-start}
-  .preview-scale{transform-origin:top center}
   #letterPaper{flex:0 0 210mm}
-  @media(max-width:1100px){.preview-wrap{justify-content:flex-start}}
+  @media(max-width:1100px){.preview-wrap{justify-content:flex-start}.workspace{grid-template-columns:1fr}}
   @media(max-width:760px){.preview-wrap{padding-left:0;padding-right:0}.a4-canvas{margin-left:0;margin-right:0}}
-  @media(max-width:1100px){.workspace{grid-template-columns:1fr}.preview-wrap{justify-content:flex-start}.a4-canvas{transform-origin:top left}}
   @media print{
     @page{size:A4;margin:0}
     body{background:#fff!important}
@@ -53,7 +57,7 @@
       <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/10 grid place-items-center font-black text-sm tracking-tight text-blue-400">AZ</div>
       <div class="min-w-0">
         <div class="font-bold text-sm tracking-wide">AZANIA BANK PLC</div>
-        <div class="text-[10px] text-slate-300">Outstanding Balance Request Generator</div>
+        <div class="text-[10px] text-slate-300">Professional Letter Generation Suite</div>
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -66,78 +70,93 @@
 </header>
 
 <main class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-7">
-  <div class="mb-6 flex flex-wrap items-end justify-between gap-3 no-print">
+  
+  <!-- TOP WORKSPACE HEADER & TABS -->
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-4 no-print border-b border-slate-200 pb-4">
     <div>
       <div class="section-kicker mb-1">Document workspace</div>
-      <h1 class="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[#172338]">Create balance request</h1>
-      <p class="text-sm text-[#718096] mt-1">Complete the details and review the A4 letter before printing or exporting.</p>
+      <h1 class="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[#172338]" id="pageTitle">Create Custom Letter</h1>
+      <p class="text-sm text-[#718096] mt-1">Select letter type, complete the details, and review the live A4 preview.</p>
     </div>
-    <div class="flex items-center gap-2 text-xs text-[#65748a] bg-white border border-[#e4e9f0] rounded-xl px-3 py-2 shadow-sm">
-      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live preview enabled
+
+    <!-- Letter Type Selector Tabs -->
+    <div class="flex items-center gap-2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm">
+      <button id="tabCustom" class="tab-btn active" onclick="switchLetterType('custom')">Custom Letter</button>
+      <button id="tabBalance" class="tab-btn inactive" onclick="switchLetterType('balance')">Outstanding Balance</button>
     </div>
   </div>
 
   <div class="workspace grid grid-cols-[minmax(340px,470px)_minmax(0,1fr)] gap-6 items-start">
     <section class="space-y-4 no-print">
+      
+      <!-- RECIPIENT PANEL -->
       <div class="panel p-5">
         <div class="flex items-center justify-between mb-5">
-          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving bank details</h2></div>
-          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Required</span>
+          <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving institution details</h2></div>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Details</span>
         </div>
         <div class="space-y-4">
-          <div><label class="field-label" for="recipientBank">Recipient bank</label><input class="field" id="recipientBank" list="bankList" value="People's Bank of Zanzibar (PBZ Bank)"><datalist id="bankList">
+          <div><label class="field-label" for="recipientBank">Recipient name / Bank</label><input class="field" id="recipientBank" list="bankList" placeholder="e.g. People's Bank of Zanzibar"><datalist id="bankList">
             <option>People's Bank of Zanzibar (PBZ Bank)</option><option>CRDB Bank PLC</option><option>NMB Bank PLC</option><option>National Bank of Commerce (NBC)</option><option>Tanzania Commercial Bank (TCB)</option><option>Absa Bank Tanzania</option><option>Standard Chartered Bank Tanzania</option><option>Stanbic Bank Tanzania</option><option>Diamond Trust Bank (DTB) Tanzania</option><option>Exim Bank Tanzania</option><option>KCB Bank Tanzania</option><option>Bank of Africa Tanzania (BOA)</option><option>Equity Bank Tanzania</option><option>I&M Bank Tanzania</option>
           </datalist></div>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" value="Chake Chake Branch"></div>
-            <div><label class="field-label" for="poBox">Postal address</label><input class="field" id="poBox" value="P.O. Box 67, Pemba"></div>
+            <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" placeholder="e.g. Chake Chake Branch"></div>
+            <div><label class="field-label" for="poBox">Postal address</label><input class="field" id="poBox" placeholder="e.g. P.O. Box 67, Pemba"></div>
           </div>
         </div>
       </div>
 
+      <!-- SUBJECT / REFERENCE ENTITIES PANEL -->
       <div class="panel p-5">
-        <div class="mb-5"><div class="section-kicker">02 / Customer</div><h2 class="section-title mt-1">Customer information</h2></div>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="col-span-2"><label class="field-label" for="customerName">Customer full name</label><input class="field uppercase font-semibold" id="customerName" value="JOHN SIMON MONO"></div>
-          <div class="col-span-2"><label class="field-label" for="accountNumber">Loan / account number</label><input class="field font-mono" id="accountNumber" value="012345678901" inputmode="numeric"></div>
+        <div class="mb-5"><div class="section-kicker">02 / Subject & Reference</div><h2 class="section-title mt-1">Subject headings & references</h2></div>
+        <div class="space-y-3">
+          <div><label class="field-label" for="subjectText">Letter Subject Heading</label><input class="field font-semibold" id="subjectText" placeholder="e.g. RE: GENERAL INQUIRY OR ACCOUNT REVIEW"></div>
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div><label class="field-label" for="customerName">Customer Name (Optional)</label><input class="field uppercase" id="customerName" placeholder="JOHN DOE"></div>
+            <div><label class="field-label" for="accountNumber">Account / Ref No.</label><input class="field font-mono" id="accountNumber" placeholder="012345678901"></div>
+          </div>
         </div>
       </div>
 
+      <!-- LETTER DATE & BODY CONTENT -->
       <div class="panel p-5">
-        <div class="mb-5"><div class="section-kicker">03 / Letter</div><h2 class="section-title mt-1">Date and message</h2></div>
+        <div class="mb-5"><div class="section-kicker">03 / Content</div><h2 class="section-title mt-1">Letter body & salutation</h2></div>
         <div class="grid grid-cols-2 gap-3 mb-4">
           <div><label class="field-label" for="customDate">Letter date</label><input class="field" type="date" id="customDate"></div>
         </div>
         <div class="space-y-3">
           <div><label class="field-label" for="salutationText">Salutation</label><input class="field" id="salutationText" value="Dear Sir/Madam,"></div>
-          <div><label class="field-label" for="bodyParagraph">Main message</label><textarea class="field leading-relaxed" id="bodyParagraph" rows="5">We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.</textarea><p class="text-[10px] text-slate-400 mt-1">Use {ACCOUNT_NO} wherever the account number should appear in the message.</p></div>
-          <div><label class="field-label" for="closingParagraph">Closing paragraph</label><textarea class="field" id="closingParagraph" rows="2">Thanking you in advance for your continued cooperation and prompt assistance.</textarea></div>
+          <div><label class="field-label" for="bodyParagraph">Main message body</label><textarea class="field leading-relaxed" id="bodyParagraph" rows="6" placeholder="Type your letter content here..."></textarea><p class="text-[10px] text-slate-400 mt-1">Use {ACCOUNT_NO} if you want the account number to inject dynamically.</p></div>
+          <div><label class="field-label" for="closingParagraph">Closing paragraph</label><textarea class="field" id="closingParagraph" rows="2" placeholder="e.g. Thanking you in advance for your cooperation."></textarea></div>
         </div>
       </div>
 
+      <!-- ISSUER & SIGNATORIES -->
       <div class="panel p-5">
-        <div class="mb-5"><div class="section-kicker">04 / Issuer</div><h2 class="section-title mt-1">Institution and signatories</h2></div>
+        <div class="mb-5"><div class="section-kicker">04 / Signatures</div><h2 class="section-title mt-1">Institution and signatories</h2></div>
         <div class="space-y-3">
           <div><label class="field-label" for="senderBank">Issuing institution</label><input class="field font-semibold" id="senderBank" value="AZANIA BANK PLC"></div>
           <div class="grid grid-cols-2 gap-3">
             <div><label class="field-label" for="sig1Title">Signatory 1 Title</label><input class="field" id="sig1Title" value="Branch Manager"></div>
-            <div><label class="field-label" for="sig1Name">Signatory 1 Name</label><input class="field" id="sig1Name" value="Amina Juma"></div>
+            <div><label class="field-label" for="sig1Name">Signatory 1 Name</label><input class="field" id="sig1Name" placeholder="Enter name"></div>
           </div>
           <div class="grid grid-cols-2 gap-3 pt-1">
             <div><label class="field-label" for="sig2Title">Signatory 2 Title</label><input class="field" id="sig2Title" value="Branch Operations Executive"></div>
-            <div><label class="field-label" for="sig2Name">Signatory 2 Name</label><input class="field" id="sig2Name" value="Baraka Kassim"></div>
+            <div><label class="field-label" for="sig2Name">Signatory 2 Name</label><input class="field" id="sig2Name" placeholder="Enter name"></div>
           </div>
         </div>
       </div>
 
+      <!-- LETTERHEAD IMAGE UPLOAD -->
       <div class="panel p-5">
         <div class="flex items-center justify-between gap-3">
-          <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-1">Letterhead image</h2><p class="text-[11px] text-slate-500 mt-1">Optional. Upload a full-page A4 letterhead image.</p></div>
+          <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-1">Letterhead image</h2><p class="text-[11px] text-slate-500 mt-1">Optional. Upload a full-page A4 letterhead background.</p></div>
           <label class="action action-light cursor-pointer shadow-sm">Upload image<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
         </div>
         <button class="text-[11px] text-rose-600 font-semibold mt-3 hidden" id="removeLetterhead" onclick="removeLetterhead()">Remove letterhead</button>
       </div>
 
+      <!-- REFERENCE CODE CARD -->
       <div class="rounded-xl bg-[#edf3fb] border border-[#d9e5f5] p-4 shadow-sm">
         <div class="text-[10px] uppercase tracking-widest text-[#54719b] font-extrabold">Document reference</div>
         <div class="font-mono font-bold text-sm text-[#214d89] mt-1 break-all" id="sidebarRef"></div>
@@ -145,9 +164,10 @@
       </div>
     </section>
 
+    <!-- PREVIEW A4 SECTION -->
     <section class="min-w-0">
       <div class="no-print flex items-center justify-between gap-3 mb-3">
-        <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-[#24344b] mt-1">A4 — Outstanding balance request</h2></div>
+        <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-[#24344b] mt-1" id="previewSubtitle">A4 — Custom Letter Preview</h2></div>
         <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-lg px-2.5 py-1.5 shadow-sm">Edits update automatically</span>
       </div>
       <div class="preview-wrap">
@@ -171,7 +191,7 @@
               <p id="previewClosing" class="pt-1 editable" contenteditable="true"></p>
             </div>
             
-            <!-- FLEXIBLE DYNAMIC SIGNATURE BLOCK WITH NAMES -->
+            <!-- FLEXIBLE SIGNATURE BLOCK -->
             <div class="signature-block pt-6 space-y-3">
               <div class="space-y-0.5">
                 <p class="font-medium editable" contenteditable="true">Yours faithfully,</p>
@@ -202,83 +222,188 @@
 </footer>
 
 <script>
-const defaults = {
-  recipientBank:"People's Bank of Zanzibar (PBZ Bank)", branchLocation:"Chake Chake Branch", poBox:"P.O. Box 67, Pemba",
-  customerName:"JOHN SIMON MONO", accountNumber:"012345678901",
-  salutationText:"Dear Sir/Madam,",
-  bodyParagraph:"We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.",
-  closingParagraph:"Thanking you in advance for your continued cooperation and prompt assistance.",
-  senderBank:"AZANIA BANK PLC", sig1Title:"Branch Manager", sig1Name:"Amina Juma", sig2Title:"Branch Operations Executive", sig2Name:"Baraka Kassim"
+let currentLetterType = 'custom'; // Default is custom (empty)
+
+const balanceTemplate = {
+  recipientBank: "People's Bank of Zanzibar (PBZ Bank)",
+  branchLocation: "Chake Chake Branch",
+  poBox: "P.O. Box 67, Pemba",
+  subjectText: "RE: REQUEST FOR OUTSTANDING LOAN BALANCE",
+  customerName: "JOHN SIMON MONO",
+  accountNumber: "012345678901",
+  salutationText: "Dear Sir/Madam,",
+  bodyParagraph: "We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.",
+  closingParagraph: "Thanking you in advance for your continued cooperation and prompt assistance.",
+  senderBank: "AZANIA BANK PLC",
+  sig1Title: "Branch Manager",
+  sig1Name: "Amina Juma",
+  sig2Title: "Branch Operations Executive",
+  sig2Name: "Baraka Kassim"
 };
+
+const customTemplate = {
+  recipientBank: "",
+  branchLocation: "",
+  poBox: "",
+  subjectText: "",
+  customerName: "",
+  accountNumber: "",
+  salutationText: "Dear Sir/Madam,",
+  bodyParagraph: "",
+  closingParagraph: "",
+  senderBank: "AZANIA BANK PLC",
+  sig1Title: "Branch Manager",
+  sig1Name: "",
+  sig2Title: "Branch Operations Executive",
+  sig2Name: ""
+};
+
 let currentRef = "";
-const ids = Object.keys(defaults);
+const fieldIds = Object.keys(customTemplate);
 const $ = id => document.getElementById(id);
+
 function localDateValue(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function formatDate(v){if(!v)return "";const [y,m,d]=v.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString("en-GB",{day:"2-digit",month:"long",year:"numeric"})}
+
 function generateRef(){
   const d=localDateValue().replaceAll("-","");
   const suffix=Array.from(crypto.getRandomValues(new Uint8Array(2))).map(x=>x.toString(16).padStart(2,"0")).join("").toUpperCase();
-  currentRef=`AZB/PBZ/OBR/${d}-${suffix}`;$("sidebarRef").textContent=currentRef;$("previewRef").textContent=currentRef;
-}
-function updatePreview(){
-  const v=id=>($(id)?.value ?? "").trim();
-  $("previewRecipientBank").textContent=v("recipientBank")?(v("recipientBank").replace(/,$/,"")+","):"";
-  $("previewBranchLocation").textContent=v("branchLocation")?(v("branchLocation").replace(/,$/,"")+","):"";
-  $("previewPoBox").textContent=v("poBox")?(v("poBox").replace(/[.,]+$/,"")+"."):"";
-  $("previewSubject").textContent=`RE: REQUEST FOR OUTSTANDING LOAN BALANCE FOR ${v("customerName").toUpperCase()||"[CUSTOMER NAME]"} - ACCOUNT NO. ${v("accountNumber")||"[ACCOUNT NO]"}`;
-  $("previewSalutation").textContent=v("salutationText");
-  $("previewClosing").textContent=v("closingParagraph");
-  $("previewSenderBank").textContent=v("senderBank");
-  
-  $("previewSig1Title").textContent=v("sig1Title");
-  $("previewSig1Name").textContent=v("sig1Name");
-  $("previewSig2Title").textContent=v("sig2Title");
-  $("previewSig2Name").textContent=v("sig2Name");
-
-  $("previewDate").textContent=formatDate($("customDate").value);
-  const body=v("bodyParagraph").replaceAll("{ACCOUNT_NO}",v("accountNumber")||"[ACCOUNT NO]");
-  $("previewBody").textContent=body;
+  currentRef=`AZB/AZN/LTR/${d}-${suffix}`;
+  $("sidebarRef").textContent=currentRef;
   $("previewRef").textContent=currentRef;
 }
-function resetForm(){
-  ids.forEach(id=>$(id).value=defaults[id]);
-  $("customDate").value=localDateValue();
-  removeLetterhead();generateRef();updatePreview();
-}
-function removeLetterhead(){
-  $("letterheadImage").src="";$("letterheadImage").classList.add("hidden");$("removeLetterhead").classList.add("hidden");
-  $("letterheadInput").value="";
-}
-$("letterheadInput").addEventListener("change",e=>{
-  const file=e.target.files[0];if(!file)return;
-  if(!file.type.startsWith("image/")){alert("Please select an image file.");return}
-  const reader=new FileReader();reader.onload=()=>{$("letterheadImage").src=reader.result;$("letterheadImage").classList.remove("hidden");$("removeLetterhead").classList.remove("hidden")};reader.readAsDataURL(file);
-});
-ids.forEach(id=>$(id).addEventListener("input",updatePreview));
-$("customDate").addEventListener("change",updatePreview);
-$("previewRef").addEventListener("input",e=>{$("sidebarRef").textContent=e.currentTarget.textContent;currentRef=e.currentTarget.textContent});
-async function downloadPDF(){
-  const btn=$("pdfButton");const old=btn.innerHTML;btn.disabled=true;btn.textContent="Preparing PDF…";
-  const paper=$("letterPaper");
-  try{
-    if(!window.html2pdf)throw new Error("PDF library unavailable");
-    await html2pdf().set({
-      margin:0,filename:`Azania_Bank_Balance_Request_${($("accountNumber").value||"Letter").replace(/[^a-z0-9]/gi,"_")}.pdf`,
-      image:{type:"jpeg",quality:.98},html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false},
-      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["avoid-all","css","legacy"]}
-    }).from(paper).save();
-  }catch(err){alert("PDF export could not be completed. Please use Print and select Save as PDF.");}
-  finally{btn.disabled=false;btn.innerHTML=old}
-}
-let initialized=false;
-function initializeApp(){
-  if(initialized)return;
-  initialized=true;
-  $("customDate").value=localDateValue();
-  generateRef();
+
+function switchLetterType(type) {
+  currentLetterType = type;
+  const data = type === 'balance' ? balanceTemplate : customTemplate;
+
+  // Update Tab Button UI classes
+  if(type === 'custom') {
+    $("tabCustom").className = "tab-btn active";
+    $("tabBalance").className = "tab-btn inactive";
+    $("pageTitle").textContent = "Create Custom Letter";
+    $("previewSubtitle").textContent = "A4 — Custom Letter Preview";
+  } else {
+    $("tabBalance").className = "tab-btn active";
+    $("tabCustom").className = "tab-btn inactive";
+    $("pageTitle").textContent = "Outstanding Balance Request";
+    $("previewSubtitle").textContent = "A4 — Outstanding Balance Request Preview";
+  }
+
+  // Populate form fields
+  fieldIds.forEach(id => {
+    if($(id)) $(id).value = data[id];
+  });
+
   updatePreview();
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initializeApp);
+
+function updatePreview(){
+  const v = id => ($(id)?.value ?? "").trim();
+  
+  $("previewRecipientBank").textContent = v("recipientBank") ? (v("recipientBank").replace(/,$/,"") + ",") : "";
+  $("previewBranchLocation").textContent = v("branchLocation") ? (v("branchLocation").replace(/,$/,"") + ",") : "";
+  $("previewPoBox").textContent = v("poBox") ? (v("poBox").replace(/[.,]+$/,"") + ".") : "";
+  
+  const subj = v("subjectText");
+  const cust = v("customerName").toUpperCase();
+  const acc = v("accountNumber");
+  
+  if (currentLetterType === 'balance') {
+    $("previewSubject").textContent = `RE: REQUEST FOR OUTSTANDING LOAN BALANCE FOR ${cust || "[CUSTOMER NAME]"} - ACCOUNT NO. ${acc || "[ACCOUNT NO]"}`;
+  } else {
+    $("previewSubject").textContent = subj ? subj : (cust || acc ? `${subj} ${cust} ${acc}` : "");
+  }
+
+  $("previewSalutation").textContent = v("salutationText");
+  $("previewClosing").textContent = v("closingParagraph");
+  $("previewSenderBank").textContent = v("senderBank");
+  
+  $("previewSig1Title").textContent = v("sig1Title");
+  $("previewSig1Name").textContent = v("sig1Name");
+  $("previewSig2Title").textContent = v("sig2Title");
+  $("previewSig2Name").textContent = v("sig2Name");
+
+  $("previewDate").textContent = formatDate($("customDate").value);
+  
+  const rawBody = v("bodyParagraph");
+  const formattedBody = rawBody.replaceAll("{ACCOUNT_NO}", acc || "[ACCOUNT NO]");
+  $("previewBody").innerHTML = formattedBody;
+  
+  $("previewRef").textContent = currentRef;
+}
+
+function resetForm(){
+  switchLetterType(currentLetterType);
+  $("customDate").value = localDateValue();
+  removeLetterhead();
+  generateRef();
+}
+
+function removeLetterhead(){
+  $("letterheadImage").src = "";
+  $("letterheadImage").classList.add("hidden");
+  $("removeLetterhead").classList.add("hidden");
+  $("letterheadInput").value = "";
+}
+
+$("letterheadInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith("image/")){ alert("Please select an image file."); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    $("letterheadImage").src = reader.result;
+    $("letterheadImage").classList.remove("hidden");
+    $("removeLetterhead").classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+});
+
+fieldIds.forEach(id => {
+  if($(id)) $(id).addEventListener("input", updatePreview);
+});
+$("customDate").addEventListener("change", updatePreview);
+$("previewRef").addEventListener("input", e => {
+  $("sidebarRef").textContent = e.currentTarget.textContent;
+  currentRef = e.currentTarget.textContent;
+});
+
+async function downloadPDF(){
+  const btn = $("pdfButton");
+  const old = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = "Preparing PDF…";
+  const paper = $("letterPaper");
+  try{
+    if(!window.html2pdf) throw new Error("PDF library unavailable");
+    const acc = $("accountNumber").value || "Letter";
+    await html2pdf().set({
+      margin: 0,
+      filename: `Azania_Bank_Document_${acc.replace(/[^a-z0-9]/gi,"_")}.pdf`,
+      image: { type: "jpeg", quality: .98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+    }).from(paper).save();
+  } catch(err) {
+    alert("PDF export could not be completed. Please use Print and select Save as PDF.");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = old;
+  }
+}
+
+let initialized = false;
+function initializeApp(){
+  if(initialized) return;
+  initialized = true;
+  $("customDate").value = localDateValue();
+  generateRef();
+  switchLetterType('custom'); // Custom is default with empty fields
+}
+
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeApp);
 else initializeApp();
 </script>
 </body>
