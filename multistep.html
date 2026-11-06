@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azania Bank PLC - Consumer Loan Appraisal</title>
+    <title>Consumer Appraisal Calculator</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- html2pdf Library for direct PDF generation & download -->
@@ -26,8 +26,8 @@
     <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50 no-print">
         <div class="max-w-4xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
             <div>
-                <h1 class="text-base sm:text-lg font-bold tracking-wide">AZANIA BANK PLC</h1>
-                <p class="text-xs text-blue-200">Consumer Loan Appraisal System</p>
+                <h1 class="text-base sm:text-lg font-bold tracking-wide">Consumer Appraisal Calculator</h1>
+                <p class="text-xs text-blue-200">Loan Evaluation & Compliance System</p>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="resetForm()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded font-medium transition">Reset</button>
@@ -45,8 +45,8 @@
             
             <!-- Document Header -->
             <div class="text-center border-b pb-4">
-                <h2 class="text-xl sm:text-2xl font-black text-blue-900 uppercase tracking-wider">Azania Bank PLC</h2>
-                <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-0.5" id="header_entity_title">TANZANIA REVENUE AUTHORITY (TRA)</p>
+                <h2 class="text-xl sm:text-2xl font-black text-blue-900 uppercase tracking-wider">Consumer Appraisal Calculator</h2>
+                <p class="text-xs sm:text-sm font-semibold text-slate-600 mt-0.5" id="header_entity_title">Select Institution</p>
             </div>
 
             <!-- Step Progress Indicator (Hidden on Print & Preview Mode) -->
@@ -85,7 +85,24 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">1.1 Entity name</label>
-                            <input type="text" id="entity_name" value="TANZANIA REVENUE AUTHORITY (TRA)" oninput="updateHeaderTitle()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <select id="entity_name" onchange="updateHeaderTitle()" class="w-full bg-slate-50 border border-slate-300 rounded p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="TANZANIA REVENUE AUTHORITY (TRA)">TANZANIA REVENUE AUTHORITY (TRA)</option>
+                                <option value="TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)">TANZANIA ELECTRIC SUPPLY COMPANY (TANESCO)</option>
+                                <option value="TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)">TANZANIA TELECOMMUNICATIONS CORPORATION (TTCL)</option>
+                                <option value="DAR ES SALAAM WATER SUPPLY AND SANITATION AUTHORITY (DAWASA)">DAR ES SALAAM WATER SUPPLY AND SANITATION AUTHORITY (DAWASA)</option>
+                                <option value="TANZANIA PORTS AUTHORITY (TPA)">TANZANIA PORTS AUTHORITY (TPA)</option>
+                                <option value="TANZANIA PETROLEUM DEVELOPMENT CORPORATION (TPDC)">TANZANIA PETROLEUM DEVELOPMENT CORPORATION (TPDC)</option>
+                                <option value="TANZANIA RAILWAYS CORPORATION (TRC)">TANZANIA RAILWAYS CORPORATION (TRC)</option>
+                                <option value="NATIONAL HOUSING CORPORATION (NHC)">NATIONAL HOUSING CORPORATION (NHC)</option>
+                                <option value="PUBLIC SERVICE SOCIAL SECURITY FUND (PSSSF)">PUBLIC SERVICE SOCIAL SECURITY FUND (PSSSF)</option>
+                                <option value="NATIONAL SOCIAL SECURITY FUND (NSSF)">NATIONAL SOCIAL SECURITY FUND (NSSF)</option>
+                                <option value="TANZANIA AGRICULTURAL DEVELOPMENT BANK (TADB)">TANZANIA AGRICULTURAL DEVELOPMENT BANK (TADB)</option>
+                                <option value="ZANZIBAR REVENUE BOARD (ZRB)">ZANZIBAR REVENUE BOARD (ZRB)</option>
+                                <option value="MINISTRY OF FINANCE">MINISTRY OF FINANCE</option>
+                                <option value="MINISTRY OF HEALTH">MINISTRY OF HEALTH</option>
+                                <option value="MINISTRY OF EDUCATION">MINISTRY OF EDUCATION</option>
+                                <option value="OTHER PUBLIC INSTITUTION">OTHER PUBLIC INSTITUTION</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">1.2 Entity code</label>
@@ -402,7 +419,8 @@
         }
 
         function updateHeaderTitle() {
-            const name = document.getElementById('entity_name').value;
+            const selectEl = document.getElementById('entity_name');
+            const name = selectEl.options[selectEl.selectedIndex].text;
             document.getElementById('header_entity_title').innerText = name;
             saveToStorage();
         }
@@ -506,12 +524,10 @@
 
         // DIRECT PDF DOWNLOAD FUNCTION
         function downloadDirectPDF() {
-            // First ensure we are in full preview mode showing all steps
             const prevMode = isPreviewMode;
             isPreviewMode = true;
             showStep(currentStep);
 
-            // Hide action buttons during capture
             const noPrintElements = document.querySelectorAll('.no-print');
             noPrintElements.forEach(el => el.style.display = 'none');
 
@@ -526,9 +542,7 @@
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            // Execute PDF creation and direct download
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restore UI controls after download completes
                 noPrintElements.forEach(el => el.style.display = '');
                 if (!prevMode) {
                     isPreviewMode = false;
@@ -542,14 +556,14 @@
 
         function saveToStorage() {
             const formData = {};
-            document.querySelectorAll('#appraisalForm input, #appraisalForm textarea').forEach(el => {
+            document.querySelectorAll('#appraisalForm input, #appraisalForm select, #appraisalForm textarea').forEach(el => {
                 if (el.id) formData[el.id] = el.value;
             });
-            localStorage.setItem('azania_consumer_appraisal_multistep', JSON.stringify(formData));
+            localStorage.setItem('consumer_appraisal_calculator', JSON.stringify(formData));
         }
 
         function loadFromStorage() {
-            const saved = localStorage.getItem('azania_consumer_appraisal_multistep');
+            const saved = localStorage.getItem('consumer_appraisal_calculator');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
@@ -567,7 +581,7 @@
 
         function resetForm() {
             if (confirm("Are you sure you want to reset all fields?")) {
-                localStorage.removeItem('azania_consumer_appraisal_multistep');
+                localStorage.removeItem('consumer_appraisal_calculator');
                 location.reload();
             }
         }
