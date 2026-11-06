@@ -96,9 +96,26 @@
           <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Details</span>
         </div>
         <div class="space-y-4">
-          <div><label class="field-label" for="recipientBank">Recipient name / Bank</label><input class="field" id="recipientBank" list="bankList" placeholder="e.g. People's Bank of Zanzibar"><datalist id="bankList">
-            <option>People's Bank of Zanzibar (PBZ Bank)</option><option>CRDB Bank PLC</option><option>NMB Bank PLC</option><option>National Bank of Commerce (NBC)</option><option>Tanzania Commercial Bank (TCB)</option><option>Absa Bank Tanzania</option><option>Standard Chartered Bank Tanzania</option><option>Stanbic Bank Tanzania</option><option>Diamond Trust Bank (DTB) Tanzania</option><option>Exim Bank Tanzania</option><option>KCB Bank Tanzania</option><option>Bank of Africa Tanzania (BOA)</option><option>Equity Bank Tanzania</option><option>I&M Bank Tanzania</option>
-          </datalist></div>
+          <div>
+            <label class="field-label" for="recipientBank">Recipient name / Bank</label>
+            <select class="field" id="recipientBank">
+              <option value="">-- Select Recipient Bank --</option>
+              <option value="People's Bank of Zanzibar (PBZ Bank)">People's Bank of Zanzibar (PBZ Bank)</option>
+              <option value="CRDB Bank PLC">CRDB Bank PLC</option>
+              <option value="NMB Bank PLC">NMB Bank PLC</option>
+              <option value="National Bank of Commerce (NBC)">National Bank of Commerce (NBC)</option>
+              <option value="Tanzania Commercial Bank (TCB)">Tanzania Commercial Bank (TCB)</option>
+              <option value="Absa Bank Tanzania">Absa Bank Tanzania</option>
+              <option value="Standard Chartered Bank Tanzania">Standard Chartered Bank Tanzania</option>
+              <option value="Stanbic Bank Tanzania">Stanbic Bank Tanzania</option>
+              <option value="Diamond Trust Bank (DTB) Tanzania">Diamond Trust Bank (DTB) Tanzania</option>
+              <option value="Exim Bank Tanzania">Exim Bank Tanzania</option>
+              <option value="KCB Bank Tanzania">KCB Bank Tanzania</option>
+              <option value="Bank of Africa Tanzania (BOA)">Bank of Africa Tanzania (BOA)</option>
+              <option value="Equity Bank Tanzania">Equity Bank Tanzania</option>
+              <option value="I&M Bank Tanzania">I&M Bank Tanzania</option>
+            </select>
+          </div>
           <div class="grid grid-cols-2 gap-3">
             <div><label class="field-label" for="branchLocation">Branch</label><input class="field" id="branchLocation" placeholder="e.g. Chake Chake Branch"></div>
             <div><label class="field-label" for="poBox">Postal address</label><input class="field" id="poBox" placeholder="e.g. P.O. Box 67, Pemba"></div>
@@ -362,6 +379,7 @@ $("letterheadInput").addEventListener("change", e => {
 
 fieldIds.forEach(id => {
   if($(id)) $(id).addEventListener("input", updatePreview);
+  if($(id)) $(id).addEventListener("change", updatePreview); // Added change for select elements
 });
 $("customDate").addEventListener("change", updatePreview);
 $("previewRef").addEventListener("input", e => {
