@@ -50,7 +50,7 @@
 <header class="no-print sticky top-0 z-20 bg-[#14243b] text-white border-b border-white/10">
   <div class="max-w-[1600px] mx-auto px-5 lg:px-8 h-[68px] flex items-center justify-between gap-4">
     <div class="flex items-center gap-3 min-w-0">
-      <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/10 grid place-items-center font-black text-sm tracking-tight">AZ</div>
+      <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/10 grid place-items-center font-black text-sm tracking-tight text-blue-400">AZ</div>
       <div class="min-w-0">
         <div class="font-bold text-sm tracking-wide">AZANIA BANK PLC</div>
         <div class="text-[10px] text-slate-300">Outstanding Balance Request Generator</div>
@@ -59,8 +59,8 @@
     <div class="flex items-center gap-2">
       <button class="action bg-white/10 hover:bg-white/15 text-white border border-white/10" onclick="generateRef()">↻ <span class="hidden sm:inline">New reference</span></button>
       <button class="action bg-white/10 hover:bg-white/15 text-white border border-white/10" onclick="resetForm()">Reset</button>
-      <button class="action bg-white text-[#14243b] hover:bg-slate-100" onclick="window.print()">Print</button>
-      <button id="pdfButton" class="action action-primary" onclick="downloadPDF()">↓ <span class="hidden sm:inline">Download PDF</span><span class="sm:hidden">PDF</span></button>
+      <button class="action bg-white text-[#14243b] hover:bg-slate-100 font-bold" onclick="window.print()">Print</button>
+      <button id="pdfButton" class="action action-primary shadow-sm" onclick="downloadPDF()">↓ <span class="hidden sm:inline">Download PDF</span><span class="sm:hidden">PDF</span></button>
     </div>
   </div>
 </header>
@@ -72,8 +72,8 @@
       <h1 class="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[#172338]">Create balance request</h1>
       <p class="text-sm text-[#718096] mt-1">Complete the details and review the A4 letter before printing or exporting.</p>
     </div>
-    <div class="flex items-center gap-2 text-xs text-[#65748a] bg-white border border-[#e4e9f0] rounded-xl px-3 py-2">
-      <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live preview enabled
+    <div class="flex items-center gap-2 text-xs text-[#65748a] bg-white border border-[#e4e9f0] rounded-xl px-3 py-2 shadow-sm">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live preview enabled
     </div>
   </div>
 
@@ -82,7 +82,7 @@
       <div class="panel p-5">
         <div class="flex items-center justify-between mb-5">
           <div><div class="section-kicker">01 / Recipient</div><h2 class="section-title mt-1">Receiving bank details</h2></div>
-          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full">Required</span>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">Required</span>
         </div>
         <div class="space-y-4">
           <div><label class="field-label" for="recipientBank">Recipient bank</label><input class="field" id="recipientBank" list="bankList" value="People's Bank of Zanzibar (PBZ Bank)"><datalist id="bankList">
@@ -98,8 +98,8 @@
       <div class="panel p-5">
         <div class="mb-5"><div class="section-kicker">02 / Customer</div><h2 class="section-title mt-1">Customer information</h2></div>
         <div class="grid grid-cols-2 gap-3">
-          <div class="col-span-2"><label class="field-label" for="customerName">Customer full name</label><input class="field uppercase" id="customerName" value="JOHN SIMON MONO"></div>
-          <div class="col-span-2"><label class="field-label" for="accountNumber">Loan / account number</label><input class="field" id="accountNumber" value="012345678901" inputmode="numeric"></div>
+          <div class="col-span-2"><label class="field-label" for="customerName">Customer full name</label><input class="field uppercase font-semibold" id="customerName" value="JOHN SIMON MONO"></div>
+          <div class="col-span-2"><label class="field-label" for="accountNumber">Loan / account number</label><input class="field font-mono" id="accountNumber" value="012345678901" inputmode="numeric"></div>
         </div>
       </div>
 
@@ -110,7 +110,7 @@
         </div>
         <div class="space-y-3">
           <div><label class="field-label" for="salutationText">Salutation</label><input class="field" id="salutationText" value="Dear Sir/Madam,"></div>
-          <div><label class="field-label" for="bodyParagraph">Main message</label><textarea class="field leading-relaxed" id="bodyParagraph" rows="6">We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.</textarea><p class="text-[10px] text-slate-400 mt-1">Use {ACCOUNT_NO} wherever the account number should appear in the message.</p></div>
+          <div><label class="field-label" for="bodyParagraph">Main message</label><textarea class="field leading-relaxed" id="bodyParagraph" rows="5">We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.</textarea><p class="text-[10px] text-slate-400 mt-1">Use {ACCOUNT_NO} wherever the account number should appear in the message.</p></div>
           <div><label class="field-label" for="closingParagraph">Closing paragraph</label><textarea class="field" id="closingParagraph" rows="2">Thanking you in advance for your continued cooperation and prompt assistance.</textarea></div>
         </div>
       </div>
@@ -118,10 +118,14 @@
       <div class="panel p-5">
         <div class="mb-5"><div class="section-kicker">04 / Issuer</div><h2 class="section-title mt-1">Institution and signatories</h2></div>
         <div class="space-y-3">
-          <div><label class="field-label" for="senderBank">Issuing institution</label><input class="field" id="senderBank" value="AZANIA BANK PLC"></div>
+          <div><label class="field-label" for="senderBank">Issuing institution</label><input class="field font-semibold" id="senderBank" value="AZANIA BANK PLC"></div>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="field-label" for="sig1Title">Signatory 1</label><input class="field" id="sig1Title" value="Branch Manager"></div>
-            <div><label class="field-label" for="sig2Title">Signatory 2</label><input class="field" id="sig2Title" value="Branch Operations Executive"></div>
+            <div><label class="field-label" for="sig1Title">Signatory 1 Title</label><input class="field" id="sig1Title" value="Branch Manager"></div>
+            <div><label class="field-label" for="sig1Name">Signatory 1 Name</label><input class="field" id="sig1Name" value="Amina Juma"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div><label class="field-label" for="sig2Title">Signatory 2 Title</label><input class="field" id="sig2Title" value="Branch Operations Executive"></div>
+            <div><label class="field-label" for="sig2Name">Signatory 2 Name</label><input class="field" id="sig2Name" value="Baraka Kassim"></div>
           </div>
         </div>
       </div>
@@ -129,12 +133,12 @@
       <div class="panel p-5">
         <div class="flex items-center justify-between gap-3">
           <div><div class="section-kicker">05 / Branding</div><h2 class="section-title mt-1">Letterhead image</h2><p class="text-[11px] text-slate-500 mt-1">Optional. Upload a full-page A4 letterhead image.</p></div>
-          <label class="action action-light cursor-pointer">Upload image<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
+          <label class="action action-light cursor-pointer shadow-sm">Upload image<input type="file" id="letterheadInput" accept="image/*" class="hidden"></label>
         </div>
         <button class="text-[11px] text-rose-600 font-semibold mt-3 hidden" id="removeLetterhead" onclick="removeLetterhead()">Remove letterhead</button>
       </div>
 
-      <div class="rounded-xl bg-[#edf3fb] border border-[#d9e5f5] p-4">
+      <div class="rounded-xl bg-[#edf3fb] border border-[#d9e5f5] p-4 shadow-sm">
         <div class="text-[10px] uppercase tracking-widest text-[#54719b] font-extrabold">Document reference</div>
         <div class="font-mono font-bold text-sm text-[#214d89] mt-1 break-all" id="sidebarRef"></div>
         <p class="text-[10px] text-[#6e819c] mt-2">The reference number is generated automatically. You can generate a new one from the top bar.</p>
@@ -144,7 +148,7 @@
     <section class="min-w-0">
       <div class="no-print flex items-center justify-between gap-3 mb-3">
         <div><div class="section-kicker">Document preview</div><h2 class="font-bold text-sm text-[#24344b] mt-1">A4 — Outstanding balance request</h2></div>
-        <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-lg px-2.5 py-1.5">Edits update automatically</span>
+        <span class="text-[10px] text-slate-500 border border-slate-200 bg-white rounded-lg px-2.5 py-1.5 shadow-sm">Edits update automatically</span>
       </div>
       <div class="preview-wrap">
         <div id="letterPaper" class="a4-canvas shrink-0">
@@ -167,12 +171,21 @@
               <p id="previewClosing" class="pt-1 editable" contenteditable="true"></p>
             </div>
             
-            <!-- FLEXIBLE DYNAMIC SIGNATURE BLOCK -->
+            <!-- FLEXIBLE DYNAMIC SIGNATURE BLOCK WITH NAMES -->
             <div class="signature-block pt-6 space-y-3">
-              <div class="space-y-0.5"><p class="font-medium editable" contenteditable="true">Yours faithfully,</p><p id="previewSenderBank" class="font-bold editable" contenteditable="true"></p></div>
+              <div class="space-y-0.5">
+                <p class="font-medium editable" contenteditable="true">Yours faithfully,</p>
+                <p id="previewSenderBank" class="font-bold editable" contenteditable="true"></p>
+              </div>
               <div class="grid grid-cols-2 gap-10 pt-8">
-                <div class="border-t border-slate-500 pt-2"><p id="previewSig1" class="font-bold editable" contenteditable="true"></p></div>
-                <div class="border-t border-slate-500 pt-2"><p id="previewSig2" class="font-bold editable" contenteditable="true"></p></div>
+                <div class="border-t border-slate-500 pt-2 space-y-0.5">
+                  <p id="previewSig1Title" class="font-bold text-slate-900 editable" contenteditable="true"></p>
+                  <p id="previewSig1Name" class="font-semibold text-slate-700 text-[10pt] editable" contenteditable="true"></p>
+                </div>
+                <div class="border-t border-slate-500 pt-2 space-y-0.5">
+                  <p id="previewSig2Title" class="font-bold text-slate-900 editable" contenteditable="true"></p>
+                  <p id="previewSig2Name" class="font-semibold text-slate-700 text-[10pt] editable" contenteditable="true"></p>
+                </div>
               </div>
             </div>
 
@@ -195,7 +208,7 @@ const defaults = {
   salutationText:"Dear Sir/Madam,",
   bodyParagraph:"We kindly write to formally request an official outstanding balance statement for the above-referenced customer, holding Account Number {ACCOUNT_NO} with your bank. This information is required to facilitate ongoing financial review and administrative clearance procedures. We would appreciate it if you could provide the detailed payoff figure along with your bank's settlement instructions at your earliest convenience.",
   closingParagraph:"Thanking you in advance for your continued cooperation and prompt assistance.",
-  senderBank:"AZANIA BANK PLC", sig1Title:"Branch Manager", sig2Title:"Branch Operations Executive"
+  senderBank:"AZANIA BANK PLC", sig1Title:"Branch Manager", sig1Name:"Amina Juma", sig2Title:"Branch Operations Executive", sig2Name:"Baraka Kassim"
 };
 let currentRef = "";
 const ids = Object.keys(defaults);
@@ -216,8 +229,12 @@ function updatePreview(){
   $("previewSalutation").textContent=v("salutationText");
   $("previewClosing").textContent=v("closingParagraph");
   $("previewSenderBank").textContent=v("senderBank");
-  $("previewSig1").textContent=v("sig1Title");
-  $("previewSig2").textContent=v("sig2Title");
+  
+  $("previewSig1Title").textContent=v("sig1Title");
+  $("previewSig1Name").textContent=v("sig1Name");
+  $("previewSig2Title").textContent=v("sig2Title");
+  $("previewSig2Name").textContent=v("sig2Name");
+
   $("previewDate").textContent=formatDate($("customDate").value);
   const body=v("bodyParagraph").replaceAll("{ACCOUNT_NO}",v("accountNumber")||"[ACCOUNT NO]");
   $("previewBody").textContent=body;
