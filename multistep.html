@@ -243,7 +243,7 @@
                         </div>
                         <div class="flex justify-between items-center py-1 border-b">
                             <span class="text-slate-600 text-xs sm:text-sm">5.3 Debt ratio</span>
-                            <span id="debt_ratio" class="font-medium">0.55</span>
+                            <span id="debt_ratio" class="font-medium">54.67%</span>
                         </div>
                         <div class="flex justify-between items-center pt-2 font-bold text-base">
                             <span>5.4 Within/Above Limit</span>
@@ -338,7 +338,6 @@
 
         function showStep(step) {
             if (isPreviewMode) {
-                // Show all steps for preview & print
                 for (let i = 1; i <= totalSteps; i++) {
                     document.getElementById(`step-${i}`).classList.remove('hidden');
                 }
@@ -349,7 +348,6 @@
                 return;
             }
 
-            // Normal wizard step
             document.getElementById('wizard-progress-bar').classList.remove('hidden');
             document.getElementById('review-banner').classList.add('hidden');
 
@@ -380,7 +378,6 @@
 
         function nextPrev(n) {
             if (isPreviewMode) {
-                // If in preview mode and clicking back or toggle
                 isPreviewMode = false;
                 currentStep = totalSteps;
                 showStep(currentStep);
@@ -392,7 +389,6 @@
                     currentStep++;
                     showStep(currentStep);
                 } else {
-                    // Reached last step, activate review & print ready mode (show all)
                     isPreviewMode = true;
                     showStep(currentStep);
                 }
@@ -487,8 +483,12 @@
             const netAfterDeductions = adjustedNetFixed - totalDeductions;
             document.getElementById('net_after_deductions').innerText = formatNumber(netAfterDeductions);
 
-            const debtRatio = basic > 0 ? (totalDeductions / basic) : 0;
-            document.getElementById('debt_ratio').innerText = debtRatio.toFixed(6);
+            // Exact Excel Debt Ratio calculation: (Total Deductions + (Basic Salary - Net Salary Slip)) / Basic Salary
+            let debtRatio = 0;
+            if (basic > 0) {
+                debtRatio = (totalDeductions + (basic - netSalarySlip)) / basic;
+            }
+            document.getElementById('debt_ratio').innerText = (debtRatio * 100).toFixed(2) + "%";
 
             const limitStatus = document.getElementById('limit_status');
             if (totalDeductions <= limitOneThird) {
