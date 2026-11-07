@@ -40,10 +40,13 @@
     #leftEdgeTrigger { position: fixed; top: 0; left: 0; width: 18px; height: 100vh; z-index: 45; }
 
     @media print {
+      body * { visibility: hidden !important; }
+      #printable-report-container, #printable-report-container * { visibility: visible !important; }
+      #printable-report-container { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; }
-      .print-page-2 { page-break-before: always; break-before: page; min-height: 100vh; box-sizing: border-box; }
+      .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .print-page-2 { page-break-before: always; break-before: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
     }
   </style>
 </head>
@@ -299,8 +302,8 @@
                     <button onclick="exportCSV()" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-lg shadow transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-file-csv"></i> CSV
                     </button>
-                    <button onclick="window.print()" class="w-full sm:w-auto px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-print"></i> Print / PDF
+                    <button onclick="triggerPrintPDF()" class="w-full sm:w-auto px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Print / Save PDF
                     </button>
                 </div>
             </div>
@@ -357,33 +360,33 @@
                                 <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"><i class="fa-solid fa-satellite"></i> Satellite Mode</span>
                             </div>
                             <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-900 h-28 sm:h-32 flex items-center justify-center">
-                                <img id="rep-map-image" src="" alt="Satellite Map View" class="w-full h-full object-cover">
+                                <img id="rep-map-image" src="" crossorigin="anonymous" alt="Satellite Map View" class="w-full h-full object-cover">
                             </div>
                         </div>
 
-
-                    <!-- Integrated Verification & Signature Block (Placed right after map to eliminate extra space) -->
-                    <div class="border-t-2 border-slate-900 pt-2 text-xs space-y-2 mt-2">
-                        <p class="text-slate-800 leading-snug">
-                            I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
-                        </p>
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
-                            <div>
-                                <span class="font-bold">Name:</span> <span id="rep-footer-name" class="underline">Hawa Juma</span>
+                        <!-- Integrated Verification & Signature Block -->
+                        <div class="border-t-2 border-slate-900 pt-2 text-xs space-y-2 mt-2">
+                            <p class="text-slate-800 leading-snug">
+                                I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
+                            </p>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
+                                <div>
+                                    <span class="font-bold">Name:</span> <span id="rep-footer-name" class="underline">Hawa Juma</span>
+                                </div>
+                                <div>
+                                    <span class="font-bold">Signature:</span> <span class="inline-block border-b border-slate-900 px-8 text-transparent select-none">_______</span>
+                                </div>
+                                <div>
+                                    <span class="font-bold">Date:</span> <span id="rep-footer-date" class="underline font-mono">26/08/2026</span>
+                                </div>
                             </div>
-                            <div>
-                                <span class="font-bold">Signature:</span> <span class="inline-block border-b border-slate-900 px-8 text-transparent select-none">_______</span>
+                            <div class="text-center text-[10px] font-bold text-slate-400">
+                                1
                             </div>
-                            <div>
-                                <span class="font-bold">Date:</span> <span id="rep-footer-date" class="underline font-mono">26/08/2026</span>
-                            </div>
-                        </div>
-                        <div class="text-center text-[10px] font-bold text-slate-400">
-                            1
                         </div>
                     </div>
                 </div>
-              </div>
+
                 <!-- PAGE 2: Attached Business Photos Annex -->
                 <div class="print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1050px;">
                     <div>
@@ -558,7 +561,6 @@
       updateAutoDescription();
     });
 
-    // Auto Update Description based on Locality & District
     function updateAutoDescription() {
       const locality = document.getElementById('f-locality').value || "MICHEWENI";
       const district = document.getElementById('f-district').value || "KASKAZINI PEMBA";
@@ -568,7 +570,6 @@
       }
     }
 
-    // View Switcher
     function switchView(viewName) {
       ['dashboard', 'form', 'report', 'reports'].forEach(v => {
         const el = document.getElementById(`view-${v}`);
@@ -596,7 +597,6 @@
       switchView('form');
     }
 
-    // Dashboard Stats Update
     function updateDashboardStats() {
       const total = appState.reports.length;
       const wakala = appState.reports.filter(r => r.type.includes('Wakala')).length;
@@ -611,7 +611,6 @@
       if (collateralEl) collateralEl.innerText = collateral;
     }
 
-    // Live GPS Geolocation Fetcher
     function fetchLiveLocation() {
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by your browser");
@@ -709,7 +708,6 @@
       
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       
-      // Burn Azania Bank Watermark onto Image
       const gps = document.getElementById('f-gps').value || "-4.944618,39.74594";
       const account = document.getElementById('f-account-name').value || "WAKALA SITE VISIT";
       const dateStr = new Date().toLocaleString();
@@ -750,6 +748,11 @@
       renderPhotosQueue();
     }
 
+    function removePhoto(id) {
+      appState.capturedPhotos = appState.capturedPhotos.filter(p => p.id !== id);
+      renderPhotosQueue();
+    }
+
     function renderPhotosQueue() {
       const container = document.getElementById('photos-preview-container');
       const badge = document.getElementById('photo-count-badge');
@@ -779,12 +782,6 @@
       `).join('');
     }
 
-    function removePhoto(id) {
-      appState.capturedPhotos = appState.capturedPhotos.filter(p => p.id !== id);
-      renderPhotosQueue();
-    }
-
-    // Generate Report
     function generateReport(event) {
       event.preventDefault();
       
@@ -803,7 +800,6 @@
       };
 
       appState.activeInspection = formData;
-      
       appState.reports.unshift(formData);
       localStorage.setItem('azania_reports', JSON.stringify(appState.reports));
       updateDashboardStats();
@@ -826,7 +822,6 @@
       document.getElementById('rep-footer-date').innerText = new Date(data.visitDate).toLocaleDateString();
       document.getElementById('annex-client-name').innerText = data.accountName;
 
-      // Generate 100m Satellite Map Tile from GPS (z=17 for ~100m radius, l=sat,skl for satellite imagery with labels)
       const mapImg = document.getElementById('rep-map-image');
       const [lat, lon] = data.gps.split(',').map(s => s.trim());
       if (lat && lon) {
@@ -835,7 +830,6 @@
         mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
       }
 
-      // Populate Page 2 Photos Annex Grid
       const annexGrid = document.getElementById('annex-photos-grid');
       if (data.photos.length === 0) {
         annexGrid.innerHTML = `
@@ -858,7 +852,6 @@
       }
     }
 
-    // Saved Reports Management
     function renderSavedReportsList() {
       const container = document.getElementById('saved-reports-list');
       if (!container) return;
@@ -912,35 +905,98 @@
       }
     }
 
-    // Export Functions
+    // Direct Print Trigger for Printable Area Only
+    function triggerPrintPDF() {
+      window.print();
+    }
+
+    // Fully Functional MS Word (.doc) Auto-Downloader
     function downloadWordDoc() {
+      const accountName = document.getElementById('rep-account-name').innerText || "WAKALA_REPORT";
+      const gps = document.getElementById('rep-gps').innerText;
+      const locality = document.getElementById('rep-locality').innerText;
+      const district = document.getElementById('rep-district').innerText;
+      const officer = document.getElementById('rep-officer-name').innerText;
+      const visitDate = document.getElementById('rep-date').innerText;
+      const description = document.getElementById('rep-description').innerText;
+      
+      let photosHtml = '';
+      if (appState.activeInspection && appState.activeInspection.photos.length > 0) {
+        photosHtml = appState.activeInspection.photos.map((p, idx) => `
+          <div style="margin-bottom: 30px; page-break-inside: avoid; text-align: center;">
+            <p style="font-weight: bold; font-size: 14px;">Photo Annex #${idx + 1}</p>
+            <img src="${p.url}" style="max-width: 500px; height: auto; border: 2px solid #000; padding: 5px;" />
+            <p style="font-size: 12px; color: #555;">GPS: ${gps}</p>
+          </div>
+        `).join('');
+      } else {
+        photosHtml = "<p>No photos attached.</p>";
+      }
+
       const htmlContent = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-        <head><meta charset='utf-8'><title>Site Visit Report</title></head>
-        <body style="font-family: Arial, sans-serif;">
-            <h2 style="text-align:center;">AZANIA BANK PLC</h2>
-            <h3 style="text-align:center; color: #0284c7;">SITE VISIT REPORT</h3>
-            <table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
-                <tr><td><b>Name of Wakala Account</b></td><td colspan="3"><b>${document.getElementById('rep-account-name').innerText}</b></td></tr>
-                <tr><td><b>Location GPS</b></td><td>${document.getElementById('rep-gps').innerText}</td><td><b>Locality</b></td><td>${document.getElementById('rep-locality').innerText}</td></tr>
+        <head>
+          <meta charset='utf-8'>
+          <title>Azania Bank Site Visit Report - ${accountName}</title>
+          <style>
+            body { font-family: 'Calibri', Arial, sans-serif; color: #000; line-height: 1.4; }
+            h2, h3 { text-align: center; margin: 5px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; }
+            th, td { border: 1px solid #000; padding: 8px; font-size: 12px; }
+            .bg-gray { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+            <h2>AZANIA BANK PLC</h2>
+            <h3>SITE VISIT REPORT</h3>
+            <br/>
+            <table>
+                <tr>
+                    <td class="bg-gray" style="width: 30%;"><b>Name of Wakala Account</b></td>
+                    <td colspan="3"><b>${accountName}</b></td>
+                </tr>
+                <tr>
+                    <td class="bg-gray"><b>Location Details</b></td>
+                    <td><b>GPS:</b> ${gps}</td>
+                    <td><b>Locality:</b> ${locality}</td>
+                    <td><b>District:</b> ${district}</td>
+                </tr>
             </table>
-            <p><b>Visit Date:</b> ${document.getElementById('rep-date').innerText}</p>
-            <p><b>Inspected By:</b> ${document.getElementById('rep-officer-name').innerText}</p>
-            <p><b>Business Description:</b><br/>${document.getElementById('rep-description').innerText}</p>
-            <br/><hr/>
-            <h3>Attached Photos</h3>
-            ${appState.activeInspection ? appState.activeInspection.photos.map((p, i) => `<p>Photo #${i+1}</p><img src="${p.url}" width="400"/><br/>`).join('') : ''}
+
+            <p><b>Site Visit Date:</b> ${visitDate}</p>
+            <p><b>Inspecting Officer:</b> ${officer}</p>
+            
+            <p><b>General Description of the Business:</b></p>
+            <p style="background: #f9f9f9; padding: 10px; border: 1px solid #ccc;">${description}</p>
+            
+            <br/><hr/><br/>
+            <h3>ATTACHED BUSINESS PHOTOS & ANNEX</h3>
+            <br/>
+            ${photosHtml}
+
+            <br/><hr/><br/>
+            <p><b>Verification Statement:</b> I, <u>${officer}</u> being an employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.</p>
+            <br/>
+            <table style="border: none;">
+              <tr>
+                <td style="border: none;"><b>Name:</b> ${officer}</td>
+                <td style="border: none;"><b>Signature:</b> ........................................</td>
+                <td style="border: none;"><b>Date:</b> ${visitDate}</td>
+              </tr>
+            </table>
         </body>
         </html>
       `;
+
       const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Azania_Bank_Site_Visit_${document.getElementById('rep-account-name').innerText.replace(/\s+/g, '_')}.doc`;
+      a.download = `Azania_Bank_Site_Visit_${accountName.replace(/\s+/g, '_')}.doc`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     function exportCSV() {
