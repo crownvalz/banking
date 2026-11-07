@@ -1,0 +1,301 @@
+
+/* =========================================================
+   MONO APPS SOLUTIONS
+   GLOBAL APPLICATION & NAVIGATION STYLES
+========================================================= */
+
+
+/* =========================================================
+   01. GLOBAL APPLICATION STYLES
+========================================================= */
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* GLOBAL SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 99px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+
+/* HIDE SCROLLBAR */
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+/* =========================================================
+   02. LEFT EDGE TRIGGER
+========================================================= */
+
+#leftEdgeTrigger {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 18px;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 45;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   03. DESKTOP SIDEBAR
+========================================================= */
+
+#desktopSidebar {
+    width: 320px;
+    max-width: 88vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    will-change: transform;
+    transition: transform 300ms ease;
+}
+
+#desktopSidebar.is-open {
+    transform: translateX(0);
+}
+
+#desktopSidebar.is-closed {
+    transform: translateX(-100%);
+}
+
+/* SIDEBAR SCROLLBAR */
+
+#desktopSidebar .overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark #desktopSidebar .overflow-y-auto {
+    scrollbar-color: #334155 transparent;
+}
+
+
+/* =========================================================
+   04. TOP NAVBAR
+========================================================= */
+
+#topNavbar {
+    will-change: padding-left;
+    transition:
+        padding-left 300ms ease,
+        margin-left 300ms ease,
+        transform 300ms ease;
+}
+
+
+/* =========================================================
+   05. MAIN CONTENT WRAPPER
+========================================================= */
+
+#contentWrapper {
+    min-width: 0;
+    width: 100%;
+    transition:
+        padding-left 300ms ease,
+        margin-left 300ms ease,
+        transform 300ms ease;
+}
+
+
+/* =========================================================
+   06. ACTIVE NAVIGATION LINKS
+========================================================= */
+
+#desktopSidebar nav a.navigation-active {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+#topNavbar nav a.navigation-active {
+    background: white;
+    color: #0369a1;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+#mobileDrawerContainer a.navigation-active {
+    outline: 2px solid #0284c7;
+    outline-offset: -2px;
+}
+
+
+/* =========================================================
+   07. DARK MODE NAVIGATION
+========================================================= */
+
+.dark #desktopSidebar nav a.navigation-active {
+    background: rgba(14, 116, 144, 0.2);
+    color: #7dd3fc;
+}
+
+.dark #topNavbar nav a.navigation-active {
+    background: #0f172a;
+    color: #7dd3fc;
+}
+
+.dark #mobileDrawerContainer a.navigation-active {
+    outline-color: #38bdf8;
+}
+
+
+/* =========================================================
+   08. MOBILE DRAWER
+========================================================= */
+
+#mobileDrawerContainer {
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    transition:
+        grid-template-rows 300ms ease,
+        visibility 300ms ease;
+}
+
+#mobileDrawerContainer.is-open {
+    grid-template-rows: 1fr;
+    visibility: visible;
+}
+
+#mobileDrawerContainer.is-closed {
+    grid-template-rows: 0fr;
+    visibility: hidden;
+}
+
+
+/* =========================================================
+   09. NAVIGATION INTERACTIONS
+========================================================= */
+
+#desktopSidebar nav a,
+#topNavbar nav a,
+#mobileDrawerContainer a,
+#desktopSidebar button,
+#topNavbar button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+#desktopSidebar button,
+#topNavbar button {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   10. MOBILE NAVIGATION SCROLL LOCK
+========================================================= */
+
+body.mobile-navigation-open {
+    overflow: hidden;
+    touch-action: none;
+}
+
+
+/* =========================================================
+   11. RESPONSIVE NAVIGATION
+========================================================= */
+
+@media (max-width: 1023px) {
+
+    #contentWrapper,
+    #topNavbar {
+        padding-left: 0 !important;
+    }
+
+    #desktopSidebar {
+        max-width: 88vw;
+    }
+
+}
+
+
+/* =========================================================
+   12. PRINT STYLES
+========================================================= */
+
+@media print {
+
+    #topNavbar,
+    #desktopSidebar,
+    #mobileDrawerContainer,
+    #leftEdgeTrigger {
+        display: none !important;
+    }
+
+    #contentWrapper {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        transform: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+}
+
+
+/* =========================================================
+   13. ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #desktopSidebar,
+    #topNavbar,
+    #contentWrapper,
+    #mobileDrawerContainer {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+
+}
+
+
+
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    #leftEdgeTrigger { position: fixed; top: 0; left: 0; width: 18px; height: 100vh; z-index: 45; }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #printable-report-container, #printable-report-container * { visibility: visible !important; }
+      #printable-report-container { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .print-page-annex { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .photo-card { page-break-inside: avoid; break-inside: avoid; }
+    }

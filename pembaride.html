@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemba Ride - Island Transport Made Simple & Reliable</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        island: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            400: '#34d399',
+                            500: '#10b981', // Primary Emerald
+                            600: '#059669',
+                            800: '#065f46',
+                            900: '#022c22',
+                        },
+                        teal: {
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                        },
+                        coral: {
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.90);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .light .glass-card {
+            background: rgba(241, 245, 249, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        /* Pulse & Glow Effects */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .pulse-glow {
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 dark h-screen w-screen overflow-hidden flex flex-col md:flex-row transition-colors duration-300">
+
+    <!-- LOGIN & REGISTRATION MODAL -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 md:p-8 border border-emerald-500/30 shadow-2xl space-y-5">
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-emerald-500/30">
+                    <i class="fa-solid fa-palm-tree"></i>
+                </div>
+                <h2 id="authModalTitle" class="text-2xl font-extrabold text-white">Welcome to Pemba Ride</h2>
+                <p class="text-xs text-emerald-400 font-medium">Island Transport Made Simple & Reliable</p>
+            </div>
+
+            <!-- TAB SWITCHER -->
+            <div class="flex bg-slate-900/90 rounded-xl p-1 border border-slate-800">
+                <button id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition">Sign In</button>
+                <button id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Create Account</button>
+            </div>
+
+            <!-- LOGIN / REGISTER FORM -->
+            <form id="authForm" class="space-y-4">
+                <div id="nameField" class="hidden">
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Full Name</label>
+                    <input type="text" id="authName" placeholder="e.g. Salim Ali" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Phone Number or Email</label>
+                    <input type="text" id="authIdentity" required placeholder="e.g. +255 770 123 456" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Password</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Account Role</label>
+                    <select id="authRole" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="rider">Rider (Passenger)</option>
+                        <option value="driver">Driver (Pemba Transport Partner)</option>
+                    </select>
+                </div>
+
+                <!-- Driver specific vehicle info registration fields -->
+                <div id="driverFields" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Vehicle Type</label>
+                        <select id="driverVehicleType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="bajaji">Bajaji (Auto Rickshaw)</option>
+                            <option value="bodaboda">Bodaboda (Motorcycle)</option>
+                            <option value="taxi">Standard Taxi (Sedan)</option>
+                            <option value="express">Pemba Express (4x4 SUV)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Plate Number & Vehicle Description</label>
+                        <input type="text" id="driverVehicleDetail" placeholder="e.g. Z 452 PB - TVS King Yellow" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="text-center pt-2">
+                <button type="button" id="guestLoginBtn" class="text-xs text-slate-400 hover:text-emerald-400 underline">Continue as Demo Rider</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DRIVER INCOMING RIDE REQUEST NOTIFICATION MODAL -->
+    <div id="driverIncomingModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 md:p-8 border border-amber-500/50 shadow-2xl space-y-5">
+            <div class="flex items-center space-x-3 text-amber-400 border-b border-slate-800 pb-3">
+                <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-lg font-bold animate-pulse">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-extrabold text-white">Incoming Ride Request!</h3>
+                    <p class="text-xs text-amber-400 font-medium">A passenger has specifically requested you for a trip</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-3 text-sm">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                    <span class="text-slate-400 text-xs font-bold uppercase">Passenger</span>
+                    <span id="reqPassengerName" class="font-extrabold text-emerald-400">Salim Ali</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 text-xs font-bold uppercase">Pickup Location</span>
+                    <span id="reqPickup" class="font-semibold text-slate-200">Chake-Chake</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 text-xs font-bold uppercase">Destination</span>
+                    <span id="reqDest" class="font-semibold text-slate-200">Karume Airport</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+                    <span class="text-slate-400 text-xs font-bold uppercase">Offered Fare</span>
+                    <span id="reqFare" class="font-black text-xl text-white">TSh 7,500</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button type="button" id="declineRideBtn" class="py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm border border-slate-700 transition">
+                    Decline Request
+                </button>
+                <button type="button" id="acceptRideBtn" class="py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-sm shadow-lg shadow-emerald-500/30 hover:from-emerald-400 hover:to-teal-400 transition">
+                    Accept Ride
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE HEADER -->
+    <header class="md:hidden z-30 bg-slate-900/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-extrabold text-lg shadow-lg shadow-emerald-500/20">
+                P
+            </div>
+            <div>
+                <span class="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-white">Pemba Ride</span>
+                <p class="text-[9px] text-emerald-400 font-medium leading-none">Island Express</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button id="userAccountBtnMobile" class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 flex items-center gap-1">
+                <i class="fa-solid fa-user"></i> <span id="userMobileLabel">Guest</span>
+            </button>
+            <button id="currencyToggleMobile" class="text-xs font-bold px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                TZS
+            </button>
+            <button id="themeToggleMobile" class="p-2 rounded-xl bg-slate-800 text-slate-300">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- LEFT SIDEBAR / BOOKING CONTROL PANEL -->
+    <aside id="sidebar" class="w-full md:w-[460px] lg:w-[500px] xl:w-[540px] h-[calc(100vh-57px)] md:h-screen flex-shrink-0 z-20 flex flex-col glass-panel border-r border-slate-800/80 shadow-2xl overflow-y-auto">
+        
+        <!-- DESKTOP HEADER -->
+        <div class="hidden md:flex items-center justify-between p-5 border-b border-slate-800/60 flex-shrink-0">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/30">
+                    <i class="fa-solid fa-palm-tree text-slate-950"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl tracking-tight text-white">Pemba Ride</h1>
+                    <p class="text-xs text-emerald-400 font-medium">Island Transport Made Simple & Reliable</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <!-- User Status -->
+                <button id="userAccountBtnDesktop" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-user-circle text-emerald-400"></i>
+                    <span id="userDesktopLabel">Guest</span>
+                </button>
+                <!-- Export CSV -->
+                <button id="exportCsvBtn" title="Download System Data to CSV" class="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition flex items-center justify-center">
+                    <i class="fa-solid fa-file-csv text-base"></i>
+                </button>
+                <!-- Currency Toggle -->
+                <button id="currencyToggleDesktop" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-coins text-emerald-400"></i>
+                    <span id="currencyText">TZS (TSh)</span>
+                </button>
+                <!-- Theme Toggle -->
+                <button id="themeToggleDesktop" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN FORM BODY -->
+        <div class="p-4 md:p-6 space-y-5 flex-1">
+            
+            <!-- DRIVER ONLINE TOGGLE PANEL (Visible for Driver Role) -->
+            <div id="driverStatusContainer" class="hidden bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-extrabold text-white">Driver Status</h3>
+                        <p class="text-[11px] text-slate-400">Go online to accept passenger requests in Pemba</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="driverOnlineToggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </div>
+                <div id="driverOnlineBadge" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-rose-500"></span> Offline (Not accepting rides)
+                </div>
+            </div>
+
+            <!-- LOCATION SELECTOR CONTAINER -->
+            <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 shadow-inner relative space-y-3">
+                
+                <!-- GEOLOCATION GPS BUTTON -->
+                <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pickup Location</span>
+                    <button type="button" id="useMyLocationBtn" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-crosshairs text-emerald-400"></i>
+                        <span>Use My Current Location</span>
+                    </button>
+                </div>
+
+                <!-- Vertical Line Connector -->
+                <div class="absolute left-[29px] top-[60px] bottom-[42px] w-0.5 bg-gradient-to-b from-emerald-500 via-teal-400 to-coral-500 z-0"></div>
+
+                <!-- Pickup Selector -->
+                <div class="relative z-10 flex items-center space-x-3">
+                    <div class="w-7 h-7 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center flex-shrink-0">
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <div class="flex-1">
+                        <select id="pickupSelect" class="w-full bg-slate-800/80 text-slate-100 text-sm rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-medium">
+                            <option value="" disabled selected>Select starting location...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Swap Button & Divider -->
+                <div class="flex justify-end pr-3 relative z-10 -my-1">
+                    <button id="swapLocationsBtn" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center justify-center text-xs shadow transition transform active:scale-95">
+                        <i class="fa-solid fa-arrows-up-down"></i>
+                    </button>
+                </div>
+
+                <!-- Destination Selector -->
+                <div class="relative z-10 flex items-center space-x-3">
+                    <div class="w-7 h-7 rounded-full bg-coral-500/20 border-2 border-coral-500 flex items-center justify-center flex-shrink-0">
+                        <div class="w-2.5 h-2.5 rounded-sm bg-coral-500"></div>
+                    </div>
+                    <div class="flex-1">
+                        <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-0.5">Destination</label>
+                        <select id="destSelect" class="w-full bg-slate-800/80 text-slate-100 text-sm rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-coral-500 transition font-medium">
+                            <option value="" disabled selected>Where on the island do you want to go?</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WEATHER & PEAK SURGE SIMULATOR -->
+            <div class="bg-slate-900/60 rounded-2xl p-3.5 border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
+                    <span class="uppercase tracking-wider">Island Conditions Factor</span>
+                    <span id="surgeDisplay" class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Standard Rate (1.0x)</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-condition="clear" class="condition-btn active py-2 px-2 rounded-xl text-xs font-medium border border-emerald-500/60 bg-emerald-500/10 text-emerald-300 transition flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-sun text-amber-400 text-sm"></i> Clear / Calm
+                    </button>
+                    <button type="button" data-condition="rain" class="condition-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-800/60 text-slate-400 hover:text-slate-200 transition flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-cloud-showers-heavy text-cyan-400 text-sm"></i> Monsoonal Rain (+15%)
+                    </button>
+                    <button type="button" data-condition="ferry" class="condition-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-800/60 text-slate-400 hover:text-slate-200 transition flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-ship text-indigo-400 text-sm"></i> Ferry Rush (+30%)
+                    </button>
+                </div>
+            </div>
+
+            <!-- PEMBA TRANSPORT OPTIONS -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="block text-xs uppercase tracking-wider font-bold text-slate-400">Choose Pemba Ride Mode</label>
+                    <span class="text-[11px] text-emerald-400">Island Fleet</span>
+                </div>
+                <div class="space-y-2.5" id="transportOptionsContainer">
+                    <!-- Dynamic rendering of Bajaji, Bodaboda, Taxi, Express -->
+                </div>
+            </div>
+
+            <!-- AVAILABLE ONLINE DRIVERS SELECTION (Visible for Passenger) -->
+            <div id="onlineDriversContainer" class="space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="block text-xs uppercase tracking-wider font-bold text-emerald-400">Available Online Drivers</label>
+                    <span id="onlineDriversCount" class="text-[11px] text-slate-400 font-mono">0 Drivers Online</span>
+                </div>
+                <div id="onlineDriversList" class="space-y-2 max-h-44 overflow-y-auto pr-1">
+                    <div class="text-center py-4 bg-slate-900/40 rounded-xl border border-slate-800 text-xs text-slate-400">
+                        No online drivers available. Open another tab and log in as a Driver to test live dispatch!
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRIP FARE & SUMMARY CARD -->
+            <div id="fareCard" class="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 rounded-2xl p-4 border border-emerald-500/20 space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-medium">Estimated Distance & Time:</span>
+                    <span id="routeInfoDisplay" class="font-bold text-emerald-400 font-mono">-- km | -- mins</span>
+                </div>
+                <div class="flex justify-between items-end pt-2 border-t border-slate-800/80">
+                    <div>
+                        <span class="text-xs text-slate-400 block font-medium">Estimated Island Fare</span>
+                        <div class="flex items-baseline space-x-1.5">
+                            <span id="totalFareDisplay" class="text-3xl font-black text-white tracking-tight">TSh 0</span>
+                        </div>
+                    </div>
+                    <button id="toggleBreakdownBtn" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">
+                        Fare Rules <i class="fa-solid fa-chevron-down text-[10px] transition-transform" id="breakdownIcon"></i>
+                    </button>
+                </div>
+
+                <!-- Fare Breakdown Accordion -->
+                <div id="fareBreakdownDetails" class="hidden text-xs space-y-1.5 pt-3 border-t border-slate-800/50 text-slate-400 font-mono">
+                    <div class="flex justify-between"><span>Base Rate</span><span id="breakdownBase">TSh 0</span></div>
+                    <div class="flex justify-between"><span>Distance Charge</span><span id="breakdownDist">TSh 0</span></div>
+                    <div class="flex justify-between"><span>Island Maintenance Fee</span><span id="breakdownFee">TSh 500</span></div>
+                    <div class="flex justify-between text-amber-400"><span>Condition Surge</span><span id="breakdownSurge">1.0x</span></div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTON -->
+            <button id="requestRideBtn" disabled class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-base shadow-lg shadow-emerald-500/20 transition transform active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                <i class="fa-solid fa-paper-plane text-slate-950"></i>
+                <span>Request Pemba Ride</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- RIGHT MAIN PANEL: VISUAL PROGRESS LINE & LIVE TRIP INTERACTION -->
+    <main class="flex-1 relative h-full w-full bg-slate-950 flex flex-col justify-between overflow-y-auto p-4 md:p-8 space-y-6">
+        
+        <!-- TOP CARD: CURRENT ROUTE HEADLINE -->
+        <div class="glass-panel rounded-2xl p-5 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl font-bold">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+                <div>
+                    <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Pemba Island Active Route</span>
+                    <h2 id="routeHeadline" class="text-lg md:text-xl font-extrabold text-white">Select Origin & Destination</h2>
+                    <p id="routeSubline" class="text-xs text-slate-400">Direct island dispatching service across Pemba North & South</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 self-end sm:self-auto">
+                <span id="tripStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-slate-500"></span> Idle
+                </span>
+            </div>
+        </div>
+
+        <!-- CENTER VISUALIZATION: SVG INTERACTIVE PROGRESS ROUTE LINE -->
+        <div class="glass-panel rounded-3xl p-6 md:p-10 border border-slate-800/80 flex-1 flex flex-col justify-center items-center relative overflow-hidden min-h-[360px]">
+            <!-- Decorative Island Background Pattern -->
+            <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center">
+                <i class="fa-solid fa-island-tropical text-[280px] text-emerald-400"></i>
+            </div>
+
+            <!-- Header Info for Line -->
+            <div class="w-full max-w-3xl flex justify-between items-center mb-8 relative z-10">
+                <div class="text-left">
+                    <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest block">DEPARTURE</span>
+                    <h3 id="linePickupLabel" class="text-base md:text-lg font-bold text-slate-200">Select Pickup</h3>
+                </div>
+                <div class="text-center">
+                    <span id="lineProgressPercent" class="text-xl md:text-2xl font-black text-emerald-400 font-mono">0%</span>
+                    <span class="text-[10px] text-slate-400 block font-medium uppercase">Trip Progress</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-[11px] font-bold text-coral-400 uppercase tracking-widest block">ARRIVAL</span>
+                    <h3 id="lineDestLabel" class="text-base md:text-lg font-bold text-slate-200">Select Destination</h3>
+                </div>
+            </div>
+
+            <!-- SVG PROGRESS ROUTE CONTAINER -->
+            <div class="w-full max-w-3xl relative z-10 px-4 py-6">
+                <!-- SVG Line Visual -->
+                <svg id="routeSvg" class="w-full h-24 overflow-visible" viewBox="0 0 800 100" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#10b981" />
+                            <stop offset="50%" stop-color="#14b8a6" />
+                            <stop offset="100%" stop-color="#f43f5e" />
+                        </linearGradient>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="4" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+
+                    <!-- Background Path (Inactive) -->
+                    <path d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+
+                    <!-- Active Dynamic Route Path -->
+                    <path id="activeRoutePath" d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="url(#routeGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="800" stroke-dashoffset="800" filter="url(#glow)"/>
+
+                    <!-- Intermediate Checkpoint Nodes -->
+                    <circle cx="50" cy="50" r="12" fill="#0f172a" stroke="#10b981" stroke-width="4"/>
+                    <circle cx="260" cy="35" r="7" fill="#0f172a" stroke="#334155" stroke-width="3" id="cp1"/>
+                    <circle cx="400" cy="50" r="7" fill="#0f172a" stroke="#334155" stroke-width="3" id="cp2"/>
+                    <circle cx="570" cy="45" r="7" fill="#0f172a" stroke="#334155" stroke-width="3" id="cp3"/>
+                    <circle cx="750" cy="50" r="12" fill="#0f172a" stroke="#f43f5e" stroke-width="4"/>
+
+                    <!-- Vehicle Progress Icon Overlay (Moves dynamically) -->
+                    <g id="vehicleMarkerGroup" transform="translate(50, 50)" class="transition-transform duration-300">
+                        <circle r="20" fill="#10b981" class="animate-ping opacity-30"/>
+                        <circle r="16" fill="#10b981" stroke="#ffffff" stroke-width="2.5"/>
+                        <text id="vehicleIconText" x="0" y="5" text-anchor="middle" fill="#090d16" font-family="FontAwesome" font-size="12" font-weight="bold">🛺</text>
+                    </g>
+                </svg>
+
+                <!-- Checkpoint Labels Row -->
+                <div class="flex justify-between text-[11px] text-slate-400 mt-4 px-2 font-medium">
+                    <span>Pickup Node</span>
+                    <span id="cpLabel1">Chake North</span>
+                    <span id="cpLabel2">Mid Island</span>
+                    <span id="cpLabel3">Port Junction</span>
+                    <span>Destination</span>
+                </div>
+            </div>
+
+            <!-- LIVE STATUS MESSAGE FOOTER INSIDE CARD -->
+            <div id="liveStatusBanner" class="mt-6 bg-slate-900/90 border border-slate-800 rounded-2xl px-5 py-3 flex items-center space-x-3 text-xs text-slate-300 max-w-xl w-full justify-center shadow-lg">
+                <i class="fa-solid fa-circle-info text-emerald-400 text-sm"></i>
+                <span id="liveStatusText">Select pickup and destination to calculate exact island route and fare.</span>
+            </div>
+        </div>
+
+        <!-- BOTTOM CARD: DRIVER & MATCH DETAILS (Appears when ride is accepted) -->
+        <div id="driverDetailsCard" class="hidden glass-panel rounded-2xl p-5 border border-emerald-500/30 transition-all duration-300">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <!-- Driver Info -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div id="driverAvatar" class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold text-xl border-2 border-emerald-400">
+                            KH
+                        </div>
+                        <span class="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.2 rounded-full border border-slate-900">4.9★</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h4 id="driverName" class="font-extrabold text-base text-white">Khamis Ally</h4>
+                            <span id="driverVerified" class="text-emerald-400 text-xs" title="Pemba Verified Driver"><i class="fa-solid fa-circle-check"></i></span>
+                        </div>
+                        <p id="driverVehicle" class="text-xs text-slate-300 font-medium">Yellow-Black Bajaji TVS King</p>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span id="driverPlate" class="text-[11px] font-mono bg-slate-800 px-2 py-0.5 rounded text-emerald-400 border border-slate-700">Z 452 PB</span>
+                            <span class="text-[11px] text-slate-400">• Pemba Local Guide</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Driver & Dynamic Driver Ride Control Buttons -->
+                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <!-- Driver specific ride control button -->
+                    <button id="driverActionBtn" class="hidden flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/30 transition">
+                        Start Ride
+                    </button>
+                    <a id="callDriverBtn" href="tel:+255770000000" class="flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-phone"></i>
+                        <span id="callBtnText">Call Driver</span>
+                    </a>
+                    <button id="cancelRideBtn" class="py-2.5 px-4 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-coral-400 border border-rose-500/20 font-bold text-xs transition">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /**
+         * PEMBA RIDE ENGINE & REAL-TIME MULTI-TAB DISPATCH CONTROLLER
+         */
+
+        // BroadcastChannel for instant cross-tab sync
+        const channel = new BroadcastChannel('pemba_ride_channel');
+
+        // PEMBA ISLAND LOCATIONS DATABASE
+        const LOCATIONS = {
+            'chake': { id: 'chake', name: 'Chake-Chake (Capital Town)', lat: -5.2458, lng: 39.7667, isHub: true },
+            'airport': { id: 'airport', name: 'Karume Airport (PMA)', lat: -5.2572, lng: 39.8114, isHub: true },
+            'wete': { id: 'wete', name: 'Wete (North Pemba Hub)', lat: -5.0561, lng: 39.7289, isHub: true },
+            'mkoani': { id: 'mkoani', name: 'Mkoani Port (Ferry Terminal)', lat: -5.3622, lng: 39.6469, isHub: true },
+            'micheweni': { id: 'micheweni', name: 'Micheweni Peninsula', lat: -4.9667, lng: 39.8333, isHub: false },
+            'fundu': { id: 'fundu', name: 'Fundu Lagoon Luxury Resort', lat: -5.3000, lng: 39.6333, isHub: false },
+            'ngwesi': { id: 'ngwesi', name: 'Ngezi Forest Reserve', lat: -4.9200, lng: 39.7000, isHub: false },
+            'kangani': { id: 'kangani', name: 'Kangani South Beach', lat: -5.4000, lng: 39.6500, isHub: false },
+            'kondoa': { id: 'kondoa', name: 'Kondoa Village', lat: -5.1500, lng: 39.7500, isHub: false }
+        };
+
+        // REALISTIC INTERNAL ROAD DISTANCES MATRIX (in KM)
+        const DISTANCE_MATRIX = {
+            'chake-airport': 7.5,
+            'chake-wete': 28.4,
+            'chake-mkoani': 22.1,
+            'chake-micheweni': 42.0,
+            'chake-fundu': 18.5,
+            'chake-ngwesi': 46.8,
+            'chake-kangani': 27.3,
+            'chake-kondoa': 12.0,
+            'airport-wete': 33.2,
+            'airport-mkoani': 26.5,
+            'airport-micheweni': 45.1,
+            'wete-mkoani': 47.8,
+            'wete-micheweni': 21.0,
+            'wete-ngwesi': 24.5,
+            'mkoani-fundu': 8.2,
+            'mkoani-kangani': 9.5
+        };
+
+        // PEMBA VEHICLE TYPES
+        const VEHICLES = {
+            'bajaji': { id: 'bajaji', name: 'Bajaji (Auto Rickshaw)', iconClass: 'fa-subway', baseUSD: 0.8, perKmUSD: 0.35, iconEmoji: '🛺', desc: 'Ideal for town commutes & 1-3 passengers' },
+            'bodaboda': { id: 'bodaboda', name: 'Bodaboda (Motorcycle)', iconClass: 'fa-motorcycle', baseUSD: 0.5, perKmUSD: 0.25, iconEmoji: '🏍️', desc: 'Fastest single passenger island transit' },
+            'taxi': { id: 'taxi', name: 'Standard Taxi (Sedan)', iconClass: 'fa-car', baseUSD: 2.0, perKmUSD: 0.75, iconEmoji: '🚗', desc: 'Comfortable air-conditioned sedan' },
+            'express': { id: 'express', name: 'Pemba Express (4x4 SUV)', iconClass: 'fa-truck-monster', baseUSD: 3.5, perKmUSD: 1.10, iconEmoji: '🚙', desc: 'Heavy-duty 4WD for unpaved resort tracks' }
+        };
+
+        // Initial default seed drivers if none exist in localStorage
+        const SEED_DRIVERS = [
+            { id: 'DRV-101', name: 'Khamis Ally', phone: '+255772123456', plate: 'Z 452 PB', rating: '4.95★', vehicleType: 'bajaji', vehicle: 'TVS King Bajaji (Yellow)', online: true },
+            { id: 'DRV-102', name: 'Said Nassor', phone: '+255777890123', plate: 'Z 819 PB', rating: '4.90★', vehicleType: 'bodaboda', vehicle: 'Boxer 150 Bodaboda (Red)', online: true },
+            { id: 'DRV-103', name: 'Asha Rashid', phone: '+255773456789', plate: 'Z 104 PB', rating: '4.98★', vehicleType: 'taxi', vehicle: 'Toyota Premio Taxi (White)', online: true }
+        ];
+
+        // LOCAL STORAGE ENGINE
+        const storage = {
+            getUsers: () => JSON.parse(localStorage.getItem('pemba_users') || '[]'),
+            saveUsers: (users) => localStorage.setItem('pemba_users', JSON.stringify(users)),
+            
+            getDrivers: () => {
+                const stored = localStorage.getItem('pemba_drivers');
+                if (!stored) {
+                    localStorage.setItem('pemba_drivers', JSON.stringify(SEED_DRIVERS));
+                    return SEED_DRIVERS;
+                }
+                return JSON.parse(stored);
+            },
+            saveDrivers: (drivers) => {
+                localStorage.setItem('pemba_drivers', JSON.stringify(drivers));
+                channel.postMessage({ type: 'DRIVERS_UPDATED' });
+            },
+
+            getActiveTrip: () => JSON.parse(localStorage.getItem('pemba_active_trip') || 'null'),
+            setActiveTrip: (trip) => {
+                localStorage.setItem('pemba_active_trip', JSON.stringify(trip));
+                channel.postMessage({ type: 'TRIP_UPDATED', trip });
+            },
+
+            getTrips: () => JSON.parse(localStorage.getItem('pemba_trips') || '[]'),
+            addTrip: (trip) => {
+                const trips = JSON.parse(localStorage.getItem('pemba_trips') || '[]');
+                trips.push(trip);
+                localStorage.setItem('pemba_trips', JSON.stringify(trips));
+            },
+
+            getCurrentUser: () => JSON.parse(localStorage.getItem('pemba_current_user') || 'null'),
+            setCurrentUser: (user) => localStorage.setItem('pemba_current_user', JSON.stringify(user))
+        };
+
+        // GLOBAL APP STATE
+        const state = {
+            currency: 'TZS',
+            tzsRate: 2600,
+            pickupId: '',
+            destId: '',
+            selectedVehicle: 'bajaji',
+            selectedDriverId: '',
+            conditionMultiplier: 1.0,
+            distanceKm: 0,
+            durationMins: 0,
+            totalFareUSD: 0,
+            progressPercent: 0,
+            animationTimer: null,
+            currentUser: null,
+            authMode: 'login'
+        };
+
+        // 1. CALCULATE ROAD DISTANCE BETWEEN NODES
+        function calculateDistance(id1, id2) {
+            if (!id1 || !id2 || id1 === id2) return 0;
+            const key1 = `${id1}-${id2}`;
+            const key2 = `${id2}-${id1}`;
+            if (DISTANCE_MATRIX[key1]) return DISTANCE_MATRIX[key1];
+            if (DISTANCE_MATRIX[key2]) return DISTANCE_MATRIX[key2];
+
+            // Haversine fallback for unmapped pairs
+            const loc1 = LOCATIONS[id1];
+            const loc2 = LOCATIONS[id2];
+            const R = 6371;
+            const dLat = (loc2.lat - loc1.lat) * Math.PI / 180;
+            const dLon = (loc2.lng - loc1.lng) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(loc1.lat * Math.PI / 180) * Math.cos(loc2.lat * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return Math.round((R * c * 1.3) * 10) / 10; // 1.3 road curvature factor
+        }
+
+        // 2. INITIALIZE LOCATION DROPDOWNS
+        function initDropdowns() {
+            const pickup = document.getElementById('pickupSelect');
+            const dest = document.getElementById('destSelect');
+
+            pickup.innerHTML = '<option value="" disabled selected>Select starting location...</option>';
+            dest.innerHTML = '<option value="" disabled selected>Where on the island do you want to go?</option>';
+
+            Object.values(LOCATIONS).forEach(loc => {
+                pickup.appendChild(new Option(loc.name, loc.id));
+                dest.appendChild(new Option(loc.name, loc.id));
+            });
+
+            pickup.onchange = (e) => {
+                state.pickupId = e.target.value;
+                calculateAndUpdate();
+            };
+
+            dest.onchange = (e) => {
+                state.destId = e.target.value;
+                calculateAndUpdate();
+            };
+
+            document.getElementById('swapLocationsBtn').onclick = () => {
+                if (!state.pickupId || !state.destId) return;
+                const temp = state.pickupId;
+                state.pickupId = state.destId;
+                state.destId = temp;
+                pickup.value = state.pickupId;
+                dest.value = state.destId;
+                calculateAndUpdate();
+            };
+
+            // Setup GPS location detector
+            document.getElementById('useMyLocationBtn').onclick = detectGeolocation;
+
+            // Setup Weather/Surge condition buttons
+            document.querySelectorAll('.condition-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.condition-btn').forEach(b => {
+                        b.classList.remove('active', 'border-emerald-500/60', 'bg-emerald-500/10', 'text-emerald-300');
+                        b.classList.add('border-slate-800', 'bg-slate-800/60', 'text-slate-400');
+                    });
+                    btn.classList.add('active', 'border-emerald-500/60', 'bg-emerald-500/10', 'text-emerald-300');
+
+                    const cond = btn.getAttribute('data-condition');
+                    const label = document.getElementById('surgeDisplay');
+                    if (cond === 'rain') {
+                        state.conditionMultiplier = 1.15;
+                        label.textContent = "Monsoonal Rain (1.15x)";
+                    } else if (cond === 'ferry') {
+                        state.conditionMultiplier = 1.30;
+                        label.textContent = "Ferry Surge (1.30x)";
+                    } else {
+                        state.conditionMultiplier = 1.0;
+                        label.textContent = "Standard Rate (1.0x)";
+                    }
+                    calculateAndUpdate();
+                    renderVehicleOptions();
+                };
+            });
+
+            // Toggle breakdown accordion
+            document.getElementById('toggleBreakdownBtn').onclick = () => {
+                const details = document.getElementById('fareBreakdownDetails');
+                const icon = document.getElementById('breakdownIcon');
+                details.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            };
+
+            // Currency toggle
+            const toggleCurrency = () => {
+                state.currency = state.currency === 'TZS' ? 'USD' : 'TZS';
+                document.getElementById('currencyText').textContent = state.currency === 'TZS' ? 'TZS (TSh)' : 'USD ($)';
+                document.getElementById('currencyToggleMobile').textContent = state.currency;
+                calculateAndUpdate();
+                renderVehicleOptions();
+                renderOnlineDrivers();
+            };
+            document.getElementById('currencyToggleDesktop').onclick = toggleCurrency;
+            document.getElementById('currencyToggleMobile').onclick = toggleCurrency;
+
+            // CSV Export
+            document.getElementById('exportCsvBtn').onclick = exportSystemToCsv;
+        }
+
+        // 3. GEOLOCATION TO NEAREST PEMBA NODE
+        function detectGeolocation() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser.");
+                return;
+            }
+            const btn = document.getElementById('useMyLocationBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Locating...`;
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const userLat = pos.coords.latitude;
+                    const userLng = pos.coords.longitude;
+
+                    // Find nearest hub in LOCATIONS
+                    let nearestId = 'chake';
+                    let minDistance = Infinity;
+
+                    Object.values(LOCATIONS).forEach(loc => {
+                        const d = Math.hypot(loc.lat - userLat, loc.lng - userLng);
+                        if (d < minDistance) {
+                            minDistance = d;
+                            nearestId = loc.id;
+                        }
+                    });
+
+                    state.pickupId = nearestId;
+                    document.getElementById('pickupSelect').value = nearestId;
+                    btn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i> Found (${LOCATIONS[nearestId].name.split(' ')[0]})`;
+                    calculateAndUpdate();
+                },
+                () => {
+                    btn.innerHTML = `<i class="fa-solid fa-location-crosshairs"></i> Use My Current Location`;
+                    // Fallback to Chake-Chake default
+                    state.pickupId = 'chake';
+                    document.getElementById('pickupSelect').value = 'chake';
+                    calculateAndUpdate();
+                }
+            );
+        }
+
+        // 4. MAIN CALCULATE & UPDATE ROUTE FUNCTION
+        function calculateAndUpdate() {
+            if (!state.pickupId || !state.destId) return;
+
+            if (state.pickupId === state.destId) {
+                document.getElementById('liveStatusText').textContent = "Pickup and Destination cannot be the same location!";
+                document.getElementById('requestRideBtn').disabled = true;
+                return;
+            }
+
+            state.distanceKm = calculateDistance(state.pickupId, state.destId);
+            const veh = VEHICLES[state.selectedVehicle];
+            const avgSpeed = state.selectedVehicle === 'bodaboda' ? 45 : (state.selectedVehicle === 'bajaji' ? 30 : 40);
+            state.durationMins = Math.round((state.distanceKm / avgSpeed) * 60) + 3;
+
+            // Calculate base & total fare
+            const baseCostUSD = veh.baseUSD + (state.distanceKm * veh.perKmUSD);
+            state.totalFareUSD = (baseCostUSD + 0.2) * state.conditionMultiplier; // 0.2 USD maintenance fee
+
+            // Update UI Labels
+            const pName = LOCATIONS[state.pickupId].name;
+            const dName = LOCATIONS[state.destId].name;
+
+            document.getElementById('routeHeadline').textContent = `${pName.split(' ')[0]} ➔ ${dName.split(' ')[0]}`;
+            document.getElementById('routeSubline').textContent = `Distance: ${state.distanceKm} km • Est. Duration: ${state.durationMins} mins`;
+            document.getElementById('linePickupLabel').textContent = pName;
+            document.getElementById('lineDestLabel').textContent = dName;
+            document.getElementById('routeInfoDisplay').textContent = `${state.distanceKm} km | ${state.durationMins} mins`;
+
+            // Fare formatting
+            const fareFormatted = state.currency === 'TZS'
+                ? `TSh ${Math.round(state.totalFareUSD * state.tzsRate).toLocaleString()}`
+                : `$${state.totalFareUSD.toFixed(2)}`;
+
+            document.getElementById('totalFareDisplay').textContent = fareFormatted;
+
+            // Breakdown
+            const baseFareFormatted = state.currency === 'TZS' ? `TSh ${Math.round(veh.baseUSD * state.tzsRate).toLocaleString()}` : `$${veh.baseUSD.toFixed(2)}`;
+            const distFareFormatted = state.currency === 'TZS' ? `TSh ${Math.round((state.distanceKm * veh.perKmUSD) * state.tzsRate).toLocaleString()}` : `$${(state.distanceKm * veh.perKmUSD).toFixed(2)}`;
+            const feeFormatted = state.currency === 'TZS' ? `TSh ${Math.round(0.2 * state.tzsRate).toLocaleString()}` : `$0.20`;
+
+            document.getElementById('breakdownBase').textContent = baseFareFormatted;
+            document.getElementById('breakdownDist').textContent = distFareFormatted;
+            document.getElementById('breakdownFee').textContent = feeFormatted;
+            document.getElementById('breakdownSurge').textContent = `${state.conditionMultiplier.toFixed(2)}x`;
+
+            document.getElementById('vehicleIconText').textContent = veh.iconEmoji;
+
+            const activeTrip = storage.getActiveTrip();
+            if (!activeTrip || activeTrip.status === 'completed') {
+                document.getElementById('requestRideBtn').disabled = false;
+                document.getElementById('liveStatusText').textContent = `Ready to request ${veh.name} from ${pName} to ${dName}.`;
+            }
+        }
+
+        // 5. UPDATE SVG ROUTE PROGRESS LINE VISUAL
+        function updateSvgProgress(percent) {
+            state.progressPercent = Math.min(100, Math.max(0, percent));
+            document.getElementById('lineProgressPercent').textContent = `${state.progressPercent}%`;
+
+            const path = document.getElementById('activeRoutePath');
+            const totalLen = 800; // SVG dash length
+            const offset = totalLen - (totalLen * (state.progressPercent / 100));
+            path.setAttribute('stroke-dashoffset', offset);
+
+            // Move vehicle marker icon along curve: M 50 50 Q 220 10 400 50 T 750 50
+            const t = state.progressPercent / 100;
+            const startX = 50, endX = 750;
+            const currentX = startX + (endX - startX) * t;
+
+            // Simple wave sine for path Y trajectory matching SVG curve
+            const currentY = 50 - Math.sin(t * Math.PI * 2) * 20;
+
+            const markerGroup = document.getElementById('vehicleMarkerGroup');
+            markerGroup.setAttribute('transform', `translate(${currentX}, ${currentY})`);
+        }
+
+        // 6. RENDER AVAILABLE ONLINE DRIVERS LIST FOR PASSENGERS
+        function renderOnlineDrivers() {
+            const container = document.getElementById('onlineDriversList');
+            const countLabel = document.getElementById('onlineDriversCount');
+            if (!container) return;
+
+            const allDrivers = storage.getDrivers();
+            const onlineDrivers = allDrivers.filter(d => d.online && d.vehicleType === state.selectedVehicle);
+
+            countLabel.textContent = `${onlineDrivers.length} ${state.selectedVehicle.toUpperCase()} Drivers Online`;
+            container.innerHTML = '';
+
+            if (onlineDrivers.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-3 bg-slate-900/40 rounded-xl border border-slate-800 text-xs text-slate-400">
+                        No online drivers available for ${VEHICLES[state.selectedVehicle].name}. <br>
+                        Open a new browser tab, log in as Driver to test real-time dispatch!
+                    </div>
+                `;
+                state.selectedDriverId = '';
+                return;
+            }
+
+            onlineDrivers.forEach(drv => {
+                const isSelected = state.selectedDriverId === drv.id;
+
+                const card = document.createElement('div');
+                card.className = `glass-card p-3 rounded-xl cursor-pointer border transition flex items-center justify-between ${
+                    isSelected ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 hover:border-slate-700'
+                }`;
+
+                card.onclick = () => {
+                    state.selectedDriverId = drv.id;
+                    renderOnlineDrivers();
+                };
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-xs">
+                            ${drv.name.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h5 class="font-bold text-xs text-slate-100">${drv.name}</h5>
+                                <span class="text-[10px] text-amber-400 font-bold">${drv.rating}</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400">${drv.vehicle} • <span class="text-emerald-400 font-mono">${drv.plate}</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase">${isSelected ? 'Selected' : 'Select'}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (!state.selectedDriverId && onlineDrivers.length > 0) {
+                state.selectedDriverId = onlineDrivers[0].id;
+                renderOnlineDrivers();
+            }
+        }
+
+        // 7. RENDER VEHICLE SELECTION CARDS
+        function renderVehicleOptions() {
+            const container = document.getElementById('transportOptionsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            Object.values(VEHICLES).forEach(veh => {
+                const isSelected = state.selectedVehicle === veh.id;
+                const dist = state.distanceKm || 10;
+                let fareUSD = veh.baseUSD + (dist * veh.perKmUSD);
+                fareUSD *= state.conditionMultiplier;
+
+                const fareText = state.currency === 'TZS' 
+                    ? `TSh ${Math.round(fareUSD * state.tzsRate).toLocaleString()}`
+                    : `$${fareUSD.toFixed(2)}`;
+
+                const card = document.createElement('div');
+                card.className = `glass-card p-3 rounded-xl cursor-pointer border transition flex items-center justify-between ${
+                    isSelected ? 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-500/10' : 'border-slate-800 hover:border-slate-700'
+                }`;
+
+                card.onclick = () => {
+                    const activeTrip = storage.getActiveTrip();
+                    if (activeTrip && activeTrip.status !== 'completed') return;
+                    state.selectedVehicle = veh.id;
+                    state.selectedDriverId = '';
+                    renderVehicleOptions();
+                    renderOnlineDrivers();
+                    calculateAndUpdate();
+                };
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl ${isSelected ? 'bg-emerald-500 text-slate-950 font-bold' : 'bg-slate-800 text-emerald-400'} flex items-center justify-center text-lg">
+                            <i class="fa-solid ${veh.iconClass}"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-bold text-xs md:text-sm text-slate-100">${veh.name}</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-400 line-clamp-1">${veh.desc}</p>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-2">
+                        <span class="font-black text-slate-100 text-sm md:text-base">${fareText}</span>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // 8. REAL-TIME RIDE DISPATCH & TRIP SYNC LOGIC
+        function requestRide() {
+            if (!state.currentUser) {
+                document.getElementById('authModal').classList.remove('hidden');
+                return;
+            }
+
+            const activeDrivers = storage.getDrivers().filter(d => d.online && d.vehicleType === state.selectedVehicle);
+            if (activeDrivers.length === 0) {
+                alert("No online drivers available right now. Open another tab and log in as a Driver!");
+                return;
+            }
+
+            const chosenDriver = activeDrivers.find(d => d.id === state.selectedDriverId) || activeDrivers[0];
+
+            const newTrip = {
+                id: 'TRIP-' + Date.now(),
+                passengerName: state.currentUser.name || state.currentUser.identity,
+                passengerIdentity: state.currentUser.identity,
+                driverId: chosenDriver.id,
+                driverName: chosenDriver.name,
+                driverPhone: chosenDriver.phone,
+                driverPlate: chosenDriver.plate,
+                driverVehicle: chosenDriver.vehicle,
+                pickupId: state.pickupId,
+                pickupName: LOCATIONS[state.pickupId].name,
+                destId: state.destId,
+                destName: LOCATIONS[state.destId].name,
+                vehicleType: state.selectedVehicle,
+                vehicleName: VEHICLES[state.selectedVehicle].name,
+                fareUSD: state.totalFareUSD.toFixed(2),
+                fareTZS: Math.round(state.totalFareUSD * state.tzsRate),
+                status: 'requested',
+                progressPercent: 0,
+                timestamp: new Date().toISOString()
+            };
+
+            storage.setActiveTrip(newTrip);
+            syncTripUI();
+        }
+
+        // DRIVER ACTIONS (Accept, Start, Complete, Decline)
+        function driverAcceptRide() {
+            const trip = storage.getActiveTrip();
+            if (!trip) return;
+            trip.status = 'accepted';
+            storage.setActiveTrip(trip);
+            document.getElementById('driverIncomingModal').classList.add('hidden');
+            syncTripUI();
+        }
+
+        function driverStartRide() {
+            const trip = storage.getActiveTrip();
+            if (!trip) return;
+            trip.status = 'in_progress';
+            trip.progressPercent = 5;
+            storage.setActiveTrip(trip);
+            syncTripUI();
+        }
+
+        function driverCompleteRide() {
+            const trip = storage.getActiveTrip();
+            if (!trip) return;
+            trip.status = 'completed';
+            trip.progressPercent = 100;
+            storage.addTrip(trip);
+            storage.setActiveTrip(trip);
+            syncTripUI();
+        }
+
+        function cancelTrip() {
+            const trip = storage.getActiveTrip();
+            if (trip) {
+                trip.status = 'cancelled';
+                storage.setActiveTrip(null);
+            }
+            if (state.animationTimer) clearInterval(state.animationTimer);
+            updateSvgProgress(0);
+            document.getElementById('driverDetailsCard').classList.add('hidden');
+            document.getElementById('requestRideBtn').disabled = false;
+            syncTripUI();
+        }
+
+        // SYNC TRIP UI ACROSS PASSENGER & DRIVER TABS
+        function syncTripUI() {
+            const activeTrip = storage.getActiveTrip();
+            const user = state.currentUser;
+            const badge = document.getElementById('tripStatusBadge');
+            const statusText = document.getElementById('liveStatusText');
+            const driverCard = document.getElementById('driverDetailsCard');
+            const driverActionBtn = document.getElementById('driverActionBtn');
+
+            if (!activeTrip) {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-500"></span> Idle`;
+                driverCard.classList.add('hidden');
+                document.getElementById('requestRideBtn').disabled = false;
+                updateSvgProgress(0);
+                return;
+            }
+
+            // Sync locations & route SVG
+            if (activeTrip.pickupId && activeTrip.destId) {
+                state.pickupId = activeTrip.pickupId;
+                state.destId = activeTrip.destId;
+                document.getElementById('pickupSelect').value = activeTrip.pickupId;
+                document.getElementById('destSelect').value = activeTrip.destId;
+                calculateAndUpdate();
+            }
+
+            updateSvgProgress(activeTrip.progressPercent || 0);
+
+            // DRIVER NOTIFICATION MODAL TRIGGER
+            if (user && user.role === 'driver' && activeTrip.status === 'requested') {
+                const myDrivers = storage.getDrivers();
+                const currentDriverRecord = myDrivers.find(d => d.name === user.name || d.name === user.identity);
+                
+                if (currentDriverRecord && activeTrip.driverId === currentDriverRecord.id) {
+                    document.getElementById('driverIncomingModal').classList.remove('hidden');
+                    document.getElementById('reqPassengerName').textContent = activeTrip.passengerName;
+                    document.getElementById('reqPickup').textContent = activeTrip.pickupName;
+                    document.getElementById('reqDest').textContent = activeTrip.destName;
+                    document.getElementById('reqFare').textContent = state.currency === 'TZS' ? `TSh ${activeTrip.fareTZS.toLocaleString()}` : `$${activeTrip.fareUSD}`;
+                }
+            } else {
+                document.getElementById('driverIncomingModal').classList.add('hidden');
+            }
+
+            // STATUS SPECIFIC UI
+            if (activeTrip.status === 'requested') {
+                document.getElementById('requestRideBtn').disabled = true;
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1.5 animate-pulse";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Requested - Waiting Driver`;
+                statusText.textContent = `Ride requested! Waiting for driver ${activeTrip.driverName} to accept...`;
+                driverCard.classList.add('hidden');
+
+            } else if (activeTrip.status === 'accepted') {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Accepted - Driver En Route`;
+                statusText.textContent = `Driver ${activeTrip.driverName} accepted your ride request! Driver is arriving at pickup location.`;
+
+                driverCard.classList.remove('hidden');
+                document.getElementById('driverName').textContent = activeTrip.driverName;
+                document.getElementById('driverVehicle').textContent = `${activeTrip.vehicleName} • ${activeTrip.driverVehicle}`;
+                document.getElementById('driverPlate').textContent = activeTrip.driverPlate;
+                document.getElementById('callDriverBtn').setAttribute('href', `tel:${activeTrip.driverPhone}`);
+
+                if (user && user.role === 'driver') {
+                    driverActionBtn.classList.remove('hidden');
+                    driverActionBtn.textContent = "Start Ride";
+                    driverActionBtn.onclick = driverStartRide;
+                } else {
+                    driverActionBtn.classList.add('hidden');
+                }
+
+            } else if (activeTrip.status === 'in_progress') {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 flex items-center gap-1.5 animate-pulse";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-indigo-400"></span> Trip In Progress`;
+                statusText.textContent = `Trip active: En route to ${activeTrip.destName}.`;
+
+                driverCard.classList.remove('hidden');
+
+                if (user && user.role === 'driver') {
+                    driverActionBtn.classList.remove('hidden');
+                    driverActionBtn.textContent = "Complete Ride";
+                    driverActionBtn.onclick = driverCompleteRide;
+                } else {
+                    driverActionBtn.classList.add('hidden');
+                }
+
+                if (!state.animationTimer && activeTrip.progressPercent < 100) {
+                    state.animationTimer = setInterval(() => {
+                        const trip = storage.getActiveTrip();
+                        if (trip && trip.status === 'in_progress' && trip.progressPercent < 95) {
+                            trip.progressPercent += 2;
+                            storage.setActiveTrip(trip);
+                        } else {
+                            clearInterval(state.animationTimer);
+                            state.animationTimer = null;
+                        }
+                    }, 1000);
+                }
+
+            } else if (activeTrip.status === 'completed') {
+                if (state.animationTimer) clearInterval(state.animationTimer);
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-teal-500/10 text-teal-400 border border-teal-500/30 flex items-center gap-1.5";
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-400"></span> Trip Completed`;
+                statusText.textContent = `You have arrived safely at ${activeTrip.destName}! Thank you for using Pemba Ride.`;
+                driverActionBtn.classList.add('hidden');
+            }
+        }
+
+        // LISTEN TO BROADCAST CHANNEL FOR CROSS-TAB REAL-TIME UPDATES
+        channel.onmessage = (event) => {
+            if (event.data.type === 'TRIP_UPDATED') {
+                syncTripUI();
+            } else if (event.data.type === 'DRIVERS_UPDATED') {
+                renderOnlineDrivers();
+            }
+        };
+
+        // 9. EXPORT SYSTEM DATA TO CSV FILE
+        function exportSystemToCsv() {
+            const users = storage.getUsers();
+            const trips = storage.getTrips();
+            const drivers = storage.getDrivers();
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Section 1: Users
+            csvContent += "--- USERS REGISTRY ---\n";
+            csvContent += "Identity,Name,Role,CreatedAt\n";
+            users.forEach(u => {
+                csvContent += `"${u.identity}","${u.name}","${u.role}","${u.createdAt || ''}"\n`;
+            });
+
+            // Section 2: Drivers
+            csvContent += "\n--- DRIVERS REGISTRY ---\n";
+            csvContent += "ID,Name,Phone,Plate,VehicleType,Vehicle,Rating,Online\n";
+            drivers.forEach(d => {
+                csvContent += `"${d.id}","${d.name}","${d.phone}","${d.plate}","${d.vehicleType}","${d.vehicle}","${d.rating}",${d.online}\n`;
+            });
+
+            // Section 3: Trips
+            csvContent += "\n--- TRIP HISTORY ---\n";
+            csvContent += "TripID,Passenger,Driver,Pickup,Destination,Vehicle,FareTZS,FareUSD,Status,Timestamp\n";
+            trips.forEach(t => {
+                csvContent += `"${t.id}","${t.passengerName}","${t.driverName}","${t.pickupName}","${t.destName}","${t.vehicleName}",${t.fareTZS},${t.fareUSD},"${t.status}","${t.timestamp}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `pemba_ride_system_data_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 10. AUTHENTICATION & DRIVER ONLINE TOGGLE
+        function setupAuthEvents() {
+            const modal = document.getElementById('authModal');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const nameField = document.getElementById('nameField');
+            const driverFields = document.getElementById('driverFields');
+            const authRoleSelect = document.getElementById('authRole');
+            const form = document.getElementById('authForm');
+            const driverOnlineToggle = document.getElementById('driverOnlineToggle');
+
+            const openAuth = () => modal.classList.remove('hidden');
+            document.getElementById('userAccountBtnDesktop').onclick = openAuth;
+            document.getElementById('userAccountBtnMobile').onclick = openAuth;
+
+            authRoleSelect.onchange = (e) => {
+                if (e.target.value === 'driver' && state.authMode === 'register') {
+                    driverFields.classList.remove('hidden');
+                } else {
+                    driverFields.classList.add('hidden');
+                }
+            };
+
+            tabLogin.onclick = () => {
+                state.authMode = 'login';
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition";
+                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition";
+                nameField.classList.add('hidden');
+                driverFields.classList.add('hidden');
+                document.getElementById('authSubmitBtn').textContent = "Sign In";
+            };
+
+            tabRegister.onclick = () => {
+                state.authMode = 'register';
+                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition";
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition";
+                nameField.classList.remove('hidden');
+                if (authRoleSelect.value === 'driver') driverFields.classList.remove('hidden');
+                document.getElementById('authSubmitBtn').textContent = "Create Account";
+            };
+
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                const identity = document.getElementById('authIdentity').value.trim();
+                const password = document.getElementById('authPassword').value.trim();
+                const name = document.getElementById('authName').value.trim() || identity;
+                const role = authRoleSelect.value;
+
+                const users = storage.getUsers();
+
+                if (state.authMode === 'register') {
+                    if (users.some(u => u.identity === identity)) {
+                        alert("Account with this phone/email already exists.");
+                        return;
+                    }
+                    const newUser = { identity, password, name, role, createdAt: new Date().toISOString() };
+                    users.push(newUser);
+                    storage.saveUsers(users);
+                    storage.setCurrentUser(newUser);
+
+                    // If registered as driver, add to drivers registry
+                    if (role === 'driver') {
+                        const drivers = storage.getDrivers();
+                        const vType = document.getElementById('driverVehicleType').value;
+                        const vDetail = document.getElementById('driverVehicleDetail').value || 'Standard Vehicle';
+                        drivers.push({
+                            id: 'DRV-' + Date.now(),
+                            name: name,
+                            phone: identity,
+                            plate: 'Z ' + Math.floor(100 + Math.random() * 900) + ' PB',
+                            rating: '5.0★',
+                            vehicleType: vType,
+                            vehicle: vDetail,
+                            online: true
+                        });
+                        storage.saveDrivers(drivers);
+                    }
+                } else {
+                    const found = users.find(u => u.identity === identity && u.password === password);
+                    if (!found) {
+                        alert("Invalid credentials. Please check phone/password or click 'Create Account'.");
+                        return;
+                    }
+                    storage.setCurrentUser(found);
+                }
+
+                updateUIForCurrentUser();
+                modal.classList.add('hidden');
+            };
+
+            document.getElementById('guestLoginBtn').onclick = () => {
+                storage.setCurrentUser({ identity: 'Guest User', role: 'rider', name: 'Guest Passenger' });
+                updateUIForCurrentUser();
+                modal.classList.add('hidden');
+            };
+
+            // Driver Online/Offline toggle logic
+            driverOnlineToggle.onchange = (e) => {
+                const isOnline = e.target.checked;
+                const user = storage.getCurrentUser();
+                if (!user || user.role !== 'driver') return;
+
+                const drivers = storage.getDrivers();
+                const index = drivers.findIndex(d => d.name === user.name || d.name === user.identity);
+                if (index !== -1) {
+                    drivers[index].online = isOnline;
+                    storage.saveDrivers(drivers);
+                }
+
+                const badge = document.getElementById('driverOnlineBadge');
+                if (isOnline) {
+                    badge.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center gap-1.5";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online & Available for Rides`;
+                } else {
+                    badge.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center gap-1.5";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Offline (Not accepting rides)`;
+                }
+            };
+        }
+
+        function updateUIForCurrentUser() {
+            state.currentUser = storage.getCurrentUser();
+            const label = state.currentUser ? (state.currentUser.name || state.currentUser.identity) : 'Guest';
+            document.getElementById('userDesktopLabel').textContent = `${label} (${state.currentUser ? state.currentUser.role : 'rider'})`;
+            document.getElementById('userMobileLabel').textContent = label;
+
+            const driverStatusContainer = document.getElementById('driverStatusContainer');
+            if (state.currentUser && state.currentUser.role === 'driver') {
+                driverStatusContainer.classList.remove('hidden');
+                const drivers = storage.getDrivers();
+                const myDrv = drivers.find(d => d.name === state.currentUser.name || d.name === state.currentUser.identity);
+                if (myDrv) {
+                    document.getElementById('driverOnlineToggle').checked = myDrv.online;
+                    myDrv.online 
+                        ? document.getElementById('driverOnlineToggle').dispatchEvent(new Event('change'))
+                        : null;
+                }
+            } else {
+                driverStatusContainer.classList.add('hidden');
+            }
+
+            renderOnlineDrivers();
+            syncTripUI();
+        }
+
+        // 11. DOM CONTENT LOADED INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            initDropdowns();
+            setupAuthEvents();
+            renderVehicleOptions();
+
+            // Driver Modal actions
+            document.getElementById('acceptRideBtn').onclick = driverAcceptRide;
+            document.getElementById('declineRideBtn').onclick = () => {
+                document.getElementById('driverIncomingModal').classList.add('hidden');
+            };
+
+            document.getElementById('requestRideBtn').onclick = requestRide;
+            document.getElementById('cancelRideBtn').onclick = cancelTrip;
+
+            // Auto-select initial locations for instant preview
+            state.pickupId = 'chake';
+            state.destId = 'airport';
+            document.getElementById('pickupSelect').value = 'chake';
+            document.getElementById('destSelect').value = 'airport';
+            calculateAndUpdate();
+
+            // Auto-check user state
+            updateUIForCurrentUser();
+        });
+    </script>
+</body>
+</html>
