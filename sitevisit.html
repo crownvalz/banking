@@ -194,7 +194,7 @@
                             Business & Location Photos (<span id="photo-count-badge">0</span>)
                         </h3>
                         <button type="button" onclick="openCamera()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center gap-2">
-                            <i class="fa-solid fa-camera">+ Take Location Photo</i>
+                            <i class="fa-solid fa-camera"></i> + Take Location Photo
                         </button>
                     </div>
                     <div id="photos-preview-container" class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -260,7 +260,7 @@
                 <button onclick="capturePhoto()" class="w-20 h-20 rounded-full bg-white border-4 border-slate-300 shadow-2xl flex items-center justify-center active:scale-95 transition">
                     <div class="w-16 h-16 rounded-full bg-white border-2 border-black"></div>
                 </button>
-                <div class="w-12 h-12"></div> <!-- Spacer for balance -->
+                <div class="w-12 h-12"></div>
             </div>
         </section>
 
@@ -334,18 +334,11 @@
                             <h4 class="font-bold text-slate-900 mb-2">Business Location Map Screenshot</h4>
                             <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-100 h-52 flex items-center justify-center">
                                 <img id="rep-map-image" src="" alt="Map Location Screenshot" class="w-full h-full object-cover">
-                                <!-- Simulated Bank Received Stamp -->
-                                <div class="absolute right-4 bottom-4 border-4 border-blue-900 text-blue-900 font-bold p-3 rounded-xl rotate-[-12deg] bg-white/90 shadow-lg text-center uppercase tracking-wider" style="font-size: 10px; line-height: 1.2;">
-                                    AZANIA BANK PLC<br>
-                                    <span class="text-xs">RECEIVED</span><br>
-                                    <span id="stamp-date" class="font-mono text-xs">15 SEP 2026</span><br>
-                                    PEMBA BRANCH
-                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Verification & Signature Block -->
+                    <!-- Verification & Signature Block (Clean for Manual Stamping & Signing) -->
                     <div class="border-t-2 border-slate-900 pt-4 text-sm space-y-4">
                         <p class="text-slate-800 leading-snug">
                             I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
@@ -355,7 +348,7 @@
                                 <span class="font-bold">Name:</span> <span id="rep-footer-name" class="underline">Hawa Juma</span>
                             </div>
                             <div>
-                                <span class="font-bold">Signature:</span> <span class="inline-block border-b border-slate-900 px-6 font-serif italic text-blue-900 font-bold">H. Juma</span>
+                                <span class="font-bold">Signature:</span> <span class="inline-block border-b border-slate-900 px-12 text-transparent select-none">_______</span>
                             </div>
                             <div>
                                 <span class="font-bold">Date:</span> <span id="rep-footer-date" class="underline font-mono">26/08/2026</span>
