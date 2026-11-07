@@ -15,54 +15,54 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
 
     <!-- Top Navigation Header -->
-    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 px-6 py-4 flex items-center justify-between no-print">
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 no-print">
         <div class="flex items-center space-x-3">
-            <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center font-bold text-lg tracking-wider">
+            <div class="bg-blue-600 text-white p-2 sm:p-2.5 rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center font-bold text-base sm:text-lg tracking-wider">
                 AB
             </div>
             <div>
-                <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                    Azania Bank PLC <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-medium">Field Audit Pro</span>
+                <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
+                    Azania Bank PLC <span class="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-medium">Field Audit Pro</span>
                 </h1>
-                <p class="text-xs text-slate-400">Automated Site Visit & Wakala Inspection System</p>
+                <p class="text-[11px] sm:text-xs text-slate-400">Automated Site Visit & Wakala Inspection System</p>
             </div>
         </div>
-        <div class="flex items-center space-x-3">
-            <button onclick="switchView('dashboard')" id="nav-btn-dashboard" class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white shadow hover:bg-blue-500 transition flex items-center gap-2">
+        <div class="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-end">
+            <button onclick="switchView('dashboard')" id="nav-btn-dashboard" class="flex-1 sm:flex-none px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg bg-blue-600 text-white shadow hover:bg-blue-500 transition flex items-center justify-center gap-2">
                 <i class="fa-solid fa-house"></i> Dashboard
             </button>
-            <button onclick="switchView('reports')" id="nav-btn-reports" class="px-4 py-2 text-sm font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition flex items-center gap-2">
+            <button onclick="switchView('reports')" id="nav-btn-reports" class="flex-1 sm:flex-none px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition flex items-center justify-center gap-2">
                 <i class="fa-solid fa-folder-open"></i> Saved Reports
             </button>
         </div>
     </header>
 
     <!-- Main Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8">
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 md:p-8">
 
         <!-- VIEW 1: DASHBOARD -->
-        <section id="view-dashboard" class="space-y-8">
+        <section id="view-dashboard" class="space-y-6 sm:space-y-8">
             <!-- Hero Banner -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 via-slate-900 to-slate-950 border border-blue-500/20 p-8 shadow-2xl">
-                <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-900 via-slate-900 to-slate-950 border border-blue-500/20 p-6 sm:p-8 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-60 sm:w-80 h-60 sm:h-80 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="relative z-10 max-w-2xl">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-4">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-3 sm:mb-4">
                         <i class="fa-solid fa-shield-halved"></i> Secure Field Inspection Suite
                     </span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-4">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3 sm:mb-4">
                         Wakala & Collateral Verification System
                     </h2>
-                    <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
+                    <p class="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-6">
                         Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise location mapping, and official 2-page Azania Bank audit reports ready for export.
                     </p>
-                    <div class="flex flex-wrap gap-4">
-                        <button onclick="startNewInspection()" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center gap-2.5">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <button onclick="startNewInspection()" class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition flex items-center justify-center gap-2.5">
                             <i class="fa-solid fa-plus-circle text-lg"></i> Start New Site Visit Report
                         </button>
-                        <button onclick="switchView('reports')" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl border border-slate-700 transition flex items-center gap-2.5">
+                        <button onclick="switchView('reports')" class="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm sm:text-base font-semibold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2.5">
                             <i class="fa-solid fa-clock-rotate-left"></i> View Saved Reports
                         </button>
                     </div>
@@ -70,31 +70,31 @@
             </div>
 
             <!-- Quick Metrics Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 flex items-center justify-between">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-5 sm:p-6 flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Reports Created</p>
-                        <h3 id="stat-total" class="text-3xl font-bold text-white mt-1">0</h3>
+                        <p class="text-[11px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">Total Reports Created</p>
+                        <h3 id="stat-total" class="text-2xl sm:text-3xl font-bold text-white mt-1">0</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-xl shrink-0">
                         <i class="fa-solid fa-file-lines"></i>
                     </div>
                 </div>
-                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 flex items-center justify-between">
+                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-5 sm:p-6 flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Wakala & Shop Audits</p>
-                        <h3 id="stat-wakala" class="text-3xl font-bold text-white mt-1">0</h3>
+                        <p class="text-[11px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">Wakala & Shop Audits</p>
+                        <h3 id="stat-wakala" class="text-2xl sm:text-3xl font-bold text-white mt-1">0</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shrink-0">
                         <i class="fa-solid fa-store"></i>
                     </div>
                 </div>
-                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-6 flex items-center justify-between">
+                <div class="bg-slate-950 border border-slate-800/80 rounded-2xl p-5 sm:p-6 flex items-center justify-between sm:col-span-2 md:col-span-1">
                     <div>
-                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Collateral & Loan Verifications</p>
-                        <h3 id="stat-collateral" class="text-3xl font-bold text-white mt-1">0</h3>
+                        <p class="text-[11px] sm:text-xs font-medium text-slate-400 uppercase tracking-wider">Collateral & Loan Verifications</p>
+                        <h3 id="stat-collateral" class="text-2xl sm:text-3xl font-bold text-white mt-1">0</h3>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl shrink-0">
                         <i class="fa-solid fa-building-columns"></i>
                     </div>
                 </div>
@@ -103,29 +103,29 @@
 
         <!-- VIEW 2: INSPECTION FORM -->
         <section id="view-form" class="hidden space-y-6">
-            <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-950 border border-slate-800 p-4 rounded-2xl">
                 <div>
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-file-pen text-blue-500"></i> Site Visit Report Data Form
                     </h2>
                     <p class="text-xs text-slate-400">Fill in the required information and capture site/business photos.</p>
                 </div>
-                <button onclick="switchView('dashboard')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition">
+                <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm font-medium rounded-lg transition">
                     Cancel & Return
                 </button>
             </div>
 
-            <form id="inspection-form" onsubmit="generateReport(event)" class="space-y-8">
+            <form id="inspection-form" onsubmit="generateReport(event)" class="space-y-6 sm:space-y-8">
                 <!-- Section 1: Visit Type & Account Info -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6">
-                    <h3 class="text-base font-semibold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">1</span>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                    <h3 class="text-sm sm:text-base font-semibold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">1</span>
                         Account & Inspection Classification
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Inspection Type</label>
-                            <select id="f-visit-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <select id="f-visit-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                                 <option value="Wakala Account">Wakala Account Inspection</option>
                                 <option value="Wakala wa Meno Shop">Wakala wa Meno Shop Visit</option>
                                 <option value="Collateral Verification">Loan Collateral Verification</option>
@@ -134,78 +134,78 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Name of Wakala / Customer Account</label>
-                            <input type="text" id="f-account-name" required placeholder="e.g. KASSIM KHAMIS ALI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-account-name" required placeholder="e.g. KASSIM KHAMIS ALI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Inspecting Officer Name</label>
-                            <input type="text" id="f-officer-name" required value="Hawa Juma" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-officer-name" required value="Hawa Juma" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Visit Date</label>
-                            <input type="date" id="f-visit-date" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="date" id="f-visit-date" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                     </div>
                 </div>
 
                 <!-- Section 2: Location & GPS -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <h3 class="text-base font-semibold text-white flex items-center gap-2">
-                            <span class="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">2</span>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                        <h3 class="text-sm sm:text-base font-semibold text-white flex items-center gap-2">
+                            <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">2</span>
                             Location & GPS Details
                         </h3>
-                        <button type="button" onclick="fetchLiveLocation()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center gap-2">
+                        <button type="button" onclick="fetchLiveLocation()" class="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-location-crosshairs"></i> Fetch Live GPS & Details
                         </button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">GPS Coordinates</label>
-                            <input type="text" id="f-gps" required placeholder="-4.944618,39.74594" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-gps" required placeholder="-4.944618,39.74594" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Locality / Ward</label>
-                            <input type="text" id="f-locality" oninput="updateAutoDescription()" required placeholder="MICHEWENI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-locality" oninput="updateAutoDescription()" required placeholder="MICHEWENI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">District / Municipality</label>
-                            <input type="text" id="f-district" oninput="updateAutoDescription()" required placeholder="KASKAZINI-PEMBA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-district" oninput="updateAutoDescription()" required placeholder="KASKAZINI-PEMBA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                     </div>
                 </div>
 
                 <!-- Section 3: Business Description & Notes -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6">
-                    <h3 class="text-base font-semibold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">3</span>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                    <h3 class="text-sm sm:text-base font-semibold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">3</span>
                         Site Visit Observation & Description
                     </h3>
                     <div>
                         <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">General Description of the Business (Auto-updates with Locality)</label>
-                        <textarea id="f-description" rows="3" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA.</textarea>
+                        <textarea id="f-description" rows="3" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition">Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA.</textarea>
                     </div>
                 </div>
 
                 <!-- Section 4: Photo Capture Queue -->
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                        <h3 class="text-base font-semibold text-white flex items-center gap-2">
-                            <span class="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">4</span>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                        <h3 class="text-sm sm:text-base font-semibold text-white flex items-center gap-2">
+                            <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center text-xs font-bold">4</span>
                             Business & Location Photos (<span id="photo-count-badge">0</span>)
                         </h3>
-                        <button type="button" onclick="openCamera()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center gap-2">
+                        <button type="button" onclick="openCamera()" class="w-full sm:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-camera"></i> + Take Location Photo
                         </button>
                     </div>
-                    <div id="photos-preview-container" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div id="photos-preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                         <!-- Dynamically populated captured photos -->
                     </div>
                     <p class="text-xs text-slate-400 italic">Photos captured will be automatically stamped with Azania Bank watermark and embedded into Page 2 of the final report.</p>
                 </div>
 
                 <!-- Form Submit Action -->
-                <div class="flex justify-end space-x-4 pt-4">
-                    <button type="submit" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-xl shadow-blue-600/30 transition flex items-center gap-3 text-base">
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-xl shadow-blue-600/30 transition flex items-center justify-center gap-3 text-sm sm:text-base">
                         <i class="fa-solid fa-file-arrow-down text-xl"></i> Build Editable Executive Report
                     </button>
                 </div>
@@ -215,15 +215,15 @@
         <!-- VIEW 3: CAMERA APP OVERLAY -->
         <section id="view-camera" class="hidden fixed inset-0 z-50 bg-black flex flex-col justify-between">
             <!-- Camera Top Bar -->
-            <div class="flex items-center justify-between p-6 bg-gradient-to-b from-black/80 to-transparent">
+            <div class="flex items-center justify-between p-4 sm:p-6 bg-gradient-to-b from-black/80 to-transparent">
                 <button onclick="closeCamera()" class="w-10 h-10 rounded-full bg-slate-800/80 text-white flex items-center justify-center hover:bg-slate-700 transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-                <div class="text-center">
-                    <p class="text-xs font-semibold text-emerald-400 flex items-center gap-1.5 justify-center">
+                <div class="text-center px-2">
+                    <p class="text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center gap-1.5 justify-center">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> GPS Telemetry Active
                     </p>
-                    <p id="cam-gps-display" class="text-xs text-slate-300 font-mono">-4.944618, 39.74594</p>
+                    <p id="cam-gps-display" class="text-[11px] sm:text-xs text-slate-300 font-mono truncate max-w-[200px] sm:max-w-none">-4.944618, 39.74594</p>
                 </div>
                 <button onclick="switchCameraFacing()" class="w-10 h-10 rounded-full bg-slate-800/80 text-white flex items-center justify-center hover:bg-slate-700 transition">
                     <i class="fa-solid fa-rotate-camera text-sm"></i>
@@ -237,7 +237,7 @@
                 <input type="file" id="camera-file-input" accept="image/*" class="hidden" onchange="handleFileFallback(event)">
                 
                 <!-- Viewfinder Guide Frame -->
-                <div class="absolute inset-8 border-2 border-white/30 rounded-3xl pointer-events-none flex flex-col justify-between p-4">
+                <div class="absolute inset-4 sm:inset-8 border-2 border-white/30 rounded-3xl pointer-events-none flex flex-col justify-between p-4">
                     <div class="flex justify-between">
                         <span class="w-6 h-6 border-t-2 border-l-2 border-white"></span>
                         <span class="w-6 h-6 border-t-2 border-r-2 border-white"></span>
@@ -253,7 +253,7 @@
             </div>
 
             <!-- Camera Bottom Control Deck -->
-            <div class="p-8 bg-black flex items-center justify-around">
+            <div class="p-6 sm:p-8 bg-black flex items-center justify-around">
                 <button onclick="document.getElementById('camera-file-input').click()" class="w-12 h-12 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition" title="Upload from Device">
                     <i class="fa-regular fa-image text-lg"></i>
                 </button>
@@ -267,33 +267,33 @@
         <!-- VIEW 4: OFFICIAL REPORT PREVIEW -->
         <section id="view-report" class="hidden space-y-6">
             <!-- Report Action Toolbar -->
-            <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-4 rounded-2xl no-print">
-                <button onclick="switchView('form')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition flex items-center gap-2">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-950 border border-slate-800 p-4 rounded-2xl no-print">
+                <button onclick="switchView('form')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-arrow-left"></i> Edit Report Data
                 </button>
-                <div class="flex items-center gap-3">
-                    <button onclick="downloadWordDoc()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg shadow transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-word"></i> Download Word (.doc)
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <button onclick="downloadWordDoc()" class="flex-1 sm:flex-none px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-word"></i> Word (.doc)
                     </button>
-                    <button onclick="exportCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow transition flex items-center gap-2">
-                        <i class="fa-solid fa-file-csv"></i> Export CSV
+                    <button onclick="exportCSV()" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold rounded-lg shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-csv"></i> CSV
                     </button>
-                    <button onclick="window.print()" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-lg shadow-blue-600/30 transition flex items-center gap-2">
-                        <i class="fa-solid fa-print"></i> Print / Save PDF
+                    <button onclick="window.print()" class="w-full sm:w-auto px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-lg shadow-blue-600/30 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Print / PDF
                     </button>
                 </div>
             </div>
 
             <!-- Report Printable Document Container -->
-            <div id="printable-report-container" class="space-y-8">
+            <div id="printable-report-container" class="space-y-8 overflow-x-auto">
                 
                 <!-- PAGE 1: Report Summary & Map (Strictly 1 Page Fit) -->
-                <div class="print-page-1 bg-white text-slate-900 p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1020px; max-height: 1020px;">
+                <div class="print-page-1 bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1020px; max-height: 1020px;">
                     <div>
                         <!-- Header Banner -->
                         <div class="text-center border-b-2 border-slate-900 pb-3 mb-4">
-                            <h2 class="text-xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
-                            <h3 class="text-base font-bold uppercase text-blue-700 mt-0.5">SITE VISIT REPORT</h3>
+                            <h2 class="text-lg sm:text-xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+                            <h3 class="text-sm sm:text-base font-bold uppercase text-blue-700 mt-0.5">SITE VISIT REPORT</h3>
                         </div>
 
                         <!-- Data Table 1 -->
@@ -332,7 +332,7 @@
                         <!-- Business Location Map Screenshot -->
                         <div class="mb-3">
                             <h4 class="font-bold text-slate-900 text-xs mb-1">Business Location Map Screenshot</h4>
-                            <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-100 h-36 flex items-center justify-center">
+                            <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-100 h-32 sm:h-36 flex items-center justify-center">
                                 <img id="rep-map-image" src="" alt="Map Location Screenshot" class="w-full h-full object-cover">
                             </div>
                         </div>
@@ -343,7 +343,7 @@
                         <p class="text-slate-800 leading-snug">
                             I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
                         </p>
-                        <div class="flex justify-between items-end pt-1">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 pt-1">
                             <div>
                                 <span class="font-bold">Name:</span> <span id="rep-footer-name" class="underline">Hawa Juma</span>
                             </div>
@@ -361,12 +361,12 @@
                 </div>
 
                 <!-- PAGE 2: Attached Business Photos Annex -->
-                <div class="print-page-2 bg-white text-slate-900 p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1050px;">
+                <div class="print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1050px;">
                     <div>
                         <!-- Header Banner -->
                         <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
-                            <h2 class="text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
-                            <h3 class="text-lg font-bold uppercase text-blue-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS</h3>
+                            <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+                            <h3 class="text-base sm:text-lg font-bold uppercase text-blue-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS</h3>
                         </div>
 
                         <div class="mb-4">
@@ -374,7 +374,7 @@
                         </div>
 
                         <!-- Photos Grid Annex -->
-                        <div id="annex-photos-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div id="annex-photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <!-- Dynamically populated photo annex tiles -->
                         </div>
                     </div>
@@ -390,14 +390,14 @@
 
         <!-- VIEW 5: SAVED REPORTS LIST -->
         <section id="view-reports" class="hidden space-y-6">
-            <div class="flex items-center justify-between bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-950 border border-slate-800 p-4 rounded-2xl">
                 <div>
-                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
                         <i class="fa-solid fa-folder-open text-blue-500"></i> Saved Inspection Reports
                     </h2>
                     <p class="text-xs text-slate-400">Access and review all previously generated audit reports.</p>
                 </div>
-                <button onclick="switchView('dashboard')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition">
+                <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm font-medium rounded-lg transition">
                     Back to Dashboard
                 </button>
             </div>
@@ -432,7 +432,6 @@
             const district = document.getElementById('f-district').value || "KASKAZINI PEMBA";
             const descField = document.getElementById('f-description');
             
-            // Only auto-update if it matches template or user hasn't heavily modified it
             descField.value = `Customer deals with Agent business which is located at ${locality.toUpperCase()}, ${district.toUpperCase()}.`;
         }
 
@@ -625,10 +624,10 @@
 
             container.innerHTML = appState.capturedPhotos.map((photo, index) => `
                 <div class="relative group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-md">
-                    <img src="${photo.url}" alt="Captured Site Photo" class="w-full h-36 object-cover">
-                    <div class="p-3">
-                        <p class="text-xs font-semibold text-slate-300 truncate">Photo #${index + 1}</p>
-                        <button type="button" onclick="removePhoto(${photo.id})" class="mt-2 text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
+                    <img src="${photo.url}" alt="Captured Site Photo" class="w-full h-32 sm:h-36 object-cover">
+                    <div class="p-2 sm:p-3">
+                        <p class="text-[11px] sm:text-xs font-semibold text-slate-300 truncate">Photo #${index + 1}</p>
+                        <button type="button" onclick="removePhoto(${photo.id})" class="mt-1.5 sm:mt-2 text-xs text-red-400 hover:text-red-300 flex items-center gap-1">
                             <i class="fa-solid fa-trash"></i> Remove
                         </button>
                     </div>
@@ -704,7 +703,7 @@
             } else {
                 annexGrid.innerHTML = data.photos.map((photo, index) => `
                     <div class="border-2 border-slate-900 rounded-xl overflow-hidden bg-slate-50 p-3 flex flex-col justify-between">
-                        <div class="h-80 w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
+                        <div class="h-64 sm:h-80 w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
                             <img src="${photo.url}" alt="Site Photo ${index + 1}" class="w-full h-full object-contain">
                         </div>
                         <div class="mt-3 pt-2 border-t border-slate-300 flex justify-between items-center text-xs font-semibold text-slate-800">
@@ -730,17 +729,17 @@
             }
 
             container.innerHTML = appState.reports.map(report => `
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <div class="flex items-center gap-3 mb-1">
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
                             <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">${report.type}</span>
                             <span class="text-xs text-slate-400 font-mono">${new Date(report.timestamp).toLocaleString()}</span>
                         </div>
-                        <h3 class="text-lg font-bold text-white uppercase">${report.accountName}</h3>
+                        <h3 class="text-base sm:text-lg font-bold text-white uppercase">${report.accountName}</h3>
                         <p class="text-xs text-slate-400 mt-1">Location: <span class="text-slate-200 font-medium">${report.locality}, ${report.district}</span> | GPS: <span class="font-mono text-blue-400">${report.gps}</span></p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="loadSavedReport(${report.id})" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center gap-2">
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <button onclick="loadSavedReport(${report.id})" class="flex-1 md:flex-none px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl shadow transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-eye"></i> View Report
                         </button>
                         <button onclick="deleteReport(${report.id})" class="px-3 py-2 bg-slate-800 hover:bg-red-900/50 text-red-400 text-xs font-semibold rounded-xl transition">
