@@ -46,7 +46,7 @@
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
-      .print-page-2 { page-break-before: always; break-before: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .annex-page { page-break-before: always; break-before: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
     }
   </style>
 </head>
@@ -80,7 +80,7 @@
                         Wakala & Collateral Verification System
                     </h2>
                     <p class="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-6">
-                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and official 1-page summary layouts[cite: 4].
+                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and optimized 2-page executive reports[cite: 4].
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button onclick="startNewInspection()" class="w-full sm:w-auto px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2.5">
@@ -224,7 +224,7 @@
                     <div id="photos-preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                         <!-- Dynamically populated captured photos -->
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured will be automatically stamped with Azania Bank watermark and embedded into Page 2 of the final report[cite: 4].</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured will be automatically stamped with Azania Bank watermark and embedded into the dynamic photo annex pages[cite: 4].</p>
                 </div>
 
                 <!-- Form Submit Action -->
@@ -387,29 +387,9 @@
                     </div>
                 </div>
 
-                <!-- PAGE 2: Attached Business Photos Annex -->
-                <div class="print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1050px;">
-                    <div>
-                        <!-- Header Banner -->
-                        <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
-                            <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
-                            <h3 class="text-base sm:text-lg font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS</h3>
-                        </div>
-
-                        <div class="mb-4">
-                            <p class="text-sm font-semibold text-slate-700">Client / Wakala Name: <span id="annex-client-name" class="font-bold text-slate-900 uppercase">KASSIM KHAMIS ALI</span></p>
-                        </div>
-
-                        <!-- Photos Grid Annex -->
-                        <div id="annex-photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <!-- Dynamically populated photo annex tiles -->
-                        </div>
-                    </div>
-
-                    <!-- Page 2 Footer -->
-                    <div class="border-t-2 border-slate-900 pt-4 text-center text-xs font-bold text-slate-400">
-                        2
-                    </div>
+                <!-- DYNAMIC PHOTO ANNEX CONTAINER (Handles 1, 2, 2x2 grid, or multi-page pagination automatically) -->
+                <div id="dynamic-annex-container" class="space-y-8">
+                    <!-- Populated dynamically by JS -->
                 </div>
 
             </div>
@@ -820,7 +800,7 @@
       document.getElementById('rep-sign-officer').innerText = data.officerName;
       document.getElementById('rep-footer-name').innerText = data.officerName;
       document.getElementById('rep-footer-date').innerText = new Date(data.visitDate).toLocaleDateString();
-      document.getElementById('annex-client-name').innerText = data.accountName;
+      document.getElementById('annex-client-name')?.innerText = data.accountName;
 
       const mapImg = document.getElementById('rep-map-image');
       const [lat, lon] = data.gps.split(',').map(s => s.trim());
@@ -830,26 +810,81 @@
         mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
       }
 
-      const annexGrid = document.getElementById('annex-photos-grid');
+      // Dynamic Photo Annex Grid Builder (Max 4 photos per annex page, 1=center, 2=horizontal, 3-4=2x2 grid)
+      const container = document.getElementById('dynamic-annex-container');
+      container.innerHTML = '';
+
       if (data.photos.length === 0) {
-        annexGrid.innerHTML = `
-          <div class="col-span-2 border-2 border-dashed border-slate-300 rounded-xl p-12 text-center text-slate-500">
-            <p>No business photos were attached for this inspection.</p>
+        container.innerHTML = `
+          <div class="annex-page bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1020px;">
+            <div>
+              <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
+                <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+                <h3 class="text-base sm:text-lg font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS</h3>
+              </div>
+              <p class="text-sm font-semibold text-slate-700 mb-6">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
+              <div class="border-2 border-dashed border-slate-300 rounded-xl p-12 text-center text-slate-500">
+                <p>No business photos were attached for this inspection.</p>
+              </div>
+            </div>
+            <div class="border-t-2 border-slate-900 pt-4 text-center text-xs font-bold text-slate-400">2</div>
           </div>
         `;
-      } else {
-        annexGrid.innerHTML = data.photos.map((photo, index) => `
-          <div class="border-2 border-slate-900 rounded-xl overflow-hidden bg-slate-50 p-3 flex flex-col justify-between">
-            <div class="h-80 w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
-              <img src="${photo.url}" alt="Site Photo ${index + 1}" class="w-full h-full object-contain">
+        return;
+      }
+
+      const chunkSize = 4;
+      const photoChunks = [];
+      for (let i = 0; i < data.photos.length; i += chunkSize) {
+        photoChunks.push(data.photos.slice(i, i + chunkSize));
+      }
+
+      photoChunks.forEach((chunk, pageIndex) => {
+        const pageNum = pageIndex + 2;
+        let gridClass = "grid grid-cols-1 gap-4";
+        if (chunk.length === 2) {
+          gridClass = "grid grid-cols-2 gap-4";
+        } else if (chunk.length >= 3) {
+          gridClass = "grid grid-cols-2 gap-4";
+        }
+
+        const photosHtml = chunk.map((photo, idx) => {
+          const globalIdx = (pageIndex * chunkSize) + idx + 1;
+          return `
+            <div class="border border-slate-300 rounded-xl overflow-hidden bg-slate-50 p-2.5 flex flex-col justify-between shadow-xs">
+              <div class="h-64 w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
+                <img src="${photo.url}" crossorigin="anonymous" alt="Site Photo ${globalIdx}" class="w-full h-full object-contain">
+              </div>
+              <div class="mt-2 pt-1.5 border-t border-slate-200 flex justify-between items-center text-[11px] font-semibold text-slate-800">
+                <span>Plate #${globalIdx}: ${data.accountName}</span>
+                <span class="font-mono text-slate-500">${data.gps}</span>
+              </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-slate-300 flex justify-between items-center text-xs font-semibold text-slate-800">
-              <span>Plate #${index + 1}: ${data.accountName}</span>
-              <span class="font-mono">${data.gps}</span>
+          `;
+        }).join('');
+
+        const pageEl = document.createElement('div');
+        pageEl.className = `annex-page bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between`;
+        pageEl.style.minHeight = '1020px';
+        pageEl.innerHTML = `
+          <div>
+            <div class="text-center border-b-2 border-slate-900 pb-3 mb-4">
+              <h2 class="text-lg sm:text-xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+              <h3 class="text-sm sm:text-base font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS (PAGE ${pageNum})</h3>
+            </div>
+            <div class="mb-4">
+              <p class="text-xs sm:text-sm font-semibold text-slate-700">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
+            </div>
+            <div class="${gridClass}">
+              ${photosHtml}
             </div>
           </div>
-        `).join('');
-      }
+          <div class="border-t-2 border-slate-900 pt-3 text-center text-xs font-bold text-slate-400">
+            ${pageNum}
+          </div>
+        `;
+        container.appendChild(pageEl);
+      });
     }
 
     function renderSavedReportsList() {
@@ -905,12 +940,10 @@
       }
     }
 
-    // Direct Print Trigger for Printable Area Only
     function triggerPrintPDF() {
       window.print();
     }
 
-    // Fully Functional MS Word (.doc) Auto-Downloader
     function downloadWordDoc() {
       const accountName = document.getElementById('rep-account-name').innerText || "WAKALA_REPORT";
       const gps = document.getElementById('rep-gps').innerText;
@@ -925,8 +958,8 @@
         photosHtml = appState.activeInspection.photos.map((p, idx) => `
           <div style="margin-bottom: 30px; page-break-inside: avoid; text-align: center;">
             <p style="font-weight: bold; font-size: 14px;">Photo Annex #${idx + 1}</p>
-            <img src="${p.url}" style="max-width: 500px; height: auto; border: 2px solid #000; padding: 5px;" />
-            <p style="font-size: 12px; color: #555;">GPS: ${gps}</p>
+            <img src="${p.url}" style="max-width: 450px; height: auto; border: 2px solid #000; padding: 4px;" />
+            <p style="font-size: 11px; color: #555;">GPS: ${gps}</p>
           </div>
         `).join('');
       } else {
