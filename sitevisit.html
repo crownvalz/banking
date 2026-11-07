@@ -46,7 +46,7 @@
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
-      .print-page-annex { page-break-after: always; break-after: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .print-page-annex { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
       .photo-card { page-break-inside: avoid; break-inside: avoid; }
     }
   </style>
@@ -81,7 +81,7 @@
                         Wakala & Collateral Verification System
                     </h2>
                     <p class="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-6">
-                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and intelligent aspect-ratio photo layouts[cite: 4].
+                        Streamline field inspections with instant GPS telemetry capture, live square camera watermarking, 100m satellite mapping, and 2x6 grid photo annexes[cite: 4].
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button onclick="startNewInspection()" class="w-full sm:w-auto px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2.5">
@@ -133,7 +133,7 @@
                     <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-file-pen text-brand-500"></i> Site Visit Report Data Form
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Fill in the required information and capture site/business photos.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Fill in the required information and capture square site photos.</p>
                 </div>
                 <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium rounded-xl transition">
                     Cancel & Return
@@ -216,16 +216,16 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
                         <h3 class="text-sm sm:text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                             <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">4</span>
-                            Business & Location Photos (<span id="photo-count-badge">0</span>)
+                            Square Business Photos (<span id="photo-count-badge">0</span>)
                         </h3>
                         <button type="button" onclick="openCamera()" class="w-full sm:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-camera"></i> + Take Location Photo
+                            <i class="fa-solid fa-camera"></i> + Take Square Photo
                         </button>
                     </div>
                     <div id="photos-preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                         <!-- Dynamically populated captured photos -->
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured will be automatically stamped with Azania Bank watermark and embedded into Page 2 of the final report[cite: 4].</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured are cropped square (1:1), watermarked, and fit into a 2x6 grid on the annex page[cite: 4].</p>
                 </div>
 
                 <!-- Form Submit Action -->
@@ -246,7 +246,7 @@
                 </button>
                 <div class="text-center px-2">
                     <p class="text-[11px] sm:text-xs font-semibold text-emerald-400 flex items-center gap-1.5 justify-center">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> GPS Telemetry Active
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Square 1:1 Capture Active
                     </p>
                     <p id="cam-gps-display" class="text-[11px] sm:text-xs text-slate-300 font-mono truncate max-w-[200px] sm:max-w-none">-4.944618, 39.74594</p>
                 </div>
@@ -255,20 +255,20 @@
                 </button>
             </div>
 
-            <!-- Viewfinder Preview -->
+            <!-- Viewfinder Preview with Square Guide -->
             <div class="relative flex-1 flex items-center justify-center overflow-hidden bg-slate-950">
                 <video id="camera-video" autoplay playsinline class="absolute inset-0 w-full h-full object-cover"></video>
                 <canvas id="camera-canvas" class="hidden"></canvas>
                 <input type="file" id="camera-file-input" accept="image/*" class="hidden" onchange="handleFileFallback(event)">
                 
-                <!-- Viewfinder Guide Frame -->
-                <div class="absolute inset-4 sm:inset-8 border-2 border-white/30 rounded-3xl pointer-events-none flex flex-col justify-between p-4">
+                <!-- Square Viewfinder Guide Frame -->
+                <div class="relative w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] border-2 border-dashed border-white/70 rounded-2xl pointer-events-none flex flex-col justify-between p-4">
                     <div class="flex justify-between">
                         <span class="w-6 h-6 border-t-2 border-l-2 border-white"></span>
                         <span class="w-6 h-6 border-t-2 border-r-2 border-white"></span>
                     </div>
-                    <div class="text-center bg-black/40 backdrop-blur-md py-1.5 px-3 rounded-full mx-auto border border-white/10">
-                        <p class="text-xs text-white font-medium tracking-wide">Azania Bank Field Capture</p>
+                    <div class="text-center bg-black/50 backdrop-blur-md py-1 px-3 rounded-full mx-auto border border-white/20">
+                        <p class="text-[11px] text-white font-medium tracking-wide">Square Frame (1:1)</p>
                     </div>
                     <div class="flex justify-between">
                         <span class="w-6 h-6 border-b-2 border-l-2 border-white"></span>
@@ -381,7 +381,7 @@
                     </div>
                 </div>
 
-                <!-- DYNAMICALLY GENERATED PHOTO PAGES CONTAINER -->
+                <!-- DYNAMICALLY GENERATED 2x6 PHOTO PAGES CONTAINER -->
                 <div id="dynamic-photos-pages-container"></div>
 
             </div>
@@ -627,7 +627,7 @@
       document.getElementById('view-camera').classList.remove('hidden');
       try {
         const constraints = {
-          video: { facingMode: useFrontCamera ? 'user' : 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+          video: { facingMode: useFrontCamera ? 'user' : 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
         };
         mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
         document.getElementById('camera-video').srcObject = mediaStream;
@@ -655,7 +655,7 @@
       }
       try {
         const constraints = {
-          video: { facingMode: useFrontCamera ? 'user' : 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }
+          video: { facingMode: useFrontCamera ? 'user' : 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
         };
         mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
         document.getElementById('camera-video').srcObject = mediaStream;
@@ -664,35 +664,43 @@
       }
     }
 
+    // Square (1:1) Camera Capture with Center Crop & Watermark
     function capturePhoto() {
       const video = document.getElementById('camera-video');
       const canvas = document.getElementById('camera-canvas');
-      canvas.width = video.videoWidth || 1280;
-      canvas.height = video.videoHeight || 720;
+      
+      const vWidth = video.videoWidth || 1280;
+      const vHeight = video.videoHeight || 720;
+      const size = Math.min(vWidth, vHeight);
+      
+      canvas.width = 600;
+      canvas.height = 600;
       const ctx = canvas.getContext('2d');
       
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const sourceX = (vWidth - size) / 2;
+      const sourceY = (vHeight - size) / 2;
       
+      ctx.drawImage(video, sourceX, sourceY, size, size, 0, 0, 600, 600);
+      
+      // Watermark Overlay
       const gps = document.getElementById('f-gps').value || "-4.944618,39.74594";
       const account = document.getElementById('f-account-name').value || "WAKALA SITE VISIT";
       const dateStr = new Date().toLocaleString();
 
       ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-      ctx.fillRect(0, canvas.height - 110, canvas.width, 110);
+      ctx.fillRect(0, 520, 600, 80);
 
       ctx.fillStyle = "#0284c7";
-      ctx.font = "bold 24px sans-serif";
-      ctx.fillText("AZANIA BANK PLC - FIELD AUDIT WATERMARK", 40, canvas.height - 70);
+      ctx.font = "bold 15px sans-serif";
+      ctx.fillText("AZANIA BANK PLC - FIELD AUDIT", 20, 545);
 
       ctx.fillStyle = "#ffffff";
-      ctx.font = "20px sans-serif";
-      ctx.fillText(`Account: ${account.toUpperCase()} | GPS: ${gps}`, 40, canvas.height - 35);
-      ctx.fillText(`Timestamp: ${dateStr}`, canvas.width - 450, canvas.height - 35);
+      ctx.font = "12px sans-serif";
+      ctx.fillText(`Account: ${account.toUpperCase()} | GPS: ${gps}`, 20, 568);
+      ctx.fillText(`Timestamp: ${dateStr}`, 20, 588);
 
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-      getImageOrientation(dataUrl, (isVertical) => {
-        saveCapturedPhoto(dataUrl, isVertical);
-      });
+      saveCapturedPhoto(dataUrl);
       closeCamera();
     }
 
@@ -701,28 +709,28 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        getImageOrientation(dataUrl, (isVertical) => {
-          saveCapturedPhoto(dataUrl, isVertical);
-        });
+        // Crop file upload to square
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.getElementById('camera-canvas');
+          canvas.width = 600;
+          canvas.height = 600;
+          const ctx = canvas.getContext('2d');
+          const size = Math.min(img.width, img.height);
+          const sx = (img.width - size) / 2;
+          const sy = (img.height - size) / 2;
+          ctx.drawImage(img, sx, sy, size, size, 0, 0, 600, 600);
+          saveCapturedPhoto(canvas.toDataURL('image/jpeg', 0.9));
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    function getImageOrientation(dataUrl, callback) {
-      const img = new Image();
-      img.onload = function() {
-        const isVertical = img.height > img.width;
-        callback(isVertical);
-      };
-      img.src = dataUrl;
-    }
-
-    function saveCapturedPhoto(dataUrl, isVertical) {
+    function saveCapturedPhoto(dataUrl) {
       appState.capturedPhotos.push({
         id: Date.now(),
         url: dataUrl,
-        vertical: isVertical,
         caption: document.getElementById('f-visit-type').value + ' - ' + document.getElementById('f-account-name').value
       });
       renderPhotosQueue();
@@ -743,7 +751,7 @@
         container.innerHTML = `
           <div class="col-span-full border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-xl p-8 text-center text-slate-500">
             <i class="fa-solid fa-camera-retro text-3xl mb-2"></i>
-            <p class="text-xs">No photos captured yet. Click 'Take Location Photo' above.</p>
+            <p class="text-xs">No photos captured yet. Click 'Take Square Photo' above.</p>
           </div>
         `;
         return;
@@ -751,9 +759,9 @@
 
       container.innerHTML = appState.capturedPhotos.map((photo, index) => `
         <div class="relative group bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
-          <img src="${photo.url}" alt="Captured Site Photo" class="w-full h-36 object-cover">
+          <img src="${photo.url}" alt="Captured Square Photo" class="w-full h-36 object-cover">
           <div class="p-3">
-            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">Photo #${index + 1} (${photo.vertical ? 'Portrait' : 'Landscape'})</p>
+            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">Square Photo #${index + 1}</p>
             <button type="button" onclick="removePhoto(${photo.id})" class="mt-2 text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
               <i class="fa-solid fa-trash"></i> Remove
             </button>
@@ -809,11 +817,11 @@
         mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
       }
 
-      // Intelligent Aspect Ratio & Pagination Engine
+      // 2x6 Grid Pagination Engine (Up to 12 photos per annex page, 2 columns x 6 rows)
       const container = document.getElementById('dynamic-photos-pages-container');
       container.innerHTML = '';
 
-      if (data.photos.length === 0) {
+      if (!data.photos || data.photos.length === 0) {
         container.innerHTML = `
           <div class="print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1050px;">
             <div>
@@ -832,48 +840,28 @@
         return;
       }
 
-      // Grouping logic: If photo is vertical (portrait), pack up to 4 per page (2x2 grid). If horizontal (landscape), max 2 per page (stacked).
-      let pages = [];
-      let currentPagePhotos = [];
-      let currentModeIsVertical = data.photos[0].vertical;
+      const PHOTOS_PER_PAGE = 12; // 2x6 grid = 12 photos max per page
+      const totalPages = Math.ceil(data.photos.length / PHOTOS_PER_PAGE);
 
-      data.photos.forEach(photo => {
-        const limit = photo.vertical ? 4 : 2;
-        if (currentPagePhotos.length >= limit || photo.vertical !== currentModeIsVertical) {
-          if (currentPagePhotos.length > 0) {
-            pages.push({ vertical: currentModeIsVertical, photos: currentPagePhotos });
-          }
-          currentPagePhotos = [photo];
-          currentModeIsVertical = photo.vertical;
-        } else {
-          currentPagePhotos.push(photo);
-        }
-      });
-      if (currentPagePhotos.length > 0) {
-        pages.push({ vertical: currentModeIsVertical, photos: currentPagePhotos });
-      }
-
-      const totalAnnexPages = pages.length;
-
-      pages.forEach((pageData, pageIdx) => {
+      for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+        const start = pageIdx * PHOTOS_PER_PAGE;
+        const pagePhotos = data.photos.slice(start, start + PHOTOS_PER_PAGE);
         const pageNum = pageIdx + 2;
+
         const pageDiv = document.createElement('div');
-        pageDiv.className = "print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between";
+        pageDiv.className = "print-page-annex bg-white text-slate-900 p-6 sm:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between";
         pageDiv.style.minHeight = "1050px";
 
-        const gridClass = pageData.vertical ? "grid grid-cols-1 sm:grid-cols-2 gap-4" : "flex flex-col gap-4";
-        const imageHeight = pageData.vertical ? "h-56 sm:h-60" : "h-72 sm:h-80";
-
-        const photosHtml = pageData.photos.map((photo, i) => {
-          const globalIndex = data.photos.indexOf(photo) + 1;
+        const photosHtml = pagePhotos.map((photo, i) => {
+          const globalIndex = start + i + 1;
           return `
-            <div class="photo-card border-2 border-slate-900 rounded-xl overflow-hidden bg-slate-50 p-3 flex flex-col justify-between shadow-xs">
-              <div class="${imageHeight} w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
-                <img src="${photo.url}" alt="Site Photo ${globalIndex}" class="w-full h-full object-contain">
+            <div class="photo-card border border-slate-800 rounded-lg overflow-hidden bg-slate-50 p-2 flex flex-col justify-between shadow-xs">
+              <div class="h-28 sm:h-32 w-full overflow-hidden rounded bg-black flex items-center justify-center">
+                <img src="${photo.url}" alt="Square Photo ${globalIndex}" class="w-full h-full object-cover">
               </div>
-              <div class="mt-2.5 pt-2 border-t border-slate-300 flex justify-between items-center text-xs font-semibold text-slate-800">
-                <span>Plate #${globalIndex}: ${data.accountName} (${pageData.vertical ? 'Portrait' : 'Landscape'})</span>
-                <span class="font-mono text-[11px] text-slate-600">${data.gps}</span>
+              <div class="mt-1 pt-1 border-t border-slate-200 flex justify-between items-center text-[10px] font-semibold text-slate-800">
+                <span>#${globalIndex}: ${data.accountName}</span>
+                <span class="font-mono text-[9px] text-slate-500">${data.gps}</span>
               </div>
             </div>
           `;
@@ -881,25 +869,25 @@
 
         pageDiv.innerHTML = `
           <div>
-            <div class="text-center border-b-2 border-slate-900 pb-3 mb-4">
-              <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
-              <h3 class="text-base sm:text-lg font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS (ANNEX)</h3>
+            <div class="text-center border-b-2 border-slate-900 pb-2 mb-3">
+              <h2 class="text-lg sm:text-xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+              <h3 class="text-xs sm:text-sm font-bold uppercase text-brand-700 mt-0.5">SITE VISIT REPORT - ATTACHED SQUARE PHOTOS (2x6 ANNEX)</h3>
             </div>
-            <div class="mb-4 flex justify-between items-center">
-              <p class="text-xs sm:text-sm font-semibold text-slate-700">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
-              <span class="text-xs font-mono text-slate-500">Annex Page ${pageIdx + 1} of ${totalAnnexPages}</span>
+            <div class="mb-3 flex justify-between items-center text-xs">
+              <p class="font-semibold text-slate-700">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
+              <span class="font-mono text-slate-500">Annex Page ${pageIdx + 1} of ${totalPages}</span>
             </div>
-            <div class="${gridClass}">
+            <div class="grid grid-cols-2 gap-3">
               ${photosHtml}
             </div>
           </div>
-          <div class="border-t-2 border-slate-900 pt-3 text-center text-xs font-bold text-slate-400">
+          <div class="border-t-2 border-slate-900 pt-2 text-center text-xs font-bold text-slate-400">
             ${pageNum}
           </div>
         `;
 
         container.appendChild(pageDiv);
-      });
+      }
     }
 
     function renderSavedReportsList() {
@@ -971,10 +959,10 @@
       let photosHtml = '';
       if (appState.activeInspection && appState.activeInspection.photos.length > 0) {
         photosHtml = appState.activeInspection.photos.map((p, idx) => `
-          <div style="margin-bottom: 25px; page-break-inside: avoid; text-align: center;">
-            <p style="font-weight: bold; font-size: 13px;">Photo Annex #${idx + 1} (${p.vertical ? 'Portrait' : 'Landscape'})</p>
-            <img src="${p.url}" style="max-width: ${p.vertical ? '350px' : '450px'}; height: auto; border: 2px solid #000; padding: 4px;" />
-            <p style="font-size: 11px; color: #555;">GPS: ${gps}</p>
+          <div style="display:inline-block; width: 45%; margin: 10px; page-break-inside: avoid; text-align: center;">
+            <p style="font-weight: bold; font-size: 11px;">Photo #${idx + 1}</p>
+            <img src="${p.url}" style="width: 200px; height: 200px; object-fit: cover; border: 1px solid #000; padding: 3px;" />
+            <p style="font-size: 10px; color: #555;">GPS: ${gps}</p>
           </div>
         `).join('');
       } else {
@@ -1018,7 +1006,7 @@
             <p style="background: #f9f9f9; padding: 10px; border: 1px solid #ccc;">${description}</p>
             
             <br/><hr/><br/>
-            <h3>ATTACHED BUSINESS PHOTOS & ANNEX</h3>
+            <h3>ATTACHED SQUARE PHOTOS & ANNEX (2x6 GRID)</h3>
             <br/>
             ${photosHtml}
 
