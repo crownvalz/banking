@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Azania Bank PLC - Field Visit & Inspection System</title>
+    <title>Azania Bank PLC - Dynamic Field Visit & Inspection System</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -76,9 +76,9 @@
                 <div>
                     <h1 class="font-bold text-sm tracking-tight text-white flex items-center gap-2">
                         AZANIA BANK PLC
-                        <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-azania-gold/20 text-azania-gold border border-azania-gold/30">Field Audit Portal</span>
+                        <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-azania-gold/20 text-azania-gold border border-azania-gold/30">Field Inspection Portal</span>
                     </h1>
-                    <p class="text-[11px] text-slate-400">Credit Risk Management & Asset Verification System</p>
+                    <p class="text-[11px] text-slate-400">Customizable Site Visit & Audit Reporting Engine</p>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
                 </div>
                 <button id="quickNewCaseBtn" class="px-4 py-2 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy font-bold text-xs shadow-lg shadow-azania-gold/10 transition flex items-center gap-2 active:scale-95">
                     <i class="fa-solid fa-plus text-sm"></i>
-                    <span>New Inspection</span>
+                    <span>Start New Visit</span>
                 </button>
             </div>
         </header>
@@ -101,18 +101,21 @@
                 <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-azania-gold/5 rounded-full blur-3xl pointer-events-none"></div>
                 
                 <div class="relative z-10 max-w-2xl">
-                    <span class="text-xs font-bold text-azania-gold uppercase tracking-widest bg-azania-gold/10 px-3 py-1 rounded-full border border-azania-gold/20">Site Visit Audit System</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Credit Risk Field Inspection & Evidentiary Reporting</h2>
+                    <span class="text-xs font-bold text-azania-gold uppercase tracking-widest bg-azania-gold/10 px-3 py-1 rounded-full border border-azania-gold/20">Custom Audit & Inspection Hub</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Flexible Field Verification & Site Reporting</h2>
                     <p class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                        Capture GPS-stamped collateral photos, tag operational assets, document field findings, and generate official Azania Bank Credit Committee reports in PDF & Word formats.
+                        Configure customized site visit reports for Wakala Agencies, Meno Wakala Shops, Credit Collateral, Trade Finance, or Custom Inspections with GPS photo evidence.
                     </p>
                     
                     <div class="flex flex-wrap items-center gap-3 mt-6">
                         <button id="startInspectionHomeBtn" class="px-5 py-2.5 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy font-bold text-xs shadow-xl transition flex items-center gap-2">
-                            <i class="fa-solid fa-camera"></i> Launch Field Camera Mode
+                            <i class="fa-solid fa-list-check"></i> Fill Inspection Form & Setup
+                        </button>
+                        <button id="launchCameraHomeBtn" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs transition flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-azania-gold"></i> Direct Camera Mode
                         </button>
                         <button id="generateReportHomeBtn" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs transition flex items-center gap-2">
-                            <i class="fa-solid fa-file-contract text-azania-gold"></i> Open Active Audit Report
+                            <i class="fa-solid fa-file-contract text-emerald-400"></i> View Active Report
                         </button>
                     </div>
                 </div>
@@ -122,12 +125,12 @@
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
                     <div>
-                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Active Case Ref</p>
-                        <h3 class="text-lg font-bold text-white mt-0.5" id="statCaseRef">AUD-8821</h3>
-                        <p class="text-[10px] text-slate-500 mt-1">Azania Credit Appraisal</p>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Visit Archetype</p>
+                        <h3 class="text-sm font-bold text-white mt-0.5 truncate max-w-[130px]" id="statVisitType">Wakala Audit</h3>
+                        <p class="text-[10px] text-azania-gold mt-1" id="statCaseRef">REF: AUD-8821</p>
                     </div>
                     <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
-                        <i class="fa-solid fa-folder-open"></i>
+                        <i class="fa-solid fa-store"></i>
                     </div>
                 </div>
 
@@ -135,7 +138,7 @@
                     <div>
                         <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Captured Evidences</p>
                         <h3 class="text-lg font-bold text-azania-gold mt-0.5" id="statPhotoCount">0 Photos</h3>
-                        <p class="text-[10px] text-slate-500 mt-1">GPS & Timestamped</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Watermarked & GPS Stamped</p>
                     </div>
                     <div class="w-10 h-10 rounded-lg bg-azania-gold/10 text-azania-gold flex items-center justify-center">
                         <i class="fa-solid fa-camera font-bold"></i>
@@ -144,20 +147,20 @@
 
                 <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
                     <div>
-                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Target Client</p>
-                        <h3 class="text-lg font-bold text-white mt-0.5 truncate max-w-[120px]" id="statClientName">Global Logistics</h3>
-                        <p class="text-[10px] text-slate-500 mt-1">Dar es Salaam Branch</p>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Target Entity / Client</p>
+                        <h3 class="text-sm font-bold text-white mt-0.5 truncate max-w-[120px]" id="statClientName">Select Client</h3>
+                        <p class="text-[10px] text-slate-500 mt-1" id="statAgentId">ID: WAK-4092</p>
                     </div>
                     <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-                        <i class="fa-solid fa-building"></i>
+                        <i class="fa-solid fa-building-user"></i>
                     </div>
                 </div>
 
                 <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
                     <div>
-                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Lead Auditor</p>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Inspecting Officer</p>
                         <h3 class="text-xs font-bold text-white mt-1 truncate max-w-[130px]" id="statAuditorName">Godfrey A. Mono</h3>
-                        <p class="text-[10px] text-emerald-400 mt-1"><i class="fa-solid fa-shield-check mr-1"></i>Verified Officer</p>
+                        <p class="text-[10px] text-emerald-400 mt-1"><i class="fa-solid fa-shield-check mr-1"></i>Verified Auditor</p>
                     </div>
                     <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
                         <i class="fa-solid fa-user-check"></i>
@@ -167,53 +170,53 @@
 
             <!-- Action Modules Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Card 1: Camera Launch -->
+                <!-- Card 1: Setup Wizard -->
                 <div class="bg-slate-900/80 border border-slate-800 hover:border-azania-gold/50 rounded-2xl p-5 shadow-xl transition group flex flex-col justify-between">
                     <div>
                         <div class="w-12 h-12 rounded-xl bg-azania-gold/10 text-azania-gold flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-white mb-1">Fill Site Visit Form</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Configure visit metadata, client/wakala IDs, physical address details, and custom checklist criteria from scratch.
+                        </p>
+                    </div>
+                    <button id="navWizardBtn" class="mt-6 w-full py-2.5 rounded-xl bg-azania-gold text-azania-darkNavy hover:bg-azania-goldHover font-bold text-xs transition flex items-center justify-center gap-2">
+                        <span>Open Form Setup Wizard</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2: Camera Launch -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-azania-gold/50 rounded-2xl p-5 shadow-xl transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-camera"></i>
                         </div>
                         <h3 class="text-base font-bold text-white mb-1">Field Camera Engine</h3>
                         <p class="text-xs text-slate-400 leading-relaxed">
-                            Snap site verification photos with automatic GPS coordinate burning, address lookup, timestamp, and audit tag overlays.
+                            Capture location-stamped photos with custom tag pills, caption field notes, and automatic bank watermark overlays.
                         </p>
                     </div>
-                    <button id="navCamBtn" class="mt-6 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-azania-gold hover:text-azania-darkNavy font-semibold text-xs text-slate-200 transition flex items-center justify-center gap-2">
-                        <span>Open Field Camera</span>
-                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    <button id="navCamBtn" class="mt-6 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-emerald-600 hover:text-white font-semibold text-xs text-slate-200 transition flex items-center justify-center gap-2">
+                        <span>Launch Camera Feed</span>
+                        <i class="fa-solid fa-camera text-[10px]"></i>
                     </button>
                 </div>
 
-                <!-- Card 2: Report Generator -->
-                <div class="bg-slate-900/80 border border-slate-800 hover:border-azania-gold/50 rounded-2xl p-5 shadow-xl transition group flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-file-invoice"></i>
-                        </div>
-                        <h3 class="text-base font-bold text-white mb-1">Executive Report Builder</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Compile site findings into Azania Bank's formal credit appraisal structure. Export in Word (.doc) and PDF formats.
-                        </p>
-                    </div>
-                    <button id="navReportBtn" class="mt-6 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-emerald-600 hover:text-white font-semibold text-xs text-slate-200 transition flex items-center justify-center gap-2">
-                        <span>View Bank Report</span>
-                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                    </button>
-                </div>
-
-                <!-- Card 3: Case Config -->
+                <!-- Card 3: Report Builder -->
                 <div class="bg-slate-900/80 border border-slate-800 hover:border-azania-gold/50 rounded-2xl p-5 shadow-xl transition group flex flex-col justify-between">
                     <div>
                         <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-sliders"></i>
+                            <i class="fa-solid fa-file-contract"></i>
                         </div>
-                        <h3 class="text-base font-bold text-white mb-1">Case & Client Settings</h3>
+                        <h3 class="text-base font-bold text-white mb-1">Interactive Report Builder</h3>
                         <p class="text-xs text-slate-400 leading-relaxed">
-                            Configure active Loan/Case Ref, Client Corporate Name, Business Address, Branch Name, and Inspector details.
+                            Generate live executive reports with inline text editing, custom assessment tables, and Word/PDF export options.
                         </p>
                     </div>
-                    <button id="navSettingsBtn" class="mt-6 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-blue-600 hover:text-white font-semibold text-xs text-slate-200 transition flex items-center justify-center gap-2">
-                        <span>Edit Case Metadata</span>
+                    <button id="navReportBtn" class="mt-6 w-full py-2.5 rounded-xl bg-slate-800 hover:bg-blue-600 hover:text-white font-semibold text-xs text-slate-200 transition flex items-center justify-center gap-2">
+                        <span>View Editable Report</span>
                         <i class="fa-solid fa-pen-to-square text-[10px]"></i>
                     </button>
                 </div>
@@ -224,9 +227,9 @@
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
                     <div>
                         <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-list-check text-azania-gold"></i> Captured Evidentiary Log
+                            <i class="fa-solid fa-list-check text-azania-gold"></i> Captured Photographic Evidence Log
                         </h3>
-                        <p class="text-[11px] text-slate-400">Recorded evidence photos for the current inspection session</p>
+                        <p class="text-[11px] text-slate-400">Recorded photo evidence for the active field visit session</p>
                     </div>
                     <span id="logCounterPill" class="px-2.5 py-1 rounded-full bg-azania-gold/10 text-azania-gold text-xs font-semibold border border-azania-gold/20">0 Captured</span>
                 </div>
@@ -247,7 +250,7 @@
                             <tr>
                                 <td colspan="6" class="py-8 text-center text-slate-500">
                                     <i class="fa-solid fa-camera-retro text-2xl mb-2 text-slate-600 block"></i>
-                                    No photos captured yet. Click "Launch Field Camera Mode" to start.
+                                    No photos captured yet. Click "Launch Camera Feed" to take location-stamped photos.
                                 </td>
                             </tr>
                         </tbody>
@@ -257,9 +260,194 @@
         </main>
     </div>
 
-    <!-- APP VIEW CONTAINER 2: iOS CAMERA INTERFACE -->
+    <!-- APP VIEW CONTAINER 2: DYNAMIC INSPECTION FORM WIZARD -->
+    <div id="viewWizard" class="hidden flex-1 flex-col bg-slate-950 overflow-y-auto">
+        <header class="h-16 px-6 bg-azania-darkNavy border-b border-slate-800 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button id="backToHomeFromWizardBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-chevron-left text-[11px]"></i> Home
+                </button>
+                <span class="font-bold text-sm text-white flex items-center gap-2 border-l border-slate-800 pl-3">
+                    <i class="fa-solid fa-sliders text-azania-gold"></i> Dynamic Site Visit Setup Wizard
+                </span>
+            </div>
+
+            <button id="saveWizardAndCamBtn" class="px-4 py-2 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                <i class="fa-solid fa-camera"></i> Save & Launch Camera
+            </button>
+        </header>
+
+        <main class="max-w-4xl mx-auto w-full p-4 sm:p-8 space-y-6">
+            <!-- Step Indicators -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-2">
+                <div class="bg-azania-navy/80 border border-azania-gold/40 rounded-xl p-3 text-center">
+                    <span class="text-[10px] font-extrabold text-azania-gold uppercase tracking-widest block">Step 1</span>
+                    <span class="text-xs font-bold text-white">General Info & Type</span>
+                </div>
+                <div class="bg-azania-navy/80 border border-azania-gold/40 rounded-xl p-3 text-center">
+                    <span class="text-[10px] font-extrabold text-azania-gold uppercase tracking-widest block">Step 2</span>
+                    <span class="text-xs font-bold text-white">Location & GPS</span>
+                </div>
+                <div class="bg-azania-navy/80 border border-azania-gold/40 rounded-xl p-3 text-center">
+                    <span class="text-[10px] font-extrabold text-azania-gold uppercase tracking-widest block">Step 3</span>
+                    <span class="text-xs font-bold text-white">Audit Criteria & Notes</span>
+                </div>
+            </div>
+
+            <form id="inspectionSetupForm" class="space-y-6" onsubmit="event.preventDefault();">
+                <!-- SECTION A: GENERAL & INSPECTION TYPE -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-building-columns"></i> Section A: General Visit Setup & Classification
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Select Site Visit Archetype / Purpose</label>
+                            <select id="formVisitType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-semibold focus:border-azania-gold focus:outline-none">
+                                <option value="Wakala Agent Inspection">Normal Wakala Agency Audit</option>
+                                <option value="Meno Wakala Shop Audit">Meno Wakala Sub-Agent Shop Audit</option>
+                                <option value="Credit & Collateral Verification">Credit Collateral & Title Deed Check</option>
+                                <option value="Trade Finance Premises Inspection">Trade Finance / Commercial Audit</option>
+                                <option value="Custom Flexible Visit">Custom / General Site Inspection</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Audit / Case Reference ID</label>
+                            <input type="text" id="formCaseRef" value="AZA-AUD-9910" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none font-mono">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Client / Business / Agent Name</label>
+                            <input type="text" id="formClientName" placeholder="e.g. Upanga Enterprises / Juma Wakala Shop" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Wakala Agent ID / Account No (If applicable)</label>
+                            <input type="text" id="formAgentId" placeholder="e.g. WAK-772910" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Inspecting Bank Officer</label>
+                            <input type="text" id="formOfficerName" value="Godfrey Abraham Mono" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Officer Title / Department</label>
+                            <input type="text" id="formOfficerTitle" value="Senior Field Credit Auditor • Agency Banking" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION B: LOCATION & GEOLOCATION METADATA -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot"></i> Section B: Physical Address & Telemetry Overrides
+                        </h3>
+                        <button type="button" id="refreshFormGpsBtn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-azania-gold text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-location-crosshairs"></i> Fetch GPS Now
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Region & District</label>
+                            <input type="text" id="formRegion" placeholder="e.g. Dar es Salaam, Ilala District" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Ward / Street Name</label>
+                            <input type="text" id="formStreet" placeholder="e.g. Upanga East, Samora Avenue" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Nearby Prominent Landmark</label>
+                            <input type="text" id="formLandmark" placeholder="e.g. Opposite Posta House / Near Azania Tower" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">GPS Coordinates Override (Lat, Lng)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="formLat" placeholder="Latitude" class="w-1/2 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-mono focus:border-azania-gold focus:outline-none">
+                                <input type="text" id="formLng" placeholder="Longitude" class="w-1/2 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-mono focus:border-azania-gold focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION C: DYNAMIC ARCHETYPE CRITERIA & CUSTOM FIELDS -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check"></i> Section C: Dynamic Audit Criteria & Observation Checklist
+                        </h3>
+                        <button type="button" id="addCustomFieldBtn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-azania-gold text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Add Custom Check Item
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Form Fields Rendered Based on Archetype Selection -->
+                    <div id="dynamicCriteriaContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <!-- Rendered by JS -->
+                    </div>
+
+                    <!-- Custom Fields Added by User -->
+                    <div id="customFieldsContainer" class="space-y-3 pt-2">
+                        <!-- Added dynamically -->
+                    </div>
+                </div>
+
+                <!-- SECTION D: EXECUTIVE VERDICT & RECOMMENDATIONS -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-gavel"></i> Section D: Auditor Executive Recommendation & Remarks
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Recommended Executive Verdict</label>
+                            <select id="formVerdict" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-bold focus:border-azania-gold focus:outline-none">
+                                <option value="FULLY APPROVED & VERIFIED">FULLY APPROVED & VERIFIED</option>
+                                <option value="CONDITIONALLY APPROVED (PENDING ITEMS)">CONDITIONALLY APPROVED (PENDING ITEMS)</option>
+                                <option value="ESCALATED FOR CREDIT COMMITTEE REVIEW">ESCALATED FOR CREDIT COMMITTEE REVIEW</option>
+                                <option value="REJECTED / NON-COMPLIANT">REJECTED / NON-COMPLIANT</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Overall Risk Level Rating</label>
+                            <select id="formRiskRating" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-bold focus:border-azania-gold focus:outline-none">
+                                <option value="LOW RISK">LOW RISK</option>
+                                <option value="MODERATE RISK">MODERATE RISK</option>
+                                <option value="HIGH RISK">HIGH RISK</option>
+                                <option value="CRITICAL RISK">CRITICAL RISK</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label class="block text-slate-400 mb-1 font-semibold">Detailed Executive Summary & Specific Recommendations</label>
+                            <textarea id="formRecommendations" rows="3" placeholder="Enter specific field notes, compliance deadlines, or credit committee recommendations..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-azania-gold focus:outline-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4">
+                    <button type="button" id="saveDraftBtn" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition">
+                        Save Form Draft
+                    </button>
+                    <button type="button" id="buildReportDirectBtn" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-contract"></i> Build Editable Report
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- APP VIEW CONTAINER 3: iOS CAMERA INTERFACE -->
     <div id="viewCamera" class="hidden flex-1 flex-col bg-black overflow-hidden relative">
-        <!-- Top iOS Camera Bar with Banking Session Header & Controls -->
+        <!-- Top iOS Camera Bar -->
         <header class="h-14 px-4 flex items-center justify-between z-20 bg-black/90 backdrop-blur-md flex-shrink-0 border-b border-white/10">
             <div class="flex items-center gap-2">
                 <button id="backToHomeFromCamBtn" class="px-3 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-slate-200 hover:bg-white/20 transition flex items-center gap-1.5">
@@ -291,32 +479,35 @@
         <!-- Category Tag Bar -->
         <div class="h-10 bg-zinc-950/90 border-b border-white/5 flex items-center px-3 gap-2 overflow-x-auto no-scrollbar z-20 flex-shrink-0">
             <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider flex-shrink-0 mr-1">Tag:</span>
-            <button class="tag-btn active-tag px-3 py-1 rounded-full text-xs font-semibold bg-azania-gold text-azania-darkNavy flex-shrink-0 transition" data-tag="Collateral Property">
-                <i class="fa-solid fa-house-shield mr-1 text-[10px]"></i>Collateral Property
+            <button class="tag-btn active-tag px-3 py-1 rounded-full text-xs font-semibold bg-azania-gold text-azania-darkNavy flex-shrink-0 transition" data-tag="Front Exterior">
+                <i class="fa-solid fa-store mr-1 text-[10px]"></i>Front Exterior
             </button>
-            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Business Premises">
-                <i class="fa-solid fa-store mr-1 text-[10px]"></i>Business Premises
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Agent POS / Safe">
+                <i class="fa-solid fa-vault mr-1 text-[10px]"></i>Agent POS / Safe
             </button>
-            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Equipment / Inventory">
-                <i class="fa-solid fa-boxes-stacked mr-1 text-[10px]"></i>Equipment & Inventory
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Document / License">
+                <i class="fa-solid fa-id-card mr-1 text-[10px]"></i>Document / License
             </button>
-            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="KYC Verification">
-                <i class="fa-solid fa-id-card mr-1 text-[10px]"></i>KYC Verification
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Collateral Asset">
+                <i class="fa-solid fa-house-shield mr-1 text-[10px]"></i>Collateral Asset
             </button>
-            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Operations & Cash">
-                <i class="fa-solid fa-vault mr-1 text-[10px]"></i>Operations & Cash
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Interior Premises">
+                <i class="fa-solid fa-boxes-stacked mr-1 text-[10px]"></i>Interior Premises
+            </button>
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Surrounding Area">
+                <i class="fa-solid fa-map-location-dot mr-1 text-[10px]"></i>Surrounding Area
             </button>
         </div>
 
         <!-- Camera Viewfinder -->
         <main class="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
-            <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover flip-transition"></video>
+            <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover"></video>
 
             <!-- Dynamic On-Screen Overlay Indicator -->
             <div class="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-md rounded-xl p-3 border border-white/10 text-xs text-zinc-200 pointer-events-none flex flex-col gap-1 shadow-2xl">
                 <div class="flex items-center justify-between text-[11px] font-bold text-azania-gold border-b border-white/10 pb-1">
-                    <span id="previewBankName">AZANIA BANK PLC • CREDIT RISK AUDIT</span>
-                    <span id="previewCategoryTag" class="px-2 py-0.5 rounded bg-azania-gold/20 text-azania-gold text-[10px]">Collateral Property</span>
+                    <span id="previewBankName">AZANIA BANK PLC • FIELD VISIT</span>
+                    <span id="previewCategoryTag" class="px-2 py-0.5 rounded bg-azania-gold/20 text-azania-gold text-[10px]">Front Exterior</span>
                 </div>
                 <div class="flex justify-between items-center text-[10px] text-zinc-300 pt-0.5">
                     <span id="previewPlaceText"><i class="fa-solid fa-location-dot text-red-400 mr-1"></i>Acquiring address...</span>
@@ -333,7 +524,7 @@
             <div id="camFallback" class="hidden absolute inset-0 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center z-10">
                 <i class="fa-solid fa-camera text-4xl text-zinc-600 mb-3"></i>
                 <p class="text-sm font-medium text-zinc-300 mb-1">Live Feed Unavailable</p>
-                <p class="text-xs text-zinc-500 mb-4">You can upload inspection photos directly from your file system.</p>
+                <p class="text-xs text-zinc-500 mb-4">Upload site photos directly from your file system.</p>
                 <label class="px-5 py-2.5 rounded-full bg-azania-gold text-azania-darkNavy font-bold text-xs cursor-pointer active:scale-95 transition shadow-lg">
                     Upload Field Photo
                     <input type="file" id="fallbackFileInput" accept="image/*" class="hidden">
@@ -346,7 +537,7 @@
         <!-- Quick Field Observation Note Bar -->
         <div class="bg-zinc-900/90 border-t border-zinc-800 px-4 py-2 z-20 flex items-center gap-2">
             <i class="fa-solid fa-pen-to-square text-azania-gold text-xs"></i>
-            <input type="text" id="quickFieldNote" placeholder="Add site observation/note before taking photo..." class="bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none w-full">
+            <input type="text" id="quickFieldNote" placeholder="Add specific observation note for this photo..." class="bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none w-full">
         </div>
 
         <!-- Shutter Controls Bar -->
@@ -369,15 +560,15 @@
         </footer>
     </div>
 
-    <!-- APP VIEW CONTAINER 3: AZANIA BANK EXECUTIVE SITE REPORT -->
+    <!-- APP VIEW CONTAINER 4: EDITABLE EXECUTIVE REPORT -->
     <div id="viewReport" class="hidden flex-1 flex-col bg-slate-950 overflow-y-auto">
         <header class="h-16 px-6 bg-azania-darkNavy border-b border-slate-800 flex items-center justify-between sticky top-0 z-30 no-print shadow-xl">
             <div class="flex items-center gap-3">
                 <button id="backToHomeFromReportBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-chevron-left text-[11px]"></i> Home Dashboard
+                    <i class="fa-solid fa-chevron-left text-[11px]"></i> Home
                 </button>
                 <span class="font-bold text-sm text-white hidden sm:flex items-center gap-2 border-l border-slate-800 pl-3">
-                    <i class="fa-solid fa-file-contract text-azania-gold"></i> Credit Appraisal & Site Report
+                    <i class="fa-solid fa-file-contract text-azania-gold"></i> Executive Site Visit Report
                 </span>
             </div>
 
@@ -385,11 +576,11 @@
             <div class="flex items-center gap-2">
                 <button id="exportCsvBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition">
                     <i class="fa-solid fa-file-csv text-emerald-400"></i>
-                    <span class="hidden md:inline">CSV Log</span>
+                    <span class="hidden md:inline">CSV Logs</span>
                 </button>
                 <button id="downloadDocBtn" class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 shadow transition">
                     <i class="fa-solid fa-file-word"></i>
-                    <span class="hidden md:inline">Download Word (.doc)</span>
+                    <span class="hidden md:inline">Word (.doc)</span>
                 </button>
                 <button id="printReportBtn" class="px-4 py-2 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy text-xs font-extrabold flex items-center gap-1.5 shadow-lg transition">
                     <i class="fa-solid fa-print"></i>
@@ -402,107 +593,113 @@
             <!-- PRINTABLE / EDITABLE DOCUMENT AREA -->
             <div id="printableReportArea" class="max-w-4xl w-full bg-white text-slate-900 p-8 sm:p-12 rounded-xl shadow-2xl border border-slate-200">
                 
-                <!-- OFFICIAL AZANIA BANK LETTERHEAD HEADER -->
+                <!-- OFFICIAL LETTERHEAD HEADER -->
                 <div class="border-b-4 border-azania-navy pb-5 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div class="flex items-center gap-4">
                         <div class="w-14 h-14 bg-azania-navy rounded-xl flex items-center justify-center text-azania-gold text-2xl font-black shadow-md border-2 border-azania-gold">
                             AB
                         </div>
                         <div>
-                            <h1 id="rptHeaderBankName" class="text-2xl font-black tracking-tight text-azania-navy uppercase">AZANIA BANK PLC</h1>
-                            <p class="text-xs font-bold text-azania-gold tracking-widest uppercase">CREDIT RISK MANAGEMENT & APPRAISAL DIVISION</p>
+                            <h1 id="rptHeaderBankName" contenteditable="true" class="text-2xl font-black tracking-tight text-azania-navy uppercase focus:outline-none focus:bg-amber-50">AZANIA BANK PLC</h1>
+                            <p id="rptHeaderDept" contenteditable="true" class="text-xs font-bold text-azania-gold tracking-widest uppercase focus:outline-none focus:bg-amber-50">FIELD INSPECTION & AUDIT REPORT</p>
                             <p class="text-[10px] text-slate-500 font-medium">Head Office: Azania Bank Tower, Dar es Salaam, Tanzania • www.azaniabank.co.tz</p>
                         </div>
                     </div>
                     <div class="text-left sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200 w-full sm:w-auto">
-                        <span class="inline-block px-3 py-1 bg-red-100 text-red-800 font-bold text-[11px] rounded border border-red-300">STRICTLY CONFIDENTIAL</span>
+                        <span class="inline-block px-3 py-1 bg-red-100 text-red-800 font-bold text-[11px] rounded border border-red-300">CONFIDENTIAL FIELD AUDIT</span>
                         <p id="rptHeaderDate" class="text-xs text-slate-600 font-semibold mt-1">Date: Nov 07, 2026</p>
-                        <p id="rptHeaderCaseRef" class="text-xs text-azania-navy font-bold">REF: AUD-8821</p>
+                        <p id="rptHeaderCaseRef" contenteditable="true" class="text-xs text-azania-navy font-bold focus:outline-none focus:bg-amber-50">REF: AUD-8821</p>
                     </div>
                 </div>
 
                 <div class="text-center bg-slate-50 border border-slate-200 py-3 rounded-lg mb-6">
-                    <h2 class="text-base font-extrabold text-azania-navy uppercase tracking-wide">FIELD VISIT & COLLATERAL INSPECTION REPORT</h2>
-                    <p class="text-xs text-slate-500">Comprehensive Risk Assessment & Evidentiary Verification</p>
+                    <h2 id="rptTitle" contenteditable="true" class="text-base font-extrabold text-azania-navy uppercase tracking-wide focus:outline-none focus:bg-amber-50">WAKALA AGENT SITE VISIT REPORT</h2>
+                    <p id="rptSubtitle" contenteditable="true" class="text-xs text-slate-500 focus:outline-none focus:bg-amber-50">Operational Audit & Location Evidence Verification</p>
                 </div>
 
                 <!-- SECTION 1: EXECUTIVE SUMMARY & CLIENT METADATA -->
                 <div class="mb-8">
                     <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider border-b-2 border-azania-gold pb-1 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-info text-azania-gold"></i> Section 1: Client & Credit Session Summary
+                        <i class="fa-solid fa-circle-info text-azania-gold"></i> Section 1: Executive Summary & Visit Profile
                     </h3>
                     
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs">
                         <div>
-                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Client / Entity Name</span>
-                            <span id="rptClientName" class="font-extrabold text-slate-900">Global Logistics & Trade Corp</span>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Target Entity / Client</span>
+                            <span id="rptClientName" contenteditable="true" class="font-extrabold text-slate-900 focus:outline-none focus:bg-amber-50">Not Specified</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Facility / Loan Case Ref</span>
-                            <span id="rptCaseRef" class="font-extrabold text-azania-navy">AUD-8821</span>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Wakala / Case ID</span>
+                            <span id="rptAgentId" contenteditable="true" class="font-extrabold text-azania-navy focus:outline-none focus:bg-amber-50">WAK-0000</span>
                         </div>
                         <div>
                             <span class="text-slate-500 block text-[10px] uppercase font-bold">Inspecting Bank Officer</span>
-                            <span id="rptOfficerName" class="font-extrabold text-slate-900">Godfrey Abraham Mono</span>
+                            <span id="rptOfficerName" contenteditable="true" class="font-extrabold text-slate-900 focus:outline-none focus:bg-amber-50">Godfrey Abraham Mono</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Branch / Department</span>
-                            <span id="rptBranch" class="font-semibold text-slate-800">Dar es Salaam Main Branch</span>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Officer Title</span>
+                            <span id="rptOfficerTitle" contenteditable="true" class="font-semibold text-slate-800 focus:outline-none focus:bg-amber-50">Senior Field Auditor</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Inspection Location</span>
-                            <span id="rptLocation" class="font-semibold text-slate-800">Dar es Salaam, Tanzania</span>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Visit Archetype</span>
+                            <span id="rptVisitType" contenteditable="true" class="font-bold text-azania-gold focus:outline-none focus:bg-amber-50">Wakala Agent Inspection</span>
                         </div>
                         <div>
-                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Total Photos Logged</span>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Photo Evidences Captured</span>
                             <span id="rptPhotoCount" class="font-bold text-emerald-700">0 Photos Verified</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- SECTION 2: OPERATIONAL ASSESSMENT & FIELD OBSERVATIONS -->
+                <!-- SECTION 2: LOCATION & GEOLOCATION METADATA -->
                 <div class="mb-8">
                     <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider border-b-2 border-azania-gold pb-1 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-azania-gold"></i> Section 2: Key Operational Assessment Findings
+                        <i class="fa-solid fa-location-dot text-azania-gold"></i> Section 2: Physical Location & Geolocation Evidence
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs">
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Region & District</span>
+                            <span id="rptRegion" contenteditable="true" class="font-bold text-slate-900 focus:outline-none focus:bg-amber-50">Dar es Salaam, Ilala</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Street & Ward</span>
+                            <span id="rptStreet" contenteditable="true" class="font-bold text-slate-900 focus:outline-none focus:bg-amber-50">Samora Avenue, Upanga East</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">Nearby Landmark</span>
+                            <span id="rptLandmark" contenteditable="true" class="font-bold text-slate-900 focus:outline-none focus:bg-amber-50">Near Azania Bank Tower</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block text-[10px] uppercase font-bold">GPS Telemetry Coordinates</span>
+                            <span id="rptGpsCoords" contenteditable="true" class="font-mono font-bold text-azania-navy focus:outline-none focus:bg-amber-50">Lat: --, Lng: --</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: DYNAMIC AUDIT FINDINGS TABLE -->
+                <div class="mb-8">
+                    <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider border-b-2 border-azania-gold pb-1 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-azania-gold"></i> Section 3: Detailed Operational & Risk Criteria Findings
                     </h3>
                     
                     <table class="w-full text-left text-xs border border-slate-300 rounded-lg overflow-hidden">
                         <thead class="bg-azania-navy text-white uppercase text-[10px]">
                             <tr>
-                                <th class="py-2 px-3">Assessment Pillar</th>
-                                <th class="py-2 px-3">Status / Rating</th>
-                                <th class="py-2 px-3">Auditor Observations & Details</th>
+                                <th class="py-2 px-3 w-1/3">Criteria / Item Parameter</th>
+                                <th class="py-2 px-3">Field Finding / Audit Observation Value</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            <tr>
-                                <td class="py-2.5 px-3 font-bold text-slate-800">1. Business Operations & Activity</td>
-                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">ACTIVE & OPERATIONAL</span></td>
-                                <td class="py-2.5 px-3 text-slate-700">Premises active with ongoing business workflow. Management present during field audit.</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2.5 px-3 font-bold text-slate-800">2. Collateral Property Condition</td>
-                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">VERIFIED & INTRACT</span></td>
-                                <td class="py-2.5 px-3 text-slate-700">Physical boundaries match title deed specs. No visible structural encumbrances.</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2.5 px-3 font-bold text-slate-800">3. Machinery & Inventory Integrity</td>
-                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[10px]">GOOD CONDITION</span></td>
-                                <td class="py-2.5 px-3 text-slate-700">Serial numbers verified against hypothecation schedules. Stock levels satisfactory.</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2.5 px-3 font-bold text-slate-800">4. KYC & Management Verification</td>
-                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">FULLY COMPLIANT</span></td>
-                                <td class="py-2.5 px-3 text-slate-700">NIDA identity, TIN certificates, and business licenses cross-checked on site.</td>
-                            </tr>
+                        <tbody id="rptDynamicCriteriaTableBody" class="divide-y divide-slate-200">
+                            <!-- Populated dynamically -->
                         </tbody>
                     </table>
                 </div>
 
-                <!-- SECTION 3: PHOTOGRAPHIC EVIDENCE GRID -->
+                <!-- SECTION 4: PHOTOGRAPHIC EVIDENCE GRID -->
                 <div class="mb-8">
                     <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider border-b-2 border-azania-gold pb-1 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-camera text-azania-gold"></i> Section 3: Field Photographic Evidence Log
+                        <i class="fa-solid fa-camera text-azania-gold"></i> Section 4: Categorized Visual Evidence Grid
                     </h3>
 
                     <div id="rptPhotosGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -510,40 +707,45 @@
                     </div>
                 </div>
 
-                <!-- SECTION 4: RECOMMENDATION & CREDIT COMMITTEE VERDICT -->
+                <!-- SECTION 5: RECOMMENDATION & VERDICT -->
                 <div class="mb-8 page-break">
                     <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider border-b-2 border-azania-gold pb-1 mb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-gavel text-azania-gold"></i> Section 4: Credit Committee Recommendation
+                        <i class="fa-solid fa-gavel text-azania-gold"></i> Section 5: Executive Risk Verdict & Recommendations
                     </h3>
                     
                     <div class="bg-slate-50 border border-slate-300 rounded-lg p-4 text-xs space-y-3">
-                        <div class="flex items-center gap-4">
-                            <span class="font-bold text-slate-800">Recommended Credit Verdict:</span>
-                            <span class="px-3 py-1 rounded bg-emerald-700 text-white font-extrabold text-xs">RECOMMENDED FOR APPROVAL</span>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <span class="font-bold text-slate-800">Executive Verdict:</span>
+                            <span id="rptVerdictBadge" class="px-3 py-1 rounded bg-emerald-700 text-white font-extrabold text-xs">FULLY APPROVED & VERIFIED</span>
+                            <span class="font-bold text-slate-800 ml-auto">Risk Level:</span>
+                            <span id="rptRiskBadge" class="px-2.5 py-0.5 rounded bg-blue-100 text-blue-900 font-bold text-xs">LOW RISK</span>
                         </div>
-                        <p class="text-slate-700 leading-relaxed">
-                            Based on physical inspection, collateral verification, and operational checks conducted by the undersigned officer, the credit facility requested is supported subject to standard covenants.
-                        </p>
+                        <div>
+                            <span class="font-bold text-slate-800 block mb-1">Auditor Field Recommendations:</span>
+                            <p id="rptRecommendationsText" contenteditable="true" class="text-slate-700 leading-relaxed focus:outline-none focus:bg-amber-50 p-2 rounded border border-slate-200 bg-white">
+                                All criteria and site parameters verified satisfactorily. No major operational risks detected.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- SECTION 5: FORMAL SIGN-OFF BLOCK -->
+                <!-- SECTION 6: FORMAL SIGN-OFF BLOCK -->
                 <div class="border-t-2 border-azania-navy pt-6 mt-8">
-                    <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider mb-4">Section 5: Inspection Sign-off & Verification</h3>
+                    <h3 class="text-xs font-bold text-azania-navy uppercase tracking-wider mb-4">Section 6: Formal Sign-off & Committee Approvals</h3>
                     
                     <div class="grid grid-cols-2 gap-8 text-xs">
                         <div class="space-y-4">
-                            <p class="font-bold text-slate-900">Inspecting Officer:</p>
-                            <p class="text-slate-700"><span class="font-semibold">Name:</span> Godfrey Abraham Mono</p>
-                            <p class="text-slate-700"><span class="font-semibold">Title:</span> Senior Field Credit Auditor</p>
-                            <div class="pt-6 border-b border-slate-400 w-4/5"></div>
-                            <p class="text-[10px] text-slate-400">Signature & Date</p>
+                            <p class="font-bold text-slate-900">Inspecting Field Officer:</p>
+                            <p class="text-slate-700"><span class="font-semibold">Name:</span> <span id="rptSignOfficerName">Godfrey Abraham Mono</span></p>
+                            <p class="text-slate-700"><span class="font-semibold">Title:</span> <span id="rptSignOfficerTitle">Senior Field Auditor</span></p>
+                            <div class="pt-8 border-b border-slate-400 w-4/5"></div>
+                            <p class="text-[10px] text-slate-400">Officer Signature & Date</p>
                         </div>
                         <div class="space-y-4">
-                            <p class="font-bold text-slate-900">Branch Manager / Credit Risk Head:</p>
+                            <p class="font-bold text-slate-900">Branch Manager / Approving Official:</p>
                             <p class="text-slate-700"><span class="font-semibold">Name:</span> ___________________________</p>
-                            <p class="text-slate-700"><span class="font-semibold">Department:</span> Credit Risk Committee</p>
-                            <div class="pt-6 border-b border-slate-400 w-4/5"></div>
+                            <p class="text-slate-700"><span class="font-semibold">Department:</span> Credit Risk / Agency Committee</p>
+                            <div class="pt-8 border-b border-slate-400 w-4/5"></div>
                             <p class="text-[10px] text-slate-400">Authorized Official Stamp & Signature</p>
                         </div>
                     </div>
@@ -553,42 +755,7 @@
         </div>
     </div>
 
-    <!-- MODAL 1: EDIT CASE METADATA -->
-    <div id="sessionModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-                <h3 class="font-bold text-base text-white flex items-center gap-2">
-                    <i class="fa-solid fa-building-columns text-azania-gold"></i> Edit Audit Case Details
-                </h3>
-                <button id="closeSessionModalBtn" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="block text-slate-400 mb-1">Financial Institution Header</label>
-                    <input type="text" id="bankHeaderInput" value="AZANIA BANK PLC - CREDIT RISK AUDIT" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-azania-gold">
-                </div>
-                <div>
-                    <label class="block text-slate-400 mb-1">Case / Loan Reference No.</label>
-                    <input type="text" id="caseRefInput" value="AUD-8821" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-azania-gold">
-                </div>
-                <div>
-                    <label class="block text-slate-400 mb-1">Client / Business Corporate Name</label>
-                    <input type="text" id="clientNameInput" value="Global Logistics & Trade Corp" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-azania-gold">
-                </div>
-                <div>
-                    <label class="block text-slate-400 mb-1">Inspecting Officer Name</label>
-                    <input type="text" id="officerNameInput" value="Godfrey Abraham Mono" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-azania-gold">
-                </div>
-            </div>
-
-            <div class="mt-6">
-                <button id="saveSessionBtn" class="w-full bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy font-bold text-xs py-2.5 rounded-xl transition shadow-lg">Save & Apply Header</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 2: GALLERY / PHOTO INSPECTOR -->
+    <!-- MODAL: PHOTO GALLERY INSPECTOR -->
     <div id="galleryModal" class="fixed inset-0 bg-black z-50 hidden flex flex-col">
         <div class="h-14 px-4 flex items-center justify-between border-b border-zinc-900 bg-black">
             <button id="closeGalleryBtn" class="text-azania-gold font-semibold text-sm px-2 py-1">Done</button>
@@ -597,21 +764,24 @@
         </div>
 
         <div class="flex-1 relative bg-zinc-950 flex flex-col items-center justify-center p-3 overflow-hidden">
-            <img id="previewImage" class="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl">
+            <img id="previewImage" class="max-w-full max-h-[65vh] object-contain rounded-lg shadow-2xl">
             
-            <div id="photoMetaCard" class="w-full max-w-md bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 mt-3 text-xs space-y-1">
+            <div id="photoMetaCard" class="w-full max-w-md bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 mt-3 text-xs space-y-2">
                 <div class="flex justify-between font-bold text-azania-gold">
-                    <span id="metaCategory">Collateral Property</span>
+                    <span id="metaCategory">Front Exterior</span>
                     <span id="metaTime">00:00 AM</span>
                 </div>
                 <div id="metaLocation" class="text-zinc-300 truncate"><i class="fa-solid fa-location-dot mr-1 text-red-400"></i> Location</div>
-                <div id="metaNotes" class="text-zinc-400 italic">No notes attached.</div>
+                <div>
+                    <label class="text-[10px] text-zinc-400 block font-semibold">Editable Note Caption:</label>
+                    <input type="text" id="metaNoteInput" class="w-full bg-zinc-950 border border-zinc-700 rounded px-2 py-1 text-white text-xs focus:border-azania-gold focus:outline-none mt-0.5">
+                </div>
             </div>
         </div>
 
         <div class="h-16 px-6 flex items-center justify-between border-t border-zinc-900 bg-black flex-shrink-0">
             <button id="shareDownloadBtn" class="px-4 py-2 rounded-full bg-zinc-900 border border-white/10 text-white font-medium text-xs flex items-center gap-2">
-                <i class="fa-solid fa-download"></i> Save Image
+                <i class="fa-solid fa-download"></i> Download Image
             </button>
             <button id="copyCoordsBtn" class="px-4 py-2 rounded-full bg-zinc-900 border border-white/10 text-white font-medium text-xs flex items-center gap-2">
                 <i class="fa-regular fa-copy"></i> Copy GPS Pin
@@ -631,18 +801,30 @@
     <script>
         // System Application State
         const state = {
-            activeView: 'home', // 'home', 'camera', 'report'
+            activeView: 'home',
             stream: null,
             facingMode: 'environment',
             flashEnabled: false,
             photos: [],
             currentPhotoIndex: 0,
-            activeTag: 'Collateral Property',
-            session: {
-                bankName: 'AZANIA BANK PLC - CREDIT RISK AUDIT',
-                caseRef: 'AUD-8821',
-                clientName: 'Global Logistics & Trade Corp',
-                officerName: 'Godfrey Abraham Mono'
+            activeTag: 'Front Exterior',
+            formData: {
+                visitType: 'Wakala Agent Inspection',
+                caseRef: 'AZA-AUD-9910',
+                clientName: 'Upanga Wakala Agent Shop',
+                agentId: 'WAK-772910',
+                officerName: 'Godfrey Abraham Mono',
+                officerTitle: 'Senior Field Credit Auditor • Agency Banking',
+                region: 'Dar es Salaam, Ilala',
+                street: 'Samora Avenue, Upanga East',
+                landmark: 'Near Azania Bank Tower',
+                lat: '',
+                lng: '',
+                criteria: {},
+                customFields: [],
+                verdict: 'FULLY APPROVED & VERIFIED',
+                riskRating: 'LOW RISK',
+                recommendations: 'All site visit criteria verified. Premises active with satisfactory cash safety measures.'
             },
             location: {
                 lat: null,
@@ -653,16 +835,54 @@
             }
         };
 
-        // Navigation Management
+        // Archetype Checklists Default Definitions
+        const archetypeChecklists = {
+            'Wakala Agent Inspection': [
+                { key: 'Agent License & Registration', options: ['VALID & DISPLAYED', 'EXPIRED', 'NOT DISPLAYED'] },
+                { key: 'Premises Security & Safe Box', options: ['SECURE SAFE INSTALLED', 'STANDARD LOCKER', 'NO SAFE'] },
+                { key: 'POS Terminal Serial No.', type: 'text', placeholder: 'e.g. POS-90812' },
+                { key: 'Cash Handling & Float Compliance', options: ['SATISFACTORY', 'OVER-LIMIT', 'UNDER-CAPITALIZED'] },
+                { key: 'Azania Branding & Signage', options: ['CLEARLY VISIBLE', 'PARTIAL BRANDING', 'NO SIGNAGE'] }
+            ],
+            'Meno Wakala Shop Audit': [
+                { key: 'Sub-Agent Shop Ownership', options: ['VERIFIED OWNER', 'TENANT / LEASED', 'THIRD-PARTY OPERATOR'] },
+                { key: 'Daily Transaction Logbook', options: ['UP-TO-DATE', 'INCOMPLETE', 'NO LOGBOOK'] },
+                { key: 'Sub-Agent Daily Volume', type: 'text', placeholder: 'e.g. 50-100 txns/day' },
+                { key: 'Risk Rating of Location', options: ['LOW RISK', 'MEDIUM RISK', 'HIGH RISK'] }
+            ],
+            'Credit & Collateral Verification': [
+                { key: 'Collateral Property Type', options: ['RESIDENTIAL', 'COMMERCIAL', 'INDUSTRIAL', 'BARE LAND'] },
+                { key: 'Title Deed / Certificate Ref', type: 'text', placeholder: 'e.g. CT-10928/2022' },
+                { key: 'Estimated Market Value (TZS)', type: 'text', placeholder: 'e.g. TZS 250,000,000' },
+                { key: 'Forced Sale Value (TZS)', type: 'text', placeholder: 'e.g. TZS 180,000,000' },
+                { key: 'Occupancy Status', options: ['OWNER OCCUPIED', 'TENANT OCCUPIED', 'VACANT'] }
+            ],
+            'Trade Finance Premises Inspection': [
+                { key: 'Business Operational Status', options: ['ACTIVE & RUNNING', 'PARTIALLY ACTIVE', 'CLOSED'] },
+                { key: 'Inventory & Stock Level Check', options: ['WELL STOCKED', 'ADEQUATE STOCK', 'DEPLETED'] },
+                { key: 'Machinery Serial Verification', type: 'text', placeholder: 'e.g. S/N: MCH-8821 verified' }
+            ],
+            'Custom Flexible Visit': [
+                { key: 'General Findings', type: 'text', placeholder: 'Enter primary site observation...' },
+                { key: 'Operational Rating', options: ['EXCELLENT', 'SATISFACTORY', 'POOR'] }
+            ]
+        };
+
+        // Navigation Manager
         function switchView(targetView) {
             state.activeView = targetView;
             document.getElementById('viewHome').classList.add('hidden');
+            document.getElementById('viewWizard').classList.add('hidden');
             document.getElementById('viewCamera').classList.add('hidden');
             document.getElementById('viewReport').classList.add('hidden');
 
             if (targetView === 'home') {
                 document.getElementById('viewHome').classList.remove('hidden');
                 renderDashboardLogs();
+            } else if (targetView === 'wizard') {
+                document.getElementById('viewWizard').classList.remove('hidden');
+                document.getElementById('viewWizard').classList.add('flex');
+                renderDynamicCriteriaFields();
             } else if (targetView === 'camera') {
                 document.getElementById('viewCamera').classList.remove('hidden');
                 document.getElementById('viewCamera').classList.add('flex');
@@ -670,30 +890,181 @@
             } else if (targetView === 'report') {
                 document.getElementById('viewReport').classList.remove('hidden');
                 document.getElementById('viewReport').classList.add('flex');
+                syncFormDataFromInputs();
                 renderBankReport();
             }
         }
 
-        // Home Page Nav Buttons
-        document.getElementById('quickNewCaseBtn').addEventListener('click', () => switchView('camera'));
-        document.getElementById('startInspectionHomeBtn').addEventListener('click', () => switchView('camera'));
+        // Home View Buttons
+        document.getElementById('quickNewCaseBtn').addEventListener('click', () => switchView('wizard'));
+        document.getElementById('startInspectionHomeBtn').addEventListener('click', () => switchView('wizard'));
+        document.getElementById('launchCameraHomeBtn').addEventListener('click', () => switchView('camera'));
         document.getElementById('generateReportHomeBtn').addEventListener('click', () => switchView('report'));
+        document.getElementById('navWizardBtn').addEventListener('click', () => switchView('wizard'));
         document.getElementById('navCamBtn').addEventListener('click', () => switchView('camera'));
         document.getElementById('navReportBtn').addEventListener('click', () => switchView('report'));
-        document.getElementById('navSettingsBtn').addEventListener('click', () => {
-            bankHeaderInput.value = state.session.bankName;
-            caseRefInput.value = state.session.caseRef;
-            clientNameInput.value = state.session.clientName;
-            officerNameInput.value = state.session.officerName;
-            sessionModal.classList.remove('hidden');
-        });
 
-        // Sub View Back Buttons
+        // Navigation Sub-Buttons
+        document.getElementById('backToHomeFromWizardBtn').addEventListener('click', () => switchView('home'));
         document.getElementById('backToHomeFromCamBtn').addEventListener('click', () => switchView('home'));
         document.getElementById('backToHomeFromReportBtn').addEventListener('click', () => switchView('home'));
         document.getElementById('camOpenReportBtn').addEventListener('click', () => switchView('report'));
 
-        // Camera Selectors
+        // Dynamic Criteria Renderer
+        const formVisitType = document.getElementById('formVisitType');
+        formVisitType.addEventListener('change', renderDynamicCriteriaFields);
+
+        function renderDynamicCriteriaFields() {
+            const container = document.getElementById('dynamicCriteriaContainer');
+            container.innerHTML = '';
+            const selectedType = formVisitType.value;
+            const items = archetypeChecklists[selectedType] || archetypeChecklists['Custom Flexible Visit'];
+
+            items.forEach((item, idx) => {
+                const wrapper = document.createElement('div');
+                if (item.options) {
+                    let optHtml = item.options.map(o => `<option value="${o}">${o}</option>`).join('');
+                    wrapper.innerHTML = `
+                        <label class="block text-slate-400 mb-1 font-semibold">${item.key}</label>
+                        <select data-criteria-key="${item.key}" class="criteria-input w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:border-azania-gold focus:outline-none">
+                            ${optHtml}
+                        </select>
+                    `;
+                } else {
+                    wrapper.innerHTML = `
+                        <label class="block text-slate-400 mb-1 font-semibold">${item.key}</label>
+                        <input type="text" data-criteria-key="${item.key}" placeholder="${item.placeholder || ''}" class="criteria-input w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:border-azania-gold focus:outline-none">
+                    `;
+                }
+                container.appendChild(wrapper);
+            });
+        }
+
+        // Add Custom Check Field
+        document.getElementById('addCustomFieldBtn').addEventListener('click', () => {
+            const customContainer = document.getElementById('customFieldsContainer');
+            const row = document.createElement('div');
+            row.className = "flex items-center gap-2 text-xs custom-field-row";
+            row.innerHTML = `
+                <input type="text" placeholder="Check Item Label" class="custom-key w-1/2 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:border-azania-gold">
+                <input type="text" placeholder="Observed Value / Result" class="custom-val w-1/2 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:border-azania-gold">
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300 p-2"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            customContainer.appendChild(row);
+        });
+
+        // Sync Form Values into State
+        function syncFormDataFromInputs() {
+            state.formData.visitType = document.getElementById('formVisitType').value;
+            state.formData.caseRef = document.getElementById('formCaseRef').value || 'AZA-AUD-9910';
+            state.formData.clientName = document.getElementById('formClientName').value || 'Client / Wakala Shop';
+            state.formData.agentId = document.getElementById('formAgentId').value || 'WAK-0000';
+            state.formData.officerName = document.getElementById('formOfficerName').value || 'Godfrey Abraham Mono';
+            state.formData.officerTitle = document.getElementById('formOfficerTitle').value || 'Senior Field Auditor';
+            state.formData.region = document.getElementById('formRegion').value || 'Dar es Salaam';
+            state.formData.street = document.getElementById('formStreet').value || 'Upanga';
+            state.formData.landmark = document.getElementById('formLandmark').value || 'Near Landmark';
+            state.formData.lat = document.getElementById('formLat').value || (state.location.lat ? state.location.lat.toFixed(5) : '');
+            state.formData.lng = document.getElementById('formLng').value || (state.location.lng ? state.location.lng.toFixed(5) : '');
+            state.formData.verdict = document.getElementById('formVerdict').value;
+            state.formData.riskRating = document.getElementById('formRiskRating').value;
+            state.formData.recommendations = document.getElementById('formRecommendations').value || 'All criteria verified.';
+
+            // Collect criteria
+            state.formData.criteria = {};
+            document.querySelectorAll('.criteria-input').forEach(input => {
+                const key = input.dataset.criteriaKey;
+                if (key) state.formData.criteria[key] = input.value;
+            });
+
+            // Collect custom fields
+            state.formData.customFields = [];
+            document.querySelectorAll('.custom-field-row').forEach(row => {
+                const k = row.querySelector('.custom-key').value.trim();
+                const v = row.querySelector('.custom-val').value.trim();
+                if (k && v) state.formData.customFields.push({ key: k, value: v });
+            });
+
+            // Sync stats
+            document.getElementById('statVisitType').textContent = state.formData.visitType;
+            document.getElementById('statCaseRef').textContent = `REF: ${state.formData.caseRef}`;
+            document.getElementById('statClientName').textContent = state.formData.clientName;
+            document.getElementById('statAgentId').textContent = `ID: ${state.formData.agentId}`;
+            document.getElementById('statAuditorName').textContent = state.formData.officerName;
+            document.getElementById('dashboardUserDisplay').textContent = `Auditor: ${state.formData.officerName}`;
+        }
+
+        document.getElementById('saveWizardAndCamBtn').addEventListener('click', () => {
+            syncFormDataFromInputs();
+            switchView('camera');
+        });
+
+        document.getElementById('buildReportDirectBtn').addEventListener('click', () => {
+            syncFormDataFromInputs();
+            switchView('report');
+        });
+
+        document.getElementById('saveDraftBtn').addEventListener('click', () => {
+            syncFormDataFromInputs();
+            try {
+                localStorage.setItem('azania_audit_draft', JSON.stringify(state.formData));
+                showToast("Form Draft Saved to Device", "fa-floppy-disk");
+            } catch (e) {}
+        });
+
+        // Geolocation Engine & GPS Fetch
+        document.getElementById('refreshFormGpsBtn').addEventListener('click', () => {
+            if (state.location.lat) {
+                document.getElementById('formLat').value = state.location.lat.toFixed(5);
+                document.getElementById('formLng').value = state.location.lng.toFixed(5);
+                showToast("GPS Coordinates Updated", "fa-location-crosshairs");
+            } else {
+                showToast("Acquiring GPS Signal...", "fa-spinner");
+            }
+        });
+
+        function initLocationServices() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition(
+                    async (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+                        state.location.lat = lat;
+                        state.location.lng = lng;
+                        state.location.accuracy = pos.coords.accuracy ? Math.round(pos.coords.accuracy) : null;
+
+                        if (!document.getElementById('formLat').value) document.getElementById('formLat').value = lat.toFixed(5);
+                        if (!document.getElementById('formLng').value) document.getElementById('formLng').value = lng.toFixed(5);
+
+                        try {
+                            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14`);
+                            const data = await res.json();
+                            if (data && data.address) {
+                                const city = data.address.city || data.address.town || data.address.suburb || data.address.county || "Dar es Salaam";
+                                const country = data.address.country || "Tanzania";
+                                state.location.placeName = `${city}, ${country}`;
+                            } else {
+                                state.location.placeName = `${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
+                            }
+                        } catch (e) {
+                            state.location.placeName = `${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
+                        }
+
+                        state.location.loaded = true;
+                        document.getElementById('locationBadgeIcon').className = "fa-solid fa-location-dot text-azania-gold text-[11px]";
+                        document.getElementById('locationBadgeText').textContent = state.location.placeName;
+                        document.getElementById('previewPlaceText').innerHTML = `<i class="fa-solid fa-location-dot text-red-400 mr-1"></i>${state.location.placeName}`;
+                    },
+                    (err) => {
+                        state.location.placeName = "GPS Fixed Position";
+                        document.getElementById('locationBadgeText').textContent = state.location.placeName;
+                    },
+                    { enableHighAccuracy: true, timeout: 12000 }
+                );
+            }
+        }
+
+        // Camera Engine
         const webcam = document.getElementById('webcam');
         const camLoader = document.getElementById('camLoader');
         const camFallback = document.getElementById('camFallback');
@@ -701,64 +1072,8 @@
         const flipCamTopBtn = document.getElementById('flipCamTopBtn');
         const flashToggleBtn = document.getElementById('flashToggleBtn');
         const flashIcon = document.getElementById('flashIcon');
-        const locationBadgeIcon = document.getElementById('locationBadgeIcon');
-        const locationBadgeText = document.getElementById('locationBadgeText');
         const shutterFlashOverlay = document.getElementById('shutterFlashOverlay');
 
-        // Modals & Settings Selectors
-        const sessionModal = document.getElementById('sessionModal');
-        const closeSessionModalBtn = document.getElementById('closeSessionModalBtn');
-        const saveSessionBtn = document.getElementById('saveSessionBtn');
-        const bankHeaderInput = document.getElementById('bankHeaderInput');
-        const caseRefInput = document.getElementById('caseRefInput');
-        const clientNameInput = document.getElementById('clientNameInput');
-        const officerNameInput = document.getElementById('officerNameInput');
-
-        // Gallery Selectors
-        const galleryThumbBtn = document.getElementById('galleryThumbBtn');
-        const thumbImage = document.getElementById('thumbImage');
-        const thumbPlaceholderIcon = document.getElementById('thumbPlaceholderIcon');
-        const galleryModal = document.getElementById('galleryModal');
-        const closeGalleryBtn = document.getElementById('closeGalleryBtn');
-        const previewImage = document.getElementById('previewImage');
-        const galleryCounter = document.getElementById('galleryCounter');
-        const deletePhotoBtn = document.getElementById('deletePhotoBtn');
-        const shareDownloadBtn = document.getElementById('shareDownloadBtn');
-        const copyCoordsBtn = document.getElementById('copyCoordsBtn');
-
-        // Preview Overlays
-        const previewBankName = document.getElementById('previewBankName');
-        const previewCategoryTag = document.getElementById('previewCategoryTag');
-        const previewPlaceText = document.getElementById('previewPlaceText');
-        const previewTimeText = document.getElementById('previewTimeText');
-        const quickFieldNote = document.getElementById('quickFieldNote');
-
-        // Clock Update
-        setInterval(() => {
-            const timeStr = new Date().toLocaleTimeString();
-            previewTimeText.textContent = timeStr;
-        }, 1000);
-
-        // Sound Feedback
-        function playShutterSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.05);
-            } catch (e) {}
-            if (navigator.vibrate) navigator.vibrate(35);
-        }
-
-        // Camera Hardware
         async function startCamera() {
             camLoader.classList.remove('hidden');
             camFallback.classList.add('hidden');
@@ -779,10 +1094,8 @@
 
                 state.stream = await navigator.mediaDevices.getUserMedia(constraints);
                 webcam.srcObject = state.stream;
-                webcam.style.transform = state.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
                 camLoader.classList.add('hidden');
             } catch (err) {
-                console.warn("Camera access failed:", err);
                 camLoader.classList.add('hidden');
                 camFallback.classList.remove('hidden');
             }
@@ -796,10 +1109,10 @@
         flashToggleBtn.addEventListener('click', () => {
             state.flashEnabled = !state.flashEnabled;
             flashIcon.className = state.flashEnabled ? "fa-solid fa-bolt text-azania-gold" : "fa-solid fa-bolt-slash text-white/90";
-            showToast(state.flashEnabled ? "Flash Mode Enabled" : "Flash Disabled", state.flashEnabled ? "fa-bolt" : "fa-bolt-slash");
+            showToast(state.flashEnabled ? "Flash Mode Active" : "Flash Disabled", state.flashEnabled ? "fa-bolt" : "fa-bolt-slash");
         });
 
-        // Inspection Tag selection
+        // Tag Selector
         document.querySelectorAll('.tag-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tag-btn').forEach(b => {
@@ -810,53 +1123,12 @@
                 target.classList.remove('bg-zinc-800', 'text-zinc-300');
                 target.classList.add('bg-azania-gold', 'text-azania-darkNavy');
                 state.activeTag = target.dataset.tag;
-                previewCategoryTag.textContent = state.activeTag;
+                document.getElementById('previewCategoryTag').textContent = state.activeTag;
             });
         });
 
-        // Location Watcher
-        function initLocationServices() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition(
-                    async (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lng = pos.coords.longitude;
-                        state.location.lat = lat;
-                        state.location.lng = lng;
-                        state.location.accuracy = pos.coords.accuracy ? Math.round(pos.coords.accuracy) : null;
-
-                        try {
-                            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14`);
-                            const data = await res.json();
-                            if (data && data.address) {
-                                const city = data.address.city || data.address.town || data.address.suburb || data.address.county || "Dar es Salaam";
-                                const country = data.address.country || "Tanzania";
-                                state.location.placeName = `${city}, ${country}`;
-                            } else {
-                                state.location.placeName = `${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
-                            }
-                        } catch (e) {
-                            state.location.placeName = `${lat.toFixed(4)}°, ${lng.toFixed(4)}°`;
-                        }
-
-                        state.location.loaded = true;
-                        locationBadgeIcon.className = "fa-solid fa-location-dot text-azania-gold text-[11px]";
-                        locationBadgeText.textContent = state.location.placeName;
-                        previewPlaceText.innerHTML = `<i class="fa-solid fa-location-dot text-red-400 mr-1"></i>${state.location.placeName}`;
-                    },
-                    (err) => {
-                        state.location.placeName = "GPS Fixed Position";
-                        locationBadgeText.textContent = state.location.placeName;
-                    },
-                    { enableHighAccuracy: true, timeout: 12000 }
-                );
-            }
-        }
-
-        // Shutter Click Handler
-        shutterBtn.addEventListener('click', capturePhoto);
-
-        function capturePhoto() {
+        // Photo Capture
+        shutterBtn.addEventListener('click', () => {
             shutterFlashOverlay.classList.remove('hidden');
             shutterFlashOverlay.classList.add('shutter-flash-active');
             playShutterSound();
@@ -872,63 +1144,66 @@
             if (webcam.srcObject && webcam.videoWidth) {
                 canvas.width = webcam.videoWidth;
                 canvas.height = webcam.videoHeight;
-
-                if (state.facingMode === 'user') {
-                    ctx.translate(canvas.width, 0);
-                    ctx.scale(-1, 1);
-                }
-
                 ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-
                 burnBankAuditWatermark(canvas, ctx);
                 savePhotoToGallery(canvas.toDataURL('image/jpeg', 0.95));
             }
+        });
+
+        function playShutterSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {}
         }
 
-        // Watermark Burner Engine
+        // Watermarking Engine
         function burnBankAuditWatermark(canvas, ctx) {
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-            const latStr = state.location.lat ? state.location.lat.toFixed(5) : 'N/A';
-            const lngStr = state.location.lng ? state.location.lng.toFixed(5) : 'N/A';
-            const accStr = state.location.accuracy ? ` (±${state.location.accuracy}m)` : '';
-            const coordsText = `GPS: ${latStr}°, ${lngStr}°${accStr}`;
-            const placeText = state.location.placeName;
-            const noteText = quickFieldNote.value.trim();
+            const latVal = state.formData.lat || (state.location.lat ? state.location.lat.toFixed(5) : 'N/A');
+            const lngVal = state.formData.lng || (state.location.lng ? state.location.lng.toFixed(5) : 'N/A');
+            const coordsText = `GPS: ${latVal}°, ${lngVal}°`;
+            const noteText = document.getElementById('quickFieldNote').value.trim();
 
             const barHeight = Math.max(80, Math.round(canvas.height * 0.12));
             const fontTitle = Math.max(14, Math.round(barHeight * 0.22));
             const fontSub = Math.max(11, Math.round(barHeight * 0.16));
             const padding = Math.round(barHeight * 0.18);
 
-            // Dark solid header for audit authenticity
             ctx.fillStyle = 'rgba(10, 28, 46, 0.94)';
             ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
 
-            // Azania Bank Gold Bar Line
             ctx.fillStyle = '#D4AF37';
             ctx.fillRect(0, canvas.height - barHeight, canvas.width, 4);
 
-            // Left Side Info
             ctx.fillStyle = '#D4AF37';
-            ctx.font = `700 ${fontTitle}px -apple-system, sans-serif`;
+            ctx.font = `700 ${fontTitle}px sans-serif`;
             ctx.textBaseline = 'top';
-            ctx.fillText(`${state.session.bankName}`, padding, canvas.height - barHeight + padding);
+            ctx.fillText(`AZANIA BANK PLC • FIELD VISIT REPORT`, padding, canvas.height - barHeight + padding);
 
             ctx.fillStyle = '#ffffff';
-            ctx.font = `600 ${fontSub}px -apple-system, sans-serif`;
-            const categoryLine = `TAG: ${state.activeTag.toUpperCase()} | CASE: ${state.session.caseRef} | OFFICER: ${state.session.officerName}`;
+            ctx.font = `600 ${fontSub}px sans-serif`;
+            const categoryLine = `TAG: ${state.activeTag.toUpperCase()} | REF: ${state.formData.caseRef} | CLIENT: ${state.formData.clientName}`;
             ctx.fillText(categoryLine, padding, canvas.height - barHeight + padding + fontTitle + 4);
 
             ctx.fillStyle = 'rgba(255,255,255,0.75)';
             ctx.font = `400 ${fontSub}px sans-serif`;
-            const noteLine = noteText ? `NOTE: "${noteText}"` : placeText;
+            const noteLine = noteText ? `NOTE: "${noteText}"` : state.location.placeName;
             ctx.fillText(noteLine, padding, canvas.height - barHeight + padding + fontTitle + fontSub + 8);
 
-            // Right Side Metadata
             ctx.textAlign = 'right';
             ctx.fillStyle = '#ffffff';
             ctx.font = `700 ${fontTitle}px sans-serif`;
@@ -940,32 +1215,30 @@
 
             ctx.fillStyle = 'rgba(255,255,255,0.65)';
             ctx.font = `400 ${fontSub}px sans-serif`;
-            ctx.fillText(placeText, canvas.width - padding, canvas.height - barHeight + padding + fontTitle + fontSub + 8);
+            ctx.fillText(state.location.placeName, canvas.width - padding, canvas.height - barHeight + padding + fontTitle + fontSub + 8);
 
             ctx.textAlign = 'left';
         }
 
-        // Store Photo Record
         function savePhotoToGallery(dataUrl) {
             const photoRecord = {
                 id: Date.now(),
                 url: dataUrl,
                 tag: state.activeTag,
-                note: quickFieldNote.value.trim() || 'Site photo captured for verification.',
+                note: document.getElementById('quickFieldNote').value.trim() || 'Site photo evidence captured.',
                 location: { ...state.location },
-                caseRef: state.session.caseRef,
+                caseRef: state.formData.caseRef,
                 date: new Date().toLocaleDateString(),
                 time: new Date().toLocaleTimeString()
             };
 
             state.photos.unshift(photoRecord);
             state.currentPhotoIndex = 0;
-            quickFieldNote.value = '';
+            document.getElementById('quickFieldNote').value = '';
 
-            // Update UI elements
-            thumbImage.src = dataUrl;
-            thumbImage.classList.remove('hidden');
-            thumbPlaceholderIcon.classList.add('hidden');
+            document.getElementById('thumbImage').src = dataUrl;
+            document.getElementById('thumbImage').classList.remove('hidden');
+            document.getElementById('thumbPlaceholderIcon').classList.add('hidden');
             document.getElementById('camPhotoCounterBadge').textContent = state.photos.length;
             document.getElementById('statPhotoCount').textContent = `${state.photos.length} Photos`;
             document.getElementById('logCounterPill').textContent = `${state.photos.length} Captured`;
@@ -973,7 +1246,7 @@
             showToast("Photo Saved with Bank Watermark", "fa-camera");
         }
 
-        // Handle External File Uploads
+        // External File Upload Handlers
         function handleFileInput(e) {
             const file = e.target.files[0];
             if (file) {
@@ -1008,7 +1281,7 @@
                     <tr>
                         <td colspan="6" class="py-8 text-center text-slate-500">
                             <i class="fa-solid fa-camera-retro text-2xl mb-2 text-slate-600 block"></i>
-                            No evidentiary photos captured yet. Click "Launch Field Camera Mode" to start.
+                            No photos captured yet. Click "Launch Camera Feed" to snap site images.
                         </td>
                     </tr>
                 `;
@@ -1039,38 +1312,56 @@
         window.openGalleryAtIndex = function(idx) {
             state.currentPhotoIndex = idx;
             updateGalleryModal();
-            galleryModal.classList.remove('hidden');
+            document.getElementById('galleryModal').classList.remove('hidden');
         };
-
-        // Modal Config Actions
-        closeSessionModalBtn.addEventListener('click', () => sessionModal.classList.add('hidden'));
-
-        saveSessionBtn.addEventListener('click', () => {
-            state.session.bankName = bankHeaderInput.value.trim() || 'AZANIA BANK PLC';
-            state.session.caseRef = caseRefInput.value.trim() || 'AUD-8821';
-            state.session.clientName = clientNameInput.value.trim() || 'Global Logistics Corp';
-            state.session.officerName = officerNameInput.value.trim() || 'Godfrey Abraham Mono';
-
-            document.getElementById('dashboardUserDisplay').textContent = `Auditor: ${state.session.officerName}`;
-            document.getElementById('statCaseRef').textContent = state.session.caseRef;
-            document.getElementById('statClientName').textContent = state.session.clientName;
-            document.getElementById('statAuditorName').textContent = state.session.officerName;
-            previewBankName.textContent = state.session.bankName;
-
-            sessionModal.classList.add('hidden');
-            showToast("Audit Case Info Applied", "fa-circle-check");
-        });
 
         // Render Bank Executive Report
         function renderBankReport() {
-            document.getElementById('rptHeaderBankName').textContent = state.session.bankName;
-            document.getElementById('rptHeaderCaseRef').textContent = `REF: ${state.session.caseRef}`;
-            document.getElementById('rptClientName').textContent = state.session.clientName;
-            document.getElementById('rptCaseRef').textContent = state.session.caseRef;
-            document.getElementById('rptOfficerName').textContent = state.session.officerName;
-            document.getElementById('rptHeaderDate').textContent = `Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}`;
-            document.getElementById('rptPhotoCount').textContent = `${state.photos.length} Verified Evidences`;
+            const data = state.formData;
+            document.getElementById('rptHeaderCaseRef').textContent = `REF: ${data.caseRef}`;
+            document.getElementById('rptTitle').textContent = `${data.visitType.toUpperCase()} REPORT`;
+            document.getElementById('rptClientName').textContent = data.clientName;
+            document.getElementById('rptAgentId').textContent = data.agentId;
+            document.getElementById('rptOfficerName').textContent = data.officerName;
+            document.getElementById('rptOfficerTitle').textContent = data.officerTitle;
+            document.getElementById('rptVisitType').textContent = data.visitType;
+            document.getElementById('rptPhotoCount').textContent = `${state.photos.length} Verified Photos`;
 
+            document.getElementById('rptRegion').textContent = data.region;
+            document.getElementById('rptStreet').textContent = data.street;
+            document.getElementById('rptLandmark').textContent = data.landmark;
+            document.getElementById('rptGpsCoords').textContent = `Lat: ${data.lat || 'N/A'}, Lng: ${data.lng || 'N/A'}`;
+
+            document.getElementById('rptVerdictBadge').textContent = data.verdict;
+            document.getElementById('rptRiskBadge').textContent = data.riskRating;
+            document.getElementById('rptRecommendationsText').textContent = data.recommendations;
+
+            document.getElementById('rptSignOfficerName').textContent = data.officerName;
+            document.getElementById('rptSignOfficerTitle').textContent = data.officerTitle;
+
+            // Render Dynamic Criteria Table
+            const tbody = document.getElementById('rptDynamicCriteriaTableBody');
+            tbody.innerHTML = '';
+
+            Object.keys(data.criteria).forEach(key => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-2 px-3 font-bold text-slate-800 border-r border-slate-200">${key}</td>
+                    <td class="py-2 px-3 font-semibold text-slate-900" contenteditable="true">${data.criteria[key]}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            data.customFields.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-2 px-3 font-bold text-slate-800 border-r border-slate-200">${item.key}</td>
+                    <td class="py-2 px-3 font-semibold text-slate-900" contenteditable="true">${item.value}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Render Photo Grid
             const grid = document.getElementById('rptPhotosGrid');
             grid.innerHTML = '';
 
@@ -1079,7 +1370,6 @@
                     <div class="col-span-full py-12 text-center text-slate-400 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl">
                         <i class="fa-solid fa-camera-retro text-3xl mb-2 text-slate-300"></i>
                         <p class="text-sm font-semibold">No photographic evidence captured yet.</p>
-                        <p class="text-xs text-slate-500">Return to camera view to photograph collateral and site assets.</p>
                     </div>
                 `;
             } else {
@@ -1095,7 +1385,7 @@
                                 </span>
                             </div>
                             <h4 class="font-bold text-slate-900 text-xs">${photo.tag} Inspection</h4>
-                            <p class="text-xs text-slate-600 mt-1 italic">"${photo.note}"</p>
+                            <p class="text-xs text-slate-600 mt-1 italic" contenteditable="true">"${photo.note}"</p>
                         </div>
                         <div class="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 space-y-0.5">
                             <div><span class="font-bold text-slate-700">Timestamp:</span> ${photo.date} ${photo.time}</div>
@@ -1108,61 +1398,46 @@
             }
         }
 
-        // Print & PDF Export
-        document.getElementById('printReportBtn').addEventListener('click', () => {
-            window.print();
-        });
+        // Print PDF
+        document.getElementById('printReportBtn').addEventListener('click', () => window.print());
 
-        // Editable Word (.doc) Document Generator
+        // Export Word (.doc)
         document.getElementById('downloadDocBtn').addEventListener('click', () => {
             const reportContent = document.getElementById('printableReportArea').innerHTML;
-            
             const header = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
-                      xmlns:w='urn:schemas-microsoft-com:office:word' 
-                      xmlns='http://www.w3.org/TR/REC-html40'>
-                <head>
-                    <meta charset='utf-8'>
-                    <title>Azania Bank Field Audit Report</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; font-size: 11pt; color: #111; }
-                        h1 { color: #0F2942; font-size: 18pt; margin: 0; }
-                        h2 { color: #0F2942; font-size: 14pt; }
-                        h3 { color: #0F2942; font-size: 12pt; border-bottom: 2px solid #D4AF37; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        th, td { border: 1px solid #ccc; padding: 6px; font-size: 10pt; }
-                        th { background-color: #0F2942; color: #fff; }
-                    </style>
-                </head>
-                <body>
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>Azania Bank Field Report</title>
+                <style>
+                    body { font-family: Arial, sans-serif; font-size: 11pt; color: #111; }
+                    h1 { color: #0F2942; font-size: 18pt; margin: 0; }
+                    h2 { color: #0F2942; font-size: 14pt; }
+                    h3 { color: #0F2942; font-size: 12pt; border-bottom: 2px solid #D4AF37; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                    th, td { border: 1px solid #ccc; padding: 6px; font-size: 10pt; }
+                    th { background-color: #0F2942; color: #fff; }
+                </style></head><body>
             `;
             const footer = `</body></html>`;
-            const sourceHTML = header + reportContent + footer;
-
-            const blob = new Blob(['\ufeff' + sourceHTML], { type: 'application/msword' });
+            const blob = new Blob(['\ufeff' + header + reportContent + footer], { type: 'application/msword' });
             const url = URL.createObjectURL(blob);
-
             const a = document.createElement('a');
             a.href = url;
-            a.download = `AZANIA_BANK_FIELD_REPORT_${state.session.caseRef}.doc`;
+            a.download = `AZANIA_SITE_VISIT_${state.formData.caseRef}.doc`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast("Editable Word Document (.doc) Downloaded", "fa-file-word");
+            showToast("Word Document Exported", "fa-file-word");
         });
 
         // Export CSV
         document.getElementById('exportCsvBtn').addEventListener('click', () => {
-            if (state.photos.length === 0) {
-                showToast("No inspection logs to export", "fa-triangle-exclamation");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,ID,CaseRef,CategoryTag,ObservationNote,Date,Time,Latitude,Longitude,LocationName\n";
+            let csvContent = "data:text/csv;charset=utf-8,ID,CaseRef,VisitType,ClientName,CategoryTag,ObservationNote,Date,Time,Latitude,Longitude,LocationName\n";
             state.photos.forEach(p => {
                 const row = [
                     p.id,
-                    `"${p.caseRef}"`,
+                    `"${state.formData.caseRef}"`,
+                    `"${state.formData.visitType}"`,
+                    `"${state.formData.clientName.replace(/"/g, '""')}"`,
                     `"${p.tag}"`,
                     `"${p.note.replace(/"/g, '""')}"`,
                     `"${p.date}"`,
@@ -1177,73 +1452,70 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Azania_Bank_Audit_Logs_${state.session.caseRef}.csv`);
+            link.setAttribute("download", `Azania_Audit_Log_${state.formData.caseRef}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             showToast("CSV Audit Log Exported", "fa-file-csv");
         });
 
-        // Gallery Modal Handlers
-        galleryThumbBtn.addEventListener('click', () => {
+        // Gallery Modal Controls
+        document.getElementById('galleryThumbBtn').addEventListener('click', () => {
             if (state.photos.length === 0) return;
             updateGalleryModal();
-            galleryModal.classList.remove('hidden');
+            document.getElementById('galleryModal').classList.remove('hidden');
         });
 
-        closeGalleryBtn.addEventListener('click', () => galleryModal.classList.add('hidden'));
+        document.getElementById('closeGalleryBtn').addEventListener('click', () => document.getElementById('galleryModal').classList.add('hidden'));
 
         function updateGalleryModal() {
             const photo = state.photos[state.currentPhotoIndex];
-            previewImage.src = photo.url;
-            galleryCounter.textContent = `${state.currentPhotoIndex + 1} of ${state.photos.length}`;
+            document.getElementById('previewImage').src = photo.url;
+            document.getElementById('galleryCounter').textContent = `${state.currentPhotoIndex + 1} of ${state.photos.length}`;
             document.getElementById('metaCategory').textContent = photo.tag;
             document.getElementById('metaTime').textContent = `${photo.date} ${photo.time}`;
             document.getElementById('metaLocation').innerHTML = `<i class="fa-solid fa-location-dot mr-1 text-red-400"></i>${photo.location.placeName}`;
-            document.getElementById('metaNotes').textContent = `Note: ${photo.note}`;
+            document.getElementById('metaNoteInput').value = photo.note;
         }
 
-        deletePhotoBtn.addEventListener('click', () => {
+        document.getElementById('metaNoteInput').addEventListener('input', (e) => {
+            if (state.photos[state.currentPhotoIndex]) {
+                state.photos[state.currentPhotoIndex].note = e.target.value;
+            }
+        });
+
+        document.getElementById('deletePhotoBtn').addEventListener('click', () => {
             if (state.photos.length === 0) return;
             state.photos.splice(state.currentPhotoIndex, 1);
             document.getElementById('camPhotoCounterBadge').textContent = state.photos.length;
             document.getElementById('statPhotoCount').textContent = `${state.photos.length} Photos`;
 
             if (state.photos.length === 0) {
-                galleryModal.classList.add('hidden');
-                thumbImage.classList.add('hidden');
-                thumbPlaceholderIcon.classList.remove('hidden');
+                document.getElementById('galleryModal').classList.add('hidden');
+                document.getElementById('thumbImage').classList.add('hidden');
+                document.getElementById('thumbPlaceholderIcon').classList.remove('hidden');
             } else {
                 if (state.currentPhotoIndex >= state.photos.length) state.currentPhotoIndex = state.photos.length - 1;
                 updateGalleryModal();
-                thumbImage.src = state.photos[0].url;
+                document.getElementById('thumbImage').src = state.photos[0].url;
             }
             showToast("Photo Removed", "fa-trash-can");
         });
 
-        shareDownloadBtn.addEventListener('click', () => {
+        document.getElementById('shareDownloadBtn').addEventListener('click', () => {
             if (state.photos.length === 0) return;
             const photo = state.photos[state.currentPhotoIndex];
             const a = document.createElement('a');
             a.href = photo.url;
             a.download = `AZANIA_AUDIT_${photo.tag.replace(/\s+/g, '_')}_${photo.id}.jpg`;
             a.click();
-            showToast("Image Saved", "fa-download");
         });
 
-        copyCoordsBtn.addEventListener('click', () => {
+        document.getElementById('copyCoordsBtn').addEventListener('click', () => {
             if (state.photos.length === 0) return;
             const photo = state.photos[state.currentPhotoIndex];
-            const text = `AZANIA BANK FIELD AUDIT\nCase: ${photo.caseRef}\nCategory: ${photo.tag}\nLocation: ${photo.location.placeName}\nLat: ${photo.location.lat}, Lng: ${photo.location.lng}\nTimestamp: ${photo.date} ${photo.time}`;
-            
-            navigator.clipboard.writeText(text).catch(() => {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-            });
+            const text = `AZANIA BANK AUDIT\nCase: ${state.formData.caseRef}\nCategory: ${photo.tag}\nLocation: ${photo.location.placeName}\nGPS: ${photo.location.lat}, ${photo.location.lng}`;
+            navigator.clipboard.writeText(text);
             showToast("GPS Pin Copied", "fa-copy");
         });
 
@@ -1260,10 +1532,20 @@
             }, 2000);
         }
 
-        // On System Load
+        // Window Load Initialization
         window.onload = function() {
             initLocationServices();
+            renderDynamicCriteriaFields();
             renderDashboardLogs();
+
+            // Load local storage draft if available
+            try {
+                const saved = localStorage.getItem('azania_audit_draft');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(state.formData, parsed);
+                }
+            } catch (e) {}
         };
     </script>
 </body>
