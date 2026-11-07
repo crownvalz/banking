@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100 select-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Azania Bank PLC - Dynamic Field Visit & Inspection System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        azania: {
+                            navy: '#0F2942',
+                            darkNavy: '#0A1C2E',
+                            gold: '#D4AF37',
+                            goldHover: '#B89528',
+                            lightGold: '#FFF6D8',
+                            slate: '#F8FAFC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            touch-action: manipulation;
+        }
+
+        @keyframes iosFlash {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .shutter-flash-active {
+            animation: iosFlash 0.25s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Exact Official Document Print Styling */
+        @media print {
+            body * { visibility: hidden; }
+            #printableReportArea, #printableReportArea * { visibility: visible; }
+            #printableReportArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                color: #000 !important;
+                background: #fff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            .no-print { display: none !important; }
+            .page-break { page-break-after: always; page-break-inside: avoid; }
+        }
+
+        /* Official Document Table Styles */
+        .official-doc-table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1.5px solid #000;
+        }
+        .official-doc-table th, .official-doc-table td {
+            border: 1.5px solid #000;
+            padding: 8px 12px;
+            text-align: left;
+            vertical-align: top;
+            font-family: "Times New Roman", Times, serif;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col bg-slate-950 overflow-hidden font-sans text-slate-100">
+
+    <!-- APP VIEW CONTAINER 1: HOMEPAGE DASHBOARD -->
+    <div id="viewHome" class="flex-1 flex flex-col overflow-y-auto bg-slate-950">
+        <!-- Top Navigation Bar -->
+        <header class="h-16 px-6 bg-azania-darkNavy/90 backdrop-blur-md border-b border-slate-800/80 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-azania-navy to-azania-gold flex items-center justify-center shadow-lg border border-azania-gold/30">
+                    <i class="fa-solid fa-building-columns text-azania-gold text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm tracking-tight text-white flex items-center gap-2">
+                        AZANIA BANK PLC
+                        <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-azania-gold/20 text-azania-gold border border-azania-gold/30">Official Wakala Portal</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400">Site Visit & Field Audit System</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="text-slate-300 font-medium text-[11px]" id="dashboardUserDisplay">Visiting Officer: Miss Hawa Juma</span>
+                </div>
+                <button id="quickNewCaseBtn" class="px-4 py-2 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy font-bold text-xs shadow-lg shadow-azania-gold/10 transition flex items-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>Create Wakala Site Visit Report</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="max-w-7xl mx-auto w-full p-4 sm:p-6 space-y-6">
+            <!-- Hero Welcome Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-azania-darkNavy via-azania-navy to-slate-900 border border-azania-gold/30 p-6 sm:p-8 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-azania-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10 max-w-2xl">
+                    <span class="text-xs font-bold text-azania-gold uppercase tracking-widest bg-azania-gold/10 px-3 py-1 rounded-full border border-azania-gold/20">Azania Bank Official Format</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 tracking-tight">Wakala Site Visit Report Engine</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                        Capture Wakala Account details, visiting officer information, GPS coordinates, locality details, business photos, and generate exact-format Azania Bank PLC Site Visit Reports.
+                    </p>
+                    
+                    <div class="flex flex-wrap items-center gap-3 mt-6">
+                        <button id="startInspectionHomeBtn" class="px-6 py-3 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy font-extrabold text-xs shadow-xl transition flex items-center gap-2 active:scale-95">
+                            <i class="fa-solid fa-circle-plus text-sm"></i> Create Wakala Site Visit Report
+                        </button>
+                        <button id="generateReportHomeBtn" class="px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-contract text-emerald-400"></i> Open Active Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
+                    <div>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Wakala Account</p>
+                        <h3 class="text-sm font-bold text-white mt-0.5 truncate max-w-[130px]" id="statClientName">KASSIM KHAMIS ALI</h3>
+                        <p class="text-[10px] text-azania-gold mt-1" id="statLocality">MICHEWENI</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
+                    <div>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Location Photos</p>
+                        <h3 class="text-lg font-bold text-azania-gold mt-0.5" id="statPhotoCount">0 Photos</h3>
+                        <p class="text-[10px] text-slate-500 mt-1">Geotagged & Timestamped</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-azania-gold/10 text-azania-gold flex items-center justify-center">
+                        <i class="fa-solid fa-camera font-bold"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
+                    <div>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">District / Municipality</p>
+                        <h3 class="text-sm font-bold text-white mt-0.5 truncate max-w-[130px]" id="statDistrict">KASKAZINI PEMBA</h3>
+                        <p class="text-[10px] text-slate-500 mt-1">Zanzibar Region</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex items-center justify-between shadow-md">
+                    <div>
+                        <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Visiting Officer</p>
+                        <h3 class="text-xs font-bold text-white mt-1 truncate max-w-[130px]" id="statAuditorName">Miss Hawa Juma</h3>
+                        <p class="text-[10px] text-emerald-400 mt-1"><i class="fa-solid fa-shield-check mr-1"></i>Azania Bank Employee</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Primary Workflows -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card 1: Start Visit Form -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-azania-gold/50 rounded-2xl p-6 shadow-xl transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-azania-gold/10 text-azania-gold flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-clipboard-list"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">1. Fill Wakala Form & Snap Photos</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Input Wakala account name, locality, municipality, GPS coordinates, visiting officer details, and snap business location photos.
+                        </p>
+                    </div>
+                    <button id="navWizardBtn" class="mt-6 w-full py-3 rounded-xl bg-azania-gold text-azania-darkNavy hover:bg-azania-goldHover font-bold text-xs transition flex items-center justify-center gap-2">
+                        <span>Fill Site Visit Form</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2: Report View -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-azania-gold/50 rounded-2xl p-6 shadow-xl transition group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">2. Official Azania Bank Report</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Generate the exact official document format complete with the header data grid, site report statement, business location photo, verification clause, signature block, and export capabilities.
+                        </p>
+                    </div>
+                    <button id="navReportBtn" class="mt-6 w-full py-3 rounded-xl bg-slate-800 hover:bg-blue-600 hover:text-white font-semibold text-xs text-slate-200 transition flex items-center justify-center gap-2">
+                        <span>View Official Report</span>
+                        <i class="fa-solid fa-file-contract text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Captured Location Evidences Summary -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-azania-gold"></i> Form Attached Location Photos
+                        </h3>
+                        <p class="text-[11px] text-slate-400">Photos attached to the Wakala site visit report</p>
+                    </div>
+                    <span id="logCounterPill" class="px-2.5 py-1 rounded-full bg-azania-gold/10 text-azania-gold text-xs font-semibold border border-azania-gold/20">0 Photos</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-950 text-slate-400 uppercase text-[10px] font-semibold tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="py-2.5 px-3">Thumbnail</th>
+                                <th class="py-2.5 px-3">Tag / Type</th>
+                                <th class="py-2.5 px-3">Caption Note</th>
+                                <th class="py-2.5 px-3">Timestamp</th>
+                                <th class="py-2.5 px-3">GPS Location</th>
+                                <th class="py-2.5 px-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="homeLogTableBody" class="divide-y divide-slate-800/60">
+                            <tr>
+                                <td colspan="6" class="py-8 text-center text-slate-500">
+                                    <i class="fa-solid fa-camera-retro text-2xl mb-2 text-slate-600 block"></i>
+                                    No photos attached yet. Open the Site Visit Form and click "Take Business Location Photo".
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- APP VIEW CONTAINER 2: EXACT MATCH WAKALA FORM -->
+    <div id="viewWizard" class="hidden flex-1 flex-col bg-slate-950 overflow-y-auto">
+        <header class="h-16 px-6 bg-azania-darkNavy border-b border-slate-800 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button id="backToHomeFromWizardBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-chevron-left text-[11px]"></i> Home
+                </button>
+                <span class="font-bold text-sm text-white flex items-center gap-2 border-l border-slate-800 pl-3">
+                    <i class="fa-solid fa-clipboard-list text-azania-gold"></i> Wakala Site Visit Report Form
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button id="saveDraftBtn" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition">
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> Save Draft
+                </button>
+                <button id="buildReportDirectBtn" class="px-4 py-2 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-file-contract"></i> Preview Official Report
+                </button>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto w-full p-4 sm:p-8 space-y-6">
+
+            <form id="inspectionSetupForm" class="space-y-6" onsubmit="event.preventDefault();">
+                <!-- SECTION 1: ACCOUNT & OFFICER DETAILS -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> 1. Account & Officer Details
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-bold">1. Name of Wakala Account</label>
+                            <input type="text" id="formClientName" value="KASSIM KHAMIS ALI" class="w-full bg-slate-950 border border-azania-gold/50 rounded-xl px-3 py-2.5 text-white font-bold text-sm focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-300 mb-1 font-bold">Visiting Officer Name</label>
+                            <input type="text" id="formOfficerName" value="Miss Hawa Juma" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Report Date</label>
+                            <input type="date" id="formReportDate" value="2026-09-26" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Audit / Case Ref (Internal)</label>
+                            <input type="text" id="formCaseRef" value="AZA-WAK-2026-09" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: LOCATION & GPS METADATA (EXACT MATCH) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot"></i> 5. Location of Business
+                        </h3>
+                        <button type="button" id="refreshFormGpsBtn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-azania-gold text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-location-crosshairs"></i> Get Live GPS
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">GPS Coordinates (Lat, Lng)</label>
+                            <input type="text" id="formGpsCoords" value="-4.944618,39.74594" placeholder="-4.944618, 39.74594" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none font-mono">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">Locality</label>
+                            <input type="text" id="formLocality" value="MICHEWENI" placeholder="e.g. MICHEWENI" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none uppercase">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1 font-semibold">District / Municipality</label>
+                            <input type="text" id="formDistrict" value="KASKAZINI-PEMBA" placeholder="e.g. KASKAZINI-PEMBA" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:border-azania-gold focus:outline-none uppercase">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: GENERAL DESCRIPTION OF BUSINESS -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-store"></i> General Description of the Business
+                    </h3>
+
+                    <div class="text-xs">
+                        <label class="block text-slate-400 mb-1 font-semibold">Business Activity & Location Description</label>
+                        <textarea id="formBusinessDesc" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-azania-gold focus:outline-none leading-relaxed">Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA</textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: LOCATION PHOTOS CAPTURE -->
+                <div class="bg-slate-900 border-2 border-azania-gold/40 rounded-2xl p-6 shadow-2xl space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+                        <div>
+                            <h3 class="text-base font-extrabold text-azania-gold uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-camera text-lg"></i> Business Location Photos
+                            </h3>
+                            <p class="text-xs text-slate-400">Snap photos of the Wakala outlet or map location. Photo will automatically attach to report!</p>
+                        </div>
+                        <span id="formPhotoCounterPill" class="px-3 py-1 rounded-full bg-azania-gold/20 text-azania-gold text-xs font-bold border border-azania-gold/30 self-start sm:self-auto">
+                            0 Photos Added
+                        </span>
+                    </div>
+
+                    <!-- Direct Camera Buttons Group -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <button type="button" onclick="triggerCameraWithTag('Business Location')" class="py-3 px-4 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy font-extrabold text-xs shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+                            <i class="fa-solid fa-camera text-base"></i>
+                            <span>Take Business Location Photo</span>
+                        </button>
+
+                        <button type="button" onclick="triggerCameraWithTag('Wakala Premises')" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-azania-gold border border-azania-gold/30 font-bold text-xs flex items-center justify-center gap-2 transition active:scale-95">
+                            <i class="fa-solid fa-store text-base"></i>
+                            <span>Take Wakala Premises Photo</span>
+                        </button>
+                    </div>
+
+                    <!-- Photo Grid Cards inside Form -->
+                    <div id="formPhotosContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3">
+                        <div id="emptyPhotosPrompt" class="col-span-full py-8 text-center text-slate-500 bg-slate-950/60 rounded-xl border border-dashed border-slate-800">
+                            <i class="fa-solid fa-images text-3xl mb-2 text-slate-600 block"></i>
+                            <p class="text-xs font-semibold">No location photos attached yet.</p>
+                            <p class="text-[11px] text-slate-600 mt-1">Click above to capture photos. You will automatically return here after each photo!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: VERIFICATION DECLARATION -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold text-azania-gold uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-signature"></i> Verification & Sign-off Statement
+                    </h3>
+
+                    <div class="text-xs space-y-3">
+                        <p class="text-slate-300 italic bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            "I, <span id="formDeclOfficerText" class="font-bold text-azania-gold">Miss Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge."
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4">
+                    <button type="button" onclick="switchView('home')" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition">
+                        Back to Home
+                    </button>
+                    <button type="button" id="buildReportDirectBtn2" class="px-6 py-3 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy text-xs font-extrabold transition flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-file-contract"></i> Build Official Report
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- APP VIEW CONTAINER 3: iOS CAMERA ENGINE -->
+    <div id="viewCamera" class="hidden flex-1 flex-col bg-black overflow-hidden relative">
+        <!-- Top Camera Bar -->
+        <header class="h-14 px-4 flex items-center justify-between z-20 bg-black/90 backdrop-blur-md flex-shrink-0 border-b border-white/10">
+            <div class="flex items-center gap-2">
+                <button id="cancelCamReturnToFormBtn" class="px-3 py-1.5 rounded-full bg-white/10 text-xs font-semibold text-slate-200 hover:bg-white/20 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-chevron-left text-[11px]"></i> Return to Form
+                </button>
+                <button id="flashToggleBtn" class="w-9 h-9 rounded-full flex items-center justify-center text-white/90 hover:text-white text-base transition active:opacity-60 bg-white/5">
+                    <i id="flashIcon" class="fa-solid fa-bolt-slash"></i>
+                </button>
+            </div>
+
+            <!-- Location Telemetry Badge -->
+            <div id="locationBadge" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 text-xs font-medium text-white/90">
+                <i id="locationBadgeIcon" class="fa-solid fa-location-arrow text-azania-gold text-[11px] animate-pulse"></i>
+                <span id="locationBadgeText" class="tracking-tight text-[11px] max-w-[130px] sm:max-w-[180px] truncate">Acquiring GPS...</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button id="flipCamTopBtn" class="w-9 h-9 rounded-full flex items-center justify-center text-white/90 hover:text-white text-base transition active:opacity-60 bg-white/5">
+                    <i class="fa-solid fa-camera-rotate"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Category Tag Bar -->
+        <div class="h-10 bg-zinc-950/90 border-b border-white/5 flex items-center px-3 gap-2 overflow-x-auto no-scrollbar z-20 flex-shrink-0">
+            <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider flex-shrink-0 mr-1">Tag:</span>
+            <button class="tag-btn active-tag px-3 py-1 rounded-full text-xs font-semibold bg-azania-gold text-azania-darkNavy flex-shrink-0 transition" data-tag="Business Location">
+                <i class="fa-solid fa-map-location-dot mr-1 text-[10px]"></i>Business Location
+            </button>
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="Wakala Premises">
+                <i class="fa-solid fa-store mr-1 text-[10px]"></i>Wakala Premises
+            </button>
+            <button class="tag-btn px-3 py-1 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex-shrink-0 transition" data-tag="License Document">
+                <i class="fa-solid fa-id-card mr-1 text-[10px]"></i>License Document
+            </button>
+        </div>
+
+        <!-- Camera Viewfinder -->
+        <main class="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
+            <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover"></video>
+
+            <!-- Dynamic On-Screen Overlay Indicator -->
+            <div class="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-md rounded-xl p-3 border border-white/10 text-xs text-zinc-200 pointer-events-none flex flex-col gap-1 shadow-2xl">
+                <div class="flex items-center justify-between text-[11px] font-bold text-azania-gold border-b border-white/10 pb-1">
+                    <span id="previewBankName">AZANIA BANK PLC • WAKALA REPORT</span>
+                    <span id="previewCategoryTag" class="px-2 py-0.5 rounded bg-azania-gold/20 text-azania-gold text-[10px]">Business Location</span>
+                </div>
+                <div class="flex justify-between items-center text-[10px] text-zinc-300 pt-0.5">
+                    <span id="previewPlaceText"><i class="fa-solid fa-location-dot text-red-400 mr-1"></i>Acquiring GPS...</span>
+                    <span id="previewTimeText">--:--:--</span>
+                </div>
+            </div>
+
+            <!-- Loader & Fallback -->
+            <div id="camLoader" class="absolute inset-0 bg-black flex flex-col items-center justify-center gap-3 z-10">
+                <div class="w-8 h-8 border-2 border-azania-gold/20 border-t-azania-gold rounded-full animate-spin"></div>
+                <span class="text-xs text-zinc-400">Connecting Camera...</span>
+            </div>
+
+            <div id="camFallback" class="hidden absolute inset-0 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center z-10">
+                <i class="fa-solid fa-camera text-4xl text-zinc-600 mb-3"></i>
+                <p class="text-sm font-medium text-zinc-300 mb-1">Live Feed Unavailable</p>
+                <p class="text-xs text-zinc-500 mb-4">Upload site photo directly from device.</p>
+                <label class="px-5 py-2.5 rounded-full bg-azania-gold text-azania-darkNavy font-bold text-xs cursor-pointer active:scale-95 transition shadow-lg">
+                    Upload Photo
+                    <input type="file" id="fallbackFileInput" accept="image/*" class="hidden">
+                </label>
+            </div>
+
+            <div id="shutterFlashOverlay" class="hidden absolute inset-0 bg-white z-30 pointer-events-none"></div>
+        </main>
+
+        <!-- Observation Note Bar -->
+        <div class="bg-zinc-900/90 border-t border-zinc-800 px-4 py-2 z-20 flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square text-azania-gold text-xs"></i>
+            <input type="text" id="quickFieldNote" placeholder="Add specific note for this photo..." class="bg-transparent text-xs text-white placeholder-zinc-500 focus:outline-none w-full">
+        </div>
+
+        <!-- Shutter Controls Bar -->
+        <footer class="h-28 px-8 flex items-center justify-between z-20 bg-black flex-shrink-0">
+            <button id="galleryThumbBtn" class="w-12 h-12 rounded-full border-2 border-white/30 overflow-hidden bg-zinc-900 flex items-center justify-center relative active:scale-90 transition transform">
+                <i id="thumbPlaceholderIcon" class="fa-solid fa-images text-white/50 text-base"></i>
+                <img id="thumbImage" class="hidden w-full h-full object-cover">
+            </button>
+
+            <button id="shutterBtn" class="w-20 h-20 rounded-full border-[4px] border-white p-1 flex items-center justify-center focus:outline-none active:scale-95 transition-transform duration-100">
+                <div class="w-full h-full bg-white rounded-full active:bg-zinc-300 transition-colors flex items-center justify-center">
+                    <i class="fa-solid fa-camera text-black text-xl opacity-20"></i>
+                </div>
+            </button>
+
+            <label class="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center text-white/80 active:scale-90 transition cursor-pointer">
+                <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                <input type="file" id="directFileInput" accept="image/*" class="hidden">
+            </label>
+        </footer>
+    </div>
+
+    <!-- APP VIEW CONTAINER 4: EXACT AZANIA BANK OFFICIAL DOCUMENT FORMAT -->
+    <div id="viewReport" class="hidden flex-1 flex-col bg-slate-950 overflow-y-auto">
+        <header class="h-16 px-6 bg-azania-darkNavy border-b border-slate-800 flex items-center justify-between sticky top-0 z-30 no-print shadow-xl">
+            <div class="flex items-center gap-3">
+                <button id="backToHomeFromReportBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-chevron-left text-[11px]"></i> Home
+                </button>
+                <button id="backToFormFromReportBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-azania-gold text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-pen-to-square text-[11px]"></i> Edit Form
+                </button>
+            </div>
+
+            <!-- Export Actions -->
+            <div class="flex items-center gap-2">
+                <button id="exportCsvBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition">
+                    <i class="fa-solid fa-file-csv text-emerald-400"></i>
+                    <span class="hidden md:inline">CSV Data</span>
+                </button>
+                <button id="downloadDocBtn" class="px-3 py-2 rounded-xl bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 shadow transition">
+                    <i class="fa-solid fa-file-word"></i>
+                    <span class="hidden md:inline">Word (.doc)</span>
+                </button>
+                <button id="printReportBtn" class="px-4 py-2 rounded-xl bg-azania-gold hover:bg-azania-goldHover text-azania-darkNavy text-xs font-extrabold flex items-center gap-1.5 shadow-lg transition">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Print / Save PDF</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="p-4 sm:p-8 flex justify-center">
+            <!-- OFFICIAL PRINTABLE AZANIA BANK DOCUMENT (EXACT LAYOUT REPLICA) -->
+            <div id="printableReportArea" class="max-w-3xl w-full bg-white text-black p-8 sm:p-12 shadow-2xl rounded-none border border-slate-300 font-serif leading-relaxed">
+                
+                <!-- TITLE HEADER -->
+                <div class="text-center mb-6">
+                    <h1 class="text-xl font-bold uppercase tracking-wide border-b-2 border-black inline-block pb-0.5">SITE VISIT REPORT</h1>
+                </div>
+
+                <!-- TABLE SECTION 1 & 5 (EXACT MATCHING DESIGN) -->
+                <table class="official-doc-table mb-6 text-sm">
+                    <tr>
+                        <td class="font-bold w-1/3" style="font-family: 'Times New Roman', serif;">1. Name of Wakala Account</td>
+                        <td colspan="3" id="rptClientName" contenteditable="true" class="font-bold uppercase" style="font-family: 'Times New Roman', serif;">KASSIM KHAMIS ALI</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold" style="font-family: 'Times New Roman', serif;">5. Location of Business:</td>
+                        <td class="font-bold" style="font-family: 'Times New Roman', serif;">
+                            GPS<br>
+                            <span id="rptGpsCoords" contenteditable="true" class="font-normal">-4.944618,39.74594</span>
+                        </td>
+                        <td class="font-bold" style="font-family: 'Times New Roman', serif;">
+                            Locality<br>
+                            <span id="rptLocality" contenteditable="true" class="font-normal uppercase">MICHEWENI</span>
+                        </td>
+                        <td class="font-bold" style="font-family: 'Times New Roman', serif;">
+                            District/ Municipality<br>
+                            <span id="rptDistrict" contenteditable="true" class="font-normal uppercase">KASKAZINI-PEMBA</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- SECTION: SITE VISIT REPORT -->
+                <div class="mb-4">
+                    <h2 class="text-base font-bold text-black mb-1" style="font-family: 'Times New Roman', serif;">Site visit report</h2>
+                    <p class="text-sm text-black" style="font-family: 'Times New Roman', serif;">
+                        The site was visited by <span id="rptOfficerName" contenteditable="true" class="font-semibold">Miss Hawa Juma</span>
+                    </p>
+                </div>
+
+                <!-- SECTION: GENERAL DESCRIPTION OF THE BUSINESS -->
+                <div class="mb-6">
+                    <h2 class="text-base font-bold text-black mb-1" style="font-family: 'Times New Roman', serif;">General Description of the Business</h2>
+                    <p id="rptBusinessDesc" contenteditable="true" class="text-sm text-black leading-normal" style="font-family: 'Times New Roman', serif;">
+                        Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA
+                    </p>
+                </div>
+
+                <!-- SECTION: BUSINESS LOCATION PHOTO EVIDENCE -->
+                <div class="mb-8">
+                    <h2 class="text-base font-bold text-black mb-2" style="font-family: 'Times New Roman', serif;">Business Location</h2>
+                    
+                    <div id="rptPhotosContainer" class="space-y-4">
+                        <div class="border border-slate-300 p-2 bg-slate-50 flex flex-col items-center justify-center">
+                            <img id="rptPrimaryPhoto" src="https://placehold.co/600x350/e2e8f0/1e293b?text=Captured+Business+Location+Photo" class="w-full max-h-96 object-contain border border-slate-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION: VERIFICATION DECLARATION -->
+                <div class="mt-8 pt-4 space-y-6">
+                    <p class="text-sm text-black leading-relaxed" style="font-family: 'Times New Roman', serif;">
+                        I, <span id="rptDeclOfficer" contenteditable="true" class="font-bold border-b border-black">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
+                    </p>
+
+                    <!-- SIGNATURE BLOCK -->
+                    <div class="pt-4 flex flex-wrap items-center justify-between text-sm text-black gap-4" style="font-family: 'Times New Roman', serif;">
+                        <div>
+                            <span>Name: </span>
+                            <span id="rptSignName" contenteditable="true" class="font-semibold">Hawa Juma</span>
+                        </div>
+                        <div>
+                            <span>Signature </span>
+                            <span class="inline-block border-b border-black w-32 text-center italic font-serif">HawaJuma</span>
+                        </div>
+                        <div>
+                            <span>Date: </span>
+                            <span id="rptSignDate" contenteditable="true" class="font-semibold border-b border-black px-2">26/09/2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE NUMBER -->
+                <div class="mt-12 text-left text-xs border-t border-black pt-2">
+                    <span style="font-family: 'Times New Roman', serif;">1</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Script JavaScript logic update -->
+    <script>
+        // App State Updated for Wakala Document
+        const state = {
+            activeView: 'home',
+            stream: null,
+            facingMode: 'environment',
+            flashEnabled: false,
+            photos: [],
+            activeTag: 'Business Location',
+            returnToViewAfterPhoto: 'wizard',
+            formData: {
+                clientName: 'KASSIM KHAMIS ALI',
+                officerName: 'Miss Hawa Juma',
+                reportDate: '2026-09-26',
+                caseRef: 'AZA-WAK-2026-09',
+                gpsCoords: '-4.944618,39.74594',
+                locality: 'MICHEWENI',
+                district: 'KASKAZINI-PEMBA',
+                businessDesc: 'Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA'
+            },
+            location: {
+                lat: -4.944618,
+                lng: 39.74594,
+                placeName: 'MICHEWENI, KASKAZINI PEMBA'
+            }
+        };
+
+        // ... existing navigation & camera engine ...
+        function switchView(targetView) {
+            state.activeView = targetView;
+            document.getElementById('viewHome').classList.add('hidden');
+            document.getElementById('viewWizard').classList.add('hidden');
+            document.getElementById('viewCamera').classList.add('hidden');
+            document.getElementById('viewReport').classList.add('hidden');
+
+            if (targetView === 'home') {
+                document.getElementById('viewHome').classList.remove('hidden');
+                renderDashboardLogs();
+            } else if (targetView === 'wizard') {
+                document.getElementById('viewWizard').classList.remove('hidden');
+                document.getElementById('viewWizard').classList.add('flex');
+                renderFormPhotosGrid();
+            } else if (targetView === 'camera') {
+                document.getElementById('viewCamera').classList.remove('hidden');
+                document.getElementById('viewCamera').classList.add('flex');
+                startCamera();
+            } else if (targetView === 'report') {
+                document.getElementById('viewReport').classList.remove('hidden');
+                document.getElementById('viewReport').classList.add('flex');
+                syncFormDataFromInputs();
+                renderBankReport();
+            }
+        }
+
+        window.triggerCameraWithTag = function(tag) {
+            state.activeTag = tag;
+            state.returnToViewAfterPhoto = 'wizard';
+            document.getElementById('previewCategoryTag').textContent = tag;
+            switchView('camera');
+        };
+
+        // Sync inputs from Wakala Form
+        function syncFormDataFromInputs() {
+            state.formData.clientName = document.getElementById('formClientName').value || 'KASSIM KHAMIS ALI';
+            state.formData.officerName = document.getElementById('formOfficerName').value || 'Miss Hawa Juma';
+            state.formData.reportDate = document.getElementById('formReportDate').value || '2026-09-26';
+            state.formData.caseRef = document.getElementById('formCaseRef').value || 'AZA-WAK-2026-09';
+            state.formData.gpsCoords = document.getElementById('formGpsCoords').value || '-4.944618,39.74594';
+            state.formData.locality = document.getElementById('formLocality').value || 'MICHEWENI';
+            state.formData.district = document.getElementById('formDistrict').value || 'KASKAZINI-PEMBA';
+            state.formData.businessDesc = document.getElementById('formBusinessDesc').value || 'Customer deals with Agent business...';
+
+            document.getElementById('statClientName').textContent = state.formData.clientName;
+            document.getElementById('statLocality').textContent = state.formData.locality;
+            document.getElementById('statDistrict').textContent = state.formData.district;
+            document.getElementById('statAuditorName').textContent = state.formData.officerName;
+            document.getElementById('formDeclOfficerText').textContent = state.formData.officerName;
+        }
+
+        // Render Report Matching Document
+        function renderBankReport() {
+            const data = state.formData;
+            document.getElementById('rptClientName').textContent = data.clientName;
+            document.getElementById('rptGpsCoords').textContent = data.gpsCoords;
+            document.getElementById('rptLocality').textContent = data.locality;
+            document.getElementById('rptDistrict').textContent = data.district;
+            document.getElementById('rptOfficerName').textContent = data.officerName;
+            document.getElementById('rptBusinessDesc').textContent = data.businessDesc;
+            
+            // Clean officer name for verification declaration (e.g., remove "Miss")
+            const cleanOfficerName = data.officerName.replace(/Miss\s+|Mr\s+/gi, '').trim();
+            document.getElementById('rptDeclOfficer').textContent = cleanOfficerName;
+            document.getElementById('rptSignName').textContent = cleanOfficerName;
+            
+            // Format date string (e.g. 26/09/2026)
+            if (data.reportDate) {
+                const parts = data.reportDate.split('-');
+                if (parts.length === 3) {
+                    document.getElementById('rptSignDate').textContent = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            }
+
+            // Render Photos
+            const container = document.getElementById('rptPhotosContainer');
+            container.innerHTML = '';
+
+            if (state.photos.length === 0) {
+                container.innerHTML = `
+                    <div class="border border-slate-300 p-2 bg-slate-50 flex flex-col items-center justify-center">
+                        <img src="https://placehold.co/600x350/e2e8f0/1e293b?text=Captured+Business+Location+Photo" class="w-full max-h-96 object-contain border border-slate-400">
+                    </div>
+                `;
+            } else {
+                state.photos.forEach((photo) => {
+                    const wrap = document.createElement('div');
+                    wrap.className = "border border-slate-300 p-2 bg-white text-center";
+                    wrap.innerHTML = `
+                        <img src="${photo.url}" class="w-full max-h-[450px] object-contain border border-slate-400 mb-1">
+                        <p class="text-xs text-slate-600 italic" style="font-family: 'Times New Roman', serif;">${photo.note || 'Business Location Photo'}</p>
+                    `;
+                    container.appendChild(wrap);
+                });
+            }
+        }
+
+        // Word (.doc) export generator
+        document.getElementById('downloadDocBtn').addEventListener('click', () => {
+            syncFormDataFromInputs();
+            renderBankReport();
+            
+            const content = document.getElementById('printableReportArea').outerHTML;
+            const html = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><title>Wakala Site Visit Report</title><style>body { font-family: 'Times New Roman', serif; }</style></head>
+                <body>${content}</body>
+                </html>
+            `;
+            
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Azania_Wakala_Report_${state.formData.clientName.replace(/\s+/g, '_')}.doc`;
+            a.click();
+            showToast("Word Document Exported", "fa-file-word");
+        });
+
+        // CSV export generator
+        document.getElementById('exportCsvBtn').addEventListener('click', () => {
+            syncFormDataFromInputs();
+            const rows = [
+                ["Field", "Value"],
+                ["Wakala Account Name", state.formData.clientName],
+                ["Visiting Officer Name", state.formData.officerName],
+                ["GPS Coordinates", state.formData.gpsCoords],
+                ["Locality", state.formData.locality],
+                ["District / Municipality", state.formData.district],
+                ["Business Description", state.formData.businessDesc],
+                ["Report Date", state.formData.reportDate],
+                ["Total Attached Photos", state.photos.length]
+            ];
+
+            let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Wakala_Data_${state.formData.clientName.replace(/\s+/g, '_')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("CSV Log Exported", "fa-file-csv");
+        });
+        
+        // ... rest of script initialization ...
+    </script>
+</body>
+</html>
