@@ -444,7 +444,126 @@
         </section>
 
     </main>
+    <!-- INJECT FOOTER -->
+    <div id="include-footer"></div>
 
+  </div>
+
+  <!-- JAVASCRIPT SYSTEM ENGINE -->
+  <script>
+    async function loadIncludes() {
+      const includes = [
+        { id: 'include-header', file: 'includes/header.html' },
+        { id: 'include-sidebar', file: 'includes/sidebar.html' },
+        { id: 'include-footer', file: 'includes/footer.html' }
+      ];
+
+      for (let item of includes) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          try {
+            const response = await fetch(item.file);
+            if (response.ok) {
+              el.outerHTML = await response.text();
+            }
+          } catch (error) {
+            console.error(`Error loading ${item.file}:`, error);
+          }
+        }
+      }
+
+      lucide.createIcons();
+      initThemeSystem();
+      setupLeftEdgeHover();
+    }
+
+    document.addEventListener('DOMContentLoaded', loadIncludes);
+
+    let sidebarOpen = false;
+    let autoCloseTimer = null;
+    let progressInterval = null;
+    const AUTO_CLOSE_DELAY = 20000;
+    let startTime = 0;
+
+    function initThemeSystem() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    function toggleSidebar(forceState) {
+      const sidebar = document.getElementById('desktopSidebar');
+      const contentWrapper = document.getElementById('contentWrapper');
+      const topNavbar = document.getElementById('topNavbar');
+      
+      sidebarOpen = typeof forceState === 'boolean' ? forceState : !sidebarOpen;
+
+      if (sidebarOpen) {
+        if (sidebar) sidebar.classList.remove('-translate-x-full');
+        if (contentWrapper) contentWrapper.classList.add('lg:pl-80');
+        if (topNavbar) topNavbar.classList.add('lg:pl-80');
+        startAutoCloseCountdown();
+      } else {
+        if (sidebar) sidebar.classList.add('-translate-x-full');
+        if (contentWrapper) contentWrapper.classList.remove('lg:pl-80');
+        if (topNavbar) topNavbar.classList.remove('lg:pl-80');
+        stopAutoCloseCountdown();
+      }
+    }
+
+    function setupLeftEdgeHover() {
+      const trigger = document.getElementById('leftEdgeTrigger');
+      const sidebar = document.getElementById('desktopSidebar');
+      if (!trigger || !sidebar) return;
+
+      trigger.addEventListener('mouseenter', () => { if (!sidebarOpen) toggleSidebar(true); });
+      sidebar.addEventListener('mousemove', () => { if (sidebarOpen) resetAutoCloseTimer(); });
+    }
+
+    function startAutoCloseCountdown() {
+      stopAutoCloseCountdown();
+      startTime = Date.now();
+      const progressBar = document.getElementById('autoCloseProgressBar');
+      const textDisplay = document.getElementById('autoCloseText');
+      
+      progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, AUTO_CLOSE_DELAY - elapsed);
+        const percent = (remaining / AUTO_CLOSE_DELAY) * 100;
+        if (progressBar) progressBar.style.width = percent + '%';
+        if (textDisplay) textDisplay.innerText = `Auto-hide: ${Math.ceil(remaining / 1000)}s`;
+        if (remaining <= 0) toggleSidebar(false);
+      }, 100);
+    }
+
+    function resetAutoCloseTimer() { startTime = Date.now(); }
+    function stopAutoCloseCountdown() {
+      if (progressInterval) clearInterval(progressInterval);
+      const progressBar = document.getElementById('autoCloseProgressBar');
+      if (progressBar) progressBar.style.width = '100%';
+    }
+
+    function toggleMobileDrawer() {
+      const drawer = document.getElementById('mobileDrawerContainer');
+      if (drawer) {
+        if (drawer.classList.contains('grid-rows-[0fr]')) {
+          drawer.classList.remove('grid-rows-[0fr]');
+          drawer.classList.add('grid-rows-[1fr]');
+        } else {
+          drawer.classList.remove('grid-rows-[1fr]');
+          drawer.classList.add('grid-rows-[0fr]');
+        }
+      }
+    }
+  </script>
     <!-- JavaScript Application Engine -->
     <script>
         // State Management
