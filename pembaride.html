@@ -45,512 +45,332 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; }
         .glass-panel {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .light .glass-panel {
-            background: rgba(255, 255, 255, 0.90);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-        }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .light .glass-card {
-            background: rgba(241, 245, 249, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-        }
-        /* Pulse & Glow Effects */
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-        .pulse-glow {
-            animation: pulse-slow 3s infinite ease-in-out;
-        }
         /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(16, 185, 129, 0.3);
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(16, 185, 129, 0.6);
-        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.2); border-radius: 9999px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 dark h-screen w-screen overflow-hidden flex flex-col md:flex-row transition-colors duration-300">
+<body class="bg-slate-950 text-slate-100 dark h-screen w-screen overflow-hidden flex flex-col md:flex-row transition-colors">
 
-    <!-- LOGIN & REGISTRATION MODAL -->
-    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md rounded-3xl p-6 md:p-8 border border-emerald-500/30 shadow-2xl space-y-5">
-            <div class="text-center space-y-2">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-emerald-500/30">
+    <!-- MINIMAL AUTHENTICATION MODAL -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-slate-800 shadow-xl space-y-4">
+            <div class="text-center space-y-1">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg font-bold border border-emerald-500/30">
                     <i class="fa-solid fa-palm-tree"></i>
                 </div>
-                <h2 id="authModalTitle" class="text-2xl font-extrabold text-white">Welcome to Pemba Ride</h2>
-                <p class="text-xs text-emerald-400 font-medium">Island Transport Made Simple & Reliable</p>
+                <h2 id="authModalTitle" class="text-xl font-bold text-white">Pemba Ride</h2>
+                <p class="text-xs text-slate-400">Minimal Island Transport</p>
             </div>
 
-            <!-- TAB SWITCHER -->
-            <div class="flex bg-slate-900/90 rounded-xl p-1 border border-slate-800">
-                <button id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition">Sign In</button>
-                <button id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition">Create Account</button>
+            <div class="flex bg-slate-900 rounded-lg p-1 border border-slate-800 text-xs">
+                <button id="tabLogin" class="flex-1 py-1.5 font-semibold rounded bg-emerald-500 text-slate-950 transition">Sign In</button>
+                <button id="tabRegister" class="flex-1 py-1.5 font-semibold rounded text-slate-400 hover:text-slate-200 transition">Register</button>
             </div>
 
-            <!-- LOGIN / REGISTER FORM -->
-            <form id="authForm" class="space-y-4">
+            <form id="authForm" class="space-y-3 text-xs">
                 <div id="nameField" class="hidden">
-                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="authName" placeholder="e.g. Salim Ali" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <label class="block font-medium text-slate-400 mb-1">Full Name</label>
+                    <input type="text" id="authName" placeholder="e.g. Salim Ali" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Phone Number or Email</label>
-                    <input type="text" id="authIdentity" required placeholder="e.g. +255 770 123 456" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <label class="block font-medium text-slate-400 mb-1">Phone / Identity</label>
+                    <input type="text" id="authIdentity" required placeholder="+255 770 000 000" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Password</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <label class="block font-medium text-slate-400 mb-1">Password</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Account Role</label>
-                    <select id="authRole" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                        <option value="rider">Rider (Passenger)</option>
-                        <option value="driver">Driver (Pemba Transport Partner)</option>
+                    <label class="block font-medium text-slate-400 mb-1">Account Role</label>
+                    <select id="authRole" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
+                        <option value="rider">Passenger (Rider)</option>
+                        <option value="driver">Island Driver</option>
                     </select>
                 </div>
 
-                <!-- Driver specific vehicle info registration fields -->
-                <div id="driverFields" class="hidden space-y-3 pt-2 border-t border-slate-800">
+                <div id="driverFields" class="hidden space-y-2 pt-2 border-t border-slate-800">
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Vehicle Type</label>
-                        <select id="driverVehicleType" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            <option value="bajaji">Bajaji (Auto Rickshaw)</option>
-                            <option value="bodaboda">Bodaboda (Motorcycle)</option>
-                            <option value="taxi">Standard Taxi (Sedan)</option>
-                            <option value="express">Pemba Express (4x4 SUV)</option>
+                        <label class="block font-medium text-slate-400 mb-1">Vehicle Type</label>
+                        <select id="driverVehicleType" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100">
+                            <option value="bajaji">Bajaji Rickshaw</option>
+                            <option value="bodaboda">Bodaboda Motorcycle</option>
+                            <option value="taxi">Taxi Sedan</option>
+                            <option value="express">Pemba Express 4x4</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Plate Number & Vehicle Description</label>
-                        <input type="text" id="driverVehicleDetail" placeholder="e.g. Z 452 PB - TVS King Yellow" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block font-medium text-slate-400 mb-1">Plate Number</label>
+                        <input type="text" id="driverVehicleDetail" placeholder="Z 452 PB - Yellow TVS" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100">
                     </div>
                 </div>
 
-                <button type="submit" id="authSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-teal-400 transition">
+                <button type="submit" id="authSubmitBtn" class="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition">
                     Sign In
                 </button>
             </form>
 
-            <div class="text-center pt-2">
-                <button type="button" id="guestLoginBtn" class="text-xs text-slate-400 hover:text-emerald-400 underline">Continue as Demo Rider</button>
+            <div class="text-center pt-1">
+                <button type="button" id="guestLoginBtn" class="text-xs text-slate-400 hover:text-emerald-400">Continue as Guest</button>
             </div>
         </div>
     </div>
 
-    <!-- DRIVER INCOMING RIDE REQUEST NOTIFICATION MODAL -->
-    <div id="driverIncomingModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 md:p-8 border border-amber-500/50 shadow-2xl space-y-5">
-            <div class="flex items-center space-x-3 text-amber-400 border-b border-slate-800 pb-3">
-                <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 text-lg font-bold animate-pulse">
-                    <i class="fa-solid fa-bell"></i>
+    <!-- DRIVER INCOMING RIDE NOTIFICATION MODAL -->
+    <div id="driverIncomingModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 shadow-xl space-y-4">
+            <div class="flex items-center space-x-2 text-amber-400 border-b border-slate-800 pb-2">
+                <i class="fa-solid fa-bell text-base animate-pulse"></i>
+                <h3 class="text-sm font-bold text-white">New Ride Request</h3>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2 text-xs">
+                <div class="flex justify-between">
+                    <span class="text-slate-400">Passenger:</span>
+                    <span id="reqPassengerName" class="font-bold text-emerald-400">--</span>
                 </div>
-                <div>
-                    <h3 class="text-lg font-extrabold text-white">Incoming Ride Request!</h3>
-                    <p class="text-xs text-amber-400 font-medium">A passenger has specifically requested you for a trip</p>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">From:</span>
+                    <span id="reqPickup" class="font-medium text-slate-200">--</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">To:</span>
+                    <span id="reqDest" class="font-medium text-slate-200">--</span>
+                </div>
+                <div class="flex justify-between pt-1 border-t border-slate-800">
+                    <span class="text-slate-400">Fare:</span>
+                    <span id="reqFare" class="font-bold text-white">--</span>
                 </div>
             </div>
 
-            <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-3 text-sm">
-                <div class="flex justify-between items-center pb-2 border-b border-slate-800">
-                    <span class="text-slate-400 text-xs font-bold uppercase">Passenger</span>
-                    <span id="reqPassengerName" class="font-extrabold text-emerald-400">Salim Ali</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 text-xs font-bold uppercase">Pickup Location</span>
-                    <span id="reqPickup" class="font-semibold text-slate-200">Chake-Chake</span>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 text-xs font-bold uppercase">Destination</span>
-                    <span id="reqDest" class="font-semibold text-slate-200">Karume Airport</span>
-                </div>
-                <div class="flex justify-between items-center pt-2 border-t border-slate-800">
-                    <span class="text-slate-400 text-xs font-bold uppercase">Offered Fare</span>
-                    <span id="reqFare" class="font-black text-xl text-white">TSh 7,500</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 pt-2">
-                <button type="button" id="declineRideBtn" class="py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm border border-slate-700 transition">
-                    Decline Request
-                </button>
-                <button type="button" id="acceptRideBtn" class="py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-sm shadow-lg shadow-emerald-500/30 hover:from-emerald-400 hover:to-teal-400 transition">
-                    Accept Ride
-                </button>
+            <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="declineRideBtn" class="py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700">Decline</button>
+                <button type="button" id="acceptRideBtn" class="py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs">Accept</button>
             </div>
         </div>
     </div>
 
     <!-- MOBILE HEADER -->
-    <header class="md:hidden z-30 bg-slate-900/90 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
-        <div class="flex items-center space-x-2.5">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-extrabold text-lg shadow-lg shadow-emerald-500/20">
-                P
-            </div>
-            <div>
-                <span class="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-white">Pemba Ride</span>
-                <p class="text-[9px] text-emerald-400 font-medium leading-none">Island Express</p>
-            </div>
-        </div>
+    <header class="md:hidden z-30 bg-slate-900 px-4 py-2.5 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
         <div class="flex items-center space-x-2">
-            <button id="userAccountBtnMobile" class="text-xs font-bold px-2 py-1 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 flex items-center gap-1">
+            <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-sm">P</div>
+            <span class="font-bold text-sm text-white">Pemba Ride</span>
+        </div>
+        <div class="flex items-center space-x-2 text-xs">
+            <button id="userAccountBtnMobile" class="px-2 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700">
                 <i class="fa-solid fa-user"></i> <span id="userMobileLabel">Guest</span>
             </button>
-            <button id="currencyToggleMobile" class="text-xs font-bold px-2 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                TZS
-            </button>
-            <button id="themeToggleMobile" class="p-2 rounded-xl bg-slate-800 text-slate-300">
-                <i class="fa-solid fa-moon dark:hidden"></i>
-                <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
-            </button>
+            <button id="currencyToggleMobile" class="px-2 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700">TZS</button>
         </div>
     </header>
 
     <!-- LEFT SIDEBAR / BOOKING CONTROL PANEL -->
-    <aside id="sidebar" class="w-full md:w-[460px] lg:w-[500px] xl:w-[540px] h-[calc(100vh-57px)] md:h-screen flex-shrink-0 z-20 flex flex-col glass-panel border-r border-slate-800/80 shadow-2xl overflow-y-auto">
+    <aside id="sidebar" class="w-full md:w-[400px] lg:w-[440px] h-[calc(100vh-50px)] md:h-screen flex-shrink-0 z-20 flex flex-col glass-panel border-r border-slate-800 shadow-xl overflow-y-auto">
         
         <!-- DESKTOP HEADER -->
-        <div class="hidden md:flex items-center justify-between p-5 border-b border-slate-800/60 flex-shrink-0">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-emerald-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/30">
-                    <i class="fa-solid fa-palm-tree text-slate-950"></i>
+        <div class="hidden md:flex items-center justify-between p-4 border-b border-slate-800 flex-shrink-0">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-sm">
+                    <i class="fa-solid fa-palm-tree"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-xl tracking-tight text-white">Pemba Ride</h1>
-                    <p class="text-xs text-emerald-400 font-medium">Island Transport Made Simple & Reliable</p>
+                    <h1 class="font-bold text-base text-white">Pemba Ride</h1>
                 </div>
             </div>
             
             <div class="flex items-center space-x-2">
-                <!-- User Status -->
-                <button id="userAccountBtnDesktop" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex items-center gap-1.5 transition">
+                <button id="userAccountBtnDesktop" class="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-1 hover:bg-slate-700">
                     <i class="fa-solid fa-user-circle text-emerald-400"></i>
-                    <span id="userDesktopLabel">Guest</span>
+                    <span id="userDesktopLabel">Sign In</span>
                 </button>
-                <!-- Export/Connect CSV File Button -->
-                <button id="exportCsvBtn" title="Sync & Download assets/pembaride.csv" class="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition flex items-center justify-center gap-1.5 text-xs font-bold">
-                    <i class="fa-solid fa-file-csv text-base"></i>
-                    <span>assets/pembaride.csv</span>
+                <button id="exportCsvBtn" title="Sync & Download assets/pembaride.csv" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-xs font-semibold">
+                    <i class="fa-solid fa-file-csv"></i> CSV
                 </button>
-                <!-- Currency Toggle -->
-                <button id="currencyToggleDesktop" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-coins text-emerald-400"></i>
-                    <span id="currencyText">TZS (TSh)</span>
-                </button>
-                <!-- Theme Toggle -->
-                <button id="themeToggleDesktop" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition">
-                    <i class="fa-solid fa-moon dark:hidden"></i>
-                    <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
+                <button id="currencyToggleDesktop" class="text-xs font-semibold px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-emerald-400">
+                    <span id="currencyText">TZS</span>
                 </button>
             </div>
         </div>
 
         <!-- MAIN FORM BODY -->
-        <div class="p-4 md:p-6 space-y-5 flex-1">
+        <div class="p-4 space-y-4 flex-1">
             
-            <!-- DRIVER ONLINE TOGGLE PANEL (Visible for Driver Role) -->
-            <div id="driverStatusContainer" class="hidden bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-3">
+            <!-- DRIVER ONLINE TOGGLE PANEL -->
+            <div id="driverStatusContainer" class="hidden bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-sm font-extrabold text-white">Driver Status</h3>
-                        <p class="text-[11px] text-slate-400">Go online to accept passenger requests in Pemba</p>
+                        <h3 class="text-xs font-bold text-white">Driver Availability</h3>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="driverOnlineToggle" class="sr-only peer">
-                        <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>
                 </div>
-                <div id="driverOnlineBadge" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-rose-500"></span> Offline (Not accepting rides)
+                <div id="driverOnlineBadge" class="text-[11px] font-medium px-2 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 text-center">
+                    Offline (Not accepting rides)
                 </div>
             </div>
 
             <!-- LOCATION SELECTOR CONTAINER -->
-            <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 shadow-inner relative space-y-3">
-                
-                <!-- GEOLOCATION GPS BUTTON -->
-                <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pickup Location</span>
-                    <button type="button" id="useMyLocationBtn" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-location-crosshairs text-emerald-400"></i>
-                        <span>Use My Current Location</span>
+            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2 text-xs">
+                <div class="flex items-center justify-between pb-1 border-b border-slate-800">
+                    <span class="font-bold text-slate-400 uppercase text-[10px]">Pickup Location</span>
+                    <button type="button" id="useMyLocationBtn" class="text-[11px] text-emerald-400 font-medium hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-location-crosshairs"></i> Use My GPS
                     </button>
                 </div>
 
-                <!-- Vertical Line Connector -->
-                <div class="absolute left-[29px] top-[60px] bottom-[42px] w-0.5 bg-gradient-to-b from-emerald-500 via-teal-400 to-coral-500 z-0"></div>
-
-                <!-- Pickup Selector -->
-                <div class="relative z-10 flex items-center space-x-3">
-                    <div class="w-7 h-7 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center flex-shrink-0">
-                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                    </div>
-                    <div class="flex-1">
-                        <select id="pickupSelect" class="w-full bg-slate-800/80 text-slate-100 text-sm rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition font-medium">
-                            <option value="" disabled selected>Select starting location...</option>
-                        </select>
-                    </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    <select id="pickupSelect" class="w-full bg-slate-800 text-slate-100 rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:border-emerald-500 font-medium">
+                        <option value="" disabled selected>Select pickup...</option>
+                    </select>
                 </div>
 
-                <!-- Swap Button & Divider -->
-                <div class="flex justify-end pr-3 relative z-10 -my-1">
-                    <button id="swapLocationsBtn" class="w-7 h-7 rounded-full bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center justify-center text-xs shadow transition transform active:scale-95">
+                <div class="flex justify-end my-0.5">
+                    <button id="swapLocationsBtn" class="w-6 h-6 rounded-full bg-slate-800 text-emerald-400 border border-slate-700 flex items-center justify-center text-[10px]">
                         <i class="fa-solid fa-arrows-up-down"></i>
                     </button>
                 </div>
 
-                <!-- Destination Selector -->
-                <div class="relative z-10 flex items-center space-x-3">
-                    <div class="w-7 h-7 rounded-full bg-coral-500/20 border-2 border-coral-500 flex items-center justify-center flex-shrink-0">
-                        <div class="w-2.5 h-2.5 rounded-sm bg-coral-500"></div>
-                    </div>
-                    <div class="flex-1">
-                        <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-0.5">Destination</label>
-                        <select id="destSelect" class="w-full bg-slate-800/80 text-slate-100 text-sm rounded-xl px-3 py-2 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-coral-500 transition font-medium">
-                            <option value="" disabled selected>Where on the island do you want to go?</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- WEATHER & PEAK SURGE SIMULATOR -->
-            <div class="bg-slate-900/60 rounded-2xl p-3.5 border border-slate-800 space-y-3">
-                <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
-                    <span class="uppercase tracking-wider">Island Conditions Factor</span>
-                    <span id="surgeDisplay" class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Standard Rate (1.0x)</span>
-                </div>
-                <div class="grid grid-cols-3 gap-2">
-                    <button type="button" data-condition="clear" class="condition-btn active py-2 px-2 rounded-xl text-xs font-medium border border-emerald-500/60 bg-emerald-500/10 text-emerald-300 transition flex flex-col items-center gap-1">
-                        <i class="fa-solid fa-sun text-amber-400 text-sm"></i> Clear / Calm
-                    </button>
-                    <button type="button" data-condition="rain" class="condition-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-800/60 text-slate-400 hover:text-slate-200 transition flex flex-col items-center gap-1">
-                        <i class="fa-solid fa-cloud-showers-heavy text-cyan-400 text-sm"></i> Monsoonal Rain (+15%)
-                    </button>
-                    <button type="button" data-condition="ferry" class="condition-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-800 bg-slate-800/60 text-slate-400 hover:text-slate-200 transition flex flex-col items-center gap-1">
-                        <i class="fa-solid fa-ship text-indigo-400 text-sm"></i> Ferry Rush (+30%)
-                    </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                    <select id="destSelect" class="w-full bg-slate-800 text-slate-100 rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:border-rose-500 font-medium">
+                        <option value="" disabled selected>Select destination...</option>
+                    </select>
                 </div>
             </div>
 
             <!-- PEMBA TRANSPORT OPTIONS -->
-            <div class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <label class="block text-xs uppercase tracking-wider font-bold text-slate-400">Choose Pemba Ride Mode</label>
-                    <span class="text-[11px] text-emerald-400">Island Fleet</span>
-                </div>
-                <div class="space-y-2.5" id="transportOptionsContainer">
-                    <!-- Dynamic rendering of Bajaji, Bodaboda, Taxi, Express -->
+            <div class="space-y-1.5">
+                <label class="block text-[10px] uppercase font-bold text-slate-400">Vehicle Type</label>
+                <div class="space-y-1.5" id="transportOptionsContainer">
+                    <!-- Dynamic Bajaji, Bodaboda, Taxi, Express options -->
                 </div>
             </div>
 
-            <!-- AVAILABLE ONLINE DRIVERS SELECTION (Visible for Passenger) -->
-            <div id="onlineDriversContainer" class="space-y-2">
-                <div class="flex justify-between items-center">
-                    <label class="block text-xs uppercase tracking-wider font-bold text-emerald-400">Available Online Drivers</label>
-                    <span id="onlineDriversCount" class="text-[11px] text-slate-400 font-mono">0 Drivers Online</span>
-                </div>
-                <div id="onlineDriversList" class="space-y-2 max-h-44 overflow-y-auto pr-1">
-                    <div class="text-center py-4 bg-slate-900/40 rounded-xl border border-slate-800 text-xs text-slate-400">
-                        No online drivers available. Open another tab and log in as a Driver to test live dispatch!
-                    </div>
-                </div>
-            </div>
-
-            <!-- TRIP FARE & SUMMARY CARD -->
-            <div id="fareCard" class="bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950/40 rounded-2xl p-4 border border-emerald-500/20 space-y-3">
+            <!-- AVAILABLE ONLINE DRIVERS SELECTION -->
+            <div id="onlineDriversContainer" class="space-y-1.5">
                 <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400 font-medium">Estimated Distance & Time:</span>
-                    <span id="routeInfoDisplay" class="font-bold text-emerald-400 font-mono">-- km | -- mins</span>
+                    <label class="block text-[10px] uppercase font-bold text-emerald-400">Available Drivers</label>
+                    <span id="onlineDriversCount" class="text-[10px] text-slate-400">0 Online</span>
                 </div>
-                <div class="flex justify-between items-end pt-2 border-t border-slate-800/80">
-                    <div>
-                        <span class="text-xs text-slate-400 block font-medium">Estimated Island Fare</span>
-                        <div class="flex items-baseline space-x-1.5">
-                            <span id="totalFareDisplay" class="text-3xl font-black text-white tracking-tight">TSh 0</span>
-                        </div>
+                <div id="onlineDriversList" class="space-y-1.5 max-h-36 overflow-y-auto">
+                    <div class="text-center py-3 bg-slate-900/40 rounded-lg border border-slate-800 text-[11px] text-slate-400">
+                        No online drivers available.
                     </div>
-                    <button id="toggleBreakdownBtn" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1">
-                        Fare Rules <i class="fa-solid fa-chevron-down text-[10px] transition-transform" id="breakdownIcon"></i>
-                    </button>
                 </div>
+            </div>
 
-                <!-- Fare Breakdown Accordion -->
-                <div id="fareBreakdownDetails" class="hidden text-xs space-y-1.5 pt-3 border-t border-slate-800/50 text-slate-400 font-mono">
-                    <div class="flex justify-between"><span>Base Rate</span><span id="breakdownBase">TSh 0</span></div>
-                    <div class="flex justify-between"><span>Distance Charge</span><span id="breakdownDist">TSh 0</span></div>
-                    <div class="flex justify-between"><span>Island Maintenance Fee</span><span id="breakdownFee">TSh 500</span></div>
-                    <div class="flex justify-between text-amber-400"><span>Condition Surge</span><span id="breakdownSurge">1.0x</span></div>
+            <!-- TRIP FARE SUMMARY -->
+            <div id="fareCard" class="bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-medium">Distance & Time:</span>
+                    <span id="routeInfoDisplay" class="font-bold text-emerald-400">-- km | -- mins</span>
+                </div>
+                <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+                    <span class="text-xs text-slate-400 font-medium">Estimated Fare</span>
+                    <span id="totalFareDisplay" class="text-xl font-bold text-white">TSh 0</span>
                 </div>
             </div>
 
             <!-- ACTION BUTTON -->
-            <button id="requestRideBtn" disabled class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-base shadow-lg shadow-emerald-500/20 transition transform active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                <i class="fa-solid fa-paper-plane text-slate-950"></i>
-                <span>Request Pemba Ride</span>
+            <button id="requestRideBtn" disabled class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-md transition disabled:opacity-40 disabled:cursor-not-allowed">
+                Request Ride
             </button>
         </div>
     </aside>
 
-    <!-- RIGHT MAIN PANEL: VISUAL PROGRESS LINE & LIVE TRIP INTERACTION -->
-    <main class="flex-1 relative h-full w-full bg-slate-950 flex flex-col justify-between overflow-y-auto p-4 md:p-8 space-y-6">
+    <!-- RIGHT MAIN PANEL: MINIMAL PROGRESS LINE & TRIP STATUS -->
+    <main class="flex-1 relative h-full w-full bg-slate-950 flex flex-col justify-between overflow-y-auto p-4 md:p-6 space-y-4">
         
-        <!-- TOP CARD: CURRENT ROUTE HEADLINE -->
-        <div class="glass-panel rounded-2xl p-5 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl font-bold">
+        <!-- ROUTE HEADLINE -->
+        <div class="glass-panel rounded-xl p-4 border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm">
                     <i class="fa-solid fa-compass"></i>
                 </div>
                 <div>
-                    <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Pemba Island Active Route</span>
-                    <h2 id="routeHeadline" class="text-lg md:text-xl font-extrabold text-white">Select Origin & Destination</h2>
-                    <p id="routeSubline" class="text-xs text-slate-400">Direct island dispatching service across Pemba North & South</p>
+                    <h2 id="routeHeadline" class="text-base font-bold text-white">Select Origin & Destination</h2>
+                    <p id="routeSubline" class="text-xs text-slate-400">Pemba Island Ride Progress</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3 self-end sm:self-auto">
-                <span id="tripStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-slate-500"></span> Idle
-                </span>
-            </div>
+            <span id="tripStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                Idle
+            </span>
         </div>
 
-        <!-- CENTER VISUALIZATION: SVG INTERACTIVE PROGRESS ROUTE LINE -->
-        <div class="glass-panel rounded-3xl p-6 md:p-10 border border-slate-800/80 flex-1 flex flex-col justify-center items-center relative overflow-hidden min-h-[360px]">
-            <!-- Decorative Island Background Pattern -->
-            <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center">
-                <i class="fa-solid fa-island-tropical text-[280px] text-emerald-400"></i>
-            </div>
-
-            <!-- Header Info for Line -->
-            <div class="w-full max-w-3xl flex justify-between items-center mb-8 relative z-10">
-                <div class="text-left">
-                    <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest block">DEPARTURE</span>
-                    <h3 id="linePickupLabel" class="text-base md:text-lg font-bold text-slate-200">Select Pickup</h3>
+        <!-- CENTER SVG PROGRESS ROUTE LINE -->
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800/80 flex-1 flex flex-col justify-center items-center relative overflow-hidden min-h-[300px]">
+            
+            <div class="w-full max-w-2xl flex justify-between items-center mb-6 z-10 text-xs">
+                <div>
+                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">FROM</span>
+                    <h3 id="linePickupLabel" class="font-semibold text-slate-200">Pickup</h3>
                 </div>
                 <div class="text-center">
-                    <span id="lineProgressPercent" class="text-xl md:text-2xl font-black text-emerald-400 font-mono">0%</span>
-                    <span class="text-[10px] text-slate-400 block font-medium uppercase">Trip Progress</span>
+                    <span id="lineProgressPercent" class="text-xl font-bold text-emerald-400">0%</span>
                 </div>
                 <div class="text-right">
-                    <span class="text-[11px] font-bold text-coral-400 uppercase tracking-widest block">ARRIVAL</span>
-                    <h3 id="lineDestLabel" class="text-base md:text-lg font-bold text-slate-200">Select Destination</h3>
+                    <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">TO</span>
+                    <h3 id="lineDestLabel" class="font-semibold text-slate-200">Destination</h3>
                 </div>
             </div>
 
-            <!-- SVG PROGRESS ROUTE CONTAINER -->
-            <div class="w-full max-w-3xl relative z-10 px-4 py-6">
-                <!-- SVG Line Visual -->
-                <svg id="routeSvg" class="w-full h-24 overflow-visible" viewBox="0 0 800 100" preserveAspectRatio="none">
-                    <defs>
-                        <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#10b981" />
-                            <stop offset="50%" stop-color="#14b8a6" />
-                            <stop offset="100%" stop-color="#f43f5e" />
-                        </linearGradient>
-                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="4" result="blur" />
-                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                    </defs>
+            <!-- SVG Line Visual -->
+            <div class="w-full max-w-2xl relative z-10 py-4">
+                <svg id="routeSvg" class="w-full h-16 overflow-visible" viewBox="0 0 800 100" preserveAspectRatio="none">
+                    <path d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+                    <path id="activeRoutePath" d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-dasharray="800" stroke-dashoffset="800"/>
 
-                    <!-- Background Path (Inactive) -->
-                    <path d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
+                    <circle cx="50" cy="50" r="8" fill="#0f172a" stroke="#10b981" stroke-width="3"/>
+                    <circle cx="750" cy="50" r="8" fill="#0f172a" stroke="#f43f5e" stroke-width="3"/>
 
-                    <!-- Active Dynamic Route Path -->
-                    <path id="activeRoutePath" d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="url(#routeGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="800" stroke-dashoffset="800" filter="url(#glow)"/>
-
-                    <!-- Intermediate Checkpoint Nodes -->
-                    <circle cx="50" cy="50" r="12" fill="#0f172a" stroke="#10b981" stroke-width="4"/>
-                    <circle cx="260" cy="35" r="7" fill="#0f172a" stroke="#334155" stroke-width="3" id="cp1"/>
-                    <circle cx="400" cy="50" r="7" fill="#0f172a" stroke="#334155" stroke-width="3" id="cp2"/>
-                    <circle cx="570" cy="45" r="7" fill="#0f172a" stroke="#334155" stroke-width="3" id="cp3"/>
-                    <circle cx="750" cy="50" r="12" fill="#0f172a" stroke="#f43f5e" stroke-width="4"/>
-
-                    <!-- Vehicle Progress Icon Overlay (Moves dynamically) -->
                     <g id="vehicleMarkerGroup" transform="translate(50, 50)" class="transition-transform duration-300">
-                        <circle r="20" fill="#10b981" class="animate-ping opacity-30"/>
-                        <circle r="16" fill="#10b981" stroke="#ffffff" stroke-width="2.5"/>
-                        <text id="vehicleIconText" x="0" y="5" text-anchor="middle" fill="#090d16" font-family="FontAwesome" font-size="12" font-weight="bold">🛺</text>
+                        <circle r="12" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                        <text id="vehicleIconText" x="0" y="4" text-anchor="middle" fill="#090d16" font-size="10" font-weight="bold">🛺</text>
                     </g>
                 </svg>
-
-                <!-- Checkpoint Labels Row -->
-                <div class="flex justify-between text-[11px] text-slate-400 mt-4 px-2 font-medium">
-                    <span>Pickup Node</span>
-                    <span id="cpLabel1">Chake North</span>
-                    <span id="cpLabel2">Mid Island</span>
-                    <span id="cpLabel3">Port Junction</span>
-                    <span>Destination</span>
-                </div>
             </div>
 
-            <!-- LIVE STATUS MESSAGE FOOTER INSIDE CARD -->
-            <div id="liveStatusBanner" class="mt-6 bg-slate-900/90 border border-slate-800 rounded-2xl px-5 py-3 flex items-center space-x-3 text-xs text-slate-300 max-w-xl w-full justify-center shadow-lg">
-                <i class="fa-solid fa-circle-info text-emerald-400 text-sm"></i>
-                <span id="liveStatusText">Select pickup and destination to calculate exact island route and fare.</span>
+            <div id="liveStatusBanner" class="mt-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 flex items-center space-x-2 text-xs text-slate-300">
+                <i class="fa-solid fa-circle-info text-emerald-400"></i>
+                <span id="liveStatusText">Select pickup and destination to view trip details.</span>
             </div>
         </div>
 
-        <!-- BOTTOM CARD: DRIVER & MATCH DETAILS (Appears when ride is accepted) -->
-        <div id="driverDetailsCard" class="hidden glass-panel rounded-2xl p-5 border border-emerald-500/30 transition-all duration-300">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <!-- Driver Info -->
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <div id="driverAvatar" class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold text-xl border-2 border-emerald-400">
-                            KH
-                        </div>
-                        <span class="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.2 rounded-full border border-slate-900">4.9★</span>
+        <!-- DRIVER DETAILS CARD -->
+        <div id="driverDetailsCard" class="hidden glass-panel rounded-xl p-4 border border-slate-800">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                <div class="flex items-center space-x-3">
+                    <div id="driverAvatar" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center border border-emerald-500/30">
+                        KH
                     </div>
                     <div>
-                        <div class="flex items-center space-x-2">
-                            <h4 id="driverName" class="font-extrabold text-base text-white">Khamis Ally</h4>
-                            <span id="driverVerified" class="text-emerald-400 text-xs" title="Pemba Verified Driver"><i class="fa-solid fa-circle-check"></i></span>
-                        </div>
-                        <p id="driverVehicle" class="text-xs text-slate-300 font-medium">Yellow-Black Bajaji TVS King</p>
-                        <div class="flex items-center space-x-2 mt-1">
-                            <span id="driverPlate" class="text-[11px] font-mono bg-slate-800 px-2 py-0.5 rounded text-emerald-400 border border-slate-700">Z 452 PB</span>
-                            <span class="text-[11px] text-slate-400">• Pemba Local Guide</span>
-                        </div>
+                        <h4 id="driverName" class="font-bold text-sm text-white">Driver Name</h4>
+                        <p id="driverVehicle" class="text-slate-400">Vehicle Description</p>
                     </div>
                 </div>
 
-                <!-- Call Driver & Dynamic Driver Ride Control Buttons -->
-                <div class="flex items-center space-x-3 w-full sm:w-auto">
-                    <!-- Driver specific ride control button -->
-                    <button id="driverActionBtn" class="hidden flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/30 transition">
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                    <button id="driverActionBtn" class="hidden flex-1 sm:flex-none py-1.5 px-3 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">
                         Start Ride
                     </button>
-                    <a id="callDriverBtn" href="tel:+255770000000" class="flex-1 sm:flex-none py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition">
-                        <i class="fa-solid fa-phone"></i>
-                        <span id="callBtnText">Call Driver</span>
+                    <a id="callDriverBtn" href="tel:+255770000000" class="flex-1 sm:flex-none py-1.5 px-3 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 font-semibold text-xs flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-phone"></i> Call
                     </a>
-                    <button id="cancelRideBtn" class="py-2.5 px-4 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-coral-400 border border-rose-500/20 font-bold text-xs transition">
+                    <button id="cancelRideBtn" class="py-1.5 px-3 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-xs">
                         Cancel
                     </button>
                 </div>
@@ -779,44 +599,52 @@
             const pickupSelect = document.getElementById('pickupSelect');
             const destSelect = document.getElementById('destSelect');
 
-            pickupSelect.innerHTML = '<option value="" disabled selected>Select starting location...</option>';
-            destSelect.innerHTML = '<option value="" disabled selected>Where on the island do you want to go?</option>';
+            if (pickupSelect && destSelect) {
+                pickupSelect.innerHTML = '<option value="" disabled selected>Select starting location...</option>';
+                destSelect.innerHTML = '<option value="" disabled selected>Where on the island do you want to go?</option>';
 
-            LOCATIONS.forEach(loc => {
-                const opt1 = document.createElement('option');
-                opt1.value = loc.id;
-                opt1.textContent = `${loc.name} (${loc.region} Pemba)`;
-                pickupSelect.appendChild(opt1);
+                LOCATIONS.forEach(loc => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = loc.id;
+                    opt1.textContent = `${loc.name} (${loc.region} Pemba)`;
+                    pickupSelect.appendChild(opt1);
 
-                const opt2 = document.createElement('option');
-                opt2.value = loc.id;
-                opt2.textContent = `${loc.name} (${loc.region} Pemba)`;
-                destSelect.appendChild(opt2);
-            });
+                    const opt2 = document.createElement('option');
+                    opt2.value = loc.id;
+                    opt2.textContent = `${loc.name} (${loc.region} Pemba)`;
+                    destSelect.appendChild(opt2);
+                });
 
-            pickupSelect.onchange = (e) => {
-                state.pickupId = e.target.value;
-                calculateAndUpdate();
-            };
+                pickupSelect.onchange = (e) => {
+                    state.pickupId = e.target.value;
+                    calculateAndUpdate();
+                };
 
-            destSelect.onchange = (e) => {
-                state.destId = e.target.value;
-                calculateAndUpdate();
-            };
+                destSelect.onchange = (e) => {
+                    state.destId = e.target.value;
+                    calculateAndUpdate();
+                };
+            }
 
-            document.getElementById('swapLocationsBtn').onclick = () => {
-                const temp = state.pickupId;
-                state.pickupId = state.destId;
-                state.destId = temp;
-                pickupSelect.value = state.pickupId || '';
-                destSelect.value = state.destId || '';
-                calculateAndUpdate();
-            };
+            const swapBtn = document.getElementById('swapLocationsBtn');
+            if (swapBtn) {
+                swapBtn.onclick = () => {
+                    const temp = state.pickupId;
+                    state.pickupId = state.destId;
+                    state.destId = temp;
+                    if (pickupSelect) pickupSelect.value = state.pickupId || '';
+                    if (destSelect) destSelect.value = state.destId || '';
+                    calculateAndUpdate();
+                };
+            }
 
             // Geolocation Button handler
-            document.getElementById('useMyLocationBtn').onclick = locateUserGPS;
+            const myLocBtn = document.getElementById('useMyLocationBtn');
+            if (myLocBtn) {
+                myLocBtn.onclick = locateUserGPS;
+            }
 
-            // Condition buttons
+            // Condition buttons (safe check)
             document.querySelectorAll('.condition-btn').forEach(btn => {
                 btn.onclick = () => {
                     document.querySelectorAll('.condition-btn').forEach(b => {
@@ -831,7 +659,8 @@
                     else if (condition === 'rain') state.conditionSurge = 1.15;
                     else if (condition === 'ferry') state.conditionSurge = 1.30;
 
-                    document.getElementById('surgeDisplay').textContent = `${state.conditionSurge.toFixed(2)}x Surge`;
+                    const surgeDisp = document.getElementById('surgeDisplay');
+                    if (surgeDisp) surgeDisp.textContent = `${state.conditionSurge.toFixed(2)}x Surge`;
                     calculateAndUpdate();
                 };
             });
@@ -840,31 +669,42 @@
             const toggleCurrency = () => {
                 state.currency = state.currency === 'TZS' ? 'USD' : 'TZS';
                 const labelText = state.currency === 'TZS' ? 'TZS (TSh)' : 'USD ($)';
-                document.getElementById('currencyText').textContent = labelText;
-                document.getElementById('currencyToggleMobile').textContent = state.currency;
+                const currText = document.getElementById('currencyText');
+                const currMobile = document.getElementById('currencyToggleMobile');
+                if (currText) currText.textContent = labelText;
+                if (currMobile) currMobile.textContent = state.currency;
                 calculateAndUpdate();
             };
-            document.getElementById('currencyToggleDesktop').onclick = toggleCurrency;
-            document.getElementById('currencyToggleMobile').onclick = toggleCurrency;
+            
+            const currDesk = document.getElementById('currencyToggleDesktop');
+            const currMob = document.getElementById('currencyToggleMobile');
+            if (currDesk) currDesk.onclick = toggleCurrency;
+            if (currMob) currMob.onclick = toggleCurrency;
 
-            // Fare breakdown accordion
-            document.getElementById('toggleBreakdownBtn').onclick = () => {
-                const details = document.getElementById('fareBreakdownDetails');
-                const icon = document.getElementById('breakdownIcon');
-                details.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
-            };
+            // Fare breakdown accordion (safe check)
+            const bdBtn = document.getElementById('toggleBreakdownBtn');
+            if (bdBtn) {
+                bdBtn.onclick = () => {
+                    const details = document.getElementById('fareBreakdownDetails');
+                    const icon = document.getElementById('breakdownIcon');
+                    if (details) details.classList.toggle('hidden');
+                    if (icon) icon.classList.toggle('rotate-180');
+                };
+            }
 
             // CSV Export Button
-            document.getElementById('exportCsvBtn').onclick = exportSystemToCsv;
+            const csvBtn = document.getElementById('exportCsvBtn');
+            if (csvBtn) csvBtn.onclick = exportSystemToCsv;
 
-            // Theme Switchers
+            // Theme Switchers (safe check)
             const toggleTheme = () => {
                 document.documentElement.classList.toggle('dark');
                 document.documentElement.classList.toggle('light');
             };
-            document.getElementById('themeToggleDesktop').onclick = toggleTheme;
-            document.getElementById('themeToggleMobile').onclick = toggleTheme;
+            const thDesk = document.getElementById('themeToggleDesktop');
+            const thMob = document.getElementById('themeToggleMobile');
+            if (thDesk) thDesk.onclick = toggleTheme;
+            if (thMob) thMob.onclick = toggleTheme;
         }
 
         // 4. GPS GEOLOCATION LOGIC
@@ -953,23 +793,32 @@
             const pickupText = pLoc ? pLoc.name : 'Select Pickup';
             const destText = dLoc ? dLoc.name : 'Select Destination';
 
-            document.getElementById('routeHeadline').textContent = (pLoc && dLoc) ? `${pLoc.name.split(' ')[0]} ➔ ${dLoc.name.split(' ')[0]}` : 'Select Origin & Destination';
-            document.getElementById('linePickupLabel').textContent = pickupText;
-            document.getElementById('lineDestLabel').textContent = destText;
+            const routeHead = document.getElementById('routeHeadline');
+            const pickupLbl = document.getElementById('linePickupLabel');
+            const destLbl = document.getElementById('lineDestLabel');
+            if (routeHead) routeHead.textContent = (pLoc && dLoc) ? `${pLoc.name.split(' ')[0]} ➔ ${dLoc.name.split(' ')[0]}` : 'Select Origin & Destination';
+            if (pickupLbl) pickupLbl.textContent = pickupText;
+            if (destLbl) destLbl.textContent = destText;
 
             // Estimated time (Avg 35 km/h on island roads)
             const estTimeMins = Math.round((dist / 35) * 60);
-            document.getElementById('routeInfoDisplay').textContent = dist > 0 ? `${dist} km | ~${estTimeMins} mins` : '-- km | -- mins';
+            const routeInfo = document.getElementById('routeInfoDisplay');
+            if (routeInfo) routeInfo.textContent = dist > 0 ? `${dist} km | ~${estTimeMins} mins` : '-- km | -- mins';
 
             // Format Currency
             const formattedFare = formatPrice(rawFareTzs);
-            document.getElementById('totalFareDisplay').textContent = formattedFare;
+            const totalFareDisp = document.getElementById('totalFareDisplay');
+            if (totalFareDisp) totalFareDisp.textContent = formattedFare;
 
-            // Breakdown values
-            document.getElementById('breakdownBase').textContent = formatPrice(baseRate);
-            document.getElementById('breakdownDist').textContent = formatPrice(distCost);
-            document.getElementById('breakdownFee').textContent = formatPrice(maintenanceFee);
-            document.getElementById('breakdownSurge').textContent = `${state.conditionSurge.toFixed(2)}x`;
+            // Breakdown values (safe check)
+            const bdBase = document.getElementById('breakdownBase');
+            const bdDist = document.getElementById('breakdownDist');
+            const bdFee = document.getElementById('breakdownFee');
+            const bdSurge = document.getElementById('breakdownSurge');
+            if (bdBase) bdBase.textContent = formatPrice(baseRate);
+            if (bdDist) bdDist.textContent = formatPrice(distCost);
+            if (bdFee) bdFee.textContent = formatPrice(maintenanceFee);
+            if (bdSurge) bdSurge.textContent = `${state.conditionSurge.toFixed(2)}x`;
 
             // Update Vehicle Cards & Drivers List
             renderVehicleOptions();
@@ -978,10 +827,12 @@
             // Toggle Request Button Enable state
             const reqBtn = document.getElementById('requestRideBtn');
             const activeTrip = storage.getActiveTrip();
-            if (state.pickupId && state.destId && state.pickupId !== state.destId && (!activeTrip || activeTrip.status === 'completed')) {
-                reqBtn.disabled = false;
-            } else {
-                reqBtn.disabled = true;
+            if (reqBtn) {
+                if (state.pickupId && state.destId && state.pickupId !== state.destId && (!activeTrip || activeTrip.status === 'completed')) {
+                    reqBtn.disabled = false;
+                } else {
+                    reqBtn.disabled = true;
+                }
             }
         }
 
