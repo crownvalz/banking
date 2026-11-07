@@ -46,7 +46,7 @@
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
-      .print-page-2 { page-break-after: always; break-after: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .print-page-annex { page-break-after: always; break-after: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
       .photo-card { page-break-inside: avoid; break-inside: avoid; }
     }
   </style>
@@ -81,7 +81,7 @@
                         Wakala & Collateral Verification System
                     </h2>
                     <p class="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-6">
-                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and official 2-page dynamic report layouts[cite: 4].
+                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and intelligent aspect-ratio photo layouts[cite: 4].
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button onclick="startNewInspection()" class="w-full sm:w-auto px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2.5">
@@ -135,7 +135,7 @@
                     </h2>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Fill in the required information and capture site/business photos.</p>
                 </div>
-                <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium rounded-lg transition">
+                <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium rounded-xl transition">
                     Cancel & Return
                 </button>
             </div>
@@ -312,16 +312,14 @@
             <!-- Report Printable Document Container -->
             <div id="printable-report-container" class="space-y-8 overflow-x-auto">
                 
-                <!-- PAGE 1: Report Summary & Satellite Map (Strictly 1 Page Fit) -->
+                <!-- PAGE 1: Report Summary & Satellite Map -->
                 <div class="print-page-1 bg-white text-slate-900 p-6 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1020px; max-height: 1020px;">
                     <div class="space-y-3">
-                        <!-- Header Banner -->
                         <div class="text-center border-b-2 border-slate-900 pb-2 mb-2">
                             <h2 class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
                             <h3 class="text-xs sm:text-sm font-bold uppercase text-brand-700 mt-0.5">SITE VISIT REPORT</h3>
                         </div>
 
-                        <!-- Data Table 1 -->
                         <table class="w-full border-collapse border border-slate-900 text-xs">
                             <tr>
                                 <td class="border border-slate-900 p-1.5 font-bold bg-slate-100 w-1/3">1. Name of Wakala Account</td>
@@ -344,7 +342,6 @@
                             </tr>
                         </table>
 
-                        <!-- Site Visit Description Section -->
                         <div class="space-y-1 text-xs">
                             <h4 class="font-bold text-slate-900 underline">Site visit report</h4>
                             <p class="font-medium text-slate-800">The site was visited by <span id="rep-officer-name" class="font-bold underline">Miss Hawa Juma</span> on <span id="rep-date">26/08/2026</span>.</p>
@@ -354,7 +351,6 @@
                             </p>
                         </div>
 
-                        <!-- 100m Expanded Satellite View Map Tile -->
                         <div>
                             <div class="flex justify-between items-center mb-1">
                                 <h4 class="font-bold text-slate-900 text-xs">100m Satellite View & Surroundings Map</h4>
@@ -365,7 +361,6 @@
                             </div>
                         </div>
 
-                        <!-- Integrated Verification & Signature Block -->
                         <div class="border-t-2 border-slate-900 pt-2 text-xs space-y-2 mt-2">
                             <p class="text-slate-800 leading-snug">
                                 I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
@@ -381,17 +376,13 @@
                                     <span class="font-bold">Date:</span> <span id="rep-footer-date" class="underline font-mono">26/08/2026</span>
                                 </div>
                             </div>
-                            <div class="text-center text-[10px] font-bold text-slate-400">
-                                1
-                            </div>
+                            <div class="text-center text-[10px] font-bold text-slate-400">1</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- PAGE 2 & SUBSEQUENT DYNAMIC ANNEX PAGES -->
-                <div id="dynamic-photos-pages-container">
-                    <!-- Dynamically populated 2-column grid pages will render here -->
-                </div>
+                <!-- DYNAMICALLY GENERATED PHOTO PAGES CONTAINER -->
+                <div id="dynamic-photos-pages-container"></div>
 
             </div>
         </section>
@@ -410,9 +401,7 @@
                 </button>
             </div>
 
-            <div id="saved-reports-list" class="grid grid-cols-1 gap-4">
-                <!-- Dynamically populated saved reports -->
-            </div>
+            <div id="saved-reports-list" class="grid grid-cols-1 gap-4"></div>
         </section>
 
     </main>
@@ -424,7 +413,6 @@
 
   <!-- JAVASCRIPT SYSTEM ENGINE -->
   <script>
-    // Universal Dynamic Includes Loader[cite: 3]
     async function loadIncludes() {
       const includes = [
         { id: 'include-header', file: 'includes/header.html' },
@@ -702,7 +690,9 @@
       ctx.fillText(`Timestamp: ${dateStr}`, canvas.width - 450, canvas.height - 35);
 
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-      saveCapturedPhoto(dataUrl);
+      getImageOrientation(dataUrl, (isVertical) => {
+        saveCapturedPhoto(dataUrl, isVertical);
+      });
       closeCamera();
     }
 
@@ -711,15 +701,28 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        saveCapturedPhoto(e.target.result);
+        const dataUrl = e.target.result;
+        getImageOrientation(dataUrl, (isVertical) => {
+          saveCapturedPhoto(dataUrl, isVertical);
+        });
       };
       reader.readAsDataURL(file);
     }
 
-    function saveCapturedPhoto(dataUrl) {
+    function getImageOrientation(dataUrl, callback) {
+      const img = new Image();
+      img.onload = function() {
+        const isVertical = img.height > img.width;
+        callback(isVertical);
+      };
+      img.src = dataUrl;
+    }
+
+    function saveCapturedPhoto(dataUrl, isVertical) {
       appState.capturedPhotos.push({
         id: Date.now(),
         url: dataUrl,
+        vertical: isVertical,
         caption: document.getElementById('f-visit-type').value + ' - ' + document.getElementById('f-account-name').value
       });
       renderPhotosQueue();
@@ -750,7 +753,7 @@
         <div class="relative group bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
           <img src="${photo.url}" alt="Captured Site Photo" class="w-full h-36 object-cover">
           <div class="p-3">
-            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">Photo #${index + 1}</p>
+            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">Photo #${index + 1} (${photo.vertical ? 'Portrait' : 'Landscape'})</p>
             <button type="button" onclick="removePhoto(${photo.id})" class="mt-2 text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
               <i class="fa-solid fa-trash"></i> Remove
             </button>
@@ -806,13 +809,13 @@
         mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
       }
 
-      // Dynamic Multi-Page Photo Grid Renderer (2 columns per row, max 4 photos per page = 2x2 grid)
+      // Intelligent Aspect Ratio & Pagination Engine
       const container = document.getElementById('dynamic-photos-pages-container');
       container.innerHTML = '';
 
       if (data.photos.length === 0) {
         container.innerHTML = `
-          <div class="print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1050px;">
+          <div class="print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1050px;">
             <div>
               <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
                 <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
@@ -829,27 +832,47 @@
         return;
       }
 
-      const PHOTOS_PER_PAGE = 4; // 2x2 grid per page
-      const totalPages = Math.ceil(data.photos.length / PHOTOS_PER_PAGE);
+      // Grouping logic: If photo is vertical (portrait), pack up to 4 per page (2x2 grid). If horizontal (landscape), max 2 per page (stacked).
+      let pages = [];
+      let currentPagePhotos = [];
+      let currentModeIsVertical = data.photos[0].vertical;
 
-      for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
-        const start = pageIdx * PHOTOS_PER_PAGE;
-        const pagePhotos = data.photos.slice(start, start + PHOTOS_PER_PAGE);
-        const pageNum = pageIdx + 2; // Page 1 is report summary
+      data.photos.forEach(photo => {
+        const limit = photo.vertical ? 4 : 2;
+        if (currentPagePhotos.length >= limit || photo.vertical !== currentModeIsVertical) {
+          if (currentPagePhotos.length > 0) {
+            pages.push({ vertical: currentModeIsVertical, photos: currentPagePhotos });
+          }
+          currentPagePhotos = [photo];
+          currentModeIsVertical = photo.vertical;
+        } else {
+          currentPagePhotos.push(photo);
+        }
+      });
+      if (currentPagePhotos.length > 0) {
+        pages.push({ vertical: currentModeIsVertical, photos: currentPagePhotos });
+      }
 
+      const totalAnnexPages = pages.length;
+
+      pages.forEach((pageData, pageIdx) => {
+        const pageNum = pageIdx + 2;
         const pageDiv = document.createElement('div');
-        pageDiv.className = "print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]";
+        pageDiv.className = "print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between";
         pageDiv.style.minHeight = "1050px";
 
-        const photosHtml = pagePhotos.map((photo, i) => {
-          const photoIndex = start + i + 1;
+        const gridClass = pageData.vertical ? "grid grid-cols-1 sm:grid-cols-2 gap-4" : "flex flex-col gap-4";
+        const imageHeight = pageData.vertical ? "h-56 sm:h-60" : "h-72 sm:h-80";
+
+        const photosHtml = pageData.photos.map((photo, i) => {
+          const globalIndex = data.photos.indexOf(photo) + 1;
           return `
             <div class="photo-card border-2 border-slate-900 rounded-xl overflow-hidden bg-slate-50 p-3 flex flex-col justify-between shadow-xs">
-              <div class="h-64 sm:h-72 w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
-                <img src="${photo.url}" alt="Site Photo ${photoIndex}" class="w-full h-full object-contain">
+              <div class="${imageHeight} w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
+                <img src="${photo.url}" alt="Site Photo ${globalIndex}" class="w-full h-full object-contain">
               </div>
               <div class="mt-2.5 pt-2 border-t border-slate-300 flex justify-between items-center text-xs font-semibold text-slate-800">
-                <span>Plate #${photoIndex}: ${data.accountName}</span>
+                <span>Plate #${globalIndex}: ${data.accountName} (${pageData.vertical ? 'Portrait' : 'Landscape'})</span>
                 <span class="font-mono text-[11px] text-slate-600">${data.gps}</span>
               </div>
             </div>
@@ -864,9 +887,9 @@
             </div>
             <div class="mb-4 flex justify-between items-center">
               <p class="text-xs sm:text-sm font-semibold text-slate-700">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
-              <span class="text-xs font-mono text-slate-500">Page ${pageNum} of ${totalPages + 1}</span>
+              <span class="text-xs font-mono text-slate-500">Annex Page ${pageIdx + 1} of ${totalAnnexPages}</span>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="${gridClass}">
               ${photosHtml}
             </div>
           </div>
@@ -876,7 +899,7 @@
         `;
 
         container.appendChild(pageDiv);
-      }
+      });
     }
 
     function renderSavedReportsList() {
@@ -949,8 +972,8 @@
       if (appState.activeInspection && appState.activeInspection.photos.length > 0) {
         photosHtml = appState.activeInspection.photos.map((p, idx) => `
           <div style="margin-bottom: 25px; page-break-inside: avoid; text-align: center;">
-            <p style="font-weight: bold; font-size: 13px;">Photo Annex #${idx + 1}</p>
-            <img src="${p.url}" style="max-width: 420px; height: auto; border: 2px solid #000; padding: 4px;" />
+            <p style="font-weight: bold; font-size: 13px;">Photo Annex #${idx + 1} (${p.vertical ? 'Portrait' : 'Landscape'})</p>
+            <img src="${p.url}" style="max-width: ${p.vertical ? '350px' : '450px'}; height: auto; border: 2px solid #000; padding: 4px;" />
             <p style="font-size: 11px; color: #555;">GPS: ${gps}</p>
           </div>
         `).join('');
