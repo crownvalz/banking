@@ -81,7 +81,7 @@
                         Wakala & Collateral Verification System
                     </h2>
                     <p class="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-6">
-                        Streamline field inspections with instant GPS telemetry capture, live square camera watermarking, 100m satellite mapping, and 2x6 grid photo annexes[cite: 4].
+                        Streamline field inspections with instant GPS telemetry capture, live square camera watermarking, 100m satellite mapping, and 2x6 grid photo annexes[cite: 4, 6].
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button type="button" onclick="startNewInspection()" class="w-full sm:w-auto px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2.5">
@@ -179,7 +179,7 @@
                             <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xs font-bold">2</span>
                             Location & GPS Details
                         </h3>
-                        <button type="button" onclick="fetchLiveLocation()" class="w-full sm:w-auto px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow transition flex items-center justify-center gap-2">
+                        <button type="button" onclick="fetchLiveLocation(event)" class="w-full sm:w-auto px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold rounded-xl shadow transition flex items-center justify-center gap-2">
                             <i class="fa-solid fa-location-crosshairs"></i> Fetch Live GPS & Details
                         </button>
                     </div>
@@ -225,7 +225,7 @@
                     <div id="photos-preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                         <!-- Dynamically populated captured photos -->
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured are cropped square (1:1), watermarked, and fit into a 2x6 grid on the annex page[cite: 4].</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured are cropped square (1:1), watermarked, and fit into a 2x6 grid on the annex page[cite: 4, 6].</p>
                 </div>
 
                 <!-- Form Submit Action -->
@@ -413,7 +413,7 @@
 
   <!-- JAVASCRIPT SYSTEM ENGINE -->
   <script>
-    // Universal Dynamic Includes Loader[cite: 3]
+    // Universal Dynamic Includes Loader[cite: 3, 6]
     async function loadIncludes() {
       const includes = [
         { id: 'include-header', file: 'includes/header.html' },
@@ -593,13 +593,14 @@
       if (collateralEl) collateralEl.innerText = collateral;
     }
 
-    function fetchLiveLocation() {
+    function fetchLiveLocation(evt) {
+      if (evt) evt.preventDefault();
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by your browser");
         return;
       }
 
-      const btn = event.currentTarget;
+      const btn = evt ? evt.currentTarget : null;
       const originalHTML = btn ? btn.innerHTML : '';
       if (btn) {
         btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Locating...`;
@@ -696,7 +697,6 @@
       }
     }
 
-    // Square (1:1) Camera Capture with Watermark
     function capturePhoto() {
       const video = document.getElementById('camera-video');
       const canvas = document.getElementById('camera-canvas');
@@ -806,7 +806,7 @@
       `).join('');
     }
 
-    // MAIN REPORT GENERATOR FIX WITH ROBUST SAFEGUARDS
+    // CLEAN, ERROR-FREE REPORT GENERATOR
     function generateReport(event) {
       if (event) event.preventDefault();
       
@@ -838,7 +838,7 @@
       try {
         localStorage.setItem('azania_reports', JSON.stringify(appState.reports));
       } catch (err) {
-        console.warn("Could not save to localStorage", err);
+        console.warn("Storage warning:", err);
       }
       
       updateDashboardStats();
@@ -876,7 +876,7 @@
         }
       }
 
-      // 2x6 Grid Pagination Engine (Up to 12 photos per page)
+      // 2x6 Grid Pagination Engine
       const container = document.getElementById('dynamic-photos-pages-container');
       if (!container) return;
       container.innerHTML = '';
@@ -900,7 +900,7 @@
         return;
       }
 
-      const PHOTOS_PER_PAGE = 12; // 2x6 grid = 12 photos max per annex page
+      const PHOTOS_PER_PAGE = 12; // 2x6 grid max 12 photos
       const totalPages = Math.ceil(data.photos.length / PHOTOS_PER_PAGE);
 
       for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
