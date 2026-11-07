@@ -1,1419 +1,891 @@
-<!DOCTYPE html>
-<html lang="en" class="dark">
+<selection-tag><!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemba Ride - Island Transport Made Simple & Reliable</title>
+    <title>Pembaride - Register, Login & User Management</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        island: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            400: '#34d399',
-                            500: '#10b981', // Primary Emerald
-                            600: '#059669',
-                            800: '#065f46',
-                            900: '#022c22',
-                        },
-                        teal: {
-                            400: '#2dd4bf',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                        },
-                        coral: {
-                            400: '#fb7185',
-                            500: '#f43f5e',
-                        }
-                    },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.2); border-radius: 9999px; }
-    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 dark h-screen w-screen overflow-hidden flex flex-col md:flex-row transition-colors">
+<body class="h-full text-slate-800 font-sans antialiased flex flex-col justify-between">
 
-    <!-- MINIMAL AUTHENTICATION MODAL -->
-    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 border border-slate-800 shadow-xl space-y-4">
-            <div class="text-center space-y-1">
-                <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg font-bold border border-emerald-500/30">
-                    <i class="fa-solid fa-palm-tree"></i>
-                </div>
-                <h2 id="authModalTitle" class="text-xl font-bold text-white">Pemba Ride</h2>
-                <p class="text-xs text-slate-400">Minimal Island Transport</p>
-            </div>
+    <!-- Toast Notification Box -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-            <div class="flex bg-slate-900 rounded-lg p-1 border border-slate-800 text-xs">
-                <button id="tabLogin" class="flex-1 py-1.5 font-semibold rounded bg-emerald-500 text-slate-950 transition">Sign In</button>
-                <button id="tabRegister" class="flex-1 py-1.5 font-semibold rounded text-slate-400 hover:text-slate-200 transition">Register</button>
-            </div>
-
-            <form id="authForm" class="space-y-3 text-xs">
-                <div id="nameField" class="hidden">
-                    <label class="block font-medium text-slate-400 mb-1">Full Name</label>
-                    <input type="text" id="authName" placeholder="e.g. Salim Ali" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Phone / Identity</label>
-                    <input type="text" id="authIdentity" required placeholder="+255 770 000 000" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Password</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-
-                <div>
-                    <label class="block font-medium text-slate-400 mb-1">Account Role</label>
-                    <select id="authRole" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100 focus:outline-none focus:border-emerald-500">
-                        <option value="rider">Passenger (Rider)</option>
-                        <option value="driver">Island Driver</option>
-                    </select>
-                </div>
-
-                <div id="driverFields" class="hidden space-y-2 pt-2 border-t border-slate-800">
-                    <div>
-                        <label class="block font-medium text-slate-400 mb-1">Vehicle Type</label>
-                        <select id="driverVehicleType" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100">
-                            <option value="bajaji">Bajaji Rickshaw</option>
-                            <option value="bodaboda">Bodaboda Motorcycle</option>
-                            <option value="taxi">Taxi Sedan</option>
-                            <option value="express">Pemba Express 4x4</option>
-                        </select>
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-brand-600/20">
+                        <i class="fa-solid fa-car-side"></i>
                     </div>
                     <div>
-                        <label class="block font-medium text-slate-400 mb-1">Plate Number</label>
-                        <input type="text" id="driverVehicleDetail" placeholder="Z 452 PB - Yellow TVS" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-slate-100">
+                        <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-none">Pembaride</h1>
+                        <span class="text-xs text-slate-500 font-medium">User Management & Audit Portal</span>
                     </div>
                 </div>
 
-                <button type="submit" id="authSubmitBtn" class="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold transition">
-                    Sign In
-                </button>
-            </form>
-
-            <div class="text-center pt-1">
-                <button type="button" id="guestLoginBtn" class="text-xs text-slate-400 hover:text-emerald-400">Continue as Guest</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- DRIVER INCOMING RIDE NOTIFICATION MODAL -->
-    <div id="driverIncomingModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-sm rounded-2xl p-5 border border-amber-500/40 shadow-xl space-y-4">
-            <div class="flex items-center space-x-2 text-amber-400 border-b border-slate-800 pb-2">
-                <i class="fa-solid fa-bell text-base animate-pulse"></i>
-                <h3 class="text-sm font-bold text-white">New Ride Request</h3>
-            </div>
-
-            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2 text-xs">
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Passenger:</span>
-                    <span id="reqPassengerName" class="font-bold text-emerald-400">--</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">From:</span>
-                    <span id="reqPickup" class="font-medium text-slate-200">--</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">To:</span>
-                    <span id="reqDest" class="font-medium text-slate-200">--</span>
-                </div>
-                <div class="flex justify-between pt-1 border-t border-slate-800">
-                    <span class="text-slate-400">Fare:</span>
-                    <span id="reqFare" class="font-bold text-white">--</span>
+                <!-- Session Status Badge -->
+                <div id="header-session-status" class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
+                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                        Not Authenticated
+                    </span>
                 </div>
             </div>
-
-            <div class="grid grid-cols-2 gap-2">
-                <button type="button" id="declineRideBtn" class="py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700">Decline</button>
-                <button type="button" id="acceptRideBtn" class="py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs">Accept</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MOBILE HEADER -->
-    <header class="md:hidden z-30 bg-slate-900 px-4 py-2.5 flex items-center justify-between border-b border-slate-800 flex-shrink-0">
-        <div class="flex items-center space-x-2">
-            <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-slate-950 font-bold text-sm">P</div>
-            <span class="font-bold text-sm text-white">Pemba Ride</span>
-        </div>
-        <div class="flex items-center space-x-2 text-xs">
-            <button id="userAccountBtnMobile" class="px-2 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700">
-                <i class="fa-solid fa-user"></i> <span id="userMobileLabel">Guest</span>
-            </button>
-            <button id="currencyToggleMobile" class="px-2 py-1 rounded bg-slate-800 text-emerald-400 border border-slate-700">TZS</button>
         </div>
     </header>
 
-    <!-- LEFT SIDEBAR / BOOKING CONTROL PANEL -->
-    <aside id="sidebar" class="w-full md:w-[400px] lg:w-[440px] h-[calc(100vh-50px)] md:h-screen flex-shrink-0 z-20 flex flex-col glass-panel border-r border-slate-800 shadow-xl overflow-y-auto">
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        <!-- DESKTOP HEADER -->
-        <div class="hidden md:flex items-center justify-between p-4 border-b border-slate-800 flex-shrink-0">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-sm">
-                    <i class="fa-solid fa-palm-tree"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base text-white">Pemba Ride</h1>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-2">
-                <button id="userAccountBtnDesktop" class="text-xs font-medium px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center gap-1 hover:bg-slate-700">
-                    <i class="fa-solid fa-user-circle text-emerald-400"></i>
-                    <span id="userDesktopLabel">Sign In</span>
-                </button>
-                <button id="exportCsvBtn" title="Sync & Download assets/pembaride.csv" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-xs font-semibold">
-                    <i class="fa-solid fa-file-csv"></i> CSV
-                </button>
-                <button id="currencyToggleDesktop" class="text-xs font-semibold px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-emerald-400">
-                    <span id="currencyText">TZS</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- MAIN FORM BODY -->
-        <div class="p-4 space-y-4 flex-1">
-            
-            <!-- DRIVER ONLINE TOGGLE PANEL -->
-            <div id="driverStatusContainer" class="hidden bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xs font-bold text-white">Driver Availability</h3>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="driverOnlineToggle" class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                    </label>
-                </div>
-                <div id="driverOnlineBadge" class="text-[11px] font-medium px-2 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 text-center">
-                    Offline (Not accepting rides)
-                </div>
-            </div>
-
-            <!-- LOCATION SELECTOR CONTAINER -->
-            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2 text-xs">
-                <div class="flex items-center justify-between pb-1 border-b border-slate-800">
-                    <span class="font-bold text-slate-400 uppercase text-[10px]">Pickup Location</span>
-                    <button type="button" id="useMyLocationBtn" class="text-[11px] text-emerald-400 font-medium hover:underline flex items-center gap-1">
-                        <i class="fa-solid fa-location-crosshairs"></i> Use My GPS
+        <!-- AUTHENTICATION SECTION (Login & Register Tabs) -->
+        <section id="auth-section" class="max-w-md mx-auto transition-all duration-300">
+            <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-8">
+                
+                <!-- Auth Mode Switcher -->
+                <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
+                    <button id="tab-login-btn" onclick="switchAuthTab('login')"
+                        class="flex-1 py-2 text-xs font-bold rounded-lg transition duration-150 bg-white text-slate-900 shadow-sm">
+                        <i class="fa-solid fa-right-to-bracket mr-1.5"></i>Log In
+                    </button>
+                    <button id="tab-register-btn" onclick="switchAuthTab('register')"
+                        class="flex-1 py-2 text-xs font-bold rounded-lg transition duration-150 text-slate-500 hover:text-slate-800">
+                        <i class="fa-solid fa-user-plus mr-1.5"></i>Register
                     </button>
                 </div>
 
-                <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-                    <select id="pickupSelect" class="w-full bg-slate-800 text-slate-100 rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:border-emerald-500 font-medium">
-                        <option value="" disabled selected>Select pickup...</option>
-                    </select>
+                <!-- LOGIN FORM -->
+                <div id="login-container">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Welcome Back</h2>
+                        <p class="text-sm text-slate-500 mt-1">Sign in to your Pembaride account.</p>
+                        <div class="mt-3 p-2 bg-slate-50 rounded-lg text-xs text-slate-500 border border-slate-200/60">
+                            <strong>Demo Admin:</strong> <span class="font-mono text-brand-700">driver@pembaride.com</span> / <span class="font-mono text-brand-700">password123</span>
+                        </div>
+                    </div>
+
+                    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label for="login-email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email Address</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </span>
+                                <input type="email" id="login-email" required placeholder="driver@pembaride.com" 
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/30 focus:border-brand-600 transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="login-password" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-lock"></i>
+                                </span>
+                                <input type="password" id="login-password" required placeholder="••••••••" 
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/30 focus:border-brand-600 transition">
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                            class="w-full mt-2 py-3 px-4 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition duration-150 flex items-center justify-center gap-2">
+                            <span>Log In</span>
+                            <i class="fa-solid fa-right-to-bracket text-sm"></i>
+                        </button>
+                    </form>
                 </div>
 
-                <div class="flex justify-end my-0.5">
-                    <button id="swapLocationsBtn" class="w-6 h-6 rounded-full bg-slate-800 text-emerald-400 border border-slate-700 flex items-center justify-center text-[10px]">
-                        <i class="fa-solid fa-arrows-up-down"></i>
+                <!-- REGISTER FORM -->
+                <div id="register-container" class="hidden">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Create Account</h2>
+                        <p class="text-sm text-slate-500 mt-1">Register a new driver or manager account.</p>
+                    </div>
+
+                    <form id="register-form" onsubmit="handleRegister(event)" class="space-y-4">
+                        <div>
+                            <label for="reg-name" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-regular fa-user"></i>
+                                </span>
+                                <input type="text" id="reg-name" required placeholder="Alex Johnson" 
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/30 focus:border-brand-600 transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="reg-email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email Address</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-regular fa-envelope"></i>
+                                </span>
+                                <input type="email" id="reg-email" required placeholder="alex@pembaride.com" 
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/30 focus:border-brand-600 transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="reg-password" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Password</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-lock"></i>
+                                </span>
+                                <input type="password" id="reg-password" required minlength="4" placeholder="••••••••" 
+                                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/30 focus:border-brand-600 transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="reg-role" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Account Role</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-id-badge"></i>
+                                </span>
+                                <select id="reg-role" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600/30 focus:border-brand-600 transition appearance-none">
+                                    <option value="Driver">Driver / Operator</option>
+                                    <option value="Fleet Manager">Fleet Manager</option>
+                                    <option value="Administrator">Administrator</option>
+                                    <option value="Passenger">Passenger</option>
+                                </select>
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                            class="w-full mt-2 py-3 px-4 bg-slate-900 hover:bg-slate-800 active:scale-[0.99] text-white font-semibold rounded-xl shadow-lg transition duration-150 flex items-center justify-center gap-2">
+                            <span>Register & Log In</span>
+                            <i class="fa-solid fa-user-check text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ACTIVE DASHBOARD SECTION (Shown when logged in) -->
+        <section id="dashboard-section" class="hidden transition-all duration-300">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-brand-600/10 blur-2xl pointer-events-none"></div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-brand-600/20 border border-brand-500/30 text-brand-500 flex items-center justify-center font-bold text-2xl">
+                            <span id="user-avatar">U</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 id="user-display-name" class="text-xl font-bold">User Name</h2>
+                                <span id="user-display-role" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-400 border border-brand-500/30">Role</span>
+                            </div>
+                            <p id="user-display-email" class="text-sm text-slate-400 mt-0.5">user@email.com</p>
+                            <p class="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
+                                <i class="fa-regular fa-clock text-brand-500"></i>
+                                Active Session Since: <span id="session-time" class="text-slate-200 font-medium">-</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <button onclick="handleLogout()" 
+                        class="px-5 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 font-semibold rounded-xl text-sm transition flex items-center gap-2 self-stretch sm:self-auto justify-center">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Log Out</span>
                     </button>
                 </div>
-
-                <div class="flex items-center space-x-2">
-                    <div class="w-2 h-2 rounded-full bg-rose-500"></div>
-                    <select id="destSelect" class="w-full bg-slate-800 text-slate-100 rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:border-rose-500 font-medium">
-                        <option value="" disabled selected>Select destination...</option>
-                    </select>
-                </div>
             </div>
+        </section>
 
-            <!-- PEMBA TRANSPORT OPTIONS -->
-            <div class="space-y-1.5">
-                <label class="block text-[10px] uppercase font-bold text-slate-400">Vehicle Type</label>
-                <div class="space-y-1.5" id="transportOptionsContainer">
-                    <!-- Dynamic Bajaji, Bodaboda, Taxi, Express options -->
-                </div>
-            </div>
-
-            <!-- AVAILABLE ONLINE DRIVERS SELECTION -->
-            <div id="onlineDriversContainer" class="space-y-1.5">
-                <div class="flex justify-between items-center text-xs">
-                    <label class="block text-[10px] uppercase font-bold text-emerald-400">Available Drivers</label>
-                    <span id="onlineDriversCount" class="text-[10px] text-slate-400">0 Online</span>
-                </div>
-                <div id="onlineDriversList" class="space-y-1.5 max-h-36 overflow-y-auto">
-                    <div class="text-center py-3 bg-slate-900/40 rounded-lg border border-slate-800 text-[11px] text-slate-400">
-                        No online drivers available.
-                    </div>
-                </div>
-            </div>
-
-            <!-- TRIP FARE SUMMARY -->
-            <div id="fareCard" class="bg-slate-900 rounded-xl p-3 border border-slate-800 space-y-2">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400 font-medium">Distance & Time:</span>
-                    <span id="routeInfoDisplay" class="font-bold text-emerald-400">-- km | -- mins</span>
-                </div>
-                <div class="flex justify-between items-center pt-2 border-t border-slate-800">
-                    <span class="text-xs text-slate-400 font-medium">Estimated Fare</span>
-                    <span id="totalFareDisplay" class="text-xl font-bold text-white">TSh 0</span>
-                </div>
-            </div>
-
-            <!-- ACTION BUTTON -->
-            <button id="requestRideBtn" disabled class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-md transition disabled:opacity-40 disabled:cursor-not-allowed">
-                Request Ride
+        <!-- TAB NAVIGATION FOR PANELS -->
+        <div class="flex border-b border-slate-200 space-x-6 text-sm font-semibold">
+            <button id="panel-tab-logs" onclick="switchPanelTab('logs')" class="pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center gap-2 transition">
+                <i class="fa-solid fa-list-check"></i>
+                Audit Log (pembaride.csv)
+            </button>
+            <button id="panel-tab-users" onclick="switchPanelTab('users')" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-users-gear"></i>
+                Registered Accounts (<span id="user-count-badge">0</span>)
             </button>
         </div>
-    </aside>
 
-    <!-- RIGHT MAIN PANEL: MINIMAL PROGRESS LINE & TRIP STATUS -->
-    <main class="flex-1 relative h-full w-full bg-slate-950 flex flex-col justify-between overflow-y-auto p-4 md:p-6 space-y-4">
-        
-        <!-- ROUTE HEADLINE -->
-        <div class="glass-panel rounded-xl p-4 border border-slate-800 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm">
-                    <i class="fa-solid fa-compass"></i>
-                </div>
+        <!-- PANEL 1: AUDIT LOG & CSV TABLE -->
+        <section id="panel-logs" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-slate-50/50">
                 <div>
-                    <h2 id="routeHeadline" class="text-base font-bold text-white">Select Origin & Destination</h2>
-                    <p id="routeSubline" class="text-xs text-slate-400">Pemba Island Ride Progress</p>
-                </div>
-            </div>
-            <span id="tripStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
-                Idle
-            </span>
-        </div>
-
-        <!-- CENTER SVG PROGRESS ROUTE LINE -->
-        <div class="glass-panel rounded-2xl p-6 border border-slate-800/80 flex-1 flex flex-col justify-center items-center relative overflow-hidden min-h-[300px]">
-            
-            <div class="w-full max-w-2xl flex justify-between items-center mb-6 z-10 text-xs">
-                <div>
-                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">FROM</span>
-                    <h3 id="linePickupLabel" class="font-semibold text-slate-200">Pickup</h3>
-                </div>
-                <div class="text-center">
-                    <span id="lineProgressPercent" class="text-xl font-bold text-emerald-400">0%</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider block">TO</span>
-                    <h3 id="lineDestLabel" class="font-semibold text-slate-200">Destination</h3>
-                </div>
-            </div>
-
-            <!-- SVG Line Visual -->
-            <div class="w-full max-w-2xl relative z-10 py-4">
-                <svg id="routeSvg" class="w-full h-16 overflow-visible" viewBox="0 0 800 100" preserveAspectRatio="none">
-                    <path d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
-                    <path id="activeRoutePath" d="M 50 50 Q 220 10 400 50 T 750 50" fill="none" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-dasharray="800" stroke-dashoffset="800"/>
-
-                    <circle cx="50" cy="50" r="8" fill="#0f172a" stroke="#10b981" stroke-width="3"/>
-                    <circle cx="750" cy="50" r="8" fill="#0f172a" stroke="#f43f5e" stroke-width="3"/>
-
-                    <g id="vehicleMarkerGroup" transform="translate(50, 50)" class="transition-transform duration-300">
-                        <circle r="12" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-                        <text id="vehicleIconText" x="0" y="4" text-anchor="middle" fill="#090d16" font-size="10" font-weight="bold">🛺</text>
-                    </g>
-                </svg>
-            </div>
-
-            <div id="liveStatusBanner" class="mt-4 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 flex items-center space-x-2 text-xs text-slate-300">
-                <i class="fa-solid fa-circle-info text-emerald-400"></i>
-                <span id="liveStatusText">Select pickup and destination to view trip details.</span>
-            </div>
-        </div>
-
-        <!-- DRIVER DETAILS CARD -->
-        <div id="driverDetailsCard" class="hidden glass-panel rounded-xl p-4 border border-slate-800">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                <div class="flex items-center space-x-3">
-                    <div id="driverAvatar" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center border border-emerald-500/30">
-                        KH
-                    </div>
-                    <div>
-                        <h4 id="driverName" class="font-bold text-sm text-white">Driver Name</h4>
-                        <p id="driverVehicle" class="text-slate-400">Vehicle Description</p>
-                    </div>
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-file-csv text-brand-600"></i>
+                        System Activity Log
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">All login, register & logout events compiled for export.</p>
                 </div>
 
-                <div class="flex items-center space-x-2 w-full sm:w-auto">
-                    <button id="driverActionBtn" class="hidden flex-1 sm:flex-none py-1.5 px-3 rounded-lg bg-emerald-500 text-slate-950 font-bold text-xs">
-                        Start Ride
+                <div class="flex items-center gap-3">
+                    <button onclick="exportCSV()" 
+                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium text-sm rounded-xl shadow-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-download text-base"></i>
+                        <span>Download pembaride.csv</span>
                     </button>
-                    <a id="callDriverBtn" href="tel:+255770000000" class="flex-1 sm:flex-none py-1.5 px-3 rounded-lg bg-slate-800 text-emerald-400 border border-slate-700 font-semibold text-xs flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-phone"></i> Call
-                    </a>
-                    <button id="cancelRideBtn" class="py-1.5 px-3 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold text-xs">
-                        Cancel
+
+                    <button onclick="clearLogs()" title="Clear Audit Logs"
+                        class="p-2 text-slate-400 hover:text-red-600 hover:bg-slate-100 rounded-lg transition">
+                        <i class="fa-regular fa-trash-can"></i>
                     </button>
                 </div>
             </div>
-        </div>
 
+            <!-- Audit Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50">
+                            <th class="py-3 px-4">#</th>
+                            <th class="py-3 px-4">User Details</th>
+                            <th class="py-3 px-4">Role</th>
+                            <th class="py-3 px-4">Action Event</th>
+                            <th class="py-3 px-4">Timestamp</th>
+                            <th class="py-3 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-table-body" class="divide-y divide-slate-100 text-sm">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Log Empty State -->
+            <div id="empty-log-state" class="p-12 text-center">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-inbox text-xl"></i>
+                </div>
+                <h4 class="text-sm font-semibold text-slate-700">No activity logs recorded</h4>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Register or log in to create entries for pembaride.csv.</p>
+            </div>
+        </section>
+
+        <!-- PANEL 2: USER MANAGEMENT SECTION -->
+        <section id="panel-users" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-slate-50/50">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-users text-brand-600"></i>
+                        Registered Accounts
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Manage user accounts and delete inactive or obsolete users.</p>
+                </div>
+            </div>
+
+            <!-- Registered Users Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50">
+                            <th class="py-3 px-4">User ID</th>
+                            <th class="py-3 px-4">Name & Email</th>
+                            <th class="py-3 px-4">Role</th>
+                            <th class="py-3 px-4">Date Registered</th>
+                            <th class="py-3 px-4 text-right">Delete Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body" class="divide-y divide-slate-100 text-sm">
+                        <!-- Dynamic Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- User Empty State -->
+            <div id="empty-user-state" class="p-12 text-center hidden">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-user-slash text-xl"></i>
+                </div>
+                <h4 class="text-sm font-semibold text-slate-700">No users registered</h4>
+                <p class="text-xs text-slate-400 mt-1">Use the registration form above to create new user accounts.</p>
+            </div>
+        </section>
     </main>
 
+    <!-- Delete User Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 transform transition-all">
+            <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 text-center">Delete User Account?</h3>
+            <p id="delete-modal-text" class="text-xs text-slate-500 text-center mt-2">Are you sure you want to delete this user? This action cannot be undone.</p>
+            
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
+                <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-red-600/20 transition">Delete User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        <div class="max-w-6xl mx-auto px-4">
+            Pembaride User System &bull; Export data directly to <span class="font-mono text-slate-600">pembaride.csv</span>
+        </div>
+    </footer>
+
+    <!-- App Logic JavaScript -->
     <script>
-        /**
-         * PEMBA RIDE ENGINE & REAL-TIME MULTI-TAB DISPATCH CONTROLLER
-         */
+        // LocalStorage Keys
+        const STORAGE_USERS = 'pembaride_users';
+        const STORAGE_SESSION = 'pembaride_session';
+        const STORAGE_LOGS = 'pembaride_logs';
 
-        // 1. DATA DEFINITIONS & MATRIX
-        const LOCATIONS = [
-            { id: 'chake', name: 'Chake-Chake (Capital Center)', lat: -5.2449, lng: 39.7672, region: 'South' },
-            { id: 'airport', name: 'Karume Airport (PMA)', lat: -5.2570, lng: 39.8115, region: 'South' },
-            { id: 'wete', name: 'Wete Town & Port', lat: -5.0575, lng: 39.7289, region: 'North' },
-            { id: 'mkoani', name: 'Mkoani Port (Ferry Terminal)', lat: -5.3644, lng: 39.6508, region: 'South' },
-            { id: 'micheweni', name: 'Micheweni Beach & Peninsula', lat: -4.9667, lng: 39.8333, region: 'North' },
-            { id: 'fundu', name: 'Fundu Lagoon Jetty (Wambaa)', lat: -5.2921, lng: 39.6641, region: 'South' },
-            { id: 'vumawimbi', name: 'Vumawimbi Pristine Beach', lat: -4.9450, lng: 39.8510, region: 'North' },
-            { id: 'ngezi', name: 'Ngezi Rainforest Reserve', lat: -4.9333, lng: 39.7167, region: 'North' }
+        // State Variables
+        let registeredUsers = [];
+        let activeSession = null;
+        let auditLogs = [];
+        let targetUserToDeleteId = null;
+
+        // Default Initial Accounts
+        const defaultUsers = [
+            {
+                id: 'USR-1001',
+                username: 'Alex Driver',
+                email: 'driver@pembaride.com',
+                password: 'password123',
+                role: 'Driver',
+                created: new Date(Date.now() - 86400000).toLocaleDateString('en-US')
+            },
+            {
+                id: 'USR-1002',
+                username: 'Sarah Manager',
+                email: 'sarah@pembaride.com',
+                password: 'password123',
+                role: 'Fleet Manager',
+                created: new Date(Date.now() - 43200000).toLocaleDateString('en-US')
+            }
         ];
 
-        // Road distance matrix (km) between key Pemba nodes
-        const DISTANCE_MATRIX = {
-            'chake-airport': 6.5,
-            'chake-wete': 28.0,
-            'chake-mkoani': 22.0,
-            'chake-micheweni': 45.0,
-            'chake-fundu': 16.5,
-            'chake-vumawimbi': 48.0,
-            'chake-ngezi': 42.0,
-            'airport-wete': 32.5,
-            'airport-mkoani': 26.0,
-            'airport-micheweni': 51.0,
-            'airport-fundu': 19.0,
-            'airport-vumawimbi': 53.0,
-            'airport-ngezi': 46.5,
-            'wete-mkoani': 48.0,
-            'wete-micheweni': 24.0,
-            'wete-fundu': 38.0,
-            'wete-vumawimbi': 27.0,
-            'wete-ngezi': 19.5,
-            'mkoani-micheweni': 65.0,
-            'mkoani-fundu': 14.0,
-            'mkoani-vumawimbi': 68.0,
-            'mkoani-ngezi': 62.0,
-            'micheweni-fundu': 58.0,
-            'micheweni-vumawimbi': 5.0,
-            'micheweni-ngezi': 12.0,
-            'fundu-vumawimbi': 60.0,
-            'fundu-ngezi': 52.0,
-            'vumawimbi-ngezi': 8.5
-        };
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            initUsers();
+            initAuditLogs();
+            restoreSession();
+        });
 
-        const VEHICLES = [
-            { id: 'bodaboda', name: 'Bodaboda', icon: '🏍️', base: 1000, perKm: 400, capacity: '1 Passenger', desc: 'Fastest for narrow trails & solo trips' },
-            { id: 'bajaji', name: 'Bajaji Rickshaw', icon: '🛺', base: 2000, perKm: 700, capacity: '3 Passengers', desc: 'Popular & economical island ride' },
-            { id: 'taxi', name: 'Standard Taxi', icon: '🚗', base: 5000, perKm: 1200, capacity: '4 Passengers', desc: 'Air-conditioned comfort sedan' },
-            { id: 'express', name: 'Pemba Express 4x4', icon: '🚙', base: 8000, perKm: 1800, capacity: '6 Passengers', desc: 'Rugged SUV for unpaved resort routes' }
-        ];
-
-        const SEED_DRIVERS = [
-            { id: 'drv-1', name: 'Khamis Ally', phone: '+255 770 112 233', plate: 'Z 452 PB', rating: '4.9★', vehicleType: 'bajaji', vehicle: 'Yellow Bajaji TVS King', online: true },
-            { id: 'drv-2', name: 'Juma Hassan', phone: '+255 777 445 566', plate: 'Z 891 PB', rating: '4.8★', vehicleType: 'bodaboda', vehicle: 'Boxer 150 Red', online: true },
-            { id: 'drv-3', name: 'Rashid Said', phone: '+255 773 998 877', plate: 'Z 305 PB', rating: '5.0★', vehicleType: 'taxi', vehicle: 'Toyota Premio White', online: true },
-            { id: 'drv-4', name: 'Suleiman Omar', phone: '+255 776 332 114', plate: 'Z 712 PB', rating: '4.9★', vehicleType: 'express', vehicle: 'Land Cruiser 4x4 Green', online: true }
-        ];
-
-        // 2. SYSTEM STATE
-        const state = {
-            currency: 'TZS', // 'TZS' or 'USD'
-            tzsToUsd: 0.00039, // Rate: ~2550 TZS = 1 USD
-            pickupId: '',
-            destId: '',
-            selectedVehicle: 'bajaji',
-            selectedDriverId: null,
-            conditionSurge: 1.0,
-            calculatedDistKm: 0,
-            calculatedFareTzs: 0,
-            authMode: 'login', // 'login' or 'register'
-            currentUser: null,
-            simProgressTimer: null
-        };
-
-        // BroadcastChannel for instant cross-tab sync
-        const channel = new BroadcastChannel('pemba_ride_channel');
-
-        // Listen to cross-tab updates
-        channel.onmessage = (event) => {
-            const data = event.data;
-            if (data.type === 'DRIVERS_UPDATED') {
-                renderOnlineDrivers();
-            } else if (data.type === 'RIDE_REQUESTED') {
-                checkIncomingRequestForDriver(data.trip);
-            } else if (data.type === 'TRIP_UPDATED') {
-                syncTripUI();
-            }
-        };
-
-        // CSV DATABASE ENGINE (assets/pembaride.csv)
-        const CSV_FOLDER_PATH = 'assets/';
-        const CSV_FILE_NAME = 'pembaride.csv';
-        const FULL_CSV_PATH = 'assets/pembaride.csv';
-        const CSV_HEADER = "Type,Identity,Password,Name,Role,Phone,Plate,VehicleType,Vehicle,Online,CreatedAt\n";
-
-        // LOCAL STORAGE & CSV FILE ENGINE
-        const storage = {
-            getUsers: () => JSON.parse(localStorage.getItem('pemba_users') || '[]'),
-            saveUsers: (users) => {
-                localStorage.setItem('pemba_users', JSON.stringify(users));
-                storage.syncToCsv();
-            },
-            
-            getDrivers: () => {
-                const stored = localStorage.getItem('pemba_drivers');
-                if (!stored) {
-                    localStorage.setItem('pemba_drivers', JSON.stringify(SEED_DRIVERS));
-                    return SEED_DRIVERS;
-                }
-                return JSON.parse(stored);
-            },
-            saveDrivers: (drivers) => {
-                localStorage.setItem('pemba_drivers', JSON.stringify(drivers));
-                channel.postMessage({ type: 'DRIVERS_UPDATED' });
-                storage.syncToCsv();
-            },
-
-            getActiveTrip: () => JSON.parse(localStorage.getItem('pemba_active_trip') || 'null'),
-            setActiveTrip: (trip) => {
-                localStorage.setItem('pemba_active_trip', JSON.stringify(trip));
-                channel.postMessage({ type: 'TRIP_UPDATED', trip });
-            },
-
-            getTrips: () => JSON.parse(localStorage.getItem('pemba_trips') || '[]'),
-            addTrip: (trip) => {
-                const trips = JSON.parse(localStorage.getItem('pemba_trips') || '[]');
-                trips.push(trip);
-                localStorage.setItem('pemba_trips', JSON.stringify(trips));
-                storage.syncToCsv();
-            },
-
-            getCurrentUser: () => JSON.parse(localStorage.getItem('pemba_current_user') || 'null'),
-            setCurrentUser: (user) => localStorage.setItem('pemba_current_user', JSON.stringify(user)),
-
-            // Generate full pembaride.csv content string
-            generateCsvString: () => {
-                const users = storage.getUsers();
-                const drivers = storage.getDrivers();
-                const trips = storage.getTrips();
-
-                let csv = CSV_HEADER;
-
-                // Write Users
-                users.forEach(u => {
-                    csv += `USER,"${u.identity}","${u.password || ''}","${u.name || ''}","${u.role || 'rider'}","","","","","","${u.createdAt || ''}"\n`;
-                });
-
-                // Write Drivers
-                drivers.forEach(d => {
-                    csv += `DRIVER,"${d.phone}","","${d.name}","driver","${d.phone}","${d.plate}","${d.vehicleType}","${d.vehicle}",${d.online}," "\n`;
-                });
-
-                // Write Trips
-                trips.forEach(t => {
-                    csv += `TRIP,"${t.id}","","${t.passengerName}","${t.status}","${t.driverPhone || ''}","${t.driverPlate || ''}","${t.vehicleType}","${t.pickupName} -> ${t.destName}",false,"${t.timestamp}"\n`;
-                });
-
-                return csv;
-            },
-
-            // Auto sync data back to downloadable CSV
-            syncToCsv: () => {
-                const csvData = storage.generateCsvString();
-                localStorage.setItem('pembaride_csv_raw', csvData);
-            },
-
-            // Load existing CSV string into local database
-            parseAndLoadCsv: (csvText) => {
-                try {
-                    const lines = csvText.split('\n');
-                    const users = [];
-                    const drivers = [...SEED_DRIVERS];
-
-                    lines.forEach(line => {
-                        const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
-                        if (parts[0] === 'USER' && parts[1]) {
-                            users.push({
-                                identity: parts[1],
-                                password: parts[2],
-                                name: parts[3],
-                                role: parts[4] || 'rider',
-                                createdAt: parts[10] || new Date().toISOString()
-                            });
-                        } else if (parts[0] === 'DRIVER' && parts[1]) {
-                            const exists = drivers.some(d => d.phone === parts[1] || d.name === parts[3]);
-                            if (!exists) {
-                                drivers.push({
-                                    id: 'DRV-' + Date.now(),
-                                    name: parts[3],
-                                    phone: parts[5] || parts[1],
-                                    plate: parts[6] || 'Z 100 PB',
-                                    rating: '5.0★',
-                                    vehicleType: parts[7] || 'bajaji',
-                                    vehicle: parts[8] || 'Bajaji',
-                                    online: parts[9] === 'true'
-                                });
-                            }
-                        }
-                    });
-
-                    if (users.length > 0) storage.saveUsers(users);
-                    storage.saveDrivers(drivers);
-                    return true;
-                } catch (e) {
-                    console.error("Error parsing CSV:", e);
-                    return false;
-                }
-            }
-        };
-
-        // 3. INITIALIZATION & DROPDOWNS
-        function initDropdowns() {
-            const pickupSelect = document.getElementById('pickupSelect');
-            const destSelect = document.getElementById('destSelect');
-
-            if (pickupSelect && destSelect) {
-                pickupSelect.innerHTML = '<option value="" disabled selected>Select starting location...</option>';
-                destSelect.innerHTML = '<option value="" disabled selected>Where on the island do you want to go?</option>';
-
-                LOCATIONS.forEach(loc => {
-                    const opt1 = document.createElement('option');
-                    opt1.value = loc.id;
-                    opt1.textContent = `${loc.name} (${loc.region} Pemba)`;
-                    pickupSelect.appendChild(opt1);
-
-                    const opt2 = document.createElement('option');
-                    opt2.value = loc.id;
-                    opt2.textContent = `${loc.name} (${loc.region} Pemba)`;
-                    destSelect.appendChild(opt2);
-                });
-
-                pickupSelect.onchange = (e) => {
-                    state.pickupId = e.target.value;
-                    calculateAndUpdate();
-                };
-
-                destSelect.onchange = (e) => {
-                    state.destId = e.target.value;
-                    calculateAndUpdate();
-                };
-            }
-
-            const swapBtn = document.getElementById('swapLocationsBtn');
-            if (swapBtn) {
-                swapBtn.onclick = () => {
-                    const temp = state.pickupId;
-                    state.pickupId = state.destId;
-                    state.destId = temp;
-                    if (pickupSelect) pickupSelect.value = state.pickupId || '';
-                    if (destSelect) destSelect.value = state.destId || '';
-                    calculateAndUpdate();
-                };
-            }
-
-            // Geolocation Button handler
-            const myLocBtn = document.getElementById('useMyLocationBtn');
-            if (myLocBtn) {
-                myLocBtn.onclick = locateUserGPS;
-            }
-
-            // Condition buttons (safe check)
-            document.querySelectorAll('.condition-btn').forEach(btn => {
-                btn.onclick = () => {
-                    document.querySelectorAll('.condition-btn').forEach(b => {
-                        b.classList.remove('active', 'border-emerald-500/60', 'bg-emerald-500/10', 'text-emerald-300');
-                        b.classList.add('border-slate-800', 'bg-slate-800/60', 'text-slate-400');
-                    });
-                    btn.classList.add('active', 'border-emerald-500/60', 'bg-emerald-500/10', 'text-emerald-300');
-                    btn.classList.remove('border-slate-800', 'bg-slate-800/60', 'text-slate-400');
-
-                    const condition = btn.dataset.condition;
-                    if (condition === 'clear') state.conditionSurge = 1.0;
-                    else if (condition === 'rain') state.conditionSurge = 1.15;
-                    else if (condition === 'ferry') state.conditionSurge = 1.30;
-
-                    const surgeDisp = document.getElementById('surgeDisplay');
-                    if (surgeDisp) surgeDisp.textContent = `${state.conditionSurge.toFixed(2)}x Surge`;
-                    calculateAndUpdate();
-                };
-            });
-
-            // Currency Switchers
-            const toggleCurrency = () => {
-                state.currency = state.currency === 'TZS' ? 'USD' : 'TZS';
-                const labelText = state.currency === 'TZS' ? 'TZS (TSh)' : 'USD ($)';
-                const currText = document.getElementById('currencyText');
-                const currMobile = document.getElementById('currencyToggleMobile');
-                if (currText) currText.textContent = labelText;
-                if (currMobile) currMobile.textContent = state.currency;
-                calculateAndUpdate();
-            };
-            
-            const currDesk = document.getElementById('currencyToggleDesktop');
-            const currMob = document.getElementById('currencyToggleMobile');
-            if (currDesk) currDesk.onclick = toggleCurrency;
-            if (currMob) currMob.onclick = toggleCurrency;
-
-            // Fare breakdown accordion (safe check)
-            const bdBtn = document.getElementById('toggleBreakdownBtn');
-            if (bdBtn) {
-                bdBtn.onclick = () => {
-                    const details = document.getElementById('fareBreakdownDetails');
-                    const icon = document.getElementById('breakdownIcon');
-                    if (details) details.classList.toggle('hidden');
-                    if (icon) icon.classList.toggle('rotate-180');
-                };
-            }
-
-            // CSV Export Button
-            const csvBtn = document.getElementById('exportCsvBtn');
-            if (csvBtn) csvBtn.onclick = exportSystemToCsv;
-
-            // Theme Switchers (safe check)
-            const toggleTheme = () => {
-                document.documentElement.classList.toggle('dark');
-                document.documentElement.classList.toggle('light');
-            };
-            const thDesk = document.getElementById('themeToggleDesktop');
-            const thMob = document.getElementById('themeToggleMobile');
-            if (thDesk) thDesk.onclick = toggleTheme;
-            if (thMob) thMob.onclick = toggleTheme;
-        }
-
-        // 4. GPS GEOLOCATION LOGIC
-        function locateUserGPS() {
-            const btn = document.getElementById('useMyLocationBtn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-emerald-400"></i> Locating...`;
-            
-            if (!navigator.geolocation) {
-                alert("Geolocation is not supported by your browser.");
-                btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-emerald-400"></i> Use My Current Location`;
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-
-                    // Calculate nearest Pemba location node
-                    let nearest = null;
-                    let minDistance = Infinity;
-
-                    LOCATIONS.forEach(loc => {
-                        const d = Math.hypot(loc.lat - lat, loc.lng - lng);
-                        if (d < minDistance) {
-                            minDistance = d;
-                            nearest = loc;
-                        }
-                    });
-
-                    if (nearest) {
-                        state.pickupId = nearest.id;
-                        document.getElementById('pickupSelect').value = nearest.id;
-                        calculateAndUpdate();
-                        btn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> Found: ${nearest.name.split(' ')[0]}`;
-                        setTimeout(() => {
-                            btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-emerald-400"></i> Use My Current Location`;
-                        }, 3000);
-                    }
-                },
-                (err) => {
-                    alert("Could not retrieve your GPS location. Please select manually.");
-                    btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-emerald-400"></i> Use My Current Location`;
-                },
-                { timeout: 10000 }
-            );
-        }
-
-        // 5. DISTANCE & FARE CALCULATION ENGINE
-        function calculateDistance(id1, id2) {
-            if (!id1 || !id2) return 0;
-            if (id1 === id2) return 0;
-
-            const key1 = `${id1}-${id2}`;
-            const key2 = `${id2}-${id1}`;
-
-            if (DISTANCE_MATRIX[key1]) return DISTANCE_MATRIX[key1];
-            if (DISTANCE_MATRIX[key2]) return DISTANCE_MATRIX[key2];
-
-            // Fallback estimation using coordinates
-            const loc1 = LOCATIONS.find(l => l.id === id1);
-            const loc2 = LOCATIONS.find(l => l.id === id2);
-            if (loc1 && loc2) {
-                const degDist = Math.hypot(loc1.lat - loc2.lat, loc1.lng - loc2.lng);
-                return Math.round(degDist * 111 * 1.2 * 10) / 10; // Approx road km
-            }
-            return 10;
-        }
-
-        function calculateAndUpdate() {
-            const dist = calculateDistance(state.pickupId, state.destId);
-            state.calculatedDistKm = dist;
-
-            const vehicle = VEHICLES.find(v => v.id === state.selectedSelected || v.id === state.selectedVehicle) || VEHICLES[1];
-            const baseRate = vehicle.base;
-            const distCost = dist * vehicle.perKm;
-            const maintenanceFee = 500;
-            const rawFareTzs = Math.round((baseRate + distCost + maintenanceFee) * state.conditionSurge);
-            
-            state.calculatedFareTzs = rawFareTzs;
-
-            // Render Labels & Displays
-            const pLoc = LOCATIONS.find(l => l.id === state.pickupId);
-            const dLoc = LOCATIONS.find(l => l.id === state.destId);
-
-            const pickupText = pLoc ? pLoc.name : 'Select Pickup';
-            const destText = dLoc ? dLoc.name : 'Select Destination';
-
-            const routeHead = document.getElementById('routeHeadline');
-            const pickupLbl = document.getElementById('linePickupLabel');
-            const destLbl = document.getElementById('lineDestLabel');
-            if (routeHead) routeHead.textContent = (pLoc && dLoc) ? `${pLoc.name.split(' ')[0]} ➔ ${dLoc.name.split(' ')[0]}` : 'Select Origin & Destination';
-            if (pickupLbl) pickupLbl.textContent = pickupText;
-            if (destLbl) destLbl.textContent = destText;
-
-            // Estimated time (Avg 35 km/h on island roads)
-            const estTimeMins = Math.round((dist / 35) * 60);
-            const routeInfo = document.getElementById('routeInfoDisplay');
-            if (routeInfo) routeInfo.textContent = dist > 0 ? `${dist} km | ~${estTimeMins} mins` : '-- km | -- mins';
-
-            // Format Currency
-            const formattedFare = formatPrice(rawFareTzs);
-            const totalFareDisp = document.getElementById('totalFareDisplay');
-            if (totalFareDisp) totalFareDisp.textContent = formattedFare;
-
-            // Breakdown values (safe check)
-            const bdBase = document.getElementById('breakdownBase');
-            const bdDist = document.getElementById('breakdownDist');
-            const bdFee = document.getElementById('breakdownFee');
-            const bdSurge = document.getElementById('breakdownSurge');
-            if (bdBase) bdBase.textContent = formatPrice(baseRate);
-            if (bdDist) bdDist.textContent = formatPrice(distCost);
-            if (bdFee) bdFee.textContent = formatPrice(maintenanceFee);
-            if (bdSurge) bdSurge.textContent = `${state.conditionSurge.toFixed(2)}x`;
-
-            // Update Vehicle Cards & Drivers List
-            renderVehicleOptions();
-            renderOnlineDrivers();
-
-            // Toggle Request Button Enable state
-            const reqBtn = document.getElementById('requestRideBtn');
-            const activeTrip = storage.getActiveTrip();
-            if (reqBtn) {
-                if (state.pickupId && state.destId && state.pickupId !== state.destId && (!activeTrip || activeTrip.status === 'completed')) {
-                    reqBtn.disabled = false;
+        // Setup Initial Registered Users
+        function initUsers() {
+            try {
+                const stored = localStorage.getItem(STORAGE_USERS);
+                if (stored) {
+                    registeredUsers = JSON.parse(stored);
                 } else {
-                    reqBtn.disabled = true;
+                    registeredUsers = [...defaultUsers];
+                    saveUsers();
                 }
+            } catch (e) {
+                registeredUsers = [...defaultUsers];
+            }
+            renderUserTable();
+        }
+
+        function saveUsers() {
+            try {
+                localStorage.setItem(STORAGE_USERS, JSON.stringify(registeredUsers));
+            } catch (e) {
+                console.warn('LocalStorage save error:', e);
             }
         }
 
-        function formatPrice(tzsAmount) {
-            if (state.currency === 'USD') {
-                const usd = (tzsAmount * state.tzsToUsd).toFixed(2);
-                return `$${usd}`;
+        // Setup Initial Audit Logs
+        function initAuditLogs() {
+            try {
+                const stored = localStorage.getItem(STORAGE_LOGS);
+                if (stored) {
+                    auditLogs = JSON.parse(stored);
+                } else {
+                    auditLogs = [
+                        {
+                            id: 'USR-1001',
+                            username: 'Alex Driver',
+                            email: 'driver@pembaride.com',
+                            role: 'Driver',
+                            event: 'SYSTEM INIT',
+                            timestamp: new Date().toLocaleString()
+                        }
+                    ];
+                    saveLogs();
+                }
+            } catch (e) {
+                auditLogs = [];
             }
-            return `TSh ${tzsAmount.toLocaleString()}`;
+            renderLogTable();
         }
 
-        // 6. RENDER VEHICLE OPTIONS & ONLINE DRIVERS
-        function renderVehicleOptions() {
-            const container = document.getElementById('transportOptionsContainer');
-            container.innerHTML = '';
-
-            VEHICLES.forEach(v => {
-                const dist = state.calculatedDistKm;
-                const fareTzs = Math.round((v.base + (dist * v.perKm) + 500) * state.conditionSurge);
-                const isSelected = v.id === state.selectedVehicle;
-
-                const card = document.createElement('div');
-                card.className = `p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                    isSelected 
-                        ? 'bg-emerald-500/10 border-emerald-500 shadow-lg shadow-emerald-500/10' 
-                        : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
-                }`;
-
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="text-2xl w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center border border-slate-700">
-                            ${v.icon}
-                        </div>
-                        <div>
-                            <div class="flex items-center space-x-2">
-                                <h4 class="font-extrabold text-sm text-white">${v.name}</h4>
-                                <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-400 font-medium">${v.capacity}</span>
-                            </div>
-                            <p class="text-[11px] text-slate-400">${v.desc}</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="font-black text-base text-emerald-400">${formatPrice(fareTzs)}</span>
-                    </div>
-                `;
-
-                card.onclick = () => {
-                    state.selectedVehicle = v.id;
-                    document.getElementById('vehicleIconText').textContent = v.icon;
-                    calculateAndUpdate();
-                };
-
-                container.appendChild(card);
-            });
+        function saveLogs() {
+            try {
+                localStorage.setItem(STORAGE_LOGS, JSON.stringify(auditLogs));
+            } catch (e) {
+                console.warn('LocalStorage error:', e);
+            }
         }
 
-        function renderOnlineDrivers() {
-            const container = document.getElementById('onlineDriversList');
-            const countLabel = document.getElementById('onlineDriversCount');
-            const drivers = storage.getDrivers();
+        // Session Handling
+        function restoreSession() {
+            try {
+                const storedSession = localStorage.getItem(STORAGE_SESSION);
+                if (storedSession) {
+                    activeSession = JSON.parse(storedSession);
+                    renderDashboard(activeSession);
+                    updateHeaderBadge(true);
+                } else {
+                    renderAuthForms();
+                    updateHeaderBadge(false);
+                }
+            } catch (e) {
+                renderAuthForms();
+            }
+        }
 
-            // Filter online drivers matching selected vehicle type
-            const onlineDrivers = drivers.filter(d => d.online && d.vehicleType === state.selectedVehicle);
-            countLabel.textContent = `${onlineDrivers.length} Online Drivers`;
+        // User Registration Handler
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+            const role = document.getElementById('reg-role').value;
 
-            if (onlineDrivers.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-4 bg-slate-900/40 rounded-xl border border-slate-800 text-xs text-slate-400">
-                        No online drivers available for this vehicle type. Open another browser window/tab and log in as a Driver to test live request dispatch!
-                    </div>
-                `;
-                state.selectedDriverId = null;
+            // Check if email already registered
+            if (registeredUsers.some(u => u.email === email)) {
+                showToast('An account with this email already exists!', 'error');
                 return;
             }
 
-            container.innerHTML = '';
-            onlineDrivers.forEach(d => {
-                const isSelected = d.id === state.selectedDriverId || (!state.selectedDriverId && onlineDrivers[0].id === d.id);
-                if (isSelected && !state.selectedDriverId) state.selectedDriverId = d.id;
-
-                const item = document.createElement('div');
-                item.className = `p-2.5 rounded-xl border transition cursor-pointer flex items-center justify-between text-xs ${
-                    isSelected 
-                        ? 'bg-emerald-500/15 border-emerald-500 text-slate-100' 
-                        : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
-                }`;
-
-                item.innerHTML = `
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center border border-emerald-500/40 text-xs">
-                            ${d.name.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                            <span class="font-bold text-white block">${d.name} (${d.rating})</span>
-                            <span class="text-[10px] text-slate-400 font-mono">${d.plate} • ${d.vehicle}</span>
-                        </div>
-                    </div>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}">
-                        ${isSelected ? 'Selected' : 'Select'}
-                    </span>
-                `;
-
-                item.onclick = () => {
-                    state.selectedDriverId = d.id;
-                    renderOnlineDrivers();
-                };
-
-                container.appendChild(item);
-            });
-        }
-
-        // 7. REAL-TIME TRIP WORKFLOW & PROGRESS LINE ANIMATION
-        function requestRide() {
-            const user = storage.getCurrentUser();
-            const passengerName = user ? (user.name || user.identity) : 'Passenger';
-            
-            const drivers = storage.getDrivers();
-            const driver = drivers.find(d => d.id === state.selectedDriverId) || drivers.find(d => d.online) || SEED_DRIVERS[0];
-
-            const pLoc = LOCATIONS.find(l => l.id === state.pickupId);
-            const dLoc = LOCATIONS.find(l => l.id === state.destId);
-
-            const newTrip = {
-                id: 'TRIP-' + Date.now(),
-                passengerName: passengerName,
-                pickupName: pLoc ? pLoc.name : 'Unknown Pickup',
-                destName: dLoc ? dLoc.name : 'Unknown Dest',
-                vehicleType: state.selectedVehicle,
-                fareTzs: state.calculatedFareTzs,
-                driverId: driver.id,
-                driverName: driver.name,
-                driverPhone: driver.phone,
-                driverPlate: driver.plate,
-                driverVehicle: driver.vehicle,
-                status: 'requested', // requested -> accepted -> in_progress -> completed
-                progressPercent: 0,
-                timestamp: new Date().toLocaleTimeString()
+            const newUser = {
+                id: 'USR-' + Math.floor(1000 + Math.random() * 9000),
+                username: name,
+                email: email,
+                password: password,
+                role: role,
+                created: new Date().toLocaleDateString('en-US')
             };
 
-            storage.setActiveTrip(newTrip);
-            storage.addTrip(newTrip);
+            // Register User
+            registeredUsers.push(newUser);
+            saveUsers();
+            renderUserTable();
 
-            // Notify targeted driver cross-tab
-            channel.postMessage({ type: 'RIDE_REQUESTED', trip: newTrip });
+            // Log activity
+            addAuditLog(newUser, 'REGISTER & LOGIN');
 
-            syncTripUI();
+            // Set as active session
+            setSession(newUser);
+            showToast(`Account registered! Welcome ${name}.`, 'success');
+
+            // Reset form
+            document.getElementById('register-form').reset();
         }
 
-        function checkIncomingRequestForDriver(trip) {
-            const user = storage.getCurrentUser();
-            if (!user || user.role !== 'driver') return;
+        // User Login Handler
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
 
-            // Check if request is intended for this driver
-            if (trip.driverName === user.name || trip.driverPhone === user.identity) {
-                document.getElementById('reqPassengerName').textContent = trip.passengerName;
-                document.getElementById('reqPickup').textContent = trip.pickupName;
-                document.getElementById('reqDest').textContent = trip.destName;
-                document.getElementById('reqFare').textContent = formatPrice(trip.fareTzs);
+            const existingUser = registeredUsers.find(u => u.email === email);
 
-                document.getElementById('driverIncomingModal').classList.remove('hidden');
-            }
-        }
-
-        function driverAcceptRide() {
-            document.getElementById('driverIncomingModal').classList.add('hidden');
-            const trip = storage.getActiveTrip();
-            if (!trip) return;
-
-            trip.status = 'accepted';
-            trip.progressPercent = 5;
-            storage.setActiveTrip(trip);
-        }
-
-        function driverStartRide() {
-            const trip = storage.getActiveTrip();
-            if (!trip) return;
-
-            trip.status = 'in_progress';
-            storage.setActiveTrip(trip);
-
-            // Animate progress line from 0 to 100%
-            let progress = 5;
-            if (state.simProgressTimer) clearInterval(state.simProgressTimer);
-
-            state.simProgressTimer = setInterval(() => {
-                progress += 5;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(state.simProgressTimer);
-                    trip.status = 'completed';
-                }
-                trip.progressPercent = progress;
-                storage.setActiveTrip(trip);
-            }, 1000);
-        }
-
-        function syncTripUI() {
-            const trip = storage.getActiveTrip();
-            const badge = document.getElementById('tripStatusBadge');
-            const banner = document.getElementById('liveStatusText');
-            const driverCard = document.getElementById('driverDetailsCard');
-            const driverActionBtn = document.getElementById('driverActionBtn');
-            const reqBtn = document.getElementById('requestRideBtn');
-
-            if (!trip || trip.status === 'completed') {
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-500"></span> ${trip?.status === 'completed' ? 'Trip Completed' : 'Idle'}`;
-                
-                banner.textContent = trip?.status === 'completed' 
-                    ? `Trip completed! Thank you for using Pemba Ride. Select new pickup to ride again.`
-                    : "Select pickup and destination to calculate exact island route and fare.";
-                
-                driverCard.classList.add('hidden');
-                driverActionBtn.classList.add('hidden');
-                updateSvgProgress(0);
-                reqBtn.disabled = false;
+            if (!existingUser) {
+                showToast('User email not found. Please register.', 'error');
                 return;
             }
 
-            // Lock request button during active ride
-            reqBtn.disabled = true;
-
-            // Render Driver Card
-            driverCard.classList.remove('hidden');
-            document.getElementById('driverName').textContent = trip.driverName;
-            document.getElementById('driverVehicle').textContent = trip.driverVehicle;
-            document.getElementById('driverPlate').textContent = trip.driverPlate;
-            document.getElementById('callDriverBtn').href = `tel:${trip.driverPhone}`;
-            document.getElementById('driverAvatar').textContent = trip.driverName.substring(0, 2).toUpperCase();
-
-            // Driver specific controls
-            const user = storage.getCurrentUser();
-            const isDriverOfTrip = user && user.role === 'driver' && (user.name === trip.driverName || user.identity === trip.driverPhone);
-
-            if (isDriverOfTrip) {
-                driverActionBtn.classList.remove('hidden');
-                if (trip.status === 'accepted') {
-                    driverActionBtn.textContent = "Start Ride";
-                    driverActionBtn.onclick = driverStartRide;
-                } else if (trip.status === 'in_progress') {
-                    driverActionBtn.textContent = "Driving to Destination...";
-                    driverActionBtn.onclick = null;
-                }
-            } else {
-                driverActionBtn.classList.add('hidden');
+            if (existingUser.password !== password) {
+                showToast('Incorrect password.', 'error');
+                return;
             }
 
-            // Update Progress Line & Status Banner
-            updateSvgProgress(trip.progressPercent || 0);
+            // Log activity
+            addAuditLog(existingUser, 'LOGIN');
 
-            if (trip.status === 'requested') {
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Dispatching to ${trip.driverName}...`;
-                banner.textContent = `Ride requested! Waiting for driver (${trip.driverName}) to accept on their device/tab.`;
-            } else if (trip.status === 'accepted') {
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Driver En Route`;
-                banner.textContent = `Driver accepted! ${trip.driverName} is arriving at pickup point (${trip.pickupName}).`;
-            } else if (trip.status === 'in_progress') {
-                badge.className = "px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400 animate-bounce"></span> On The Way`;
-                banner.textContent = `Trip in progress from ${trip.pickupName} to ${trip.destName}. Distance: ${state.calculatedDistKm} km.`;
-            }
+            // Set session
+            setSession(existingUser);
+            showToast(`Welcome back, ${existingUser.username}!`, 'success');
+
+            // Reset form
+            document.getElementById('login-form').reset();
         }
 
-        function cancelTrip() {
-            if (state.simProgressTimer) clearInterval(state.simProgressTimer);
-            storage.setActiveTrip(null);
-            syncTripUI();
+        // Save Active Session
+        function setSession(user) {
+            activeSession = {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                loginTime: new Date().toLocaleString()
+            };
+
+            try {
+                localStorage.setItem(STORAGE_SESSION, JSON.stringify(activeSession));
+            } catch (e) {}
+
+            renderDashboard(activeSession);
+            updateHeaderBadge(true);
         }
 
-        // 8. SVG PROGRESS LINE RENDERER
-        function updateSvgProgress(percent) {
-            document.getElementById('lineProgressPercent').textContent = `${percent}%`;
+        // Logout Handler
+        function handleLogout() {
+            if (activeSession) {
+                addAuditLog(activeSession, 'LOGOUT');
+                const name = activeSession.username;
+                activeSession = null;
 
-            const activePath = document.getElementById('activeRoutePath');
-            const totalLength = 800; // Stroke dash array length
-            const dashOffset = totalLength - (totalLength * (percent / 100));
-            activePath.setAttribute('stroke-dashoffset', dashOffset);
-
-            // Dynamic vehicle marker positioning along quadratic SVG curve (M 50 50 Q 220 10 400 50 T 750 50)
-            const t = percent / 100;
-            // Bezier curve calculations for vehicle marker coordinates
-            const x = Math.pow(1 - t, 2) * 50 + 2 * (1 - t) * t * 220 + Math.pow(t, 2) * 400;
-            const y = Math.pow(1 - t, 2) * 50 + 2 * (1 - t) * t * 10 + Math.pow(t, 2) * 50;
-
-            const vehicleMarker = document.getElementById('vehicleMarkerGroup');
-            if (vehicleMarker) {
-                vehicleMarker.setAttribute('transform', `translate(${x}, ${y})`);
-            }
-        }
-
-        // 9. EXPORT & SYNC SYSTEM DATA TO assets/pembaride.csv
-        async function exportSystemToCsv() {
-            const csvContent = storage.generateCsvString();
-
-            // Try File System Access API if supported for seamless file saving
-            if (window.showSaveFilePicker) {
                 try {
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: CSV_FILE_NAME,
-                        types: [{
-                            description: 'CSV Data File',
-                            accept: { 'text/csv': ['.csv'] },
-                        }],
-                    });
-                    const writable = await handle.createWritable();
-                    await writable.write(csvContent);
-                    await writable.close();
-                    alert(`Successfully saved data to ${FULL_CSV_PATH}!`);
-                    return;
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        console.error(err);
-                    }
-                }
+                    localStorage.removeItem(STORAGE_SESSION);
+                } catch (e) {}
+
+                renderAuthForms();
+                updateHeaderBadge(false);
+                showToast(`Logged out ${name}.`, 'info');
+            }
+        }
+
+        // User Deletion Handler
+        function openDeleteModal(userId, userName) {
+            targetUserToDeleteId = userId;
+            document.getElementById('delete-modal-text').innerText = `Are you sure you want to delete ${userName}'s account? This user will no longer be able to log in.`;
+            document.getElementById('delete-modal').classList.remove('hidden');
+            document.getElementById('confirm-delete-btn').onclick = () => confirmDeleteUser(userId);
+        }
+
+        function closeDeleteModal() {
+            targetUserToDeleteId = null;
+            document.getElementById('delete-modal').classList.add('hidden');
+        }
+
+        function confirmDeleteUser(userId) {
+            const userToDelete = registeredUsers.find(u => u.id === userId);
+            if (!userToDelete) return;
+
+            // Remove user from list
+            registeredUsers = registeredUsers.filter(u => u.id !== userId);
+            saveUsers();
+            renderUserTable();
+
+            // Log Deletion Event
+            addAuditLog({
+                id: userToDelete.id,
+                username: userToDelete.username,
+                email: userToDelete.email,
+                role: userToDelete.role
+            }, 'ACCOUNT DELETED');
+
+            // If deleted active user, trigger logout
+            if (activeSession && activeSession.id === userId) {
+                handleLogout();
             }
 
-            // Standard web fallback download targeting assets/pembaride.csv filename
+            closeDeleteModal();
+            showToast(`Account for ${userToDelete.username} deleted.`, 'info');
+        }
+
+        // Add Log to Activity Log & Table
+        function addAuditLog(userData, eventType) {
+            const logEntry = {
+                id: userData.id,
+                username: userData.username,
+                email: userData.email,
+                role: userData.role,
+                event: eventType,
+                timestamp: new Date().toLocaleString()
+            };
+
+            auditLogs.unshift(logEntry);
+            saveLogs();
+            renderLogTable();
+        }
+
+        // Render Log Table
+        function renderLogTable() {
+            const tbody = document.getElementById('log-table-body');
+            const emptyState = document.getElementById('empty-log-state');
+            tbody.innerHTML = '';
+
+            if (auditLogs.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            auditLogs.forEach((log, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition duration-150';
+
+                let badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                if (log.event.includes('LOGOUT')) badgeColor = 'bg-amber-50 text-amber-700 border-amber-200';
+                if (log.event.includes('DELETED')) badgeColor = 'bg-red-50 text-red-700 border-red-200';
+                if (log.event.includes('REGISTER')) badgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono text-xs text-slate-400">#${auditLogs.length - index}</td>
+                    <td class="py-3 px-4">
+                        <div class="font-semibold text-slate-800">${escapeHTML(log.username)}</div>
+                        <div class="text-xs text-slate-400">${escapeHTML(log.email)}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            ${escapeHTML(log.role)}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${badgeColor}">
+                            ${log.event}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-xs text-slate-600 font-mono">
+                        ${log.timestamp}
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteSingleLog(${index})" class="text-slate-300 hover:text-red-500 p-1 transition" title="Delete log item">
+                            <i class="fa-regular fa-trash-can text-xs"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function deleteSingleLog(index) {
+            auditLogs.splice(index, 1);
+            saveLogs();
+            renderLogTable();
+            showToast('Log entry removed.', 'info');
+        }
+
+        function clearLogs() {
+            if (auditLogs.length === 0) return;
+            auditLogs = [];
+            saveLogs();
+            renderLogTable();
+            showToast('Audit logs cleared.', 'info');
+        }
+
+        // Render User Management Table
+        function renderUserTable() {
+            const tbody = document.getElementById('user-table-body');
+            const emptyState = document.getElementById('empty-user-state');
+            const userBadge = document.getElementById('user-count-badge');
+            
+            userBadge.textContent = registeredUsers.length;
+            tbody.innerHTML = '';
+
+            if (registeredUsers.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            registeredUsers.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition duration-150';
+
+                const isCurrentActive = activeSession && activeSession.id === user.id;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono text-xs text-slate-500">${user.id}</td>
+                    <td class="py-3 px-4">
+                        <div class="font-semibold text-slate-800 flex items-center gap-2">
+                            ${escapeHTML(user.username)}
+                            ${isCurrentActive ? '<span class="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 text-[10px] rounded font-bold">YOU</span>' : ''}
+                        </div>
+                        <div class="text-xs text-slate-400">${escapeHTML(user.email)}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                            ${escapeHTML(user.role)}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-xs text-slate-500">
+                        ${user.created || 'N/A'}
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openDeleteModal('${user.id}', '${escapeHTML(user.username)}')" 
+                            class="px-2.5 py-1 text-xs font-medium bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg transition flex items-center gap-1.5 ml-auto">
+                            <i class="fa-regular fa-trash-can"></i>
+                            <span>Delete User</span>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Export Logs to pembaride.csv
+        function exportCSV() {
+            if (auditLogs.length === 0) {
+                showToast('No logs available to export.', 'error');
+                return;
+            }
+
+            const headers = ['User ID', 'Username', 'Email', 'Role', 'Event', 'Timestamp'];
+            const rows = auditLogs.map(log => [
+                `"${log.id || ''}"`,
+                `"${log.username.replace(/"/g, '""')}"`,
+                `"${log.email.replace(/"/g, '""')}"`,
+                `"${log.role.replace(/"/g, '""')}"`,
+                `"${log.event.replace(/"/g, '""')}"`,
+                `"${log.timestamp}"`
+            ]);
+
+            const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", CSV_FILE_NAME);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'pembaride.csv');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showToast('pembaride.csv successfully exported!', 'success');
         }
 
-        // Auto fetch assets/pembaride.csv from server or fallback to local storage check
-        async function checkAndInitCsvDatabase() {
-            try {
-                // Attempt to load existing assets/pembaride.csv file if served locally
-                const response = await fetch(FULL_CSV_PATH);
-                if (response.ok) {
-                    const csvText = await response.text();
-                    if (csvText && csvText.trim().length > 0) {
-                        storage.parseAndLoadCsv(csvText);
-                        renderOnlineDrivers();
-                        syncTripUI();
-                        return;
-                    }
-                }
-            } catch (e) {
-                // Fall through to localStorage cached raw CSV structure
-            }
+        // UI Tabs & Views Helpers
+        function switchAuthTab(tab) {
+            const loginContainer = document.getElementById('login-container');
+            const registerContainer = document.getElementById('register-container');
+            const tabLoginBtn = document.getElementById('tab-login-btn');
+            const tabRegisterBtn = document.getElementById('tab-register-btn');
 
-            const rawCsv = localStorage.getItem('pembaride_csv_raw');
-            if (!rawCsv) {
-                // Initialize default CSV file structure inside memory
-                storage.syncToCsv();
+            if (tab === 'login') {
+                loginContainer.classList.remove('hidden');
+                registerContainer.classList.add('hidden');
+                tabLoginBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition duration-150 bg-white text-slate-900 shadow-sm';
+                tabRegisterBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition duration-150 text-slate-500 hover:text-slate-800';
             } else {
-                storage.parseAndLoadCsv(rawCsv);
+                loginContainer.classList.add('hidden');
+                registerContainer.classList.remove('hidden');
+                tabRegisterBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition duration-150 bg-white text-slate-900 shadow-sm';
+                tabLoginBtn.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition duration-150 text-slate-500 hover:text-slate-800';
             }
-            renderOnlineDrivers();
-            syncTripUI();
         }
 
-        // 10. AUTHENTICATION & USER MANAGEMENT LOGIC
-        function setupAuthEvents() {
-            const authModal = document.getElementById('authModal');
-            const tabLogin = document.getElementById('tabLogin');
-            const tabRegister = document.getElementById('tabRegister');
-            const authForm = document.getElementById('authForm');
-            const nameField = document.getElementById('nameField');
-            const driverFields = document.getElementById('driverFields');
-            const authRole = document.getElementById('authRole');
-            const authSubmitBtn = document.getElementById('authSubmitBtn');
-            const guestLoginBtn = document.getElementById('guestLoginBtn');
+        function switchPanelTab(panel) {
+            const logsPanel = document.getElementById('panel-logs');
+            const usersPanel = document.getElementById('panel-users');
+            const logsBtn = document.getElementById('panel-tab-logs');
+            const usersBtn = document.getElementById('panel-tab-users');
 
-            // Modal Header Account Buttons
-            document.getElementById('userAccountBtnDesktop').onclick = () => authModal.classList.remove('hidden');
-            document.getElementById('userAccountBtnMobile').onclick = () => authModal.classList.remove('hidden');
-
-            // Tab Switching
-            tabLogin.onclick = () => {
-                state.authMode = 'login';
-                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition";
-                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition";
-                nameField.classList.add('hidden');
-                driverFields.classList.add('hidden');
-                document.getElementById('authModalTitle').textContent = "Welcome to Pemba Ride";
-                authSubmitBtn.textContent = "Sign In";
-            };
-
-            tabRegister.onclick = () => {
-                state.authMode = 'register';
-                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-emerald-500 text-slate-950 transition";
-                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-slate-200 transition";
-                nameField.classList.remove('hidden');
-                document.getElementById('authModalTitle').textContent = "Create Pemba Account";
-                authSubmitBtn.textContent = "Create Account & Sync CSV";
-                
-                if (authRole.value === 'driver') {
-                    driverFields.classList.remove('hidden');
-                }
-            };
-
-            authRole.onchange = (e) => {
-                if (state.authMode === 'register' && e.target.value === 'driver') {
-                    driverFields.classList.remove('hidden');
-                } else {
-                    driverFields.classList.add('hidden');
-                }
-            };
-
-            // Form Submit Logic
-            authForm.onsubmit = (e) => {
-                e.preventDefault();
-                const identity = document.getElementById('authIdentity').value.trim();
-                const password = document.getElementById('authPassword').value.trim();
-                const role = authRole.value;
-                const name = document.getElementById('authName').value.trim() || identity.split('@')[0];
-
-                if (!identity || !password) {
-                    alert("Please fill in identity and password.");
-                    return;
-                }
-
-                const users = storage.getUsers();
-
-                if (state.authMode === 'register') {
-                    const existing = users.find(u => u.identity === identity);
-                    if (existing) {
-                        alert("An account with this phone/email already exists. Please Sign In.");
-                        return;
-                    }
-
-                    const newUser = {
-                        identity,
-                        password,
-                        name,
-                        role,
-                        createdAt: new Date().toISOString()
-                    };
-
-                    users.push(newUser);
-                    storage.saveUsers(users);
-
-                    // If registered as Driver, add to drivers database as well
-                    if (role === 'driver') {
-                        const drivers = storage.getDrivers();
-                        const vType = document.getElementById('driverVehicleType').value;
-                        const vDetail = document.getElementById('driverVehicleDetail').value.trim() || `${vType.toUpperCase()} Transport`;
-                        
-                        const newDriver = {
-                            id: 'drv-' + Date.now(),
-                            name: name,
-                            phone: identity,
-                            plate: 'Z ' + Math.floor(100 + Math.random() * 900) + ' PB',
-                            rating: '5.0★',
-                            vehicleType: vType,
-                            vehicle: vDetail,
-                            online: true
-                        };
-                        drivers.push(newDriver);
-                        storage.saveDrivers(drivers);
-                    }
-
-                    storage.setCurrentUser(newUser);
-                } else {
-                    // Sign In Mode
-                    const user = users.find(u => u.identity === identity && u.password === password);
-                    if (!user) {
-                        // Demo fallback check
-                        if (identity === 'demo' || identity === 'guest') {
-                            const demoUser = { identity: 'guest', name: 'Demo Guest', role: 'rider' };
-                            storage.setCurrentUser(demoUser);
-                        } else {
-                            alert("Invalid phone/email or password. Register if you don't have an account.");
-                            return;
-                        }
-                    } else {
-                        storage.setCurrentUser(user);
-                    }
-                }
-
-                authModal.classList.add('hidden');
-                updateUIForCurrentUser();
-                checkAndInitCsvDatabase();
-            };
-
-            guestLoginBtn.onclick = () => {
-                const guestUser = { identity: 'guest@pembaride.com', name: 'Guest Passenger', role: 'rider' };
-                storage.setCurrentUser(guestUser);
-                authModal.classList.add('hidden');
-                updateUIForCurrentUser();
-            };
-
-            // Driver Online/Offline status toggle listener
-            const driverToggle = document.getElementById('driverOnlineToggle');
-            driverToggle.onchange = (e) => {
-                const isOnline = e.target.checked;
-                const user = storage.getCurrentUser();
-                if (!user || user.role !== 'driver') return;
-
-                const drivers = storage.getDrivers();
-                const dIndex = drivers.findIndex(d => d.name === user.name || d.phone === user.identity);
-                
-                if (dIndex !== -1) {
-                    drivers[dIndex].online = isOnline;
-                    storage.saveDrivers(drivers);
-                }
-
-                updateDriverStatusBadge(isOnline);
-            };
-        }
-
-        function updateUIForCurrentUser() {
-            const user = storage.getCurrentUser();
-            const authModal = document.getElementById('authModal');
-            const driverContainer = document.getElementById('driverStatusContainer');
-            const onlineDriversContainer = document.getElementById('onlineDriversContainer');
-
-            if (!user) {
-                authModal.classList.remove('hidden');
-                document.getElementById('userDesktopLabel').textContent = "Sign In";
-                document.getElementById('userMobileLabel').textContent = "Sign In";
-                driverContainer.classList.add('hidden');
-                return;
-            }
-
-            document.getElementById('userDesktopLabel').textContent = `${user.name} (${user.role.toUpperCase()})`;
-            document.getElementById('userMobileLabel').textContent = user.name.split(' ')[0];
-
-            if (user.role === 'driver') {
-                driverContainer.classList.remove('hidden');
-                onlineDriversContainer.classList.add('hidden');
-
-                const drivers = storage.getDrivers();
-                const myDriver = drivers.find(d => d.name === user.name || d.phone === user.identity);
-                const isOnline = myDriver ? myDriver.online : false;
-
-                document.getElementById('driverOnlineToggle').checked = isOnline;
-                updateDriverStatusBadge(isOnline);
+            if (panel === 'logs') {
+                logsPanel.classList.remove('hidden');
+                usersPanel.classList.add('hidden');
+                logsBtn.className = 'pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center gap-2 transition';
+                usersBtn.className = 'pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition';
             } else {
-                driverContainer.classList.add('hidden');
-                onlineDriversContainer.classList.remove('hidden');
+                logsPanel.classList.add('hidden');
+                usersPanel.classList.remove('hidden');
+                usersBtn.className = 'pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center gap-2 transition';
+                logsBtn.className = 'pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition';
             }
-
-            renderOnlineDrivers();
-            syncTripUI();
         }
 
-        function updateDriverStatusBadge(isOnline) {
-            const badge = document.getElementById('driverOnlineBadge');
-            if (isOnline) {
-                badge.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Online (Accepting Passenger Requests)`;
+        function renderDashboard(user) {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+
+            document.getElementById('user-avatar').textContent = user.username.charAt(0).toUpperCase();
+            document.getElementById('user-display-name').textContent = user.username;
+            document.getElementById('user-display-email').textContent = user.email;
+            document.getElementById('user-display-role').textContent = user.role;
+            document.getElementById('session-time').textContent = user.loginTime;
+        }
+
+        function renderAuthForms() {
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+        }
+
+        function updateHeaderBadge(isLoggedIn) {
+            const container = document.getElementById('header-session-status');
+            if (isLoggedIn && activeSession) {
+                container.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Active: ${escapeHTML(activeSession.username)}
+                    </span>
+                `;
             } else {
-                badge.className = "text-xs font-bold px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center gap-1.5";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Offline (Not accepting rides)`;
+                container.innerHTML = `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                        Not Authenticated
+                    </span>
+                `;
             }
         }
 
-        // 11. DOM CONTENT LOADED INITIALIZATION
-        document.addEventListener('DOMContentLoaded', () => {
-            initDropdowns();
-            setupAuthEvents();
-            renderVehicleOptions();
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
 
-            // Driver Modal actions
-            document.getElementById('acceptRideBtn').onclick = driverAcceptRide;
-            document.getElementById('declineRideBtn').onclick = () => {
-                document.getElementById('driverIncomingModal').classList.add('hidden');
-            };
+            let bg = 'bg-slate-900 text-white';
+            let icon = '<i class="fa-solid fa-circle-info text-sky-400"></i>';
 
-            document.getElementById('requestRideBtn').onclick = requestRide;
-            document.getElementById('cancelRideBtn').onclick = cancelTrip;
+            if (type === 'success') {
+                bg = 'bg-slate-900 text-white';
+                icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+            } else if (type === 'error') {
+                bg = 'bg-red-900 text-white';
+                icon = '<i class="fa-solid fa-circle-exclamation text-red-300"></i>';
+            }
 
-            // Auto-select initial locations for instant preview
-            state.pickupId = 'chake';
-            state.destId = 'airport';
-            document.getElementById('pickupSelect').value = 'chake';
-            document.getElementById('destSelect').value = 'airport';
-            calculateAndUpdate();
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-xs font-medium transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${bg}`;
+            toast.innerHTML = `${icon} <span>${escapeHTML(message)}</span>`;
 
-            // Auto-check user state & CSV database
-            checkAndInitCsvDatabase();
-            updateUIForCurrentUser();
-        });
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function escapeHTML(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
     </script>
 </body>
 </html>
