@@ -30,12 +30,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* Official Bookman Old Style Font & 12px Standard Body Rule */
-    body { font-family: 'Bookman Old Style', Georgia, serif; font-size: 12px; line-height: 1.35; }
-    
-    /* Utility class for 15px max headings */
-    .official-title { font-size: 15px !important; font-weight: bold; }
-    
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
@@ -50,8 +45,8 @@
       #printable-report-container { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1020px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
-      .print-page-annex { page-break-after: always; break-after: page; min-height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .print-page-1 { page-break-after: always; break-after: page; height: 100vh; max-height: 1050px; overflow: hidden; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
+      .print-page-2 { page-break-after: always; break-after: page; min-height: 100vh; box-sizing: border-box; margin: 0 auto; box-shadow: none !important; }
       .photo-card { page-break-inside: avoid; break-inside: avoid; }
     }
   </style>
@@ -86,7 +81,7 @@
                         Wakala & Collateral Verification System
                     </h2>
                     <p class="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed mb-6">
-                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and official 12px Bookman Old Style layout formatting.
+                        Streamline field inspections with instant GPS telemetry capture, live camera watermarking, precise 100m satellite mapping, and official 2-page dynamic report layouts[cite: 4].
                     </p>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button onclick="startNewInspection()" class="w-full sm:w-auto px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm sm:text-base font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center justify-center gap-2.5">
@@ -140,7 +135,7 @@
                     </h2>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Fill in the required information and capture site/business photos.</p>
                 </div>
-                <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium rounded-xl transition">
+                <button onclick="switchView('dashboard')" class="w-full sm:w-auto px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-medium rounded-lg transition">
                     Cancel & Return
                 </button>
             </div>
@@ -230,7 +225,7 @@
                     <div id="photos-preview-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
                         <!-- Dynamically populated captured photos -->
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured will be automatically stamped with Azania Bank watermark and embedded into the smart photo annex pages.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">Photos captured will be automatically stamped with Azania Bank watermark and embedded into Page 2 of the final report[cite: 4].</p>
                 </div>
 
                 <!-- Form Submit Action -->
@@ -317,17 +312,17 @@
             <!-- Report Printable Document Container -->
             <div id="printable-report-container" class="space-y-8 overflow-x-auto">
                 
-                <!-- PAGE 1: Report Summary & Satellite Map -->
+                <!-- PAGE 1: Report Summary & Satellite Map (Strictly 1 Page Fit) -->
                 <div class="print-page-1 bg-white text-slate-900 p-6 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1020px; max-height: 1020px;">
-                    <div class="space-y-2.5">
+                    <div class="space-y-3">
                         <!-- Header Banner -->
                         <div class="text-center border-b-2 border-slate-900 pb-2 mb-2">
-                            <h2 class="official-title uppercase text-slate-900">AZANIA BANK PLC</h2>
-                            <h3 style="font-size: 13px;" class="font-bold uppercase text-brand-700 mt-0.5">SITE VISIT REPORT</h3>
+                            <h2 class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+                            <h3 class="text-xs sm:text-sm font-bold uppercase text-brand-700 mt-0.5">SITE VISIT REPORT</h3>
                         </div>
 
                         <!-- Data Table 1 -->
-                        <table class="w-full border-collapse border border-slate-900" style="font-size: 11.5px;">
+                        <table class="w-full border-collapse border border-slate-900 text-xs">
                             <tr>
                                 <td class="border border-slate-900 p-1.5 font-bold bg-slate-100 w-1/3">1. Name of Wakala Account</td>
                                 <td colspan="3" class="border border-slate-900 p-1.5 font-semibold uppercase" id="rep-account-name">KASSIM KHAMIS ALI</td>
@@ -350,11 +345,11 @@
                         </table>
 
                         <!-- Site Visit Description Section -->
-                        <div class="space-y-1">
-                            <h4 class="official-title underline">Site visit report</h4>
+                        <div class="space-y-1 text-xs">
+                            <h4 class="font-bold text-slate-900 underline">Site visit report</h4>
                             <p class="font-medium text-slate-800">The site was visited by <span id="rep-officer-name" class="font-bold underline">Miss Hawa Juma</span> on <span id="rep-date">26/08/2026</span>.</p>
-                            <h4 class="official-title underline mt-1">General Description of the Business</h4>
-                            <p id="rep-description" class="text-slate-800 leading-relaxed bg-slate-50 p-2 rounded border border-slate-200">
+                            <h4 class="font-bold text-slate-900 underline mt-1">General Description of the Business</h4>
+                            <p id="rep-description" class="text-xs text-slate-800 leading-relaxed bg-slate-50 p-2 rounded border border-slate-200">
                                 Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA.
                             </p>
                         </div>
@@ -362,7 +357,7 @@
                         <!-- 100m Expanded Satellite View Map Tile -->
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <h4 class="official-title">100m Satellite View & Surroundings Map</h4>
+                                <h4 class="font-bold text-slate-900 text-xs">100m Satellite View & Surroundings Map</h4>
                                 <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"><i class="fa-solid fa-satellite"></i> Satellite Mode</span>
                             </div>
                             <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-900 h-28 sm:h-32 flex items-center justify-center">
@@ -371,7 +366,7 @@
                         </div>
 
                         <!-- Integrated Verification & Signature Block -->
-                        <div class="border-t-2 border-slate-900 pt-2 space-y-2 mt-2">
+                        <div class="border-t-2 border-slate-900 pt-2 text-xs space-y-2 mt-2">
                             <p class="text-slate-800 leading-snug">
                                 I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
                             </p>
@@ -393,9 +388,9 @@
                     </div>
                 </div>
 
-                <!-- DYNAMIC SMART PHOTO ANNEX PAGES CONTAINER -->
-                <div id="dynamic-photos-pages-container" class="space-y-8">
-                    <!-- Automatically generated smart orientation pages will render here -->
+                <!-- PAGE 2 & SUBSEQUENT DYNAMIC ANNEX PAGES -->
+                <div id="dynamic-photos-pages-container">
+                    <!-- Dynamically populated 2-column grid pages will render here -->
                 </div>
 
             </div>
@@ -429,6 +424,7 @@
 
   <!-- JAVASCRIPT SYSTEM ENGINE -->
   <script>
+    // Universal Dynamic Includes Loader[cite: 3]
     async function loadIncludes() {
       const includes = [
         { id: 'include-header', file: 'includes/header.html' },
@@ -697,11 +693,11 @@
       ctx.fillRect(0, canvas.height - 110, canvas.width, 110);
 
       ctx.fillStyle = "#0284c7";
-      ctx.font = "bold 24px 'Bookman Old Style', Georgia, serif";
+      ctx.font = "bold 24px sans-serif";
       ctx.fillText("AZANIA BANK PLC - FIELD AUDIT WATERMARK", 40, canvas.height - 70);
 
       ctx.fillStyle = "#ffffff";
-      ctx.font = "20px 'Bookman Old Style', Georgia, serif";
+      ctx.font = "20px sans-serif";
       ctx.fillText(`Account: ${account.toUpperCase()} | GPS: ${gps}`, 40, canvas.height - 35);
       ctx.fillText(`Timestamp: ${dateStr}`, canvas.width - 450, canvas.height - 35);
 
@@ -721,17 +717,12 @@
     }
 
     function saveCapturedPhoto(dataUrl) {
-      const img = new Image();
-      img.onload = function() {
-        const isLandscape = img.width >= img.height;
-        appState.capturedPhotos.push({
-          id: Date.now(),
-          url: dataUrl,
-          orientation: isLandscape ? 'landscape' : 'portrait'
-        });
-        renderPhotosQueue();
-      };
-      img.src = dataUrl;
+      appState.capturedPhotos.push({
+        id: Date.now(),
+        url: dataUrl,
+        caption: document.getElementById('f-visit-type').value + ' - ' + document.getElementById('f-account-name').value
+      });
+      renderPhotosQueue();
     }
 
     function removePhoto(id) {
@@ -758,9 +749,9 @@
       container.innerHTML = appState.capturedPhotos.map((photo, index) => `
         <div class="relative group bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
           <img src="${photo.url}" alt="Captured Site Photo" class="w-full h-36 object-cover">
-          <div class="p-3 flex items-center justify-between">
-            <span class="text-[10px] uppercase font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">${photo.orientation}</span>
-            <button type="button" onclick="removePhoto(${photo.id})" class="text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
+          <div class="p-3">
+            <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">Photo #${index + 1}</p>
+            <button type="button" onclick="removePhoto(${photo.id})" class="mt-2 text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
               <i class="fa-solid fa-trash"></i> Remove
             </button>
           </div>
@@ -815,70 +806,51 @@
         mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
       }
 
-      // Dynamic Aspect-Ratio Smart Photo Annex Builder
+      // Dynamic Multi-Page Photo Grid Renderer (2 columns per row, max 4 photos per page = 2x2 grid)
       const container = document.getElementById('dynamic-photos-pages-container');
       container.innerHTML = '';
 
       if (data.photos.length === 0) {
         container.innerHTML = `
-          <div class="print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1050px;">
+          <div class="print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]" style="min-height: 1050px;">
             <div>
-              <div class="text-center border-b-2 border-slate-900 pb-3 mb-4">
-                <h2 class="official-title uppercase text-slate-900">AZANIA BANK PLC</h2>
-                <h3 style="font-size: 13px;" class="font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS</h3>
+              <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
+                <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+                <h3 class="text-base sm:text-lg font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS</h3>
               </div>
-              <p class="font-semibold text-slate-700 mb-6">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
+              <p class="text-sm font-semibold text-slate-700 mb-6">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
               <div class="border-2 border-dashed border-slate-300 rounded-xl p-16 text-center text-slate-500">
                 <p>No business photos were attached for this inspection.</p>
               </div>
             </div>
-            <div class="border-t-2 border-slate-900 pt-3 text-center text-xs font-bold text-slate-400">2</div>
+            <div class="border-t-2 border-slate-900 pt-4 text-center text-xs font-bold text-slate-400">2</div>
           </div>
         `;
         return;
       }
 
-      let pagesList = [];
-      let currentPagePhotos = [];
-      let currentPageLayout = 'landscape';
+      const PHOTOS_PER_PAGE = 4; // 2x2 grid per page
+      const totalPages = Math.ceil(data.photos.length / PHOTOS_PER_PAGE);
 
-      data.photos.forEach(photo => {
-        const photoLayout = photo.orientation === 'landscape' ? 'landscape' : 'portrait';
-        const maxCapacity = photoLayout === 'landscape' ? 2 : 4;
-        if (currentPagePhotos.length === 0) {
-          currentPageLayout = photoLayout;
-          currentPagePhotos.push(photo);
-        } else if (currentPageLayout !== photoLayout || currentPagePhotos.length >= maxCapacity) {
-          pagesList.push({ layout: currentPageLayout, photos: [...currentPagePhotos] });
-          currentPageLayout = photoLayout;
-          currentPagePhotos = [photo];
-        } else {
-          currentPagePhotos.push(photo);
-        }
-      });
-      if (currentPagePhotos.length > 0) {
-        pagesList.push({ layout: currentPageLayout, photos: currentPagePhotos });
-      }
+      for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+        const start = pageIdx * PHOTOS_PER_PAGE;
+        const pagePhotos = data.photos.slice(start, start + PHOTOS_PER_PAGE);
+        const pageNum = pageIdx + 2; // Page 1 is report summary
 
-      pagesList.forEach((pageGroup, pageIdx) => {
-        const pageNum = pageIdx + 2;
         const pageDiv = document.createElement('div');
-        pageDiv.className = "print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between";
+        pageDiv.className = "print-page-2 bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between min-w-[320px]";
         pageDiv.style.minHeight = "1050px";
 
-        const gridClass = pageGroup.layout === 'landscape' ? 'grid-cols-1 gap-4' : 'grid-cols-2 gap-4';
-        const imgHeight = pageGroup.layout === 'landscape' ? 'h-72 sm:h-80' : 'h-52 sm:h-60';
-
-        const photosHtml = pageGroup.photos.map((photo, i) => {
-          const globalIndex = data.photos.indexOf(photo) + 1;
+        const photosHtml = pagePhotos.map((photo, i) => {
+          const photoIndex = start + i + 1;
           return `
             <div class="photo-card border-2 border-slate-900 rounded-xl overflow-hidden bg-slate-50 p-3 flex flex-col justify-between shadow-xs">
-              <div class="${imgHeight} w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
-                <img src="${photo.url}" alt="Site Photo ${globalIndex}" class="w-full h-full object-contain">
+              <div class="h-64 sm:h-72 w-full overflow-hidden rounded-lg bg-black flex items-center justify-center">
+                <img src="${photo.url}" alt="Site Photo ${photoIndex}" class="w-full h-full object-contain">
               </div>
-              <div class="mt-2 pt-1.5 border-t border-slate-300 flex justify-between items-center text-[11px] font-semibold text-slate-800">
-                <span>Plate #${globalIndex} (${photo.orientation.toUpperCase()}) - ${data.accountName}</span>
-                <span class="font-mono text-[10px] text-slate-600">${data.gps}</span>
+              <div class="mt-2.5 pt-2 border-t border-slate-300 flex justify-between items-center text-xs font-semibold text-slate-800">
+                <span>Plate #${photoIndex}: ${data.accountName}</span>
+                <span class="font-mono text-[11px] text-slate-600">${data.gps}</span>
               </div>
             </div>
           `;
@@ -887,14 +859,14 @@
         pageDiv.innerHTML = `
           <div>
             <div class="text-center border-b-2 border-slate-900 pb-3 mb-4">
-              <h2 class="official-title uppercase text-slate-900">AZANIA BANK PLC</h2>
-              <h3 style="font-size: 13px;" class="font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS (ANNEX)</h3>
+              <h2 class="text-xl sm:text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+              <h3 class="text-base sm:text-lg font-bold uppercase text-brand-700 mt-1">SITE VISIT REPORT - ATTACHED BUSINESS PHOTOS (ANNEX)</h3>
             </div>
             <div class="mb-4 flex justify-between items-center">
-              <p class="font-semibold text-slate-700">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
-              <span class="font-mono text-[11px] text-slate-500">Page ${pageNum} of ${pagesList.length + 1}</span>
+              <p class="text-xs sm:text-sm font-semibold text-slate-700">Client / Wakala Name: <span class="font-bold text-slate-900 uppercase">${data.accountName}</span></p>
+              <span class="text-xs font-mono text-slate-500">Page ${pageNum} of ${totalPages + 1}</span>
             </div>
-            <div class="grid ${gridClass}">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               ${photosHtml}
             </div>
           </div>
@@ -904,7 +876,7 @@
         `;
 
         container.appendChild(pageDiv);
-      });
+      }
     }
 
     function renderSavedReportsList() {
@@ -977,8 +949,8 @@
       if (appState.activeInspection && appState.activeInspection.photos.length > 0) {
         photosHtml = appState.activeInspection.photos.map((p, idx) => `
           <div style="margin-bottom: 25px; page-break-inside: avoid; text-align: center;">
-            <p style="font-weight: bold; font-size: 12px; font-family: 'Bookman Old Style', Georgia, serif;">Photo Annex #${idx + 1} (${p.orientation.toUpperCase()})</p>
-            <img src="${p.url}" style="max-width: 400px; height: auto; border: 2px solid #000; padding: 4px;" />
+            <p style="font-weight: bold; font-size: 13px;">Photo Annex #${idx + 1}</p>
+            <img src="${p.url}" style="max-width: 420px; height: auto; border: 2px solid #000; padding: 4px;" />
             <p style="font-size: 11px; color: #555;">GPS: ${gps}</p>
           </div>
         `).join('');
@@ -992,10 +964,10 @@
           <meta charset='utf-8'>
           <title>Azania Bank Site Visit Report - ${accountName}</title>
           <style>
-            body { font-family: 'Bookman Old Style', Georgia, serif; font-size: 12px; color: #000; line-height: 1.35; }
-            h2, h3 { text-align: center; margin: 5px 0; font-size: 15px; }
+            body { font-family: 'Calibri', Arial, sans-serif; color: #000; line-height: 1.4; }
+            h2, h3 { text-align: center; margin: 5px 0; }
             table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; }
-            th, td { border: 1px solid #000; padding: 8px; font-size: 11.5px; }
+            th, td { border: 1px solid #000; padding: 8px; font-size: 12px; }
             .bg-gray { background-color: #f2f2f2; }
           </style>
         </head>
