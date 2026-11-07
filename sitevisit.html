@@ -406,9 +406,6 @@
 
     </main>
 
-    <!-- INJECT FOOTER -->
-    <div id="include-footer"></div>
-
   </div>
 
   <!-- JAVASCRIPT SYSTEM ENGINE -->
@@ -512,6 +509,19 @@
       if (progressInterval) clearInterval(progressInterval);
       const progressBar = document.getElementById('autoCloseProgressBar');
       if (progressBar) progressBar.style.width = '100%';
+    }
+
+    function toggleMobileDrawer() {
+      const drawer = document.getElementById('mobileDrawerContainer');
+      if (drawer) {
+        if (drawer.classList.contains('grid-rows-[0fr]')) {
+          drawer.classList.remove('grid-rows-[0fr]');
+          drawer.classList.add('grid-rows-[1fr]');
+        } else {
+          drawer.classList.remove('grid-rows-[1fr]');
+          drawer.classList.add('grid-rows-[0fr]');
+        }
+      }
     }
 
     let appState = {
@@ -816,7 +826,7 @@
         mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
       }
 
-      // 2x6 Grid Pagination Engine (Up to 12 photos per page, slightly increased container sizes for clarity)
+      // 2x6 Grid Pagination Engine (Up to 12 photos per page)
       const container = document.getElementById('dynamic-photos-pages-container');
       container.innerHTML = '';
 
