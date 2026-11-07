@@ -1,623 +1,220 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100 dark">
+<html lang="en" class="h-full bg-black select-none text-white">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LensCraft Studio PRO - GPS Smart Camera & Document Scanner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Camera</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gold: {
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                        },
-                        cyber: {
-                            cyan: '#06b6d4',
-                            emerald: '#10b981',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        /* SF Pro / System font stack for authentic iOS feel */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            touch-action: manipulation;
         }
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(51, 65, 85, 0.8);
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(100, 116, 139, 1);
-        }
-        @keyframes flashAnim {
-            0% { opacity: 0.9; }
+
+        /* Flash animation on shutter */
+        @keyframes iosFlash {
+            0% { opacity: 1; }
             100% { opacity: 0; }
         }
-        .shutter-flash {
-            animation: flashAnim 0.3s ease-out forwards;
+        .shutter-flash-active {
+            animation: iosFlash 0.25s cubic-bezier(0.1, 0.7, 0.1, 1) forwards;
         }
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+
+        /* Smooth camera flip rotation */
+        .flip-transition {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .animate-pulse-dot {
-            animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+        /* Custom scrollbar hiding for gallery modal */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="h-full flex flex-col font-sans antialiased bg-slate-950 text-slate-100 overflow-hidden select-none">
+<body class="h-full flex flex-col bg-black overflow-hidden">
 
-    <!-- Header Bar -->
-    <header class="h-16 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md px-4 flex items-center justify-between z-30 flex-shrink-0">
-        <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-gold-500 to-amber-300 flex items-center justify-center text-slate-950 shadow-lg shadow-gold-500/20">
-                <i class="fa-solid fa-camera text-lg"></i>
-            </div>
-            <div>
-                <h1 class="font-bold text-base tracking-tight text-slate-100 flex items-center gap-2">
-                    LensCraft <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20">GPS PRO</span>
-                </h1>
-                <p class="text-[10px] text-slate-400 font-mono tracking-wider uppercase">Geo-Tagged Document & Photo Studio</p>
-            </div>
+    <!-- Top iOS Camera Bar -->
+    <header class="h-14 px-6 flex items-center justify-between z-20 bg-black/80 backdrop-blur-md flex-shrink-0">
+        <!-- Flash Control Button -->
+        <button id="flashToggleBtn" class="w-10 h-10 rounded-full flex items-center justify-center text-white/90 hover:text-white text-lg transition active:opacity-60">
+            <i id="flashIcon" class="fa-solid fa-bolt-slash"></i>
+        </button>
+
+        <!-- Location Status Indicator Badge -->
+        <div id="locationBadge" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 text-xs font-medium text-white/90">
+            <i id="locationBadgeIcon" class="fa-solid fa-location-arrow text-yellow-400 text-[11px] animate-pulse"></i>
+            <span id="locationBadgeText" class="tracking-tight text-[11px] font-sans">Acquiring location...</span>
         </div>
 
-        <!-- Live GPS Telemetry Status Pill -->
-        <div id="gpsHeaderBadge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/80 backdrop-blur-md text-xs font-mono">
-            <span id="gpsStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse-dot"></span>
-            <span id="gpsStatusText" class="text-slate-300">GPS: Locating...</span>
-        </div>
-
-        <div class="flex items-center space-x-2">
-            <button id="toggleGalleryBtn" class="relative px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 text-xs font-medium transition flex items-center gap-2">
-                <i class="fa-regular fa-images"></i>
-                <span class="hidden sm:inline">Captured</span>
-                <span id="galleryCountBadge" class="bg-gold-500 text-slate-950 text-[10px] font-bold px-1.5 py-0.2 rounded-full hidden">0</span>
-            </button>
-            <button id="refreshGpsBtn" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700/60 transition" title="Refresh GPS Signal">
-                <i class="fa-solid fa-location-crosshairs"></i>
-            </button>
-        </div>
+        <!-- Camera Switch (Front/Back) -->
+        <button id="flipCamTopBtn" class="w-10 h-10 rounded-full flex items-center justify-center text-white/90 hover:text-white text-lg transition active:opacity-60">
+            <i class="fa-solid fa-camera-rotate"></i>
+        </button>
     </header>
 
-    <!-- Main Viewport Area -->
-    <main class="flex-1 relative flex flex-col md:flex-row overflow-hidden bg-black">
-        
-        <!-- Live Camera Container -->
-        <div id="cameraView" class="relative flex-1 flex flex-col items-center justify-center overflow-hidden bg-black">
-            
-            <!-- Video Stream -->
-            <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover transform transition-transform duration-300"></video>
-            
-            <!-- Camera Loading Overlay -->
-            <div id="cameraLoading" class="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center z-20 gap-3">
-                <div class="w-12 h-12 border-4 border-gold-500/20 border-t-gold-500 rounded-full animate-spin"></div>
-                <p class="text-sm font-mono text-slate-400">Initializing High-Res Camera & Location Stream...</p>
-            </div>
+    <!-- Main Viewfinder Area -->
+    <main class="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
+        <!-- Live Video Element -->
+        <video id="webcam" autoplay playsinline muted class="w-full h-full object-cover flip-transition"></video>
 
-            <!-- Fallback No-Camera Screen -->
-            <div id="cameraFallback" class="hidden absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-center z-20">
-                <div class="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mb-4">
-                    <i class="fa-solid fa-video-slash text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-slate-200 mb-1">Camera Access Required</h3>
-                <p class="text-xs text-slate-400 max-w-sm mb-5">Please allow camera permissions or upload an image directly from your device to capture with GPS metadata.</p>
-                <label class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-slate-950 font-semibold text-xs cursor-pointer transition shadow-lg shadow-gold-500/20 flex items-center gap-2">
-                    <i class="fa-solid fa-upload"></i> Choose Local Photo
-                    <input type="file" id="fallbackFileInput" accept="image/*" class="hidden">
-                </label>
-            </div>
-
-            <!-- Shutter Flash Effect -->
-            <div id="shutterFlash" class="hidden absolute inset-0 bg-white z-40 pointer-events-none"></div>
-
-            <!-- Dynamic Camera Overlays -->
-            <div id="overlayGrid" class="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 opacity-30 transition-opacity duration-300">
-                <div class="border-r border-b border-white/40"></div>
-                <div class="border-r border-b border-white/40"></div>
-                <div class="border-b border-white/40"></div>
-                <div class="border-r border-b border-white/40"></div>
-                <div class="border-r border-b border-white/40"></div>
-                <div class="border-b border-white/40"></div>
-                <div class="border-r border-white/40"></div>
-                <div class="border-r border-white/40"></div>
-                <div></div>
-            </div>
-
-            <!-- Target Crosshair -->
-            <div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-40">
-                <div class="w-10 h-10 border border-gold-400/80 rounded-full flex items-center justify-center">
-                    <div class="w-1.5 h-1.5 bg-gold-400 rounded-full"></div>
-                </div>
-            </div>
-
-            <!-- Live Framing Guidelines Container -->
-            <div id="liveTargetGuide" class="absolute inset-0 pointer-events-none flex items-center justify-center transition-all duration-300">
-                <div id="liveGuideBox" class="border-2 border-dashed border-gold-400/60 rounded-2xl transition-all duration-300 relative w-64 h-80 max-w-[80vw] max-h-[60vh]">
-                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-900/90 text-gold-400 font-mono text-[10px] px-2.5 py-0.5 rounded-full border border-gold-500/30">
-                        Passport / Face Guide
-                    </div>
-                    <div id="biometricOval" class="absolute inset-4 border border-gold-400/40 rounded-full opacity-60 flex items-center justify-center">
-                        <div class="w-3/4 h-1/2 border-t border-b border-gold-400/30"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Glassmorphic Viewfinder Floating GPS Overlay Tag -->
-            <div class="absolute top-16 left-4 pointer-events-none z-10">
-                <div id="viewfinderGpsTag" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/75 backdrop-blur-md border border-slate-800 text-xs text-slate-300 font-mono shadow-lg">
-                    <i class="fa-solid fa-location-dot text-cyber-emerald animate-bounce"></i>
-                    <span id="viewfinderGpsCoords">GPS: Acquiring coordinates...</span>
-                </div>
-            </div>
-
-            <!-- Top Camera Controls Overlay -->
-            <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-10 pointer-events-auto">
-                <div class="flex items-center bg-slate-900/80 backdrop-blur-md p-1 rounded-full border border-slate-800/80 shadow-xl">
-                    <button data-guide="passport" class="guide-tab-btn text-xs font-semibold px-3 py-1.5 rounded-full text-slate-950 bg-gold-500 transition">Passport</button>
-                    <button data-guide="id" class="guide-tab-btn text-xs font-semibold px-3 py-1.5 rounded-full text-slate-400 hover:text-white transition">ID Card</button>
-                    <button data-guide="standard" class="guide-tab-btn text-xs font-semibold px-3 py-1.5 rounded-full text-slate-400 hover:text-white transition">Standard</button>
-                </div>
-
-                <div class="flex items-center space-x-2">
-                    <button id="toggleGridBtn" class="p-2.5 rounded-full bg-slate-900/80 backdrop-blur-md text-slate-300 hover:text-white border border-slate-800/80 transition" title="Toggle Grid">
-                        <i class="fa-solid fa-border-all"></i>
-                    </button>
-                    <button id="switchCameraBtn" class="p-2.5 rounded-full bg-slate-900/80 backdrop-blur-md text-slate-300 hover:text-white border border-slate-800/80 transition" title="Switch Camera">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Bottom Camera Shutter Controls Overlay Bar -->
-            <div class="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-8 z-10 px-4">
-                <label class="w-12 h-12 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white cursor-pointer hover:bg-slate-800 transition shadow-lg">
-                    <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
-                    <input type="file" id="directFileInput" accept="image/*" class="hidden">
-                </label>
-
-                <button id="shutterBtn" class="w-20 h-20 rounded-full border-4 border-slate-800 bg-slate-950 flex items-center justify-center group focus:outline-none shadow-2xl active:scale-95 transition-transform duration-150">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-gold-500 to-amber-300 group-hover:scale-105 group-active:scale-90 transition-all duration-200 flex items-center justify-center text-slate-950 shadow-lg shadow-gold-500/30">
-                        <i class="fa-solid fa-circle-dot text-2xl opacity-80 group-hover:rotate-45 transition-transform duration-300"></i>
-                    </div>
-                </button>
-
-                <button id="quickGalleryBtn" class="w-12 h-12 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white overflow-hidden transition shadow-lg relative">
-                    <i id="galleryPlaceholderIcon" class="fa-solid fa-photo-film text-lg"></i>
-                    <img id="quickGalleryThumb" class="hidden w-full h-full object-cover">
-                </button>
-            </div>
-
+        <!-- Camera Initialization Spinner -->
+        <div id="camLoader" class="absolute inset-0 bg-black flex flex-col items-center justify-center gap-3 z-10">
+            <div class="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
         </div>
 
+        <!-- Camera Access Fallback UI -->
+        <div id="camFallback" class="hidden absolute inset-0 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center z-10">
+            <i class="fa-solid fa-camera text-4xl text-zinc-600 mb-3"></i>
+            <p class="text-sm font-medium text-zinc-300 mb-4">Camera Access Required</p>
+            <label class="px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs cursor-pointer active:scale-95 transition">
+                Upload Photo Instead
+                <input type="file" id="fallbackFileInput" accept="image/*" class="hidden">
+            </label>
+        </div>
+
+        <!-- Shutter White Flash Overlay -->
+        <div id="shutterFlashOverlay" class="hidden absolute inset-0 bg-white z-30 pointer-events-none"></div>
     </main>
 
-    <!-- Modal: Review, Crop, GPS Metadata & Format Editor -->
-    <div id="editorModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex flex-col transition-opacity duration-300">
-        <div class="h-14 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-900/80 flex-shrink-0">
-            <div class="flex items-center gap-2">
-                <button id="discardCapturedBtn" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-                <h2 class="font-bold text-sm text-slate-100">Review, Geo-Tag & Format Photo</h2>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button id="saveCapturedBtn" class="px-4 py-1.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-slate-950 font-semibold text-xs transition shadow-md shadow-gold-500/20 flex items-center gap-1.5">
-                    <i class="fa-solid fa-check font-bold"></i> Save Photo
-                </button>
-            </div>
-        </div>
+    <!-- Bottom Controls Deck (iPhone Camera Style) -->
+    <footer class="h-36 px-8 flex items-center justify-between z-20 bg-black flex-shrink-0">
+        <!-- Thumbnail / Gallery Trigger (Left) -->
+        <button id="galleryThumbBtn" class="w-12 h-12 rounded-full border-2 border-white/30 overflow-hidden bg-zinc-900 flex items-center justify-center relative active:scale-90 transition transform">
+            <i id="thumbPlaceholderIcon" class="fa-solid fa-image text-white/50 text-base"></i>
+            <img id="thumbImage" class="hidden w-full h-full object-cover">
+        </button>
 
-        <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
-            <!-- Center Canvas Frame Area -->
-            <div class="flex-1 relative bg-black/60 flex items-center justify-center p-4 overflow-hidden">
-                <div id="editorCropBox" class="relative max-w-full max-h-full flex items-center justify-center">
-                    <img id="editorImage" class="max-h-[60vh] max-w-[85vw] md:max-h-[65vh] md:max-w-[60vw] object-contain rounded-lg border border-slate-800 shadow-2xl transition-all">
-                    
-                    <div id="cropTargetOverlay" class="absolute inset-0 border-2 border-gold-400/90 pointer-events-none rounded-lg transition-all duration-300 flex items-center justify-center">
-                        <div id="editorOvalGuide" class="w-3/4 h-4/5 border border-gold-400/50 rounded-full opacity-60"></div>
-                        <span id="cropRatioTag" class="absolute bottom-2 right-2 bg-slate-950/80 text-gold-400 font-mono text-[10px] px-2 py-0.5 rounded border border-gold-500/30 uppercase">
-                            Passport (35x45 mm)
-                        </span>
-                    </div>
-                </div>
-            </div>
+        <!-- Classic iOS White Shutter Button (Center) -->
+        <button id="shutterBtn" class="w-20 h-20 rounded-full border-[4px] border-white p-1 flex items-center justify-center focus:outline-none active:scale-95 transition-transform duration-100">
+            <div class="w-full h-full bg-white rounded-full active:bg-zinc-300 transition-colors"></div>
+        </button>
 
-            <!-- Right/Bottom Adjustment & GPS Metadata Panel -->
-            <div class="w-full lg:w-96 bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col p-4 space-y-4 overflow-y-auto flex-shrink-0">
-                
-                <!-- GPS Geolocation Metadata Card -->
-                <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2">
-                    <div class="flex items-center justify-between text-xs">
-                        <span class="font-mono uppercase text-cyber-emerald font-semibold flex items-center gap-1.5">
-                            <i class="fa-solid fa-location-dot"></i> GPS Telemetry Meta
-                        </span>
-                        <span id="editorGpsTime" class="text-[10px] text-slate-400 font-mono">--:--:--</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-300">
-                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-                            <span class="text-[9px] text-slate-500 block">LATITUDE</span>
-                            <span id="editorLatVal" class="text-gold-400 font-bold">0.000000</span>
-                        </div>
-                        <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-                            <span class="text-[9px] text-slate-500 block">LONGITUDE</span>
-                            <span id="editorLngVal" class="text-gold-400 font-bold">0.000000</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono pt-1">
-                        <span>Alt: <strong id="editorAltVal" class="text-slate-200">N/A</strong></span>
-                        <span>Acc: ±<strong id="editorAccVal" class="text-slate-200">0m</strong></span>
-                    </div>
+        <!-- Quick Flip / Direct Upload Switch (Right) -->
+        <label class="w-12 h-12 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center text-white/80 active:scale-90 transition cursor-pointer">
+            <i class="fa-solid fa-arrow-up-from-bracket text-sm"></i>
+            <input type="file" id="directFileInput" accept="image/*" class="hidden">
+        </label>
+    </footer>
 
-                    <!-- Watermark Burn-In Toggle Button -->
-                    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-                        <label for="watermarkToggle" class="text-xs text-slate-200 font-medium flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-stamp text-gold-400"></i> Burn GPS Watermark on Export
-                        </label>
-                        <input type="checkbox" id="watermarkToggle" class="w-4 h-4 accent-gold-500 rounded cursor-pointer" checked>
-                    </div>
-                </div>
-
-                <!-- Format Option Selector -->
-                <div>
-                    <label class="text-[11px] font-mono uppercase text-slate-400 block mb-2 font-semibold tracking-wider">1. Select Preset Format</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button data-format="passport" class="format-btn active p-2 rounded-xl border border-gold-500 bg-gold-500/10 text-gold-400 text-xs font-medium flex flex-col items-center gap-1 text-center transition">
-                            <i class="fa-solid fa-user-tie"></i>
-                            <span>Passport</span>
-                            <span class="text-[9px] opacity-75 font-mono">35x45mm</span>
-                        </button>
-                        <button data-format="id" class="format-btn p-2 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 text-xs font-medium flex flex-col items-center gap-1 text-center transition hover:border-slate-600">
-                            <i class="fa-solid fa-id-card"></i>
-                            <span>ID Card</span>
-                            <span class="text-[9px] opacity-75 font-mono">85.6x54mm</span>
-                        </button>
-                        <button data-format="standard" class="format-btn p-2 rounded-xl border border-slate-700 bg-slate-800/60 text-slate-300 text-xs font-medium flex flex-col items-center gap-1 text-center transition hover:border-slate-600">
-                            <i class="fa-solid fa-expand"></i>
-                            <span>Standard</span>
-                            <span class="text-[9px] opacity-75 font-mono">Original</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Orientation & Transform Controls -->
-                <div>
-                    <label class="text-[11px] font-mono uppercase text-slate-400 block mb-2 font-semibold tracking-wider">2. Rotation & Flip</label>
-                    <div class="flex items-center gap-2">
-                        <button id="rotateLeftBtn" class="flex-1 py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/70 text-xs font-medium flex items-center justify-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-left"></i> -90°
-                        </button>
-                        <button id="rotateRightBtn" class="flex-1 py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/70 text-xs font-medium flex items-center justify-center gap-2 transition">
-                            <i class="fa-solid fa-rotate-right"></i> +90°
-                        </button>
-                        <button id="flipHorizontalBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/70 text-xs transition" title="Flip Horizontal">
-                            <i class="fa-solid fa-arrows-left-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Color Adjustments Sliders -->
-                <div class="space-y-2.5 pt-2 border-t border-slate-800">
-                    <label class="text-[11px] font-mono uppercase text-slate-400 block font-semibold tracking-wider">3. Image Adjustments</label>
-                    
-                    <div>
-                        <div class="flex justify-between text-xs text-slate-300 mb-1">
-                            <span>Brightness</span>
-                            <span id="brightnessVal" class="font-mono text-gold-400">100%</span>
-                        </div>
-                        <input type="range" id="brightnessSlider" min="50" max="150" value="100" class="w-full accent-gold-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between text-xs text-slate-300 mb-1">
-                            <span>Contrast</span>
-                            <span id="contrastVal" class="font-mono text-gold-400">100%</span>
-                        </div>
-                        <input type="range" id="contrastSlider" min="50" max="150" value="100" class="w-full accent-gold-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between text-xs text-slate-300 mb-1">
-                            <span>Saturation</span>
-                            <span id="saturationVal" class="font-mono text-gold-400">100%</span>
-                        </div>
-                        <input type="range" id="saturationSlider" min="0" max="200" value="100" class="w-full accent-gold-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer">
-                    </div>
-
-                    <button id="resetAdjustmentsBtn" class="w-full py-1 text-xs text-slate-400 hover:text-white underline text-center transition">
-                        Reset Adjustments
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Gallery Sidebar / Drawer -->
-    <div id="galleryDrawer" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-slate-900 border-l border-slate-800 shadow-2xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="h-16 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-900/90 flex-shrink-0">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-folder-closed text-gold-400"></i>
-                <h3 class="font-bold text-sm text-slate-100">Captured Session Data</h3>
-            </div>
-            <button id="closeGalleryBtn" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                <i class="fa-solid fa-xmark text-base"></i>
+    <!-- Photo Gallery & Fullscreen Preview Modal -->
+    <div id="galleryModal" class="fixed inset-0 bg-black z-50 hidden flex flex-col">
+        <!-- Modal Top Bar -->
+        <div class="h-14 px-4 flex items-center justify-between border-b border-zinc-900 bg-black">
+            <button id="closeGalleryBtn" class="text-yellow-400 font-semibold text-base px-2 py-1 active:opacity-60">
+                Done
+            </button>
+            <span id="galleryCounter" class="text-xs font-semibold tracking-wider text-zinc-400 uppercase">1 of 1</span>
+            <button id="deletePhotoBtn" class="text-red-500 text-lg p-2 active:opacity-60">
+                <i class="fa-regular fa-trash-can"></i>
             </button>
         </div>
 
-        <div id="galleryContainer" class="flex-1 p-4 space-y-3 overflow-y-auto">
-            <div id="galleryEmptyState" class="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
-                <i class="fa-solid fa-camera text-4xl mb-3 opacity-40"></i>
-                <p class="text-sm font-medium">No photos captured yet</p>
-                <p class="text-xs text-slate-600 mt-1">Take passport, ID, or standard photos with auto GPS tagging.</p>
-            </div>
+        <!-- Image Viewer Container -->
+        <div class="flex-1 relative bg-black flex items-center justify-center overflow-hidden p-2">
+            <img id="previewImage" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
         </div>
 
-        <div class="p-4 border-t border-slate-800 bg-slate-950/60 flex-shrink-0 space-y-2">
-            <button id="exportAllBtn" class="w-full py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-gold-500/20 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fa-solid fa-file-arrow-down"></i> Export All Captured Photos
+        <!-- Modal Bottom Actions Bar -->
+        <div class="h-20 px-8 flex items-center justify-between border-t border-zinc-900 bg-black flex-shrink-0">
+            <button id="shareDownloadBtn" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs border border-white/10 active:scale-95 transition">
+                <i class="fa-solid fa-download"></i>
+                <span>Save to Device</span>
             </button>
-            <button id="clearGalleryBtn" class="w-full py-2 rounded-xl text-red-400 hover:bg-red-500/10 text-xs font-semibold transition flex items-center justify-center gap-1.5 disabled:opacity-50">
-                <i class="fa-solid fa-trash-can"></i> Clear Session
+            <button id="copyCoordsBtn" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs border border-white/10 active:scale-95 transition">
+                <i class="fa-regular fa-copy"></i>
+                <span>Copy Details</span>
             </button>
         </div>
     </div>
 
-    <!-- Modal: Image & GPS Telemetry Detail View -->
-    <div id="metadataModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col">
-            <div class="h-12 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-900">
-                <span class="font-bold text-xs text-slate-200 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-gold-400"></i> Photo GPS Metadata Details
-                </span>
-                <button id="closeMetadataModalBtn" class="text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="p-4 space-y-4 overflow-y-auto max-h-[80vh]">
-                <img id="metaModalImage" class="w-full h-56 object-contain rounded-lg bg-black border border-slate-800">
-                <div class="space-y-2 font-mono text-xs">
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
-                        <span class="text-[10px] text-cyber-emerald font-semibold block">GEOLOCATION TELEMETRY</span>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Latitude:</span>
-                            <span id="metaLat" class="text-gold-400 font-bold">0.0000</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Longitude:</span>
-                            <span id="metaLng" class="text-gold-400 font-bold">0.0000</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Altitude:</span>
-                            <span id="metaAlt" class="text-slate-200">N/A</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-slate-400">Accuracy:</span>
-                            <span id="metaAcc" class="text-slate-200">±0m</span>
-                        </div>
-                        <div class="flex justify-between border-t border-slate-800/80 pt-1 mt-1">
-                            <span class="text-slate-400">ISO Timestamp:</span>
-                            <span id="metaTime" class="text-slate-300 text-[10px]">--</span>
-                        </div>
-                    </div>
-                </div>
-                <button id="copyCoordsBtn" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2">
-                    <i class="fa-regular fa-copy"></i> Copy Coordinates to Clipboard
-                </button>
-            </div>
-        </div>
+    <!-- Canvas Element for Burning Metadata Watermarks onto Captured Images -->
+    <canvas id="photoCanvas" class="hidden"></canvas>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-16 left-1/2 transform -translate-x-1/2 bg-zinc-900/90 border border-zinc-800 text-white px-4 py-2 rounded-full text-xs font-medium z-50 opacity-0 pointer-events-none transition-all duration-300 shadow-2xl flex items-center gap-2">
+        <i id="toastIcon" class="fa-solid fa-check text-yellow-400"></i>
+        <span id="toastMsg">Notification</span>
     </div>
 
-    <!-- Hidden Canvas for Offline Rendering and Cropping -->
-    <canvas id="offscreenCanvas" class="hidden"></canvas>
-
-    <!-- Notification Toast Message Box -->
-    <div id="toast" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-slate-900 border border-slate-700 text-slate-100 px-4 py-2.5 rounded-full shadow-2xl text-xs font-medium z-50 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-gold-400"></i>
-        <span id="toastMsg">Action completed</span>
-    </div>
-
-    <!-- Application Engine Script -->
     <script>
-        // Store Application State
+        // Camera & App State
         const state = {
             stream: null,
-            facingMode: 'user',
-            capturedImageData: null,
-            activeFormat: 'passport',
-            gridVisible: true,
-            rotation: 0,
-            flipped: false,
-            brightness: 100,
-            contrast: 100,
-            saturation: 100,
-            watermarkBurnIn: true,
-            currentGps: {
+            facingMode: 'environment', // Start with rear main camera
+            flashEnabled: false,
+            photos: [],
+            currentPhotoIndex: 0,
+            location: {
                 lat: null,
                 lng: null,
-                alt: null,
-                acc: null,
-                timestamp: null,
-                status: 'searching' // 'searching', 'acquired', 'error'
-            },
-            gallery: []
+                placeName: 'Acquiring location...',
+                loaded: false
+            }
         };
 
-        // DOM Cache
+        // DOM Element Cache
         const webcam = document.getElementById('webcam');
-        const cameraLoading = document.getElementById('cameraLoading');
-        const cameraFallback = document.getElementById('cameraFallback');
+        const camLoader = document.getElementById('camLoader');
+        const camFallback = document.getElementById('camFallback');
         const shutterBtn = document.getElementById('shutterBtn');
-        const switchCameraBtn = document.getElementById('switchCameraBtn');
-        const toggleGridBtn = document.getElementById('toggleGridBtn');
-        const overlayGrid = document.getElementById('overlayGrid');
-        const liveGuideBox = document.getElementById('liveGuideBox');
-        const biometricOval = document.getElementById('biometricOval');
-        const shutterFlash = document.getElementById('shutterFlash');
-        
-        // GPS DOMs
-        const gpsStatusDot = document.getElementById('gpsStatusDot');
-        const gpsStatusText = document.getElementById('gpsStatusText');
-        const viewfinderGpsCoords = document.getElementById('viewfinderGpsCoords');
-        const refreshGpsBtn = document.getElementById('refreshGpsBtn');
+        const flipCamTopBtn = document.getElementById('flipCamTopBtn');
+        const flashToggleBtn = document.getElementById('flashToggleBtn');
+        const flashIcon = document.getElementById('flashIcon');
+        const locationBadgeIcon = document.getElementById('locationBadgeIcon');
+        const locationBadgeText = document.getElementById('locationBadgeText');
+        const shutterFlashOverlay = document.getElementById('shutterFlashOverlay');
 
-        // Editor Modal DOMs
-        const editorModal = document.getElementById('editorModal');
-        const editorImage = document.getElementById('editorImage');
-        const cropTargetOverlay = document.getElementById('cropTargetOverlay');
-        const cropRatioTag = document.getElementById('cropRatioTag');
-        const editorOvalGuide = document.getElementById('editorOvalGuide');
-        const discardCapturedBtn = document.getElementById('discardCapturedBtn');
-        const saveCapturedBtn = document.getElementById('saveCapturedBtn');
-        const watermarkToggle = document.getElementById('watermarkToggle');
-        
-        const editorLatVal = document.getElementById('editorLatVal');
-        const editorLngVal = document.getElementById('editorLngVal');
-        const editorAltVal = document.getElementById('editorAltVal');
-        const editorAccVal = document.getElementById('editorAccVal');
-        const editorGpsTime = document.getElementById('editorGpsTime');
-
-        // Sliders & Controls DOMs
-        const brightnessSlider = document.getElementById('brightnessSlider');
-        const contrastSlider = document.getElementById('contrastSlider');
-        const saturationSlider = document.getElementById('saturationSlider');
-        const brightnessVal = document.getElementById('brightnessVal');
-        const contrastVal = document.getElementById('contrastVal');
-        const saturationVal = document.getElementById('saturationVal');
-        const resetAdjustmentsBtn = document.getElementById('resetAdjustmentsBtn');
-        const rotateLeftBtn = document.getElementById('rotateLeftBtn');
-        const rotateRightBtn = document.getElementById('rotateRightBtn');
-        const flipHorizontalBtn = document.getElementById('flipHorizontalBtn');
-
-        // Gallery & Metadata Modal DOMs
-        const galleryDrawer = document.getElementById('galleryDrawer');
-        const toggleGalleryBtn = document.getElementById('toggleGalleryBtn');
-        const quickGalleryBtn = document.getElementById('quickGalleryBtn');
+        // Gallery DOM Cache
+        const galleryThumbBtn = document.getElementById('galleryThumbBtn');
+        const thumbImage = document.getElementById('thumbImage');
+        const thumbPlaceholderIcon = document.getElementById('thumbPlaceholderIcon');
+        const galleryModal = document.getElementById('galleryModal');
         const closeGalleryBtn = document.getElementById('closeGalleryBtn');
-        const galleryContainer = document.getElementById('galleryContainer');
-        const galleryEmptyState = document.getElementById('galleryEmptyState');
-        const galleryCountBadge = document.getElementById('galleryCountBadge');
-        const quickGalleryThumb = document.getElementById('quickGalleryThumb');
-        const galleryPlaceholderIcon = document.getElementById('galleryPlaceholderIcon');
-        const exportAllBtn = document.getElementById('exportAllBtn');
-        const clearGalleryBtn = document.getElementById('clearGalleryBtn');
-        const metadataModal = document.getElementById('metadataModal');
-        const closeMetadataModalBtn = document.getElementById('closeMetadataModalBtn');
+        const previewImage = document.getElementById('previewImage');
+        const galleryCounter = document.getElementById('galleryCounter');
+        const deletePhotoBtn = document.getElementById('deletePhotoBtn');
+        const shareDownloadBtn = document.getElementById('shareDownloadBtn');
+        const copyCoordsBtn = document.getElementById('copyCoordsBtn');
 
-        // Audio Effects (Synthesizer via Web Audio API)
+        // Audio Shutter Feedback (Synthesizer via Web Audio API)
         function playShutterSound() {
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
-                
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-                
+                osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.05);
+
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
                 osc.connect(gain);
-                gain.connect(ctx.destination);
-                
+                gain.connect(audioCtx.destination);
+
                 osc.start();
-                osc.stop(ctx.currentTime + 0.08);
+                osc.stop(audioCtx.currentTime + 0.05);
             } catch (e) {}
-        }
 
-        // Display Toast Notification
-        function showToast(message, iconClass = 'fa-circle-check') {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.textContent = message;
-            toastIcon.className = `fa-solid ${iconClass} text-gold-400`;
-
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            toast.classList.add('opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 3000);
-        }
-
-        // Geolocation Engine
-        function initGeolocation() {
-            if ("geolocation" in navigator) {
-                updateGpsStatus('searching');
-                navigator.geolocation.watchPosition(
-                    (position) => {
-                        state.currentGps.lat = position.coords.latitude;
-                        state.currentGps.lng = position.coords.longitude;
-                        state.currentGps.alt = position.coords.altitude;
-                        state.currentGps.acc = position.coords.accuracy;
-                        state.currentGps.timestamp = new Date(position.timestamp).toISOString();
-                        updateGpsStatus('acquired');
-                    },
-                    (error) => {
-                        console.warn("Geolocation warning:", error.message);
-                        updateGpsStatus('error');
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    }
-                );
-            } else {
-                updateGpsStatus('error');
+            // Trigger device haptic vibration if supported
+            if (navigator.vibrate) {
+                navigator.vibrate(35);
             }
         }
 
-        function updateGpsStatus(status) {
-            state.currentGps.status = status;
-            if (status === 'acquired') {
-                const latFormatted = state.currentGps.lat.toFixed(5);
-                const lngFormatted = state.currentGps.lng.toFixed(5);
-                
-                gpsStatusDot.className = "w-2.5 h-2.5 rounded-full bg-cyber-emerald shadow-sm shadow-cyber-emerald";
-                gpsStatusText.textContent = `GPS: ${latFormatted}, ${lngFormatted}`;
-                viewfinderGpsCoords.textContent = `${latFormatted}°, ${lngFormatted}° (±${Math.round(state.currentGps.acc)}m)`;
-            } else if (status === 'searching') {
-                gpsStatusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse-dot";
-                gpsStatusText.textContent = `GPS: Locating...`;
-                viewfinderGpsCoords.textContent = `GPS: Acquiring coordinates...`;
-            } else {
-                gpsStatusDot.className = "w-2.5 h-2.5 rounded-full bg-red-500";
-                gpsStatusText.textContent = `GPS: Unavailable`;
-                viewfinderGpsCoords.textContent = `GPS: Location stream off`;
-            }
-        }
-
-        refreshGpsBtn.addEventListener('click', () => {
-            initGeolocation();
-            showToast('Refreshing GPS Telemetry...', 'fa-location-crosshairs');
-        });
-
-        // Initialize Live Webcam Stream
+        // Initialize iOS Camera Stream
         async function startCamera() {
-            cameraLoading.classList.remove('hidden');
-            cameraFallback.classList.add('hidden');
+            camLoader.classList.remove('hidden');
+            camFallback.classList.add('hidden');
 
             if (state.stream) {
                 state.stream.getTracks().forEach(track => track.stop());
@@ -626,7 +223,7 @@
             try {
                 const constraints = {
                     video: {
-                        facingMode: state.facingMode,
+                        facingMode: { ideal: state.facingMode },
                         width: { ideal: 1920 },
                         height: { ideal: 1080 }
                     },
@@ -635,507 +232,321 @@
 
                 state.stream = await navigator.mediaDevices.getUserMedia(constraints);
                 webcam.srcObject = state.stream;
-                
+
+                // Handle front video mirroring
                 if (state.facingMode === 'user') {
                     webcam.style.transform = 'scaleX(-1)';
                 } else {
                     webcam.style.transform = 'scaleX(1)';
                 }
 
-                cameraLoading.classList.add('hidden');
+                camLoader.classList.add('hidden');
             } catch (err) {
-                console.error("Camera access error:", err);
-                cameraLoading.classList.add('hidden');
-                cameraFallback.classList.remove('hidden');
+                console.warn("Camera streaming failed:", err);
+                camLoader.classList.add('hidden');
+                camFallback.classList.remove('hidden');
             }
         }
 
-        // Switch Camera (Front/Back)
-        switchCameraBtn.addEventListener('click', () => {
+        // Camera Switch Event
+        flipCamTopBtn.addEventListener('click', () => {
             state.facingMode = state.facingMode === 'user' ? 'environment' : 'user';
             startCamera();
-            showToast(`Switched to ${state.facingMode === 'user' ? 'Front' : 'Back'} Camera`, 'fa-arrows-rotate');
         });
 
-        // Toggle Grid Overlay
-        toggleGridBtn.addEventListener('click', () => {
-            state.gridVisible = !state.gridVisible;
-            if (state.gridVisible) {
-                overlayGrid.classList.remove('opacity-0');
-                overlayGrid.classList.add('opacity-30');
+        // Flash Toggle Switch
+        flashToggleBtn.addEventListener('click', () => {
+            state.flashEnabled = !state.flashEnabled;
+            if (state.flashEnabled) {
+                flashIcon.className = "fa-solid fa-bolt text-yellow-400";
+                showToast("Flash On", "fa-bolt");
             } else {
-                overlayGrid.classList.remove('opacity-30');
-                overlayGrid.classList.add('opacity-0');
+                flashIcon.className = "fa-solid fa-bolt-slash text-white/90";
+                showToast("Flash Off", "fa-bolt-slash");
             }
         });
 
-        // Live Guide Format Pill Selection
-        document.querySelectorAll('.guide-tab-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.guide-tab-btn').forEach(b => {
-                    b.classList.remove('bg-gold-500', 'text-slate-950');
-                    b.classList.add('text-slate-400');
-                });
-                
-                const target = e.target;
-                target.classList.remove('text-slate-400');
-                target.classList.add('bg-gold-500', 'text-slate-950');
-                
-                const guideMode = target.getAttribute('data-guide');
-                setLiveGuideOverlay(guideMode);
-            });
-        });
+        // Geolocation & Reverse Geocoding Engine
+        function initLocationServices() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition(
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        state.location.lat = lat;
+                        state.location.lng = lng;
 
-        function setLiveGuideOverlay(mode) {
-            state.activeFormat = mode;
-            if (mode === 'passport') {
-                liveGuideBox.className = "border-2 border-dashed border-gold-400/60 rounded-2xl transition-all duration-300 relative w-64 h-80 max-w-[80vw] max-h-[60vh]";
-                biometricOval.classList.remove('hidden');
-            } else if (mode === 'id') {
-                liveGuideBox.className = "border-2 border-dashed border-cyber-cyan/70 rounded-xl transition-all duration-300 relative w-80 h-52 max-w-[85vw] max-h-[50vh]";
-                biometricOval.classList.add('hidden');
+                        // Perform reverse geocoding via OpenStreetMap API
+                        try {
+                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14`);
+                            const data = await response.json();
+                            
+                            if (data && data.address) {
+                                const city = data.address.city || data.address.town || data.address.village || data.address.county || "Location Recorded";
+                                const country = data.address.country || "";
+                                state.location.placeName = country ? `${city}, ${country}` : city;
+                            } else {
+                                state.location.placeName = `${lat.toFixed(3)}°, ${lng.toFixed(3)}°`;
+                            }
+                        } catch (e) {
+                            state.location.placeName = `${lat.toFixed(3)}°, ${lng.toFixed(3)}°`;
+                        }
+
+                        state.location.loaded = true;
+                        updateLocationBadgeUI();
+                    },
+                    (error) => {
+                        console.warn("Location permission error:", error.message);
+                        state.location.placeName = "Location Unavailable";
+                        state.location.loaded = false;
+                        updateLocationBadgeUI();
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
             } else {
-                liveGuideBox.className = "border-2 border-dashed border-white/50 rounded-lg transition-all duration-300 relative w-72 h-72 max-w-[80vw] max-h-[60vh]";
-                biometricOval.classList.add('hidden');
+                state.location.placeName = "GPS Not Supported";
+                updateLocationBadgeUI();
             }
         }
 
-        // Capture Shutter Action
+        function updateLocationBadgeUI() {
+            if (state.location.loaded) {
+                locationBadgeIcon.className = "fa-solid fa-location-dot text-yellow-400 text-[11px]";
+                locationBadgeText.textContent = state.location.placeName;
+            } else {
+                locationBadgeIcon.className = "fa-solid fa-location-arrow text-white/50 text-[11px]";
+                locationBadgeText.textContent = state.location.placeName;
+            }
+        }
+
+        // Photo Capture & Watermark Burning Process
         shutterBtn.addEventListener('click', capturePhoto);
 
         function capturePhoto() {
-            shutterFlash.classList.remove('hidden');
-            shutterFlash.classList.add('shutter-flash');
+            // Screen flash effect
+            shutterFlashOverlay.classList.remove('hidden');
+            shutterFlashOverlay.classList.add('shutter-flash-active');
             playShutterSound();
 
             setTimeout(() => {
-                shutterFlash.classList.add('hidden');
-                shutterFlash.classList.remove('shutter-flash');
-            }, 300);
+                shutterFlashOverlay.classList.add('hidden');
+                shutterFlashOverlay.classList.remove('shutter-flash-active');
+            }, 250);
 
-            const canvas = document.getElementById('offscreenCanvas');
+            const canvas = document.getElementById('photoCanvas');
             const ctx = canvas.getContext('2d');
 
             if (webcam.srcObject && webcam.videoWidth) {
                 canvas.width = webcam.videoWidth;
                 canvas.height = webcam.videoHeight;
 
+                // Handle camera mirroring for front lens
                 if (state.facingMode === 'user') {
                     ctx.translate(canvas.width, 0);
                     ctx.scale(-1, 1);
                 }
 
                 ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
-                state.capturedImageData = canvas.toDataURL('image/jpeg', 0.95);
-                openEditorModal();
-            } else {
-                showToast('Unable to capture from video stream', 'fa-triangle-exclamation');
+                ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformation
+
+                // Burn-in Metadata Bar onto bottom of image
+                burnMetadataBar(canvas, ctx);
+
+                const finalDataUrl = canvas.toDataURL('image/jpeg', 0.95);
+                savePhotoToGallery(finalDataUrl);
             }
         }
 
-        // File Upload Handling Fallback
-        function handleFileUpload(e) {
+        // Burn Metadata Footer directly into Image Output
+        function burnMetadataBar(canvas, ctx) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            const latStr = state.location.lat ? state.location.lat.toFixed(5) : 'N/A';
+            const lngStr = state.location.lng ? state.location.lng.toFixed(5) : 'N/A';
+            const coordsStr = `GPS: ${latStr}°, ${lngStr}°`;
+            const placeStr = state.location.placeName;
+
+            // Bar dimensions proportional to image size
+            const barHeight = Math.max(60, Math.round(canvas.height * 0.085));
+            const fontBaseSize = Math.max(13, Math.round(barHeight * 0.26));
+            const padding = Math.round(barHeight * 0.22);
+
+            // Dark subtle translucent gradient bar at the bottom
+            const gradient = ctx.createLinearGradient(0, canvas.height - barHeight - 20, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(0.3, 'rgba(0, 0, 0, 0.6)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.88)');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, canvas.height - barHeight - 20, canvas.width, barHeight + 20);
+
+            // Subtle vertical accent line (iOS yellow marker)
+            ctx.fillStyle = '#facc15'; // Yellow-400
+            ctx.fillRect(padding, canvas.height - barHeight + (padding / 2), 3, barHeight - padding);
+
+            // Left Side: Location Name & Coordinates
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `600 ${fontBaseSize}px -apple-system, BlinkMacSystemFont, sans-serif`;
+            ctx.textBaseline = 'top';
+            ctx.fillText(placeStr, padding + 12, canvas.height - barHeight + (padding / 2));
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.font = `400 ${Math.round(fontBaseSize * 0.85)}px font-mono, SFMono-Regular, monospace`;
+            ctx.fillText(coordsStr, padding + 12, canvas.height - barHeight + (padding / 2) + fontBaseSize + 4);
+
+            // Right Side: Date & Time
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `600 ${fontBaseSize}px -apple-system, BlinkMacSystemFont, sans-serif`;
+            ctx.fillText(timeStr, canvas.width - padding, canvas.height - barHeight + (padding / 2));
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.font = `400 ${Math.round(fontBaseSize * 0.85)}px -apple-system, BlinkMacSystemFont, sans-serif`;
+            ctx.fillText(dateStr, canvas.width - padding, canvas.height - barHeight + (padding / 2) + fontBaseSize + 4);
+
+            ctx.textAlign = 'left'; // Reset alignment
+        }
+
+        // Direct Local File Upload Handling
+        function handleFileInput(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    state.capturedImageData = event.target.result;
-                    openEditorModal();
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.getElementById('photoCanvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+
+                        burnMetadataBar(canvas, ctx);
+                        savePhotoToGallery(canvas.toDataURL('image/jpeg', 0.95));
+                    };
+                    img.src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         }
+        document.getElementById('fallbackFileInput').addEventListener('change', handleFileInput);
+        document.getElementById('directFileInput').addEventListener('change', handleFileInput);
 
-        document.getElementById('fallbackFileInput').addEventListener('change', handleFileUpload);
-        document.getElementById('directFileInput').addEventListener('change', handleFileUpload);
+        // Save Photo & Update Thumbnail Bubble
+        function savePhotoToGallery(dataUrl) {
+            const photoRecord = {
+                id: Date.now(),
+                url: dataUrl,
+                location: { ...state.location },
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString()
+            };
 
-        // Open Editor Modal & Load Image with Geolocation Populate
-        function openEditorModal() {
-            editorImage.src = state.capturedImageData;
-            resetTransformations();
-            updateFormatGuideUI(state.activeFormat);
+            state.photos.unshift(photoRecord);
+            state.currentPhotoIndex = 0;
 
-            // Populate Editor GPS UI
-            if (state.currentGps.lat !== null) {
-                editorLatVal.textContent = state.currentGps.lat.toFixed(6);
-                editorLngVal.textContent = state.currentGps.lng.toFixed(6);
-                editorAltVal.textContent = state.currentGps.alt ? `${Math.round(state.currentGps.alt)}m` : 'N/A';
-                editorAccVal.textContent = `${Math.round(state.currentGps.acc)}m`;
-                editorGpsTime.textContent = new Date().toLocaleTimeString();
+            // Update bottom-left gallery bubble
+            thumbImage.src = dataUrl;
+            thumbImage.classList.remove('hidden');
+            thumbPlaceholderIcon.classList.add('hidden');
+
+            showToast("Photo Saved", "fa-circle-check");
+        }
+
+        // Gallery Modal Toggle & Navigation
+        galleryThumbBtn.addEventListener('click', () => {
+            if (state.photos.length === 0) return;
+            openGallery();
+        });
+
+        closeGalleryBtn.addEventListener('click', () => {
+            galleryModal.classList.add('hidden');
+        });
+
+        function openGallery() {
+            if (state.photos.length === 0) return;
+            updateGalleryModal();
+            galleryModal.classList.remove('hidden');
+        }
+
+        function updateGalleryModal() {
+            const currentPhoto = state.photos[state.currentPhotoIndex];
+            previewImage.src = currentPhoto.url;
+            galleryCounter.textContent = `${state.currentPhotoIndex + 1} of ${state.photos.length}`;
+        }
+
+        // Delete Photo
+        deletePhotoBtn.addEventListener('click', () => {
+            if (state.photos.length === 0) return;
+
+            state.photos.splice(state.currentPhotoIndex, 1);
+            if (state.photos.length === 0) {
+                galleryModal.classList.add('hidden');
+                thumbImage.classList.add('hidden');
+                thumbPlaceholderIcon.classList.remove('hidden');
+                showToast("All photos deleted", "fa-trash-can");
             } else {
-                editorLatVal.textContent = "Unavailable";
-                editorLngVal.textContent = "Unavailable";
-                editorAltVal.textContent = "N/A";
-                editorAccVal.textContent = "N/A";
-                editorGpsTime.textContent = new Date().toLocaleTimeString();
+                if (state.currentPhotoIndex >= state.photos.length) {
+                    state.currentPhotoIndex = state.photos.length - 1;
+                }
+                updateGalleryModal();
+                thumbImage.src = state.photos[0].url;
+                showToast("Photo deleted", "fa-trash-can");
             }
-
-            editorModal.classList.remove('hidden');
-        }
-
-        // Format Selector inside Editor
-        document.querySelectorAll('.format-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const targetBtn = e.currentTarget;
-                document.querySelectorAll('.format-btn').forEach(b => {
-                    b.classList.remove('border-gold-500', 'bg-gold-500/10', 'text-gold-400');
-                    b.classList.add('border-slate-700', 'bg-slate-800/60', 'text-slate-300');
-                });
-                
-                targetBtn.classList.remove('border-slate-700', 'bg-slate-800/60', 'text-slate-300');
-                targetBtn.classList.add('border-gold-500', 'bg-gold-500/10', 'text-gold-400');
-
-                const format = targetBtn.getAttribute('data-format');
-                state.activeFormat = format;
-                updateFormatGuideUI(format);
-            });
         });
 
-        function updateFormatGuideUI(format) {
-            if (format === 'passport') {
-                cropTargetOverlay.style.aspectRatio = '35 / 45';
-                cropRatioTag.textContent = 'Passport (35x45 mm)';
-                editorOvalGuide.classList.remove('hidden');
-            } else if (format === 'id') {
-                cropTargetOverlay.style.aspectRatio = '85.6 / 54';
-                cropRatioTag.textContent = 'ID Card (85.6x54 mm)';
-                editorOvalGuide.classList.add('hidden');
-            } else {
-                cropTargetOverlay.style.aspectRatio = 'auto';
-                cropRatioTag.textContent = 'Standard (Original)';
-                editorOvalGuide.classList.add('hidden');
-            }
-        }
-
-        // Image Transformations & Filters
-        brightnessSlider.addEventListener('input', (e) => {
-            state.brightness = e.target.value;
-            brightnessVal.textContent = `${state.brightness}%`;
-            applyImageFilters();
+        // Download Photo
+        shareDownloadBtn.addEventListener('click', () => {
+            if (state.photos.length === 0) return;
+            const photo = state.photos[state.currentPhotoIndex];
+            const a = document.createElement('a');
+            a.href = photo.url;
+            a.download = `IMG_${photo.id}.jpg`;
+            a.click();
+            showToast("Saved to Device Downloads", "fa-download");
         });
 
-        contrastSlider.addEventListener('input', (e) => {
-            state.contrast = e.target.value;
-            contrastVal.textContent = `${state.contrast}%`;
-            applyImageFilters();
-        });
-
-        saturationSlider.addEventListener('input', (e) => {
-            state.saturation = e.target.value;
-            saturationVal.textContent = `${state.saturation}%`;
-            applyImageFilters();
-        });
-
-        rotateLeftBtn.addEventListener('click', () => {
-            state.rotation = (state.rotation - 90) % 360;
-            applyImageFilters();
-        });
-
-        rotateRightBtn.addEventListener('click', () => {
-            state.rotation = (state.rotation + 90) % 360;
-            applyImageFilters();
-        });
-
-        flipHorizontalBtn.addEventListener('click', () => {
-            state.flipped = !state.flipped;
-            applyImageFilters();
-        });
-
-        resetAdjustmentsBtn.addEventListener('click', resetTransformations);
-
-        function resetTransformations() {
-            state.brightness = 100;
-            state.contrast = 100;
-            state.saturation = 100;
-            state.rotation = 0;
-            state.flipped = false;
-
-            brightnessSlider.value = 100;
-            contrastSlider.value = 100;
-            saturationSlider.value = 100;
-
-            brightnessVal.textContent = '100%';
-            contrastVal.textContent = '100%';
-            saturationVal.textContent = '100%';
-
-            applyImageFilters();
-        }
-
-        function applyImageFilters() {
-            const filterStr = `brightness(${state.brightness}%) contrast(${state.contrast}%) saturate(${state.saturation}%)`;
-            const transformStr = `rotate(${state.rotation}deg) scaleX(${state.flipped ? -1 : 1})`;
+        // Copy Location Details
+        copyCoordsBtn.addEventListener('click', () => {
+            if (state.photos.length === 0) return;
+            const photo = state.photos[state.currentPhotoIndex];
+            const details = `${photo.location.placeName}\nLat: ${photo.location.lat}, Lng: ${photo.location.lng}\nDate: ${photo.date} ${photo.time}`;
             
-            editorImage.style.filter = filterStr;
-            editorImage.style.transform = transformStr;
-        }
-
-        discardCapturedBtn.addEventListener('click', () => {
-            editorModal.classList.add('hidden');
-            state.capturedImageData = null;
-        });
-
-        // Render Cropped Image + Burn-In GPS Watermark
-        saveCapturedBtn.addEventListener('click', renderFinalCroppedImage);
-
-        function renderFinalCroppedImage() {
-            const tempImg = new Image();
-            tempImg.src = state.capturedImageData;
-
-            tempImg.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                let targetWidth = tempImg.width;
-                let targetHeight = tempImg.height;
-
-                if (state.activeFormat === 'passport') {
-                    targetHeight = tempImg.height;
-                    targetWidth = targetHeight * (35 / 45);
-                    if (targetWidth > tempImg.width) {
-                        targetWidth = tempImg.width;
-                        targetHeight = targetWidth * (45 / 35);
-                    }
-                } else if (state.activeFormat === 'id') {
-                    targetWidth = tempImg.width;
-                    targetHeight = targetWidth * (54 / 85.6);
-                    if (targetHeight > tempImg.height) {
-                        targetHeight = tempImg.height;
-                        targetWidth = targetHeight * (85.6 / 54);
-                    }
-                }
-
-                canvas.width = targetWidth;
-                canvas.height = targetHeight;
-
-                const startX = (tempImg.width - targetWidth) / 2;
-                const startY = (tempImg.height - targetHeight) / 2;
-
-                ctx.filter = `brightness(${state.brightness}%) contrast(${state.contrast}%) saturate(${state.saturation}%)`;
-
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate((state.rotation * Math.PI) / 180);
-                if (state.flipped) ctx.scale(-1, 1);
-
-                ctx.drawImage(
-                    tempImg,
-                    startX, startY, targetWidth, targetHeight,
-                    -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height
-                );
-
-                // Reset Matrix for Watermark Overlay
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                ctx.filter = 'none';
-
-                // Burn-In GPS Watermark if Enabled
-                if (watermarkToggle.checked) {
-                    const bannerHeight = Math.max(40, Math.round(canvas.height * 0.08));
-                    
-                    // Semi-transparent Bottom Bar
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-                    ctx.fillRect(0, canvas.height - bannerHeight, canvas.width, bannerHeight);
-
-                    // Gold accent bar
-                    ctx.fillStyle = '#f59e0b';
-                    ctx.fillRect(0, canvas.height - bannerHeight, 4, bannerHeight);
-
-                    // Text Styling
-                    const fontSize = Math.max(11, Math.round(bannerHeight * 0.28));
-                    ctx.font = `600 ${fontSize}px "JetBrains Mono", monospace`;
-                    ctx.fillStyle = '#f8fafc';
-                    ctx.textBaseline = 'middle';
-
-                    const timeStr = new Date().toLocaleString();
-                    const gpsStr = state.currentGps.lat !== null 
-                        ? `LAT: ${state.currentGps.lat.toFixed(6)}° | LNG: ${state.currentGps.lng.toFixed(6)}°` 
-                        : `GPS: Location Data Unavailable`;
-
-                    ctx.fillText(`📍 ${gpsStr}`, 14, canvas.height - (bannerHeight * 0.65));
-                    
-                    ctx.font = `400 ${Math.max(9, Math.round(fontSize * 0.85))}px "JetBrains Mono", monospace`;
-                    ctx.fillStyle = '#94a3b8';
-                    ctx.fillText(`TIME: ${timeStr} | ${state.activeFormat.toUpperCase()}`, 14, canvas.height - (bannerHeight * 0.3));
-                }
-
-                const finalDataUrl = canvas.toDataURL('image/jpeg', 0.92);
-
-                const photoItem = {
-                    id: Date.now(),
-                    category: state.activeFormat,
-                    dataUrl: finalDataUrl,
-                    timestamp: new Date().toISOString(),
-                    formattedTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    dimensions: `${Math.round(targetWidth)}x${Math.round(targetHeight)}px`,
-                    gps: { ...state.currentGps }
-                };
-
-                state.gallery.unshift(photoItem);
-                updateGalleryUI();
-
-                editorModal.classList.add('hidden');
-                showToast(`Saved Geo-Tagged ${state.activeFormat.toUpperCase()} Photo`, 'fa-circle-check');
-            };
-        }
-
-        // Update Session Gallery UI
-        function updateGalleryUI() {
-            if (state.gallery.length > 0) {
-                galleryCountBadge.textContent = state.gallery.length;
-                galleryCountBadge.classList.remove('hidden');
-
-                quickGalleryThumb.src = state.gallery[0].dataUrl;
-                quickGalleryThumb.classList.remove('hidden');
-                galleryPlaceholderIcon.classList.add('hidden');
-
-                galleryEmptyState.classList.add('hidden');
-                exportAllBtn.removeAttribute('disabled');
-                clearGalleryBtn.removeAttribute('disabled');
-            } else {
-                galleryCountBadge.classList.add('hidden');
-                quickGalleryThumb.classList.add('hidden');
-                galleryPlaceholderIcon.classList.remove('hidden');
-
-                galleryEmptyState.classList.remove('hidden');
-                exportAllBtn.setAttribute('disabled', 'true');
-                clearGalleryBtn.setAttribute('disabled', 'true');
-            }
-
-            galleryContainer.innerHTML = '';
-            if (state.gallery.length === 0) {
-                galleryContainer.appendChild(galleryEmptyState);
-                return;
-            }
-
-            state.gallery.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 flex flex-col gap-2 transition hover:border-slate-600";
-                
-                let badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/20";
-                if (item.category === 'id') badgeClass = "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
-                if (item.category === 'standard') badgeClass = "bg-slate-700/50 text-slate-300 border-slate-600";
-
-                const latTxt = item.gps.lat !== null ? `${item.gps.lat.toFixed(4)}°, ${item.gps.lng.toFixed(4)}°` : 'No GPS';
-
-                card.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <img src="${item.dataUrl}" class="w-14 h-14 object-cover rounded-lg border border-slate-700">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border ${badgeClass}">
-                                    ${item.category}
-                                </span>
-                                <span class="text-[10px] text-slate-400 font-mono">${item.formattedTime}</span>
-                            </div>
-                            <p class="text-[11px] text-cyber-emerald mt-1 font-mono truncate flex items-center gap-1">
-                                <i class="fa-solid fa-location-dot text-[10px]"></i> ${latTxt}
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <button onclick="openMetadataModal(${item.id})" class="p-2 rounded-lg bg-slate-700/60 hover:bg-slate-600 text-slate-300 transition" title="View GPS Metadata">
-                                <i class="fa-solid fa-circle-info"></i>
-                            </button>
-                            <button onclick="downloadSingleItem(${item.id})" class="p-2 rounded-lg bg-slate-700/60 hover:bg-gold-500 hover:text-slate-950 text-slate-300 transition" title="Download Image">
-                                <i class="fa-solid fa-download"></i>
-                            </button>
-                            <button onclick="deleteSingleItem(${item.id})" class="p-2 rounded-lg bg-slate-700/60 hover:bg-red-500 hover:text-white text-slate-400 transition" title="Delete">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                galleryContainer.appendChild(card);
+            navigator.clipboard.writeText(details).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = details;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
             });
+            showToast("Details Copied to Clipboard", "fa-copy");
+        });
+
+        // Toast Helper
+        function showToast(msg, icon = "fa-check") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = msg;
+            toastIcon.className = `fa-solid ${icon} text-yellow-400`;
+
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2000);
         }
 
-        // Open Metadata Modal Details
-        window.openMetadataModal = function(id) {
-            const item = state.gallery.find(g => g.id === id);
-            if (!item) return;
-
-            document.getElementById('metaModalImage').src = item.dataUrl;
-            document.getElementById('metaLat').textContent = item.gps.lat !== null ? item.gps.lat.toFixed(6) : 'N/A';
-            document.getElementById('metaLng').textContent = item.gps.lng !== null ? item.gps.lng.toFixed(6) : 'N/A';
-            document.getElementById('metaAlt').textContent = item.gps.alt ? `${Math.round(item.gps.alt)}m` : 'N/A';
-            document.getElementById('metaAcc').textContent = item.gps.acc ? `±${Math.round(item.gps.acc)}m` : 'N/A';
-            document.getElementById('metaTime').textContent = item.timestamp;
-
-            document.getElementById('copyCoordsBtn').onclick = function() {
-                const textToCopy = `Lat: ${item.gps.lat}, Lng: ${item.gps.lng}`;
-                navigator.clipboard.writeText(textToCopy).catch(() => {
-                    const el = document.createElement('textarea');
-                    el.value = textToCopy;
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(el);
-                });
-                showToast('Coordinates copied to clipboard', 'fa-copy');
-            };
-
-            metadataModal.classList.remove('hidden');
-        };
-
-        closeMetadataModalBtn.addEventListener('click', () => {
-            metadataModal.classList.add('hidden');
-        });
-
-        // Download Single Item
-        window.downloadSingleItem = function(id) {
-            const item = state.gallery.find(g => g.id === id);
-            if (item) {
-                const link = document.createElement('a');
-                link.href = item.dataUrl;
-                link.download = `LensCraft_GPS_${item.category}_${item.id}.jpg`;
-                link.click();
-                showToast('Geo-tagged photo downloaded', 'fa-file-arrow-down');
-            }
-        };
-
-        // Delete Single Item
-        window.deleteSingleItem = function(id) {
-            state.gallery = state.gallery.filter(g => g.id !== id);
-            updateGalleryUI();
-            showToast('Item deleted', 'fa-trash-can');
-        };
-
-        // Drawer Controls
-        toggleGalleryBtn.addEventListener('click', toggleDrawer);
-        quickGalleryBtn.addEventListener('click', toggleDrawer);
-        closeGalleryBtn.addEventListener('click', toggleDrawer);
-
-        function toggleDrawer() {
-            galleryDrawer.classList.toggle('translate-x-full');
-        }
-
-        // Clear All Session Items
-        clearGalleryBtn.addEventListener('click', () => {
-            if (state.gallery.length && confirm('Clear all captured photos in this session?')) {
-                state.gallery = [];
-                updateGalleryUI();
-                showToast('Session cleared', 'fa-trash-can');
-            }
-        });
-
-        // Batch Export All Captured Photos
-        exportAllBtn.addEventListener('click', () => {
-            if (state.gallery.length === 0) return;
-
-            state.gallery.forEach((item, index) => {
-                setTimeout(() => {
-                    const link = document.createElement('a');
-                    link.href = item.dataUrl;
-                    link.download = `LensCraft_Export_${index + 1}_${item.category}.jpg`;
-                    link.click();
-                }, index * 250);
-            });
-
-            showToast(`Exporting ${state.gallery.length} captured photos...`, 'fa-file-arrow-down');
-        });
-
-        // Initialize App on Window Load
+        // App Initialization
         window.onload = function() {
             startCamera();
-            initGeolocation();
-            setLiveGuideOverlay('passport');
+            initLocationServices();
         };
     </script>
 </body>
