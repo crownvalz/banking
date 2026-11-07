@@ -165,11 +165,11 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Locality / Ward</label>
-                            <input type="text" id="f-locality" required placeholder="MICHEWENI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-locality" oninput="updateAutoDescription()" required placeholder="MICHEWENI" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">District / Municipality</label>
-                            <input type="text" id="f-district" required placeholder="KASKAZINI-PEMBA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
+                            <input type="text" id="f-district" oninput="updateAutoDescription()" required placeholder="KASKAZINI-PEMBA" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">
                         </div>
                     </div>
                 </div>
@@ -181,7 +181,7 @@
                         Site Visit Observation & Description
                     </h3>
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">General Description of the Business</label>
+                        <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">General Description of the Business (Auto-updates with Locality)</label>
                         <textarea id="f-description" rows="3" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition">Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA.</textarea>
                     </div>
                 </div>
@@ -287,17 +287,17 @@
             <!-- Report Printable Document Container -->
             <div id="printable-report-container" class="space-y-8">
                 
-                <!-- PAGE 1: Report Summary & Map -->
-                <div class="print-page-1 bg-white text-slate-900 p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1050px;">
+                <!-- PAGE 1: Report Summary & Map (Strictly 1 Page Fit) -->
+                <div class="print-page-1 bg-white text-slate-900 p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between" style="min-height: 1020px; max-height: 1020px;">
                     <div>
                         <!-- Header Banner -->
-                        <div class="text-center border-b-2 border-slate-900 pb-4 mb-6">
-                            <h2 class="text-2xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
-                            <h3 class="text-lg font-bold uppercase text-blue-700 mt-1">SITE VISIT REPORT</h3>
+                        <div class="text-center border-b-2 border-slate-900 pb-3 mb-4">
+                            <h2 class="text-xl font-extrabold tracking-wider uppercase text-slate-900">AZANIA BANK PLC</h2>
+                            <h3 class="text-base font-bold uppercase text-blue-700 mt-0.5">SITE VISIT REPORT</h3>
                         </div>
 
                         <!-- Data Table 1 -->
-                        <table class="w-full border-collapse border border-slate-900 text-sm mb-6">
+                        <table class="w-full border-collapse border border-slate-900 text-xs mb-4">
                             <tr>
                                 <td class="border border-slate-900 p-2 font-bold bg-slate-100 w-1/3">1. Name of Wakala Account</td>
                                 <td colspan="3" class="border border-slate-900 p-2 font-semibold uppercase" id="rep-account-name">KASSIM KHAMIS ALI</td>
@@ -305,56 +305,56 @@
                             <tr>
                                 <td class="border border-slate-900 p-2 font-bold bg-slate-100 align-top">5. Location of Business:</td>
                                 <td class="border border-slate-900 p-2">
-                                    <span class="block text-xs font-bold text-slate-500">GPS</span>
+                                    <span class="block text-[10px] font-bold text-slate-500">GPS</span>
                                     <span id="rep-gps" class="font-mono font-semibold">-4.944618,39.74594</span>
                                 </td>
                                 <td class="border border-slate-900 p-2">
-                                    <span class="block text-xs font-bold text-slate-500">Locality</span>
+                                    <span class="block text-[10px] font-bold text-slate-500">Locality</span>
                                     <span id="rep-locality" class="uppercase font-semibold">MICHEWENI</span>
                                 </td>
                                 <td class="border border-slate-900 p-2">
-                                    <span class="block text-xs font-bold text-slate-500">District / Municipality</span>
+                                    <span class="block text-[10px] font-bold text-slate-500">District / Municipality</span>
                                     <span id="rep-district" class="uppercase font-semibold">KASKAZINI-PEMBA</span>
                                 </td>
                             </tr>
                         </table>
 
                         <!-- Site Visit Description Section -->
-                        <div class="mb-6 space-y-2">
+                        <div class="mb-4 space-y-1.5 text-xs">
                             <h4 class="font-bold text-slate-900 underline">Site visit report</h4>
-                            <p class="text-sm font-medium text-slate-800">The site was visited by <span id="rep-officer-name" class="font-bold underline">Miss Hawa Juma</span> on <span id="rep-date">26/08/2026</span>.</p>
-                            <h4 class="font-bold text-slate-900 underline mt-3">General Description of the Business</h4>
-                            <p id="rep-description" class="text-sm text-slate-800 leading-relaxed bg-slate-50 p-3 rounded border border-slate-200">
+                            <p class="font-medium text-slate-800">The site was visited by <span id="rep-officer-name" class="font-bold underline">Miss Hawa Juma</span> on <span id="rep-date">26/08/2026</span>.</p>
+                            <h4 class="font-bold text-slate-900 underline mt-2">General Description of the Business</h4>
+                            <p id="rep-description" class="text-xs text-slate-800 leading-relaxed bg-slate-50 p-2.5 rounded border border-slate-200">
                                 Customer deals with Agent business which is located at MICHEWENI, KASKAZINI PEMBA.
                             </p>
                         </div>
 
                         <!-- Business Location Map Screenshot -->
-                        <div class="mb-6">
-                            <h4 class="font-bold text-slate-900 mb-2">Business Location Map Screenshot</h4>
-                            <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-100 h-52 flex items-center justify-center">
+                        <div class="mb-3">
+                            <h4 class="font-bold text-slate-900 text-xs mb-1">Business Location Map Screenshot</h4>
+                            <div class="relative border-2 border-slate-900 rounded-lg overflow-hidden bg-slate-100 h-36 flex items-center justify-center">
                                 <img id="rep-map-image" src="" alt="Map Location Screenshot" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>
 
                     <!-- Verification & Signature Block (Clean for Manual Stamping & Signing) -->
-                    <div class="border-t-2 border-slate-900 pt-4 text-sm space-y-4">
+                    <div class="border-t-2 border-slate-900 pt-3 text-xs space-y-3">
                         <p class="text-slate-800 leading-snug">
                             I, <span id="rep-sign-officer" class="font-bold underline">Hawa Juma</span> being employee of Azania Bank Plc, do verify and state that the information contained in this report is true to the best of my knowledge.
                         </p>
-                        <div class="flex justify-between items-end pt-2">
+                        <div class="flex justify-between items-end pt-1">
                             <div>
                                 <span class="font-bold">Name:</span> <span id="rep-footer-name" class="underline">Hawa Juma</span>
                             </div>
                             <div>
-                                <span class="font-bold">Signature:</span> <span class="inline-block border-b border-slate-900 px-12 text-transparent select-none">_______</span>
+                                <span class="font-bold">Signature:</span> <span class="inline-block border-b border-slate-900 px-10 text-transparent select-none">_______</span>
                             </div>
                             <div>
                                 <span class="font-bold">Date:</span> <span id="rep-footer-date" class="underline font-mono">26/08/2026</span>
                             </div>
                         </div>
-                        <div class="text-center text-xs font-bold text-slate-400 pt-2">
+                        <div class="text-center text-[10px] font-bold text-slate-400 pt-1">
                             1
                         </div>
                     </div>
@@ -423,7 +423,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateDashboardStats();
             document.getElementById('f-visit-date').valueAsDate = new Date();
+            updateAutoDescription();
         });
+
+        // Auto Update Description based on Locality & District
+        function updateAutoDescription() {
+            const locality = document.getElementById('f-locality').value || "MICHEWENI";
+            const district = document.getElementById('f-district').value || "KASKAZINI PEMBA";
+            const descField = document.getElementById('f-description');
+            
+            // Only auto-update if it matches template or user hasn't heavily modified it
+            descField.value = `Customer deals with Agent business which is located at ${locality.toUpperCase()}, ${district.toUpperCase()}.`;
+        }
 
         // View Switcher
         function switchView(viewName) {
@@ -444,6 +455,7 @@
             renderPhotosQueue();
             document.getElementById('inspection-form').reset();
             document.getElementById('f-visit-date').valueAsDate = new Date();
+            updateAutoDescription();
             switchView('form');
         }
 
@@ -487,6 +499,7 @@
                         
                         document.getElementById('f-locality').value = ward.toUpperCase();
                         document.getElementById('f-district').value = district.toUpperCase();
+                        updateAutoDescription();
                     }
                 } catch (e) {
                     console.error("Reverse geocoding failed", e);
@@ -675,7 +688,7 @@
             const mapImg = document.getElementById('rep-map-image');
             const [lat, lon] = data.gps.split(',').map(s => s.trim());
             if (lat && lon) {
-                mapImg.src = `https://static-maps.yandex.ru/1.x/?ll=${lon},${lat}&z=15&size=650,250&l=map&pt=${lon},${lat},pm2rdl`;
+                mapImg.src = `https://static-maps.yandex.ru/1.x/?ll=${lon},${lat}&z=15&size=650,200&l=map&pt=${lon},${lat},pm2rdl`;
             } else {
                 mapImg.src = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80";
             }
