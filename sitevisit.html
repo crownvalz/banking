@@ -838,15 +838,12 @@
         return;
       }
 
-      // Intelligent Grouping: Landscape photos fit 2 per page; Portrait photos fit 4 per page (2x2 grid)
       let pagesList = [];
       let currentPagePhotos = [];
-      let currentPageLayout = 'landscape'; // 'landscape' (max 2) or 'portrait' (max 4)
+      let currentPageLayout = 'landscape';
 
       data.photos.forEach(photo => {
         const photoLayout = photo.orientation === 'landscape' ? 'landscape' : 'portrait';
-        
-        // If starting fresh or layout mismatch or capacity reached, push current page and start new
         const maxCapacity = photoLayout === 'landscape' ? 2 : 4;
         if (currentPagePhotos.length === 0) {
           currentPageLayout = photoLayout;
@@ -864,7 +861,7 @@
       }
 
       pagesList.forEach((pageGroup, pageIdx) => {
-        const pageNum = pageIdx + 2; // Page 1 is executive summary
+        const pageNum = pageIdx + 2;
         const pageDiv = document.createElement('div');
         pageDiv.className = "print-page-annex bg-white text-slate-900 p-6 sm:p-10 rounded-2xl shadow-2xl max-w-4xl mx-auto flex flex-col justify-between";
         pageDiv.style.minHeight = "1050px";
