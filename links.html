@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azania Bank - Enterprise Smart Portal</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: { fontFamily: { sans: ["Inter", "sans-serif"] } }
+    }
+};
+</script>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: Inter, sans-serif; }
+
+.auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.bookmark-card { min-width: 0; }
+.bookmark-card h4 { overflow-wrap: anywhere; }
+
+.custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156,163,175,.5);
+    border-radius: 999px;
+}
+
+.modal-content {
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 12px;
+    outline: none;
+}
+
+.dark .form-input {
+    background: #0f172a;
+    border-color: #334155;
+    color: white;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,.15);
+}
+
+.modal-cancel, .modal-submit {
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.modal-cancel {
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.dark .modal-cancel {
+    border-color: #475569;
+    color: #cbd5e1;
+}
+
+.modal-submit {
+    background: #2563eb;
+    color: white;
+}
+
+.modal-submit:hover { background: #1d4ed8; }
+
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+@media(max-width:640px) {
+    .auto-grid { gap: 11px; }
+}
+</style>
+</head>
+
+<body class="min-h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 antialiased transition-colors">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
+    <div class="w-full px-3 sm:px-5 lg:px-8">
+        <div class="flex items-center justify-between min-h-16 gap-3">
+
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 flex items-center justify-center text-white text-lg shadow-md shrink-0">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="font-bold text-sm sm:text-base lg:text-lg text-slate-900 dark:text-white truncate">Azania Bank</h1>
+                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full">Hub</span>
+                    </div>
+                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">Systems & Bookmarks Portal</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <div class="hidden xl:flex items-center px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700/50 text-xs text-slate-600 dark:text-slate-300">
+                    <i class="fa-solid fa-link text-blue-500 mr-2"></i>
+                    Active: <strong id="total-count-badge" class="ml-1 text-slate-900 dark:text-white">0</strong>
+                </div>
+
+                <button id="import-button" class="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium">
+                    <i class="fa-solid fa-file-arrow-up text-blue-500"></i>
+                    <span class="hidden md:inline">Import</span>
+                </button>
+                <input type="file" id="bookmark-file-input" accept=".html,.htm,.json" class="hidden">
+
+                <button id="collections-button" class="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium">
+                    <i class="fa-solid fa-folder-plus text-indigo-500"></i>
+                    <span class="hidden md:inline">Collections</span>
+                </button>
+
+                <button id="add-button" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-md">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Add Link</span>
+                </button>
+
+                <button id="theme-toggle" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300" title="Toggle Theme">
+                    <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN -->
+<main class="flex-grow w-full px-3 sm:px-5 lg:px-8 py-4 sm:py-6 flex flex-col gap-5">
+
+    <!-- SEARCH -->
+    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-4 sm:p-6 lg:p-8 text-white shadow-xl">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10 max-w-3xl">
+            <div class="flex items-center justify-between mb-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] sm:text-[11px] font-semibold">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Smart Resource Search
+                </span>
+                <span id="live-clock" class="hidden md:inline-block text-[11px] font-mono bg-white/10 px-2.5 py-1 rounded-full"></span>
+            </div>
+
+            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-2">
+                What would you like to do today?
+            </h2>
+
+            <p class="text-slate-300 text-xs sm:text-sm mb-5">
+                Search for systems, reports, transactions, customers or operational tasks.
+            </p>
+
+            <div class="relative flex items-center">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 text-blue-400"></i>
+                <input type="text" id="search-input"
+                    class="w-full pl-11 pr-20 py-3 sm:py-3.5 bg-white/10 text-white placeholder-blue-200/60 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs sm:text-sm"
+                    placeholder="Search resources, e.g. GL statement, vault cash, NIDA..."
+                    autocomplete="off">
+                <button id="clear-search" class="hidden absolute right-2 text-xs text-white px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20">Clear</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTROLS -->
+    <section class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-700 pb-3">
+        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1"></div>
+
+        <div class="flex items-center justify-between md:justify-end gap-2 shrink-0">
+            <div class="flex items-center bg-slate-200/70 dark:bg-slate-800 p-1 rounded-xl border border-slate-300/50 dark:border-slate-700">
+                <button id="view-grid-btn" class="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
+                    <i class="fa-solid fa-grip"></i> Grid
+                </button>
+                <button id="view-list-btn" class="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
+                    <i class="fa-solid fa-list"></i> List
+                </button>
+            </div>
+
+            <button id="backup-button" class="px-3 py-2 bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-medium border border-slate-300/50 dark:border-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-download"></i>
+                <span class="hidden sm:inline">Backup</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- PINNED -->
+    <section id="pinned-section" class="hidden">
+        <div class="flex items-center gap-2 mb-3">
+            <i class="fa-solid fa-thumbtack text-amber-500"></i>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">Pinned & Favorites</h3>
+            <span id="pinned-count-badge-inline" class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-semibold">0</span>
+        </div>
+        <div id="pinned-grid" class="auto-grid"></div>
+    </section>
+
+    <!-- LINKS -->
+    <section class="flex flex-col gap-3.5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <h3 id="current-category-title" class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">All Resources</h3>
+                <span id="filtered-count" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0</span>
+            </div>
+
+            <div class="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400">
+                <button id="hidden-button" class="hover:text-blue-600 underline">Hidden Links (<span id="hidden-count">0</span>)</button>
+                <span>•</span>
+                <span>Click a card to open its URL</span>
+            </div>
+        </div>
+
+        <div id="links-container" class="auto-grid"></div>
+
+        <div id="no-results" class="hidden flex-col items-center justify-center py-16 text-center">
+            <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center text-2xl mb-3">
+                <i class="fa-solid fa-magnifying-glass-slash"></i>
+            </div>
+            <h4 class="font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200">No matching links found</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try another search or clear your current filter.</p>
+            <button id="no-results-clear" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium">Clear Search</button>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60 py-5">
+    <div class="w-full px-3 sm:px-5 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-blue-600 dark:text-blue-400"></i>
+            <span>Azania Bank Enterprise Portal</span>
+        </div>
+        <span class="text-[11px]">Responsive Bookmark Management System</span>
+    </div>
+</footer>
+
+<!-- TOAST -->
+<div id="toast" class="fixed bottom-4 right-4 z-[70] translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-xs sm:text-sm">
+    <i class="fa-solid fa-circle-check text-green-400"></i>
+    <span id="toast-message">Action completed</span>
+</div>
+
+<!-- ADD LINK MODAL -->
+<div id="add-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+                <i class="fa-solid fa-circle-plus text-blue-600 mr-2"></i>Add Custom Resource
+            </h3>
+            <button data-close="add-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <form id="add-link-form" class="space-y-3.5">
+            <div>
+                <label class="form-label" for="custom-title">Title</label>
+                <input type="text" id="custom-title" required maxlength="120" placeholder="e.g. Branch Cash Report" class="form-input">
+            </div>
+            <div>
+                <label class="form-label" for="custom-url">URL</label>
+                <input type="url" id="custom-url" required placeholder="https://..." class="form-input">
+            </div>
+            <div>
+                <label class="form-label" for="custom-category">Collection</label>
+                <select id="custom-category" class="form-input" required></select>
+            </div>
+            <div>
+                <label class="form-label" for="custom-keywords">Keywords / Description</label>
+                <input type="text" id="custom-keywords" maxlength="300" placeholder="e.g. reconciliation teller cash count" class="form-input">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" data-close="add-modal" class="modal-cancel">Cancel</button>
+                <button type="submit" class="modal-submit">Save Link</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- COLLECTIONS MODAL -->
+<div id="collections-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+                <i class="fa-solid fa-folder-tree text-indigo-600 mr-2"></i>Manage Collections
+            </h3>
+            <button data-close="collections-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <form id="collection-form" class="flex gap-2 mb-4">
+            <input type="text" id="new-collection-name" maxlength="60" placeholder="New collection name..." class="form-input flex-grow" required>
+            <button type="submit" class="modal-submit shrink-0">Add</button>
+        </form>
+
+        <label class="form-label">Existing Collections</label>
+        <div id="collections-list" class="max-h-60 overflow-y-auto space-y-2 custom-scrollbar pr-1"></div>
+
+        <div class="flex justify-end pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
+            <button data-close="collections-modal" class="modal-cancel">Done</button>
+        </div>
+    </div>
+</div>
+
+<!-- HIDDEN LINKS MODAL -->
+<div id="hidden-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+                <i class="fa-solid fa-eye-slash text-slate-500 mr-2"></i>Hidden / Ignored Links
+            </h3>
+            <button data-close="hidden-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Restore links hidden from your dashboard.</p>
+        <div id="hidden-links-container" class="max-h-60 overflow-y-auto space-y-2 custom-scrollbar pr-1"></div>
+
+        <div class="flex justify-end pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
+            <button data-close="hidden-modal" class="modal-cancel">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+"use strict";
+
+/* DEFAULT BOOKMARKS */
+const defaultBookmarks = [
+{id:1,title:"Mono (Outlook Mail)",url:"https://outlook.office.com/mail/",category:"External & Productivity",icon:"fa-envelope",keywords:"email office mail outlook mono inbox message"},
+{id:2,title:"GL_STMT (GL Revaluation)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/ACCOUNT_STATEMENT_FOR_GL_REVALUATION/ACCOUNT_STATEMENT_FOR_GL_REVALUATION.xdo",category:"Finance & Recon",icon:"fa-calculator",keywords:"gl statement revaluation oracle bi publisher finance balance sheet ledger"},
+{id:3,title:"New Flex (Flexcube Core)",url:"https://fcubs.azaniabank.co.tz/FCJNeoWeb/LoginServlet?entity=ENTITY_ID1",category:"Core Banking",icon:"fa-building-columns",keywords:"flexcube core banking fcubs login flex account transaction"},
+{id:4,title:"IT Central Portal",url:"https://itcentral.azaniabank.co.tz/portal/auth",category:"Core Banking",icon:"fa-headset",keywords:"it central support portal helpdesk ticket technical issue"},
+{id:5,title:"CIF Modified Old Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/TEST1/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF_MODIFIED_REPORT/CIF_MODIFIED_REPORT.xdo",category:"Operations & CASA",icon:"fa-user-pen",keywords:"cif modified old casa operations report customer information file"},
+{id:6,title:"NIDA Verification | NIDA Portal",url:"https://10.158.112.26:30030/v1/nida",category:"Core Banking",icon:"fa-id-card",keywords:"nida identity verification national id citizen check"},
+{id:7,title:"TD Certificate Headed",url:"https://bipreports.azaniabank.co.tz/xmlpserver/FLEXCUBE+7.2+REPORTS/Revised+ABL+Reports/Operations/FDR/30801+TD+Certificate+Headed.xdo",category:"Operations & CASA",icon:"fa-certificate",keywords:"td term deposit certificate fdr operations fixed deposit"},
+{id:8,title:"CIF 4 CLEANUP Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CIF+FOR+CLEANUP+FINAL.xdo",category:"Operations & CASA",icon:"fa-user-gear",keywords:"cif cleanup final casa customer data audit correction"},
+{id:9,title:"Account Statement For GL",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/ACCOUNT_STATEMENT_FOR_GL/ACCOUNT_STATEMENT_FOR_GL.xdo",category:"Finance & Recon",icon:"fa-file-invoice-dollar",keywords:"account statement gl general ledger oracle bi publisher finance"},
+{id:10,title:"STATIC DATA CHANGE",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/STATIC+DATA+CHANGE/STATIC+DATA+CHANGE.xdo",category:"Operations & CASA",icon:"fa-sliders",keywords:"static data change casa operations customer details update"},
+{id:11,title:"Onboarding Branch Portal",url:"https://digital.azaniabank.co.tz/onboard-branch/#/tasks",category:"Core Banking",icon:"fa-user-plus",keywords:"onboarding branch tasks digital customer account creation opening"},
+{id:12,title:"BATCH REPORT HISTORY",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/BATCH+REPORTS/BATCH_REPORT_HISTORY/BATCH_REPORT_HISTORY.xdo",category:"Finance & Recon",icon:"fa-clock-rotate-left",keywords:"batch report history finance gl journals end of day eod"},
+{id:13,title:"FTMS Checker Pending Documents",url:"https://ftms.azaniabank.co.tz:30056/checker/pending-documents",category:"Core Banking",icon:"fa-file-signature",keywords:"ftms funds transfer management system checker pending authorization"},
+{id:14,title:"IDs CLEANUP - Customer IDs",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/IDs+FOR+DATA+CLEANUP/CUSTOMER+IDs++FOR+CLEANUP.xdo",category:"Operations & CASA",icon:"fa-address-card",keywords:"ids cleanup customer data verification casa identification"},
+{id:15,title:"Loan Schedule Account Wise",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Credit/LOAN_SCHEDULE_ACCOUNT_WISE/LOAN_SCHEDULE_ACCOUNT_WISE.xdo",category:"Credit & Loans",icon:"fa-chart-line",keywords:"loan schedule account wise credit repayments installment schedule"},
+{id:16,title:"Funds Transfer Selected Products",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/FUNDS+TRANSFER/Funds+Transfer+Report+Selected+Products.xdo",category:"Operations & CASA",icon:"fa-money-bill-transfer",keywords:"funds transfer report ft selected products operations"},
+{id:17,title:"BATCH CALL BO (30100 Tx Search)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/30100+Transactions+Search.xdo",category:"Operations & CASA",icon:"fa-receipt",keywords:"batch call bo 30100 transactions search operations back office"},
+{id:18,title:"Vault Cash Position By Date",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/Cash+Balances/30402+Vault+Cash+Position+By+Date.xdo",category:"Finance & Recon",icon:"fa-vault",keywords:"vault cash position balance date finance operations 30402 teller cash"},
+{id:19,title:"Mobile Banking Admin Portal (MB)",url:"https://digital.azaniabank.co.tz:9090/admin-portal/login",category:"Core Banking",icon:"fa-mobile-screen-button",keywords:"mobile banking admin portal mb digital app"},
+{id:20,title:"Opened Account Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/OPENED_ACCOUNT_REPORT/OPENED_ACCOUNT_REPORT.xdo",category:"Operations & CASA",icon:"fa-folder-open",keywords:"opened account report casa new accounts daily summary"},
+{id:21,title:"SWIFT OUT TISS (K-Printer)",url:"https://k-printer.azaniabank.co.tz/kprinter/index.aspx?pg=mx%20out&msg=pacs.008.&hvps=true",category:"Core Banking",icon:"fa-print",keywords:"swift out tiss k-printer pacs 008 hvps transfer payment messaging"},
+{id:22,title:"HRMS Portal",url:"https://hrms.azaniabank.co.tz/nuhomer",category:"Core Banking",icon:"fa-users-gear",keywords:"hrms human resource management leave portal staff payroll"},
+{id:23,title:"OD Report (Without Facility)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/OD_DATEWISE_WITHOUT_FACILITY/OD_DATEWISE_WITHOUT_FACILITY_NEW.xdo",category:"Operations & CASA",icon:"fa-triangle-exclamation",keywords:"od overdraft datewise without facility casa report unauthorized"},
+{id:24,title:"Top Depositors By Date",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/TOP_DEPOSITORS_BY_DATE/TOP_DEPOSITORS_BY_DATE.xdo",category:"Operations & CASA",icon:"fa-arrow-trend-up",keywords:"top depositors date casa high net worth deposit analytics"},
+{id:25,title:"GL Breakdown New",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Finance/GL+BREAKDOWN+NEW.xdo",category:"Finance & Recon",icon:"fa-layer-group",keywords:"gl breakdown new finance general ledger accounts summary"},
+{id:26,title:"GM1821 Customer Dashboard",url:"https://172.16.3.184:8506/FCJNeoWeb/SMMDIFRM.jsp#hrefDBoardCustomer",category:"Core Banking",icon:"fa-chart-pie",keywords:"gm1821 flexcube customer dashboard fcjneoweb profile"},
+{id:27,title:"Corporate CIF Missing TIN / Reg No",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CORPORATE+CIF+MISSING+TIN+OR+REG+NO.xdo",category:"Operations & CASA",icon:"fa-building-un",keywords:"corporate cif missing tin registration number cleanup compliance"},
+{id:28,title:"Teller Transaction General Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/TELLER_REPORT/Teller_Transaction_General_Report_history/Teller_Transaction_General_Report_history.xdo",category:"Operations & CASA",icon:"fa-cash-register",keywords:"teller transaction general report history operations cash drawer"},
+{id:29,title:"Operations Checklist Portal",url:"https://operations.azania.co.tz/",category:"Core Banking",icon:"fa-list-check",keywords:"operations checklist portal home workflow daily tasks"},
+{id:30,title:"BioStar 2 Access Control",url:"https://127.0.0.1/#/login",category:"Core Banking",icon:"fa-fingerprint",keywords:"biostar 2 biometric door access login security"},
+{id:31,title:"Customer Information Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CUSTOMER+INFORMATION+REPORT/CUSTOMER+INFORMATION+REPORT.xdo",category:"Operations & CASA",icon:"fa-user-check",keywords:"customer information report cif details profile lookup"},
+{id:32,title:"80506v2 Deposits & Withdrawals",url:"https://192.168.5.154:9503/xmlpserver/Revised+ABL+Reports/Strategy+and+Buss+Dev/Performance+Reports/BranchWise+Reports/80506v2+Deposits+and+Withdrawals.xdo",category:"Strategy & Performance",icon:"fa-chart-simple",keywords:"80506v2 deposits withdrawals branchwise strategy performance analytics"},
+{id:33,title:"Batch Journal Revised Report",url:"http://reports.azania.co.tz/xmlpserver/AzaniaBank_Reports/Finance/BATCH+REPORTS/BATCH_REPORT_REVISED/BATCH_REPORT_REVISED.xdo",category:"Finance & Recon",icon:"fa-book-journal-whills",keywords:"batch journal revised finance reports accounting entries"},
+{id:34,title:"Account Statement Reconciliation",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Finance/200207+Account+Statement+Reconciliation.xdo",category:"Finance & Recon",icon:"fa-scale-balanced",keywords:"200207 account statement reconciliation finance recon match"},
+{id:35,title:"TRA & GePG Payment Gateway",url:"https://172.16.3.16:8088/realbus/#/home",category:"Core Banking",icon:"fa-building-columns",keywords:"tra gepg tax government payment gateway realbus revenue collection"},
+{id:36,title:"Examination Results | MU-ARMS",url:"https://arms.mzumbe.ac.tz/academic-records/exam-results-home",category:"External & Productivity",icon:"fa-graduation-cap",keywords:"mzumbe mu-arms academic exam results university"},
+{id:37,title:"iCloud Drive",url:"https://www.icloud.com/iclouddrive/",category:"External & Productivity",icon:"fa-cloud",keywords:"icloud drive apple cloud storage backup files"},
+{id:38,title:"80506 Daily Transactions Reporting",url:"http://reports.azania.co.tz/xmlpserver/Revised+ABL+Reports/Strategy+and+Buss+Dev/Performance+Reports/80506+Daily+Transactions+Reporting.xdo",category:"Strategy & Performance",icon:"fa-chart-column",keywords:"80506 daily transactions reporting strategy business dev analytics"},
+{id:39,title:"ChatGPT AI Assistant",url:"https://chatgpt.com/",category:"External & Productivity",icon:"fa-robot",keywords:"chatgpt ai openai productivity tool assistant code write"},
+{id:40,title:"Firebase Console",url:"https://console.firebase.google.com/",category:"External & Productivity",icon:"fa-fire",keywords:"firebase console google cloud dev database backend"},
+{id:41,title:"Mail - Godfrey Mono - Outlook",url:"https://outlook.office.com/mail/inbox/",category:"External & Productivity",icon:"fa-inbox",keywords:"outlook mail godfrey mono inbox office email messages"}
+];
+
+const defaultCollections = [
+    "Operations & CASA",
+    "Finance & Recon",
+    "Core Banking",
+    "Credit & Loans",
+    "Strategy & Performance",
+    "External & Productivity"
+];
+
+const STORAGE = {
+    collections: "azania_collections",
+    custom: "azania_custom_bookmarks",
+    hidden: "azania_hidden_ids",
+    pinned: "azania_pinned_ids",
+    view: "azania_view_mode"
+};
+
+let collections = [];
+let customBookmarks = [];
+let hiddenIds = [];
+let pinnedIds = [];
+let bookmarks = [];
+let activeCategory = "all";
+let searchQuery = "";
+let viewMode = "grid";
+let toastTimer;
+
+/* STORAGE */
+function readStorage(key, fallback) {
+    try {
+        const data = localStorage.getItem(key);
+        return data === null ? fallback : JSON.parse(data);
+    } catch {
+        return fallback;
+    }
+}
+
+function saveStorage(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    } catch {
+        showToast("Unable to save. Browser storage may be full or disabled.");
+        return false;
+    }
+}
+
+function loadData() {
+    const savedCollections = readStorage(STORAGE.collections, defaultCollections);
+    collections = Array.isArray(savedCollections) ? savedCollections : [...defaultCollections];
+
+    defaultCollections.forEach(name => {
+        if (!collections.includes(name)) collections.push(name);
+    });
+
+    customBookmarks = readStorage(STORAGE.custom, []);
+    if (!Array.isArray(customBookmarks)) customBookmarks = [];
+
+    hiddenIds = readStorage(STORAGE.hidden, []);
+    if (!Array.isArray(hiddenIds)) hiddenIds = [];
+
+    pinnedIds = readStorage(STORAGE.pinned, [1, 3, 4]);
+    if (!Array.isArray(pinnedIds)) pinnedIds = [1, 3, 4];
+
+    viewMode = localStorage.getItem(STORAGE.view) === "list" ? "list" : "grid";
+
+    customBookmarks = customBookmarks.filter(item =>
+        item && item.title && safeURL(item.url)
+    );
+
+    refreshBookmarks();
+    cleanStoredIds();
+    saveAll();
+}
+
+function saveAll() {
+    saveStorage(STORAGE.collections, collections);
+    saveStorage(STORAGE.custom, customBookmarks);
+    saveStorage(STORAGE.hidden, hiddenIds);
+    saveStorage(STORAGE.pinned, pinnedIds);
+}
+
+function cleanStoredIds() {
+    const validIds = new Set(bookmarks.map(item => String(item.id)));
+    hiddenIds = hiddenIds.filter(id => validIds.has(String(id)));
+    pinnedIds = pinnedIds.filter(id => validIds.has(String(id)));
+}
+
+function refreshBookmarks() {
+    bookmarks = [...defaultBookmarks, ...customBookmarks];
+}
+
+/* HELPERS */
+function $(id) {
+    return document.getElementById(id);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+    })[char]);
+}
+
+function safeURL(value) {
+    try {
+        const url = new URL(String(value).trim());
+        return ["http:", "https:"].includes(url.protocol) ? url.href : null;
+    } catch {
+        return null;
+    }
+}
+
+function getDomain(url) {
+    try {
+        return new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+        return "Unknown domain";
+    }
+}
+
+function createId() {
+    return Date.now() + Math.floor(Math.random() * 100000);
+}
+
+function showToast(message) {
+    $("toast-message").textContent = message;
+    $("toast").classList.remove("translate-y-20", "opacity-0");
+    $("toast").classList.add("translate-y-0", "opacity-100");
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        $("toast").classList.add("translate-y-20", "opacity-0");
+        $("toast").classList.remove("translate-y-0", "opacity-100");
+    }, 2600);
+}
+
+function updateClock() {
+    $("live-clock").textContent = new Date().toLocaleTimeString("en-GB");
+}
+
+/* THEME */
+function initTheme() {
+    let theme = "light";
+
+    try {
+        theme = localStorage.getItem("theme") ||
+            (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    } catch {}
+
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    updateThemeIcon();
+}
+
+function toggleTheme() {
+    const dark = document.documentElement.classList.toggle("dark");
+    try {
+        localStorage.setItem("theme", dark ? "dark" : "light");
+    } catch {}
+    updateThemeIcon();
+}
+
+function updateThemeIcon() {
+    const dark = document.documentElement.classList.contains("dark");
+    $("theme-icon").className = `fa-solid ${dark ? "fa-sun" : "fa-moon"} text-sm`;
+}
+
+/* MODALS */
+function showModal(id) {
+    $(id).classList.remove("hidden");
+    $(id).classList.add("flex");
+}
+
+function hideModal(id) {
+    $(id).classList.add("hidden");
+    $(id).classList.remove("flex");
+}
+
+function closeAllModals() {
+    ["add-modal", "collections-modal", "hidden-modal"].forEach(hideModal);
+}
+
+/* COLLECTIONS */
+function renderCategoryTabs() {
+    const tabs = [
+        { id: "all", name: "All Collections", icon: "fa-border-all" },
+        ...collections.map(name => ({ id: name, name, icon: "fa-folder" }))
+    ];
+
+    $("category-tabs").innerHTML = tabs.map(tab => {
+        const active = activeCategory === tab.id;
+
+        return `
+            <button data-category="${escapeHTML(tab.id)}"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm whitespace-nowrap shrink-0 transition-all
+                ${active
+                    ? "bg-blue-600 text-white shadow-md font-semibold"
+                    : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700"}">
+                <i class="fa-solid ${tab.icon}"></i>
+                <span>${escapeHTML(tab.name)}</span>
+            </button>`;
+    }).join("");
+}
+
+function setCategory(category) {
+    activeCategory = collections.includes(category) || category === "all" ? category : "all";
+    renderCategoryTabs();
+    renderDashboard();
+}
+
+function populateCollectionDropdowns() {
+    $("custom-category").innerHTML = collections.map(category =>
+        `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`
+    ).join("");
+}
+
+function openCollectionsModal() {
+    renderCollectionsList();
+    showModal("collections-modal");
+}
+
+function renderCollectionsList() {
+    $("collections-list").innerHTML = collections.map(category => {
+        const isDefault = defaultCollections.includes(category);
+        const count = bookmarks.filter(item => item.category === category).length;
+
+        return `
+            <div class="flex items-center justify-between gap-2 p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+                <div class="min-w-0">
+                    <span class="font-medium text-slate-800 dark:text-slate-200 block truncate">
+                        <i class="fa-solid fa-folder text-indigo-500 mr-2"></i>${escapeHTML(category)}
+                    </span>
+                    <span class="text-[10px] text-slate-400 ml-5">${count} links</span>
+                </div>
+                ${isDefault
+                    ? `<span class="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded shrink-0">Default</span>`
+                    : `<button data-delete-collection="${escapeHTML(category)}" class="text-red-500 hover:text-red-700 p-1 shrink-0" title="Delete collection"><i class="fa-solid fa-trash"></i></button>`
+                }
+            </div>`;
+    }).join("");
+}
+
+function addCollection(name) {
+    name = String(name || "").trim();
+
+    if (!name) {
+        showToast("Enter a collection name.");
+        return;
+    }
+
+    if (collections.some(item => item.toLowerCase() === name.toLowerCase())) {
+        showToast("This collection already exists.");
+        return;
+    }
+
+    collections.push(name);
+    saveStorage(STORAGE.collections, collections);
+    $("new-collection-name").value = "";
+
+    renderCollectionsList();
+    renderCategoryTabs();
+    populateCollectionDropdowns();
+    showToast("Collection created.");
+}
+
+function deleteCollection(name) {
+    if (defaultCollections.includes(name)) {
+        showToast("Default collections cannot be deleted.");
+        return;
+    }
+
+    const hasLinks = bookmarks.some(item => item.category === name);
+
+    if (hasLinks) {
+        showToast("Move or remove its links before deleting this collection.");
+        return;
+    }
+
+    collections = collections.filter(item => item !== name);
+
+    if (activeCategory === name) activeCategory = "all";
+
+    saveStorage(STORAGE.collections, collections);
+    renderCollectionsList();
+    renderCategoryTabs();
+    populateCollectionDropdowns();
+    renderDashboard();
+    showToast("Collection deleted.");
+}
+
+/* ADD LINKS */
+function openAddModal() {
+    populateCollectionDropdowns();
+    showModal("add-modal");
+    $("custom-title").focus();
+}
+
+function closeAddModal() {
+    hideModal("add-modal");
+    $("add-link-form").reset();
+}
+
+function handleSaveCustomLink(event) {
+    event.preventDefault();
+
+    const title = $("custom-title").value.trim();
+    const url = safeURL($("custom-url").value);
+    const category = $("custom-category").value;
+    const keywords = $("custom-keywords").value.trim();
+
+    if (!title || !url || !category) {
+        showToast("Complete all required fields with a valid URL.");
+        return;
+    }
+
+    if (!collections.includes(category)) {
+        showToast("Select a valid collection.");
+        return;
+    }
+
+    if (bookmarks.some(item => item.url === url)) {
+        showToast("This URL already exists.");
+        return;
+    }
+
+    customBookmarks.push({
+        id: createId(),
+        title,
+        url,
+        category,
+        icon: "fa-link",
+        keywords: `${title} ${keywords}`.toLowerCase()
+    });
+
+    refreshBookmarks();
+    saveAll();
+
+    closeAddModal();
+    renderCollectionsList();
+    renderDashboard();
+    showToast("Link saved successfully.");
+}
+
+/* PINNED */
+function togglePin(id) {
+    const exists = pinnedIds.some(item => String(item) === String(id));
+
+    pinnedIds = exists
+        ? pinnedIds.filter(item => String(item) !== String(id))
+        : [...pinnedIds, id];
+
+    saveStorage(STORAGE.pinned, pinnedIds);
+    renderDashboard();
+    showToast(exists ? "Removed from favorites." : "Added to favorites.");
+}
+
+/* HIDDEN LINKS */
+function hideLink(id) {
+    if (!hiddenIds.some(item => String(item) === String(id))) {
+        hiddenIds.push(id);
+        saveStorage(STORAGE.hidden, hiddenIds);
+        renderDashboard();
+        showToast("Link hidden.");
+    }
+}
+
+function unhideLink(id) {
+    hiddenIds = hiddenIds.filter(item => String(item) !== String(id));
+    saveStorage(STORAGE.hidden, hiddenIds);
+    renderHiddenLinksList();
+    renderDashboard();
+    showToast("Link restored.");
+}
+
+function openHiddenModal() {
+    renderHiddenLinksList();
+    showModal("hidden-modal");
+}
+
+function renderHiddenLinksList() {
+    const items = bookmarks.filter(item =>
+        hiddenIds.some(id => String(id) === String(item.id))
+    );
+
+    $("hidden-links-container").innerHTML = items.length
+        ? items.map(item => `
+            <div class="flex items-center justify-between gap-3 p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div class="min-w-0">
+                    <h4 class="font-medium text-xs text-slate-800 dark:text-slate-200 truncate">${escapeHTML(item.title)}</h4>
+                    <span class="text-[10px] text-slate-400">${escapeHTML(item.category)}</span>
+                </div>
+                <button data-restore="${escapeHTML(item.id)}" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-[11px] rounded-lg shrink-0">Restore</button>
+            </div>`).join("")
+        : `<p class="text-xs text-slate-400 italic text-center py-5">No hidden links.</p>`;
+
+    $("hidden-count").textContent = hiddenIds.length;
+}
+
+/* CLIPBOARD */
+async function copyToClipboard(url) {
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(url);
+        } else {
+            const input = document.createElement("textarea");
+            input.value = url;
+            input.style.position = "fixed";
+            input.style.opacity = "0";
+            document.body.appendChild(input);
+            input.select();
+            const copied = document.execCommand("copy");
+            input.remove();
+            if (!copied) throw new Error("Copy failed");
+        }
+
+        showToast("URL copied.");
+    } catch {
+        showToast("Unable to copy URL. Check browser permissions.");
+    }
+}
+
+/* IMPORT */
+function handleBookmarkImport(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        try {
+            const content = String(reader.result || "");
+
+            if (file.name.toLowerCase().endsWith(".json")) {
+                importJSONBackup(content);
+            } else {
+                parseNetscapeBookmarks(content);
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("The selected file could not be imported.");
+        }
+
+        event.target.value = "";
+    };
+
+    reader.onerror = () => {
+        showToast("Unable to read the selected file.");
+        event.target.value = "";
+    };
+
+    reader.readAsText(file);
+}
+
+function parseNetscapeBookmarks(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const anchors = [...doc.querySelectorAll("a[href]")];
+
+    if (!anchors.length) {
+        showToast("No bookmarks found in this HTML file.");
+        return;
+    }
+
+    let imported = 0;
+    let skipped = 0;
+
+    anchors.forEach(anchor => {
+        const url = safeURL(anchor.getAttribute("href"));
+        const title = anchor.textContent.trim() || "Imported Link";
+
+        if (!url) {
+            skipped++;
+            return;
+        }
+
+        if (bookmarks.some(item => item.url === url)) {
+            skipped++;
+            return;
+        }
+
+        const category = findBookmarkFolder(anchor);
+
+        if (!collections.includes(category)) {
+            collections.push(category);
+        }
+
+        customBookmarks.push({
+            id: createId(),
+            title,
+            url,
+            category,
+            icon: "fa-bookmark",
+            keywords: `${title} ${category} imported bookmark`.toLowerCase()
+        });
+
+        imported++;
+        refreshBookmarks();
+    });
+
+    saveAll();
+    renderCategoryTabs();
+    populateCollectionDropdowns();
+    renderCollectionsList();
+    renderDashboard();
+
+    showToast(`Imported ${imported} bookmarks. Skipped ${skipped}.`);
+}
+
+function findBookmarkFolder(anchor) {
+    let currentList = anchor.closest("dl");
+    let folder = "";
+
+    while (currentList) {
+        const heading = currentList.previousElementSibling?.querySelector("h3");
+
+        if (heading?.textContent.trim()) {
+            folder = heading.textContent.trim();
+            break;
+        }
+
+        const parent = currentList.parentElement;
+        currentList = parent?.closest("dl") || null;
+    }
+
+    return folder || "Imported Bookmarks";
+}
+
+function importJSONBackup(content) {
+    const data = JSON.parse(content);
+
+    if (!data || typeof data !== "object" || !Array.isArray(data.customBookmarks)) {
+        showToast("This is not a valid portal backup file.");
+        return;
+    }
+
+    let imported = 0;
+    let skipped = 0;
+
+    if (Array.isArray(data.collections)) {
+        data.collections.forEach(name => {
+            if (typeof name === "string" && name.trim() &&
+                !collections.some(item => item.toLowerCase() === name.toLowerCase())) {
+                collections.push(name.trim());
+            }
+        });
+    }
+
+    data.customBookmarks.forEach(item => {
+        const url = safeURL(item?.url);
+        const title = String(item?.title || "").trim();
+
+        if (!url || !title || bookmarks.some(existing => existing.url === url)) {
+            skipped++;
+            return;
+        }
+
+        const category = String(item.category || "Imported Bookmarks").trim();
+
+        if (!collections.includes(category)) collections.push(category);
+
+        customBookmarks.push({
+            id: createId(),
+            title,
+            url,
+            category,
+            icon: item.icon || "fa-bookmark",
+            keywords: String(item.keywords || title).toLowerCase()
+        });
+
+        refreshBookmarks();
+        imported++;
+    });
+
+    if (Array.isArray(data.hiddenIds)) {
+        hiddenIds = [...new Set([...hiddenIds, ...data.hiddenIds])];
+    }
+
+    if (Array.isArray(data.pinnedIds)) {
+        pinnedIds = [...new Set([...pinnedIds, ...data.pinnedIds])];
+    }
+
+    saveAll();
+    cleanStoredIds();
+    saveAll();
+
+    renderCategoryTabs();
+    populateCollectionDropdowns();
+    renderCollectionsList();
+    renderDashboard();
+
+    showToast(`Backup restored: ${imported} links added, ${skipped} skipped.`);
+}
+
+/* BACKUP */
+function exportData() {
+    const backup = {
+        application: "Azania Bank Enterprise Smart Portal",
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        customBookmarks,
+        collections,
+        hiddenIds,
+        pinnedIds,
+        viewMode
+    };
+
+    const blob = new Blob(
+        [JSON.stringify(backup, null, 2)],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = `azania_portal_backup_${new Date().toISOString().slice(0,10)}.json`;
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast("Backup downloaded successfully.");
+}
+
+/* VIEW MODE */
+function setViewMode(mode) {
+    viewMode = mode === "list" ? "list" : "grid";
+
+    try {
+        localStorage.setItem(STORAGE.view, viewMode);
+    } catch {}
+
+    const active = "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm";
+    const inactive = "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+
+    $("view-grid-btn").className = `px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 ${viewMode === "grid" ? active : inactive}`;
+    $("view-list-btn").className = `px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 ${viewMode === "list" ? active : inactive}`;
+
+    renderDashboard();
+}
+
+/* SEARCH */
+function calculateAIScore(item, tokens) {
+    if (!tokens.length) return 1;
+
+    const searchable = normalizeSearch(
+        `${item.title} ${item.category} ${item.keywords || ""} ${item.url}`
+    );
+
+    const matches = tokens.filter(token => searchable.includes(token)).length;
+    return matches / tokens.length;
+}
+
+function normalizeSearch(value) {
+    return String(value || "").toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+function resetSearch() {
+    searchQuery = "";
+    $("search-input").value = "";
+    $("clear-search").classList.add("hidden");
+    renderDashboard();
+}
+
+/* CARD GENERATOR */
+function createCardHTML(item) {
+    const url = safeURL(item.url);
+    if (!url) return "";
+
+    const id = escapeHTML(item.id);
+    const title = escapeHTML(item.title);
+    const category = escapeHTML(item.category);
+    const domain = escapeHTML(getDomain(url));
+    const icon = escapeHTML(item.icon || "fa-link");
+    const pinned = pinnedIds.some(value => String(value) === String(item.id));
+
+    const pinClass = pinned
+        ? "text-amber-500 bg-amber-50 dark:bg-amber-950/40"
+        : "text-slate-300 dark:text-slate-600 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-700";
+
+    const actions = `
+        <div class="flex items-center gap-1 shrink-0">
+            <button data-copy="${escapeHTML(url)}" class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-700" title="Copy URL">
+                <i class="fa-solid fa-copy text-xs"></i>
+            </button>
+            <button data-pin="${id}" class="p-2 rounded-lg ${pinClass}" title="${pinned ? "Unpin" : "Pin"}">
+                <i class="fa-solid fa-star text-xs"></i>
+            </button>
+            <button data-hide="${id}" class="p-2 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700" title="Hide link">
+                <i class="fa-solid fa-eye-slash text-xs"></i>
+            </button>
+        </div>`;
+
+    if (viewMode === "list") {
+        return `
+            <article class="bookmark-card group flex items-center justify-between gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all cursor-pointer" data-open="${escapeHTML(url)}">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h4 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-blue-600">${title}</h4>
+                        <div class="flex items-center gap-2 mt-1 flex-wrap">
+                            <span class="text-[10px] text-slate-400 font-mono">${domain}</span>
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400">${category}</span>
+                        </div>
+                    </div>
+                </div>
+                ${actions}
+            </article>`;
+    }
+
+    return `
+        <article class="bookmark-card group relative bg-white dark:bg-slate-800 rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-700/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between cursor-pointer" data-open="${escapeHTML(url)}">
+            <div>
+                <div class="flex items-start justify-between gap-2 mb-3">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-700 dark:to-slate-700/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                        <i class="fa-solid ${icon} text-base sm:text-lg"></i>
+                    </div>
+                    ${actions}
+                </div>
+                <h4 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white leading-relaxed mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400">${title}</h4>
+            </div>
+            <div class="pt-2.5 mt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between gap-2">
+                <span class="text-[10px] px-2 py-1 rounded-full border bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 truncate max-w-[60%]">${category}</span>
+                <span class="flex items-center gap-1 text-[10px] text-slate-400 font-mono truncate">
+                    <i class="fa-solid fa-globe"></i>${domain}
+                </span>
+            </div>
+        </article>`;
+}
+
+/* DASHBOARD */
+function renderDashboard() {
+    const visible = bookmarks.filter(item =>
+        !hiddenIds.some(id => String(id) === String(item.id))
+    );
+
+    const tokens = searchQuery.split(/\s+/).filter(Boolean);
+
+    const filtered = visible.filter(item => {
+        const categoryMatch = activeCategory === "all" || item.category === activeCategory;
+        if (!categoryMatch) return false;
+        if (!searchQuery) return true;
+
+        return calculateAIScore(item, tokens) >= 0.5;
+    });
+
+    $("total-count-badge").textContent = visible.length;
+    $("filtered-count").textContent = filtered.length;
+    $("hidden-count").textContent = hiddenIds.length;
+
+    $("current-category-title").textContent =
+        activeCategory === "all" ? "All Resources" : activeCategory;
+
+    const pinnedItems = visible.filter(item =>
+        pinnedIds.some(id => String(id) === String(item.id))
+    );
+
+    const showPinned = pinnedItems.length > 0 && !searchQuery && activeCategory === "all";
+
+    $("pinned-section").classList.toggle("hidden", !showPinned);
+    $("pinned-count-badge-inline").textContent = pinnedItems.length;
+
+    $("pinned-grid").className = viewMode === "list"
+        ? "flex flex-col gap-2.5"
+        : "auto-grid";
+
+    if (showPinned) {
+        $("pinned-grid").innerHTML = pinnedItems.map(createCardHTML).join("");
+    } else {
+        $("pinned-grid").innerHTML = "";
+    }
+
+    $("links-container").className = viewMode === "list"
+        ? "flex flex-col gap-2.5"
+        : "auto-grid";
+
+    $("links-container").innerHTML = filtered.map(createCardHTML).join("");
+
+    $("no-results").classList.toggle("hidden", filtered.length !== 0);
+    $("no-results").classList.toggle("flex", filtered.length === 0);
+}
+
+/* EVENT HANDLERS */
+function bindEvents() {
+    $("import-button").addEventListener("click", () => $("bookmark-file-input").click());
+    $("collections-button").addEventListener("click", openCollectionsModal);
+    $("add-button").addEventListener("click", openAddModal);
+    $("theme-toggle").addEventListener("click", toggleTheme);
+    $("backup-button").addEventListener("click", exportData);
+    $("hidden-button").addEventListener("click", openHiddenModal);
+
+    $("view-grid-btn").addEventListener("click", () => setViewMode("grid"));
+    $("view-list-btn").addEventListener("click", () => setViewMode("list"));
+
+    $("bookmark-file-input").addEventListener("change", handleBookmarkImport);
+    $("add-link-form").addEventListener("submit", handleSaveCustomLink);
+
+    $("collection-form").addEventListener("submit", event => {
+        event.preventDefault();
+        addCollection($("new-collection-name").value);
+    });
+
+    $("search-input").addEventListener("input", event => {
+        searchQuery = normalizeSearch(event.target.value);
+        $("clear-search").classList.toggle("hidden", !searchQuery);
+        renderDashboard();
+    });
+
+    $("clear-search").addEventListener("click", resetSearch);
+    $("no-results-clear").addEventListener("click", resetSearch);
+
+    document.addEventListener("click", async event => {
+        const closeButton = event.target.closest("[data-close]");
+        if (closeButton) {
+            hideModal(closeButton.dataset.close);
+            return;
+        }
+
+        const categoryButton = event.target.closest("[data-category]");
+        if (categoryButton) {
+            setCategory(categoryButton.dataset.category);
+            return;
+        }
+
+        const deleteButton = event.target.closest("[data-delete-collection]");
+        if (deleteButton) {
+            deleteCollection(deleteButton.dataset.deleteCollection);
+            return;
+        }
+
+        const restoreButton = event.target.closest("[data-restore]");
+        if (restoreButton) {
+            unhideLink(restoreButton.dataset.restore);
+            return;
+        }
+
+        const copyButton = event.target.closest("[data-copy]");
+        if (copyButton) {
+            event.stopPropagation();
+            await copyToClipboard(copyButton.dataset.copy);
+            return;
+        }
+
+        const pinButton = event.target.closest("[data-pin]");
+        if (pinButton) {
+            event.stopPropagation();
+            togglePin(pinButton.dataset.pin);
+            return;
+        }
+
+        const hideButton = event.target.closest("[data-hide]");
+        if (hideButton) {
+            event.stopPropagation();
+            hideLink(hideButton.dataset.hide);
+            return;
+        }
+
+        const card = event.target.closest("[data-open]");
+        if (card) {
+            const url = safeURL(card.dataset.open);
+            if (url) window.open(url, "_blank", "noopener,noreferrer");
+            return;
+        }
+
+        if (event.target.classList.contains("modal")) {
+            hideModal(event.target.id);
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        const tag = document.activeElement?.tagName;
+        const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(tag);
+
+        if (event.key === "/" && !typing) {
+            event.preventDefault();
+            $("search-input").focus();
+        }
+
+        if (event.key === "Escape") {
+            closeAllModals();
+        }
+    });
+}
+
+/* START APPLICATION */
+function initApp() {
+    loadData();
+    initTheme();
+    bindEvents();
+
+    renderCategoryTabs();
+    populateCollectionDropdowns();
+    renderCollectionsList();
+    setViewMode(viewMode);
+
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
+document.addEventListener("DOMContentLoaded", initApp);
+</script>
+
+</body>
+</html>
