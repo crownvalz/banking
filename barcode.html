@@ -69,6 +69,54 @@
 
     <!-- STEP 1: UNIFIED ASSET CAPTURE & VERIFICATION -->
     <section id="stage-content-1" class="space-y-6">
+
+      <!-- Left: Scanner Viewport -->
+      <div class="lg:col-span-6 flex flex-col gap-5">
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+          <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center">
+            <h2 class="font-semibold text-xs uppercase tracking-wider flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
+              Camera Barcode Scanner
+            </h2>
+            <span id="camera-status-badge" class="text-[11px] font-medium bg-amber-500/20 text-amber-200 px-2.5 py-0.5 rounded-full">Ready to start</span>
+          </div>
+
+          <!-- Camera Box -->
+          <div class="relative bg-black w-full h-80 sm:h-96 flex items-center justify-center overflow-hidden">
+            <div id="reader" class="w-full h-full scale-105"></div>
+            <!-- Laser Guide -->
+            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] pointer-events-none z-10 animate-pulse"></div>
+            <div class="absolute inset-x-8 inset-y-12 border-2 border-blue-400/40 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
+              <div class="w-4 h-4 border-t-2 border-l-2 border-blue-400 self-start"></div>
+              <span class="text-blue-200 text-[11px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md">Align barcode inside the frame</span>
+              <div class="w-4 h-4 border-b-2 border-r-2 border-blue-400 self-end"></div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col gap-3">
+            <div class="flex gap-2">
+              <button id="start-camera-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-sm">Start Camera</button>
+              <button id="stop-camera-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition">Pause Camera</button>
+              <button id="torch-btn" type="button" disabled class="bg-slate-200 text-slate-500 font-medium py-2.5 px-3 rounded-xl text-xs transition">Light</button>
+            </div>
+            <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2">
+              <label for="camera-zoom" class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Camera zoom</label>
+              <input id="camera-zoom" type="range" min="1" max="1" step="0.1" value="1" disabled class="w-full accent-blue-600">
+              <span id="camera-zoom-value" class="text-[11px] font-mono font-bold text-slate-700">1.0×</span>
+            </div>
+            <p class="text-[10px] text-slate-500">For distant labels, increase camera zoom until the barcode fills the guide. Optical focus and zoom depend on your device.</p>
+
+            <!-- Manual Entry -->
+            <div class="pt-2 border-t border-slate-200">
+              <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Manual Barcode Input / Test</label>
+              <div class="flex gap-2">
+                <input type="text" id="manual-barcode-input" placeholder="Type barcode (e.g. AB009185)..." class="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-slate-800">
+                <button id="manual-submit-btn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition">Verify</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 w-full">
         <div class="text-center max-w-lg mx-auto mb-6">
           <h2 class="text-xl font-bold text-slate-900">Import Existing Asset Register</h2>
@@ -99,48 +147,6 @@
           <p class="text-xs text-slate-500">Import, scan, or add assets in any order. Scan distance depends on camera focus, barcode size, lighting and device capability.</p>
         </div>
       </div>
-
-      <!-- Left: Scanner Viewport -->
-      <div class="lg:col-span-6 flex flex-col gap-5">
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-          <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center">
-            <h2 class="font-semibold text-xs uppercase tracking-wider flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
-              Camera Barcode Scanner
-            </h2>
-            <span id="camera-status-badge" class="text-[11px] font-medium bg-amber-500/20 text-amber-200 px-2.5 py-0.5 rounded-full">Ready to start</span>
-          </div>
-
-          <!-- Camera Box -->
-          <div class="relative bg-black w-full h-80 sm:h-96 flex items-center justify-center overflow-hidden">
-            <div id="reader" class="w-full h-full scale-105"></div>
-            <!-- Laser Guide -->
-            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] pointer-events-none z-10 animate-pulse"></div>
-            <div class="absolute inset-x-8 inset-y-12 border-2 border-blue-400/40 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
-              <div class="w-4 h-4 border-t-2 border-l-2 border-blue-400 self-start"></div>
-              <span class="text-blue-200 text-[11px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md">Align barcode inside the frame</span>
-              <div class="w-4 h-4 border-b-2 border-r-2 border-blue-400 self-end"></div>
-            </div>
-          </div>
-
-          <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col gap-3">
-            <div class="flex gap-2">
-              <button id="start-camera-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-sm">Start Camera</button>
-              <button id="stop-camera-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition">Pause Camera</button>
-            </div>
-
-            <!-- Manual Entry -->
-            <div class="pt-2 border-t border-slate-200">
-              <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Manual Barcode Input / Test</label>
-              <div class="flex gap-2">
-                <input type="text" id="manual-barcode-input" placeholder="Type barcode (e.g. AB009185)..." class="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-slate-800">
-                <button id="manual-submit-btn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition">Verify</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Right: Live Quick Verification Panel -->
       <div class="lg:col-span-6 bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
         <div>
@@ -654,61 +660,221 @@
       } catch(e) {}
     }
 
-    // Camera scanner lifecycle
+    // High-speed camera scanner with native BarcodeDetector and library fallback
     let cameraStarting = false;
-    async function startCameraScanner() {
-      if (cameraStarting || (html5QrCode && html5QrCode.isScanning)) return;
-      if (!window.Html5Qrcode) {
-        document.getElementById('camera-status-badge').innerText = "Scanner unavailable";
-        alert("The barcode scanner library could not be loaded. Check your internet connection and reload the page.");
-        return;
+    let cameraStream = null;
+    let cameraVideo = null;
+    let nativeDetector = null;
+    let scanAnimationFrame = null;
+    let detectorBusy = false;
+    let lastDetectorFrame = 0;
+    let lastDecodedValue = '';
+    let lastDecodedAt = 0;
+    let activeVideoTrack = null;
+    let cameraCapabilities = {};
+
+    const barcodeFormats = [
+      'code_128', 'code_39', 'code_93', 'codabar', 'ean_13', 'ean_8',
+      'upc_a', 'upc_e', 'itf', 'qr_code', 'data_matrix', 'pdf417', 'aztec'
+    ];
+
+    function updateCameraStatus(message, tone = 'ready') {
+      const badge = document.getElementById('camera-status-badge');
+      badge.innerText = message;
+      badge.className = tone === 'active'
+        ? 'text-[11px] font-medium bg-emerald-500/20 text-emerald-200 px-2.5 py-0.5 rounded-full'
+        : tone === 'error'
+          ? 'text-[11px] font-medium bg-rose-500/20 text-rose-200 px-2.5 py-0.5 rounded-full'
+          : 'text-[11px] font-medium bg-amber-500/20 text-amber-200 px-2.5 py-0.5 rounded-full';
+    }
+
+    async function configureCameraTrack(track) {
+      activeVideoTrack = track;
+      cameraCapabilities = track.getCapabilities ? track.getCapabilities() : {};
+      const advanced = {};
+      if (cameraCapabilities.focusMode?.includes('continuous')) advanced.focusMode = 'continuous';
+      if (cameraCapabilities.exposureMode?.includes('continuous')) advanced.exposureMode = 'continuous';
+      if (cameraCapabilities.whiteBalanceMode?.includes('continuous')) advanced.whiteBalanceMode = 'continuous';
+      if (Object.keys(advanced).length) {
+        try { await track.applyConstraints({ advanced: [advanced] }); } catch (error) { console.debug('Continuous camera controls unavailable:', error); }
       }
-      cameraStarting = true;
-      document.getElementById('camera-status-badge').innerText = "Starting…";
-      try {
-        if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-        const config = {
-          fps: 12,
+
+      const zoomInput = document.getElementById('camera-zoom');
+      const zoomValue = document.getElementById('camera-zoom-value');
+      if (cameraCapabilities.zoom) {
+        zoomInput.min = cameraCapabilities.zoom.min ?? 1;
+        zoomInput.max = cameraCapabilities.zoom.max ?? 1;
+        zoomInput.step = cameraCapabilities.zoom.step ?? 0.1;
+        zoomInput.value = Math.min(Math.max(1, Number(zoomInput.min)), Number(zoomInput.max));
+        zoomInput.disabled = Number(zoomInput.max) <= Number(zoomInput.min);
+        zoomValue.innerText = `${Number(zoomInput.value).toFixed(1)}×`;
+      } else {
+        zoomInput.min = 1; zoomInput.max = 1; zoomInput.value = 1; zoomInput.disabled = true;
+        zoomValue.innerText = 'Not supported';
+      }
+
+      const torchButton = document.getElementById('torch-btn');
+      torchButton.disabled = !cameraCapabilities.torch;
+      torchButton.className = cameraCapabilities.torch
+        ? 'bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-3 rounded-xl text-xs transition'
+        : 'bg-slate-200 text-slate-500 font-medium py-2.5 px-3 rounded-xl text-xs transition';
+    }
+
+    async function startNativeScanner() {
+      if (!('BarcodeDetector' in window) || !navigator.mediaDevices?.getUserMedia) return false;
+      const supported = await BarcodeDetector.getSupportedFormats();
+      const formats = barcodeFormats.filter(format => supported.includes(format));
+      if (!formats.length) return false;
+
+      nativeDetector = new BarcodeDetector({ formats });
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 60, max: 60 }
+        }
+      });
+
+      const reader = document.getElementById('reader');
+      reader.innerHTML = '';
+      cameraVideo = document.createElement('video');
+      cameraVideo.autoplay = true;
+      cameraVideo.muted = true;
+      cameraVideo.playsInline = true;
+      cameraVideo.setAttribute('playsinline', '');
+      cameraVideo.className = 'w-full h-full object-contain';
+      cameraVideo.srcObject = cameraStream;
+      reader.appendChild(cameraVideo);
+      await cameraVideo.play();
+      activeVideoTrack = cameraStream.getVideoTracks()[0];
+      await configureCameraTrack(activeVideoTrack);
+      runNativeDetectionLoop();
+      return true;
+    }
+
+    function runNativeDetectionLoop() {
+      const scanFrame = async timestamp => {
+        if (!cameraVideo || !cameraStream?.active) return;
+        scanAnimationFrame = requestAnimationFrame(scanFrame);
+        if (detectorBusy || timestamp - lastDetectorFrame < 45 || cameraVideo.readyState < 2) return;
+        detectorBusy = true;
+        lastDetectorFrame = timestamp;
+        try {
+          const results = await nativeDetector.detect(cameraVideo);
+          if (results?.length) {
+            const value = results[0].rawValue?.trim();
+            const now = Date.now();
+            if (value && (value !== lastDecodedValue || now - lastDecodedAt > 1800)) {
+              lastDecodedValue = value;
+              lastDecodedAt = now;
+              handleBarcodeDetected(value);
+            }
+          }
+        } catch (error) {
+          console.debug('Barcode frame skipped:', error);
+        } finally {
+          detectorBusy = false;
+        }
+      };
+      scanAnimationFrame = requestAnimationFrame(scanFrame);
+    }
+
+    async function startFallbackScanner() {
+      if (!window.Html5Qrcode) throw new Error('Barcode scanning library is unavailable.');
+      const formats = barcodeFormats.map(name => window.Html5QrcodeSupportedFormats?.[name.toUpperCase()]).filter(value => value !== undefined);
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode('reader', { formatsToSupport: formats, verbose: false });
+      }
+      await html5QrCode.start(
+        { facingMode: 'environment' },
+        {
+          fps: 20,
           qrbox: (width, height) => ({
-            width: Math.max(180, Math.floor(width * 0.82)),
-            height: Math.max(90, Math.floor(height * 0.34))
+            width: Math.max(240, Math.floor(width * 0.94)),
+            height: Math.max(120, Math.floor(height * 0.62))
           }),
-          aspectRatio: 1.333334,
+          aspectRatio: 1.777778,
           rememberLastUsedCamera: true
-        };
-        await html5QrCode.start(
-          { facingMode: "environment" },
-          config,
-          decodedText => handleBarcodeDetected(decodedText),
-          () => {}
-        );
-        document.getElementById('camera-status-badge').innerText = "Camera ready";
-      } catch (err) {
-        console.error("Camera start failed:", err);
-        document.getElementById('camera-status-badge').innerText = "Camera unavailable";
-        alert("Unable to start the camera. Allow camera permission and use this page over HTTPS or localhost.");
+        },
+        decodedText => {
+          const now = Date.now();
+          if (decodedText && (decodedText !== lastDecodedValue || now - lastDecodedAt > 1800)) {
+            lastDecodedValue = decodedText;
+            lastDecodedAt = now;
+            handleBarcodeDetected(decodedText);
+          }
+        },
+        () => {}
+      );
+    }
+
+    async function startCameraScanner() {
+      if (cameraStarting || cameraStream?.active || (html5QrCode && html5QrCode.isScanning)) return;
+      cameraStarting = true;
+      updateCameraStatus('Starting camera…');
+      try {
+        let started = false;
+        try { started = await startNativeScanner(); }
+        catch (nativeError) {
+          console.warn('Native high-speed scanner unavailable; using fallback:', nativeError);
+          if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+          cameraStream = null;
+        }
+        if (!started) await startFallbackScanner();
+        updateCameraStatus('Scanning • high speed', 'active');
+      } catch (error) {
+        console.error('Camera start failed:', error);
+        updateCameraStatus('Camera unavailable', 'error');
+        alert('Unable to start the camera. Allow camera permission and open this page over HTTPS or localhost. If another application is using the camera, close it and try again.');
       } finally {
         cameraStarting = false;
       }
     }
 
     async function stopCameraScanner() {
-      if (!html5QrCode || !html5QrCode.isScanning) return;
-      try {
-        await html5QrCode.stop();
-        document.getElementById('camera-status-badge').innerText = "Paused";
-      } catch (err) {
-        console.warn("Camera stop issue:", err);
+      if (scanAnimationFrame) cancelAnimationFrame(scanAnimationFrame);
+      scanAnimationFrame = null;
+      detectorBusy = false;
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
       }
+      cameraVideo = null;
+      activeVideoTrack = null;
+      if (html5QrCode?.isScanning) {
+        try { await html5QrCode.stop(); } catch (error) { console.warn('Scanner stop issue:', error); }
+      }
+      document.getElementById('torch-btn').disabled = true;
+      document.getElementById('camera-zoom').disabled = true;
+      updateCameraStatus('Paused');
     }
 
-    document.getElementById('start-camera-btn').addEventListener('click', () => {
-      startCameraScanner();
+    document.getElementById('camera-zoom').addEventListener('input', async event => {
+      const zoom = Number(event.target.value);
+      document.getElementById('camera-zoom-value').innerText = `${zoom.toFixed(1)}×`;
+      if (activeVideoTrack && cameraCapabilities.zoom) {
+        try { await activeVideoTrack.applyConstraints({ advanced: [{ zoom }] }); }
+        catch (error) { console.warn('Camera zoom could not be applied:', error); }
+      }
     });
 
-    document.getElementById('stop-camera-btn').addEventListener('click', () => {
-      stopCameraScanner();
+    let torchEnabled = false;
+    document.getElementById('torch-btn').addEventListener('click', async () => {
+      if (!activeVideoTrack || !cameraCapabilities.torch) return;
+      torchEnabled = !torchEnabled;
+      try {
+        await activeVideoTrack.applyConstraints({ advanced: [{ torch: torchEnabled }] });
+        document.getElementById('torch-btn').innerText = torchEnabled ? 'Light On' : 'Light';
+      } catch (error) {
+        torchEnabled = !torchEnabled;
+        alert('The device could not change its camera light setting.');
+      }
     });
+
+    document.getElementById('start-camera-btn').addEventListener('click', startCameraScanner);
+    document.getElementById('stop-camera-btn').addEventListener('click', stopCameraScanner);
 
     // Manual Input
     document.getElementById('manual-submit-btn').addEventListener('click', () => {
