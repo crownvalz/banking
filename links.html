@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azania Bank - Enterprise Smart Portal</title>
+<title>Mono - Enterprise Smart Portal</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -110,7 +110,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 <body class="min-h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 antialiased transition-colors">
 
 <!-- HEADER -->
-<header class="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
+<header id="main-header" class="sticky top-0 z-40 w-full bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
     <div class="w-full px-3 sm:px-5 lg:px-8">
         <div class="flex items-center justify-between min-h-16 gap-3">
 
@@ -121,7 +121,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
                 <div class="min-w-0">
                     <div class="flex items-center gap-1.5">
-                        <h1 class="font-bold text-sm sm:text-base lg:text-lg text-slate-900 dark:text-white truncate">Azania Bank</h1>
+                        <h1 class="font-bold text-sm sm:text-base lg:text-lg text-slate-900 dark:text-white truncate">Mono</h1>
                         <span class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full">Hub</span>
                     </div>
                     <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">Systems & Bookmarks Portal</p>
@@ -161,58 +161,35 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 <!-- MAIN -->
 <main class="flex-grow w-full px-3 sm:px-5 lg:px-8 py-4 sm:py-6 flex flex-col gap-5">
 
-    <!-- SEARCH -->
-    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-4 sm:p-6 lg:p-8 text-white shadow-xl">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+<!-- STICKY SEARCH AND CATEGORY SECTION -->
+<section id="sticky-search" class="sticky top-16 z-40 space-y-3">
 
+    <!-- SEARCH BOX -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-4 sm:p-6 lg:p-8 text-white shadow-xl">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative z-10 max-w-3xl">
-            <div class="flex items-center justify-between mb-2">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] sm:text-[11px] font-semibold">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    Smart Resource Search
-                </span>
-                <span id="live-clock" class="hidden md:inline-block text-[11px] font-mono bg-white/10 px-2.5 py-1 rounded-full"></span>
-            </div>
-
-            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-2">
-                What would you like to do today?
-            </h2>
-
-            <p class="text-slate-300 text-xs sm:text-sm mb-5">
-                Search for systems, reports, transactions, customers or operational tasks.
-            </p>
-
+            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-2">What would you like to do today?</h2>
             <div class="relative flex items-center">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 text-blue-400"></i>
-                <input type="text" id="search-input"
-                    class="w-full pl-11 pr-20 py-3 sm:py-3.5 bg-white/10 text-white placeholder-blue-200/60 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs sm:text-sm"
-                    placeholder="Search resources, e.g. GL statement, vault cash, NIDA..."
-                    autocomplete="off">
+                <input type="text" id="search-input" class="w-full pl-11 pr-20 py-3 sm:py-3.5 bg-white/10 text-white placeholder-blue-200/60 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs sm:text-sm" placeholder="Search resources, e.g. GL statement, vault cash, NIDA..." autocomplete="off">
                 <button id="clear-search" class="hidden absolute right-2 text-xs text-white px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20">Clear</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CONTROLS -->
-    <section class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-700 pb-3">
-        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1"></div>
-
-        <div class="flex items-center justify-between md:justify-end gap-2 shrink-0">
-            <div class="flex items-center bg-slate-200/70 dark:bg-slate-800 p-1 rounded-xl border border-slate-300/50 dark:border-slate-700">
-                <button id="view-grid-btn" class="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
-                    <i class="fa-solid fa-grip"></i> Grid
-                </button>
-                <button id="view-list-btn" class="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
-                    <i class="fa-solid fa-list"></i> List
-                </button>
+    <!-- CATEGORY AND VIEW CONTROLS -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-3 shadow-sm">
+        <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 min-w-0"></div>
+        <div class="flex items-center justify-between sm:justify-end gap-2 shrink-0">
+            <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <button id="view-grid-btn" class="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-grip"></i> Grid</button>
+                <button id="view-list-btn" class="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5"><i class="fa-solid fa-list"></i> List</button>
             </div>
-
-            <button id="backup-button" class="px-3 py-2 bg-slate-200/70 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-medium border border-slate-300/50 dark:border-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-download"></i>
-                <span class="hidden sm:inline">Backup</span>
-            </button>
+            <button id="backup-button" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-medium border border-slate-200 dark:border-slate-700 flex items-center gap-2"><i class="fa-solid fa-download"></i><span class="hidden sm:inline">Backup</span></button>
         </div>
-    </section>
+    </div>
+
+</section>
 
     <!-- PINNED -->
     <section id="pinned-section" class="hidden">
@@ -257,7 +234,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     <div class="w-full px-3 sm:px-5 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-xs text-slate-500 dark:text-slate-400">
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-shield-halved text-blue-600 dark:text-blue-400"></i>
-            <span>Azania Bank Enterprise Portal</span>
+            <span>Mono Enterprise Portal</span>
         </div>
         <span class="text-[11px]">Responsive Bookmark Management System</span>
     </div>
@@ -991,7 +968,7 @@ function importJSONBackup(content) {
 /* BACKUP */
 function exportData() {
     const backup = {
-        application: "Azania Bank Enterprise Smart Portal",
+        application: "Mono Enterprise Smart Portal",
         version: 2,
         exportedAt: new Date().toISOString(),
         customBookmarks,
