@@ -127,10 +127,10 @@
 
     <!-- PDF Parsing Progress Overlay (Global Floating Toast) -->
     <div id="pdfParsingBanner" class="hidden fixed top-20 right-4 z-50 no-print bg-slate-900 border border-emerald-500/50 rounded-xl p-4 shadow-2xl flex items-center space-x-3 animate-bounce">
-        <i class="fa-solid fa-spinner fa-spin text-emerald-400 text-xl"></i>
+        <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-xl fa-spin"></i>
         <div class="text-xs text-emerald-200">
-            <strong class="block text-white">AI Parsing PDF Resume...</strong>
-            Extracting text, work experience & skills into state database.
+            <strong class="block text-white">Gemini AI Analyzing CV...</strong>
+            Reading and intelligently mapping sections into respective database fields.
         </div>
     </div>
 
@@ -218,10 +218,10 @@
                         </div>
                     </div>
                     <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex items-center space-x-3">
-                        <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-lg"></i>
+                        <i class="fa-solid fa-brain text-amber-400 text-lg"></i>
                         <div>
-                            <span class="block text-white font-semibold">PDF Auto-Parser</span>
-                            <span class="text-slate-500 text-[11px]">PDF.js Text Extractor</span>
+                            <span class="block text-white font-semibold">Gemini AI Parser</span>
+                            <span class="text-slate-500 text-[11px]">Smart JSON Schema Extraction</span>
                         </div>
                     </div>
                 </div>
@@ -1305,12 +1305,167 @@
             reader.readAsText(event.target.files[0]);
         }
 
-        // PDF AUTO-PARSER (PDF.js)
+        // SMART GEMINI AI PDF PARSER INTEGRATION
+        async function parseCVWithGemini(extractedText) {
+            const systemPrompt = "You are an expert HR Resume Parser. Extract all structured candidate information accurately from the provided resume text and map it into the JSON schema format.";
+            const userQuery = `Analyze and parse this CV text:\n\n${extractedText}`;
+
+            const jsonSchema = {
+                type: "OBJECT",
+                properties: {
+                    firstname: { type: "STRING" },
+                    surname: { type: "STRING" },
+                    jobtitle: { type: "STRING" },
+                    email: { type: "STRING" },
+                    phone: { type: "STRING" },
+                    gender: { type: "STRING" },
+                    address: { type: "STRING" },
+                    dob: { type: "STRING" },
+                    linkedin: { type: "STRING" },
+                    aboutme: { type: "STRING" },
+                    experiences: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                jobtitle: { type: "STRING" },
+                                company: { type: "STRING" },
+                                position: { type: "STRING" },
+                                term: { type: "STRING" },
+                                duties: { type: "STRING" }
+                            }
+                        }
+                    },
+                    education: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                level: { type: "STRING" },
+                                degree: { type: "STRING" },
+                                university: { type: "STRING" },
+                                year: { type: "STRING" }
+                            }
+                        }
+                    },
+                    skills: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                name: { type: "STRING" },
+                                level: { type: "STRING" }
+                            }
+                        }
+                    },
+                    trainings: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                title: { type: "STRING" },
+                                issuer: { type: "STRING" },
+                                year: { type: "STRING" }
+                            }
+                        }
+                    },
+                    hobbies: {
+                        type: "ARRAY",
+                        items: { type: "STRING" }
+                    },
+                    referees: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                name: { type: "STRING" },
+                                designation: { type: "STRING" },
+                                company: { type: "STRING" },
+                                phone: { type: "STRING" }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: jsonSchema
+                }
+            };
+
+            const apiKey = ""; // Canvas runtime automatically supplies key when blank
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            // Exponential backoff fetch implementation
+            let attempt = 0;
+            const maxAttempts = 3;
+            let delay = 1000;
+
+            while (attempt < maxAttempts) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (jsonText) {
+                            return JSON.parse(jsonText);
+                        }
+                    }
+                } catch (e) {
+                    // Retry silently
+                }
+                attempt++;
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            }
+
+            return null; // Fallback if AI service call fails
+        }
+
+        // HEURISTIC REGEX FALLBACK PARSER
+        function parseCVWithFallback(fullText) {
+            const lines = fullText.split('\n').map(l => l.trim()).filter(Boolean);
+            const emailMatch = fullText.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/i);
+            const phoneMatch = fullText.match(/(\+?\d{1,4}[\s-]?\(?\d{1,3}\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/);
+
+            const names = lines[0] ? lines[0].split(' ') : ['Parsed', 'Candidate'];
+
+            return {
+                firstname: names[0] || "Parsed",
+                surname: names.slice(1).join(' ') || "Candidate",
+                jobtitle: lines[1] || "Professional",
+                email: emailMatch ? emailMatch[0] : "",
+                phone: phoneMatch ? phoneMatch[0] : "",
+                gender: "Male",
+                address: "",
+                dob: "",
+                linkedin: "",
+                aboutme: fullText.substring(0, 300),
+                experiences: [],
+                education: [],
+                skills: [],
+                trainings: [],
+                hobbies: [],
+                referees: []
+            };
+        }
+
+        // PDF FILE UPLOAD & AI INVOCATION HANDLER
         async function handlePdfUpload(event) {
             const file = event.target.files[0];
             if (!file || file.type !== 'application/pdf') return;
 
-            document.getElementById('pdfParsingBanner').classList.remove('hidden');
+            const banner = document.getElementById('pdfParsingBanner');
+            banner.classList.remove('hidden');
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
@@ -1323,30 +1478,74 @@
                     fullText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
 
-                // Extract fields
-                const newId = 'pdf_' + Date.now();
+                // Call Gemini AI Structured Parsing
+                let parsedResult = await parseCVWithGemini(fullText);
+
+                // If AI call failed, use heuristic fallback
+                if (!parsedResult) {
+                    parsedResult = parseCVWithFallback(fullText);
+                }
+
+                const newId = 'ai_' + Date.now();
                 const parsedState = {
                     id: newId,
                     theme: 'modern',
-                    personal: { firstname: "Parsed", surname: "Candidate", jobtitle: "Parsed Title", email: "", phone: "", gender: "Male", address: "", dob: "", linkedin: "", photo: "", aboutme: "" },
-                    experiences: [], education: [], skills: [], trainings: [], hobbies: [], referees: []
+                    personal: {
+                        firstname: parsedResult.firstname || "Candidate",
+                        surname: parsedResult.surname || "",
+                        jobtitle: parsedResult.jobtitle || "Professional",
+                        email: parsedResult.email || "",
+                        phone: parsedResult.phone || "",
+                        gender: parsedResult.gender || "Male",
+                        address: parsedResult.address || "",
+                        dob: parsedResult.dob || "",
+                        linkedin: parsedResult.linkedin || "",
+                        photo: "",
+                        aboutme: parsedResult.aboutme || ""
+                    },
+                    experiences: (parsedResult.experiences || []).map((e, idx) => ({
+                        id: Date.now() + idx,
+                        jobtitle: e.jobtitle || "Position",
+                        company: e.company || "Company",
+                        position: e.position || e.jobtitle || "Department",
+                        term: e.term || "Permanent",
+                        duties: e.duties || ""
+                    })),
+                    education: (parsedResult.education || []).map((e, idx) => ({
+                        id: Date.now() + idx + 100,
+                        level: e.level || "Bachelor Degree",
+                        degree: e.degree || "Degree",
+                        university: e.university || "University",
+                        year: e.year || "2020"
+                    })),
+                    skills: (parsedResult.skills || []).map((s, idx) => ({
+                        id: Date.now() + idx + 200,
+                        name: typeof s === 'string' ? s : (s.name || "Skill"),
+                        level: typeof s === 'object' && s.level ? s.level : "Advanced"
+                    })),
+                    trainings: (parsedResult.trainings || []).map((t, idx) => ({
+                        id: Date.now() + idx + 300,
+                        title: t.title || "Certification",
+                        issuer: t.issuer || "Organization",
+                        year: t.year || "2022"
+                    })),
+                    hobbies: parsedResult.hobbies || [],
+                    referees: (parsedResult.referees || []).map((r, idx) => ({
+                        id: Date.now() + idx + 400,
+                        name: r.name || "Referee Name",
+                        designation: r.designation || "Title",
+                        company: r.company || "Company",
+                        phone: r.phone || ""
+                    }))
                 };
-
-                const emailMatch = fullText.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/i);
-                if (emailMatch) parsedState.personal.email = emailMatch[0];
-
-                const phoneMatch = fullText.match(/(\+?\d{1,4}[\s-]?\(?\d{1,3}\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/);
-                if (phoneMatch) parsedState.personal.phone = phoneMatch[0];
-
-                const lines = fullText.split('\n').map(l => l.trim()).filter(Boolean);
-                if (lines.length > 0) parsedState.personal.firstname = lines[0];
 
                 PORTAL_DATABASE[newId] = parsedState;
                 selectProfileAndEdit(newId);
             } catch (err) {
                 alert('Could not parse text from PDF file.');
             } finally {
-                document.getElementById('pdfParsingBanner').classList.add('hidden');
+                banner.classList.add('hidden');
+                event.target.value = ''; // Reset input
             }
         }
     </script>
