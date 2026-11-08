@@ -13,27 +13,27 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
+<body class="bg-slate-900 min-h-screen flex flex-col font-sans text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
 
   <!-- Top Navigation / Header -->
-  <header class="bg-blue-900 text-white shadow-md sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+  <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
-        <div class="bg-blue-800 p-2 rounded-lg border border-blue-700">
-          <svg class="w-6 h-6 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012-2m-6 9l2 2 4-4"></path>
           </svg>
         </div>
         <div>
-          <h1 class="font-bold text-lg tracking-wide">Bank Branch Asset Verification</h1>
-          <p class="text-xs text-blue-300">Live Barcode Audit & Location Tracking</p>
+          <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">Bank Asset Audit Suite</h1>
+          <p class="text-xs text-slate-400">High-Speed Omni-Directional Verification</p>
         </div>
       </div>
 
       <!-- Branch Selection Selector -->
-      <div class="flex items-center gap-2 bg-blue-800/80 px-3 py-1.5 rounded-lg border border-blue-700 text-sm">
-        <span class="text-blue-300 text-xs font-semibold uppercase">Active Branch:</span>
-        <select id="active-branch-select" class="bg-blue-900 text-white font-medium rounded px-2 py-1 border border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-400">
+      <div class="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 text-sm shadow-inner">
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Branch:</span>
+        <select id="active-branch-select" class="bg-slate-900 text-blue-400 font-semibold rounded-lg px-2.5 py-1 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm">
           <option value="Kariakoo Branch">Kariakoo Branch</option>
           <option value="Dodoma Branch">Dodoma Branch</option>
           <option value="Kahama Branch">Kahama Branch</option>
@@ -46,57 +46,63 @@
   </header>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT COLUMN: Live Camera Scanner & Quick Controls (5 Cols) -->
+    <!-- LEFT COLUMN: Live Camera Scanner & Controls (5 Cols) -->
     <section class="lg:col-span-5 flex flex-col gap-5">
       
-      <!-- Stage 1: Live Camera Scanner Card -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center">
-          <h2 class="font-semibold text-sm flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Live Barcode Scanner
+      <!-- Live Camera Scanner Card -->
+      <div class="bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-700/80 overflow-hidden flex flex-col">
+        <div class="bg-slate-800/80 px-4 py-3 flex justify-between items-center border-b border-slate-700/60">
+          <h2 class="font-semibold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span>
+            Omni-Angle Camera Scanner
           </h2>
-          <span id="camera-status-badge" class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Active Camera</span>
+          <span id="camera-status-badge" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Active</span>
         </div>
 
         <!-- Camera Viewport Box -->
-        <div class="relative bg-black w-full h-64 sm:h-72 flex items-center justify-center overflow-hidden">
-          <div id="reader" class="w-full h-full"></div>
-          <!-- Target Overlay Box -->
-          <div class="absolute inset-x-12 inset-y-16 border-2 border-dashed border-emerald-400/70 rounded-xl pointer-events-none flex items-center justify-center">
-            <span class="text-emerald-300 text-xs bg-black/60 px-2 py-1 rounded backdrop-blur-sm">Align Barcode Here</span>
+        <div class="relative bg-black w-full h-72 sm:h-80 flex items-center justify-center overflow-hidden">
+          <div id="reader" class="w-full h-full scale-105"></div>
+          
+          <!-- Modern Dynamic Targeting Frame -->
+          <div class="absolute inset-x-8 inset-y-12 border-2 border-blue-400/40 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.15)_inset]">
+            <div class="w-6 h-6 border-t-2 border-l-2 border-blue-400 self-start"></div>
+            <span class="text-blue-300 text-[11px] font-medium bg-slate-900/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wide">Ready for 360° Scan</span>
+            <div class="w-6 h-6 border-b-2 border-r-2 border-blue-400 self-end"></div>
           </div>
         </div>
 
-        <div class="p-4 bg-slate-50 border-t border-slate-100 flex flex-col gap-3">
+        <div class="p-4 bg-slate-800/40 border-t border-slate-700/60 flex flex-col gap-3">
           <div class="flex gap-2">
-            <button id="start-camera-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-xl text-sm transition shadow-sm">Start Camera</button>
-            <button id="stop-camera-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2 px-3 rounded-xl text-sm transition">Pause Camera</button>
+            <button id="start-camera-btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-blue-600/25">Resume Camera</button>
+            <button id="stop-camera-btn" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition">Pause Camera</button>
           </div>
 
           <!-- Manual Barcode Input Fallback -->
-          <div class="pt-2 border-t border-slate-200">
-            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Manual Barcode Test Input</label>
+          <div class="pt-2 border-t border-slate-700/60">
+            <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Quick Test / Manual Entry</label>
             <div class="flex gap-2">
-              <input type="text" id="manual-barcode-input" placeholder="Type barcode (e.g. 6297000907000)" class="flex-1 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
-              <button id="manual-submit-btn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition">Verify</button>
+              <input type="text" id="manual-barcode-input" placeholder="Scan or enter code..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white font-mono">
+              <button id="manual-submit-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">Verify</button>
             </div>
-            <p class="text-[11px] text-slate-400 mt-1">Test Barcode: <span class="font-mono text-blue-600 font-semibold cursor-pointer underline" onclick="document.getElementById('manual-barcode-input').value='6297000907000'">6297000907000</span> (Table)</p>
+            <p class="text-[11px] text-slate-400 mt-1.5 flex items-center justify-between">
+              <span>Test Barcode:</span>
+              <span class="font-mono text-blue-400 font-semibold cursor-pointer hover:underline" onclick="document.getElementById('manual-barcode-input').value='6297000907000'">6297000907000 (Table)</span>
+            </p>
           </div>
         </div>
       </div>
 
       <!-- Master Database Management Card -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-col gap-3">
-        <h3 class="font-semibold text-sm text-slate-700">Master Asset Database Controls</h3>
+      <div class="bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-700/80 p-4 flex flex-col gap-3">
+        <h3 class="font-semibold text-xs uppercase tracking-wider text-slate-300">Master Database Hub</h3>
         <div class="flex flex-col sm:flex-row gap-2">
-          <label class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-300 text-center cursor-pointer transition">
-            Import Excel / CSV List
+          <label class="flex-1 bg-slate-700/60 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-600 text-center cursor-pointer transition shadow-sm">
+            Import Excel / CSV
             <input type="file" id="import-excel-file" accept=".csv, .xlsx, .xls" class="hidden">
           </label>
-          <button id="download-template-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-300 transition">
+          <button id="download-template-btn" class="bg-slate-700/60 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-600 transition shadow-sm">
             Template
           </button>
         </div>
@@ -105,56 +111,56 @@
     </section>
 
     <!-- RIGHT COLUMN: Verification & Audit Table (7 Cols) -->
-    <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col">
+    <section class="lg:col-span-7 bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-700/80 p-5 sm:p-6 flex flex-col">
       
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-100">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-700/60">
         <div>
-          <h2 class="font-bold text-base text-slate-800">Branch Audit & Asset Verification</h2>
-          <p class="text-xs text-slate-500">Real-time reconciliation of scanned inventory</p>
+          <h2 class="font-bold text-base text-white tracking-tight">Audit & Reconciliation Dashboard</h2>
+          <p class="text-xs text-slate-400">Real-time asset condition & location tracking</p>
         </div>
-        <div class="w-full sm:w-auto flex items-center gap-2">
-          <input type="text" id="search-input" placeholder="Search barcode, name, status..." class="border border-slate-300 rounded-xl px-3 py-1.5 text-sm w-full sm:w-56 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="w-full sm:w-auto">
+          <input type="text" id="search-input" placeholder="Search master inventory..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-sm w-full sm:w-56 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500">
         </div>
       </div>
 
       <!-- Audit Progress Stats Bar -->
       <div class="grid grid-cols-3 gap-3 mb-4">
-        <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-center">
-          <span class="block text-xs font-semibold text-blue-600 uppercase">Total Items</span>
-          <span id="stat-total" class="text-lg font-bold text-blue-900">0</span>
+        <div class="bg-slate-900/60 border border-slate-700/60 p-3 rounded-2xl text-center shadow-inner">
+          <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Inventory</span>
+          <span id="stat-total" class="text-lg sm:text-xl font-extrabold text-white">0</span>
         </div>
-        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-center">
-          <span class="block text-xs font-semibold text-emerald-600 uppercase">Verified</span>
-          <span id="stat-verified" class="text-lg font-bold text-emerald-900">0</span>
+        <div class="bg-emerald-950/30 border border-emerald-800/30 p-3 rounded-2xl text-center shadow-inner">
+          <span class="block text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Verified</span>
+          <span id="stat-verified" class="text-lg sm:text-xl font-extrabold text-emerald-400">0</span>
         </div>
-        <div class="bg-amber-50 border border-amber-100 p-3 rounded-xl text-center">
-          <span class="block text-xs font-semibold text-amber-600 uppercase">Pending</span>
-          <span id="stat-pending" class="text-lg font-bold text-amber-900">0</span>
+        <div class="bg-amber-950/30 border border-amber-800/30 p-3 rounded-2xl text-center shadow-inner">
+          <span class="block text-[10px] font-semibold text-amber-400 uppercase tracking-wider">Pending</span>
+          <span id="stat-pending" class="text-lg sm:text-xl font-extrabold text-amber-400">0</span>
         </div>
       </div>
 
       <!-- Asset Records Table -->
-      <div class="overflow-x-auto flex-1 border border-slate-200 rounded-xl min-h-[300px]">
+      <div class="overflow-x-auto flex-1 border border-slate-700/60 rounded-2xl min-h-[300px] bg-slate-900/40">
         <table class="min-w-full text-left border-collapse text-sm">
-          <thead class="bg-slate-50 text-slate-600 uppercase text-xs font-semibold border-b border-slate-200">
+          <thead class="bg-slate-800/60 text-slate-400 uppercase text-[11px] font-semibold border-b border-slate-700/60 tracking-wider">
             <tr>
               <th class="p-3">Barcode</th>
               <th class="p-3">Asset Name</th>
               <th class="p-3">Status</th>
               <th class="p-3">Condition</th>
-              <th class="p-3">Branch / Location</th>
+              <th class="p-3">Branch Location</th>
               <th class="p-3 text-center">Action</th>
             </tr>
           </thead>
-          <tbody id="inventory-table-body" class="divide-y divide-slate-100">
+          <tbody id="inventory-table-body" class="divide-y divide-slate-800/60">
             <!-- Populated via JS -->
           </tbody>
         </table>
       </div>
 
-      <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-100">
-        <button id="reset-db-btn" class="text-xs text-rose-600 hover:underline font-medium">Reset Default Database</button>
-        <button id="export-audit-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition shadow-sm">
+      <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-700/60 text-xs">
+        <button id="reset-db-btn" class="text-rose-400 hover:underline font-medium">Reset Default Master List</button>
+        <button id="export-audit-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-600/20">
           Export Audit Report (CSV)
         </button>
       </div>
@@ -164,25 +170,25 @@
   </main>
 
   <!-- MODAL / DRAWER FOR CONDITION & RELOCATION VERIFICATION -->
-  <div id="verification-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 transform transition-all">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b">
+  <div id="verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Asset Verified</span>
-          <h3 id="modal-asset-name" class="font-bold text-lg text-slate-900 mt-1">Asset Name</h3>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">Instant Capture Match</span>
+          <h3 id="modal-asset-name" class="font-bold text-lg text-white mt-1.5">Asset Name</h3>
         </div>
-        <button id="close-modal-btn" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">&times;</button>
+        <button id="close-modal-btn" class="text-slate-400 hover:text-white text-xl font-bold p-1">&times;</button>
       </div>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Scanned Barcode</label>
-          <input type="text" id="modal-barcode" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono text-slate-700">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Barcode Reference</label>
+          <input type="text" id="modal-barcode" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-mono text-slate-300">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Update Item Condition</label>
-          <select id="modal-condition" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Update Item Condition</label>
+          <select id="modal-condition" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-white">
             <option value="Excellent">Excellent</option>
             <option value="Good" selected>Good</option>
             <option value="Fair">Fair</option>
@@ -192,8 +198,8 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Assigned Branch / Location</label>
-          <select id="modal-location" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Assigned Branch / Location</label>
+          <select id="modal-location" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-white">
             <option value="Kariakoo Branch">Kariakoo Branch</option>
             <option value="Dodoma Branch">Dodoma Branch</option>
             <option value="Kahama Branch">Kahama Branch</option>
@@ -206,14 +212,14 @@
       </div>
 
       <div class="mt-6 flex gap-3">
-        <button id="cancel-verification-btn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition">Cancel</button>
-        <button id="confirm-verification-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-sm">Confirm & Save</button>
+        <button id="cancel-verification-btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 rounded-xl text-sm transition">Cancel</button>
+        <button id="confirm-verification-btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-lg shadow-blue-600/25">Confirm & Save</button>
       </div>
     </div>
   </div>
 
   <script>
-    // INITIAL HARDCODED DATABASE (ONLY THE REQUESTED BARCODE FOR TESTING)
+    // INITIAL HARDCODED DATABASE WITH THE REQUESTED TEST BARCODE
     const DEFAULT_MASTER_DATABASE = [
       {
         barcode: "6297000907000",
@@ -225,13 +231,14 @@
       }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v2')) || DEFAULT_MASTER_DATABASE;
+    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v3')) || DEFAULT_MASTER_DATABASE;
     let html5QrCode = null;
     let activeScannedBarcode = null;
+    let isProcessingScan = false;
 
     // Save & Render
     function saveData() {
-      localStorage.setItem('bank_asset_inventory_v2', JSON.stringify(inventory));
+      localStorage.setItem('bank_asset_inventory_v3', JSON.stringify(inventory));
       renderTable();
       updateStats();
     }
@@ -259,31 +266,31 @@
       );
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-sm">No matching asset records found. Try scanning or importing master list.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 text-sm">No matching asset records found.</td></tr>`;
         return;
       }
 
       filtered.forEach((item, index) => {
         const tr = document.createElement('tr');
-        tr.className = index % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-50';
+        tr.className = index % 2 === 0 ? 'hover:bg-slate-800/30 transition' : 'bg-slate-900/20 hover:bg-slate-800/30 transition';
 
         const isVerified = item.status === 'Verified';
         const badgeClass = isVerified 
-          ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
-          : 'bg-amber-100 text-amber-800 border-amber-200';
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+          : 'bg-amber-500/10 text-amber-400 border-amber-500/20';
 
         tr.innerHTML = `
-          <td class="p-3 font-mono font-medium text-blue-600 text-xs">${item.barcode}</td>
-          <td class="p-3 font-medium text-slate-800 text-sm">${item.name}</td>
+          <td class="p-3 font-mono font-medium text-blue-400 text-xs">${item.barcode}</td>
+          <td class="p-3 font-medium text-slate-200 text-sm">${item.name}</td>
           <td class="p-3">
             <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeClass}">
               ${item.status}
             </span>
           </td>
-          <td class="p-3 text-slate-600 text-xs font-medium">${item.condition}</td>
-          <td class="p-3 text-slate-600 text-xs">${item.location}</td>
+          <td class="p-3 text-slate-400 text-xs font-medium">${item.condition}</td>
+          <td class="p-3 text-slate-400 text-xs">${item.location}</td>
           <td class="p-3 text-center">
-            <button onclick="openVerificationModal('${item.barcode}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium px-3 py-1 rounded-lg text-xs transition">
+            <button onclick="openVerificationModal('${item.barcode}')" class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-medium px-3 py-1 rounded-lg text-xs transition">
               ${isVerified ? 'Edit' : 'Verify'}
             </button>
           </td>
@@ -309,6 +316,7 @@
     function closeVerificationModal() {
       document.getElementById('verification-modal').classList.add('hidden');
       activeScannedBarcode = null;
+      isProcessingScan = false;
     }
 
     document.getElementById('close-modal-btn').addEventListener('click', closeVerificationModal);
@@ -329,18 +337,20 @@
       }
     });
 
-    // Barcode Detection Handler
+    // Barcode Detection Handler with Omni-Angle lock
     function handleBarcodeDetected(decodedText) {
+      if (isProcessingScan) return;
       const cleanCode = decodedText.trim();
-      const item = inventory.find(i => i.barcode === cleanCode);
+      if (!cleanCode) return;
 
+      isProcessingScan = true;
+      playBeep();
+
+      const item = inventory.find(i => i.barcode === cleanCode);
       if (item) {
-        // Play success tone
-        playBeep();
         openVerificationModal(cleanCode);
       } else {
-        // Unregistered barcode detected
-        if (confirm(`Scanned unknown barcode: [${cleanCode}]. Would you like to register it as a new asset?`)) {
+        if (confirm(`Scanned unknown barcode: [${cleanCode}]. Register as a new asset?`)) {
           const newName = prompt("Enter Asset Name (e.g. Printer, Chair, Screen):", "New Bank Asset");
           if (newName) {
             inventory.unshift({
@@ -353,12 +363,14 @@
             });
             saveData();
             openVerificationModal(cleanCode);
+            return;
           }
         }
+        isProcessingScan = false;
       }
     }
 
-    // Simple audio beep generator
+    // Audio feedback beep
     function playBeep() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -368,48 +380,51 @@
         gain.connect(ctx.destination);
         osc.type = 'sine';
         osc.frequency.value = 880;
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
         osc.start();
-        osc.stop(ctx.currentTime + 0.1);
+        osc.stop(ctx.currentTime + 0.12);
       } catch(e) {}
     }
 
-    // Initialize html5-qrcode Live Camera
+    // Initialize html5-qrcode with multi-format Omni-Angle scanning
     function startCameraScanner() {
       if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
       }
 
+      const config = { 
+        fps: 15, 
+        qrbox: { width: 260, height: 160 },
+        aspectRatio: 1.333334
+      };
+
       html5QrCode.start(
         { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 150 }
-        },
+        config,
         (decodedText) => {
           handleBarcodeDetected(decodedText);
         },
         (errorMessage) => {
-          // scanning frame parse errors can be ignored
+          // Ignore frame parsing errors during continuous scanning
         }
       ).catch(err => {
         console.error("Camera start failed:", err);
-        document.getElementById('camera-status-badge').innerText = "Camera Error / Permission Denied";
-        document.getElementById('camera-status-badge').className = "text-xs bg-rose-800 text-white px-2 py-0.5 rounded";
+        document.getElementById('camera-status-badge').innerText = "Camera Error / Permissions Required";
+        document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-0.5 rounded-full";
       });
     }
 
     document.getElementById('start-camera-btn').addEventListener('click', () => {
       startCameraScanner();
-      document.getElementById('camera-status-badge').innerText = "Active Camera";
-      document.getElementById('camera-status-badge').className = "text-xs bg-emerald-800 text-white px-2 py-0.5 rounded";
+      document.getElementById('camera-status-badge').innerText = "Active";
+      document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full";
     });
 
     document.getElementById('stop-camera-btn').addEventListener('click', () => {
       if (html5QrCode) {
         html5QrCode.stop().then(() => {
           document.getElementById('camera-status-badge').innerText = "Paused";
-          document.getElementById('camera-status-badge').className = "text-xs bg-amber-800 text-white px-2 py-0.5 rounded";
+          document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full";
         }).catch(err => console.log(err));
       }
     });
@@ -495,7 +510,7 @@
       saveData();
       setTimeout(() => {
         startCameraScanner();
-      }, 1000);
+      }, 800);
     });
   </script>
 </body>
