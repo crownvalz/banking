@@ -26,7 +26,7 @@
         </div>
         <div>
           <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">Bank Asset Audit Suite</h1>
-          <p class="text-xs text-slate-400">High-Speed Omni-Directional Verification</p>
+          <p class="text-xs text-slate-400">Long-Range High-Speed Verification</p>
         </div>
       </div>
 
@@ -56,7 +56,7 @@
         <div class="bg-slate-800/80 px-4 py-3 flex justify-between items-center border-b border-slate-700/60">
           <h2 class="font-semibold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span>
-            Omni-Angle Camera Scanner
+            Long-Range Camera Scanner
           </h2>
           <span id="camera-status-badge" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Active</span>
         </div>
@@ -65,11 +65,11 @@
         <div class="relative bg-black w-full h-72 sm:h-80 flex items-center justify-center overflow-hidden">
           <div id="reader" class="w-full h-full scale-105"></div>
           
-          <!-- Modern Dynamic Targeting Frame -->
-          <div class="absolute inset-x-8 inset-y-12 border-2 border-blue-400/40 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3 transition-all duration-300 shadow-[0_0_30px_rgba(59,130,246,0.15)_inset]">
-            <div class="w-6 h-6 border-t-2 border-l-2 border-blue-400 self-start"></div>
-            <span class="text-blue-300 text-[11px] font-medium bg-slate-900/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wide">Ready for 360° Scan</span>
-            <div class="w-6 h-6 border-b-2 border-r-2 border-blue-400 self-end"></div>
+          <!-- Wide Area Targeting Frame -->
+          <div class="absolute inset-x-4 inset-y-6 border border-blue-400/30 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3 transition-all duration-300">
+            <div class="w-4 h-4 border-t-2 border-l-2 border-blue-400 self-start"></div>
+            <span class="text-blue-300 text-[10px] font-medium bg-slate-900/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wide">Ready for Distance Scan</span>
+            <div class="w-4 h-4 border-b-2 border-r-2 border-blue-400 self-end"></div>
           </div>
         </div>
 
@@ -174,7 +174,7 @@
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
         <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">Instant Capture Match</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">Distance Capture Match</span>
           <h3 id="modal-asset-name" class="font-bold text-lg text-white mt-1.5">Asset Name</h3>
         </div>
         <button id="close-modal-btn" class="text-slate-400 hover:text-white text-xl font-bold p-1">&times;</button>
@@ -285,14 +285,14 @@
       }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v4')) || DEFAULT_MASTER_DATABASE;
+    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v5')) || DEFAULT_MASTER_DATABASE;
     let html5QrCode = null;
     let activeScannedBarcode = null;
     let isProcessingScan = false;
 
     // Save & Render
     function saveData() {
-      localStorage.setItem('bank_asset_inventory_v4', JSON.stringify(inventory));
+      localStorage.setItem('bank_asset_inventory_v5', JSON.stringify(inventory));
       renderTable();
       updateStats();
     }
@@ -422,7 +422,6 @@
 
       if (!activeScannedBarcode) return;
 
-      // Insert new item into master list
       inventory.unshift({
         barcode: activeScannedBarcode,
         name: nameVal,
@@ -436,7 +435,7 @@
       closeRegisterModal();
     });
 
-    // Barcode Detection Handler with Auto-Registration Workflow
+    // Barcode Detection Handler with Distance Lock
     function handleBarcodeDetected(decodedText) {
       if (isProcessingScan) return;
       const cleanCode = decodedText.trim();
@@ -449,7 +448,6 @@
       if (item) {
         openVerificationModal(cleanCode);
       } else {
-        // Automatically open the registration modal for unknown codes
         openRegisterModal(cleanCode);
       }
     }
@@ -470,15 +468,22 @@
       } catch(e) {}
     }
 
-    // Initialize html5-qrcode with multi-format Omni-Angle scanning
+    // Initialize html5-qrcode with optimized Long-Range High-Speed configuration
     function startCameraScanner() {
       if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
       }
 
+      // Enhanced configuration for distance capture and wide scanning boxes
       const config = { 
-        fps: 15, 
-        qrbox: { width: 260, height: 160 },
+        fps: 20, // Increased frame scan rate for ultra-fast distance recognition
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+          // Allows capturing barcodes across a wider viewport area
+          return {
+            width: Math.floor(viewfinderWidth * 0.85),
+            height: Math.floor(viewfinderHeight * 0.6)
+          };
+        },
         aspectRatio: 1.333334
       };
 
@@ -489,9 +494,24 @@
           handleBarcodeDetected(decodedText);
         },
         (errorMessage) => {
-          // Ignore frame parsing errors during continuous scanning
+          // Ignore scanning frame parsing intervals
         }
-      ).catch(err => {
+      ).then(() => {
+        // Attempt to apply advanced camera controls (like autofocus/zoom if supported by mobile hardware)
+        try {
+          const videoTrack = html5QrCode.getRunningTrack();
+          if (videoTrack && videoTrack.getCapabilities) {
+            const capabilities = videoTrack.getCapabilities();
+            const constraints = {};
+            if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
+              constraints.focusMode = 'continuous';
+            }
+            if (constraints.focusMode) {
+              videoTrack.applyConstraints({ advanced: [constraints] });
+            }
+          }
+        } catch(err) {}
+      }).catch(err => {
         console.error("Camera start failed:", err);
         document.getElementById('camera-status-badge').innerText = "Camera Error / Permissions Required";
         document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-0.5 rounded-full";
