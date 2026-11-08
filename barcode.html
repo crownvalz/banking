@@ -1026,8 +1026,8 @@
 
     function downloadSampleTemplate() {
       const templateData = [
-        { "Barcode": "BK-DAR-CH-0412", "Item Name": "Ergonomic Teller Mesh Chair", "Category": "Furniture", "Serial Number": "SN-99812-KAR", "Branch": "Kariakoo Branch", "Room / Office": "Counter 2 - Teller", "Standard Condition": "Good", "Verification Status": "Pending" },
-        { "Barcode": "BK-DOD-PR-8801", "Item Name": "Heavy Duty Thermal Receipt Printer", "Category": "IT Hardware", "Serial Number": "SN-PR-1102-DOD", "Branch": "Dodoma Branch", "Room / Office": "Operations Hall", "Standard Condition": "Good", "Verification Status": "Pending" }
+        { "Barcode": "6297000907000", "Item Name": "Ergonomic Teller Mesh Chair", "Category": "Furniture", "Serial Number": "SN-99812-KAR", "Branch": "Kariakoo Branch", "Room / Office": "Counter 2 - Teller", "Standard Condition": "Good", "Verification Status": "Pending" },
+        { "Barcode": "3129891785319", "Item Name": "Heavy Duty Thermal Receipt Printer", "Category": "IT Hardware", "Serial Number": "SN-PR-1102-DOD", "Branch": "Dodoma Branch", "Room / Office": "Operations Hall", "Standard Condition": "Good", "Verification Status": "Pending" }
       ];
       const csv = Papa.unparse(templateData);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
