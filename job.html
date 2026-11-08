@@ -1,0 +1,902 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mono | User Management System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+body{font-family:Inter,system-ui,sans-serif}
+.page{display:none}
+.page.active{display:block}
+.auth-bg{background:linear-gradient(135deg,#f8fafc,#e8f1ed)}
+.nav-item.active{background:#e7f4ec;color:#166534;font-weight:600}
+.modal{display:none}
+.modal.show{display:flex}
+</style>
+</head>
+
+<body class="bg-slate-50 text-slate-800">
+
+<!-- AUTHENTICATION -->
+<section id="authPage" class="min-h-screen auth-bg flex items-center justify-center p-4">
+<div class="w-full max-w-md">
+
+<div class="text-center mb-8">
+<div class="w-14 h-14 bg-green-800 text-white rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl">
+<i class="fas fa-users"></i>
+</div>
+<h1 class="text-2xl font-bold text-slate-900">Mono Management</h1>
+<p class="text-sm text-slate-500 mt-1">User Data Management System</p>
+</div>
+
+<div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-7">
+
+<!-- LOGIN -->
+<div id="loginForm">
+<h2 class="text-xl font-bold mb-1">Welcome back</h2>
+<p class="text-sm text-slate-500 mb-6">Sign in to your account.</p>
+
+<form id="loginFormElement" class="space-y-4">
+<div>
+<label class="text-sm font-semibold">Username or Email</label>
+<input id="loginIdentity" required class="w-full border rounded-lg px-3 py-3 mt-1 outline-none focus:ring-2 focus:ring-green-600" placeholder="Enter username or email">
+</div>
+<div>
+<label class="text-sm font-semibold">Password</label>
+<input id="loginPassword" type="password" required class="w-full border rounded-lg px-3 py-3 mt-1 outline-none focus:ring-2 focus:ring-green-600" placeholder="Enter password">
+</div>
+<div id="loginError" class="text-red-600 text-sm"></div>
+<button class="w-full bg-green-800 hover:bg-green-900 text-white py-3 rounded-lg font-semibold">
+Sign In <i class="fas fa-arrow-right ml-2"></i>
+</button>
+</form>
+
+<p class="text-center text-sm mt-6 text-slate-500">
+Don't have an account?
+<button onclick="showAuth('register')" class="text-green-800 font-bold">Register</button>
+</p>
+</div>
+
+<!-- REGISTER -->
+<div id="registerForm" class="hidden">
+<h2 class="text-xl font-bold mb-1">Create account</h2>
+<p class="text-sm text-slate-500 mb-6">Register your user account.</p>
+
+<form id="registerFormElement" class="space-y-3">
+<div>
+<label class="text-sm font-semibold">Full Name</label>
+<input id="regName" required class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Full name">
+</div>
+<div>
+<label class="text-sm font-semibold">Username</label>
+<input id="regUsername" required minlength="3" class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Username">
+</div>
+<div>
+<label class="text-sm font-semibold">Email Address</label>
+<input id="regEmail" type="email" required class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Email address">
+</div>
+<div>
+<label class="text-sm font-semibold">Phone Number</label>
+<input id="regPhone" class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Phone number">
+</div>
+<div>
+<label class="text-sm font-semibold">Password</label>
+<input id="regPassword" type="password" required minlength="8" class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Minimum 8 characters">
+</div>
+<div>
+<label class="text-sm font-semibold">Confirm Password</label>
+<input id="regConfirm" type="password" required class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Confirm password">
+</div>
+<div id="registerError" class="text-red-600 text-sm"></div>
+<button class="w-full bg-green-800 hover:bg-green-900 text-white py-3 rounded-lg font-semibold">
+Create Account
+</button>
+</form>
+
+<p class="text-center text-sm mt-5 text-slate-500">
+Already registered?
+<button onclick="showAuth('login')" class="text-green-800 font-bold">Sign In</button>
+</p>
+</div>
+
+</div>
+<p class="text-center text-xs text-slate-400 mt-6">Mono Management System · User Portal</p>
+</div>
+</section>
+
+<!-- MAIN APPLICATION -->
+<div id="appPage" class="hidden min-h-screen">
+
+<!-- TOP NAVIGATION -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+<div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+
+<div class="flex items-center gap-3">
+<button onclick="toggleSidebar()" class="lg:hidden text-slate-600 text-xl">
+<i class="fas fa-bars"></i>
+</button>
+<div class="w-9 h-9 rounded-xl bg-green-800 text-white flex items-center justify-center">
+<i class="fas fa-users"></i>
+</div>
+<div>
+<h1 class="font-bold text-sm">Mono Management</h1>
+<p class="text-[10px] text-slate-400">USER MANAGEMENT SYSTEM</p>
+</div>
+</div>
+
+<div class="flex items-center gap-4">
+<div class="hidden sm:block text-right">
+<p id="topUserName" class="text-sm font-semibold"></p>
+<p id="topUserRole" class="text-xs text-slate-400"></p>
+</div>
+<button onclick="logout()" class="text-red-600 hover:bg-red-50 rounded-lg px-3 py-2 text-sm font-semibold">
+<i class="fas fa-sign-out-alt mr-1"></i> Logout
+</button>
+</div>
+</div>
+</header>
+
+<div class="max-w-7xl mx-auto flex">
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="hidden lg:block w-60 shrink-0 min-h-[calc(100vh-64px)] bg-white border-r border-slate-200 p-4">
+
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Workspace</p>
+
+<nav class="space-y-1">
+<button onclick="navigate('dashboard')" class="nav-item active w-full text-left px-3 py-3 rounded-lg text-sm" data-page="dashboard">
+<i class="fas fa-chart-pie w-6"></i> Dashboard
+</button>
+<button onclick="navigate('users')" class="nav-item w-full text-left px-3 py-3 rounded-lg text-sm" data-page="users">
+<i class="fas fa-users w-6"></i> User Management
+</button>
+<button onclick="navigate('profile')" class="nav-item w-full text-left px-3 py-3 rounded-lg text-sm" data-page="profile">
+<i class="fas fa-user-circle w-6"></i> My Profile
+</button>
+</nav>
+
+<div id="adminTools" class="hidden mt-8">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Administration</p>
+<div class="space-y-1">
+<button onclick="exportCSV()" class="w-full text-left px-3 py-3 rounded-lg text-sm hover:bg-slate-50">
+<i class="fas fa-file-export w-6"></i> Export CSV
+</button>
+<label class="block px-3 py-3 rounded-lg text-sm hover:bg-slate-50 cursor-pointer">
+<i class="fas fa-file-import w-6"></i> Import CSV
+<input type="file" accept=".csv" onchange="importCSV(event)" class="hidden">
+</label>
+</div>
+</div>
+
+<div class="mt-10 p-3 rounded-xl bg-green-50">
+<p class="text-xs font-bold text-green-900">Management Portal</p>
+<p class="text-[11px] text-green-700 mt-1">Manage user records from one place.</p>
+</div>
+</aside>
+
+<!-- CONTENT -->
+<main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page active">
+<div class="flex flex-wrap justify-between items-center gap-3 mb-7">
+<div>
+<h2 class="text-2xl font-bold">Dashboard</h2>
+<p class="text-sm text-slate-500 mt-1">Overview of your user database.</p>
+</div>
+<button onclick="navigate('users');openUserModal()" id="addUserDashboard" class="bg-green-800 text-white px-4 py-2.5 rounded-lg text-sm font-semibold">
+<i class="fas fa-plus mr-2"></i>Add User
+</button>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-7">
+
+<div class="bg-white border rounded-xl p-5">
+<div class="flex justify-between">
+<p class="text-sm text-slate-500">Total Users</p>
+<i class="fas fa-users text-green-700"></i>
+</div>
+<h3 id="totalUsers" class="text-3xl font-bold mt-3">0</h3>
+<p class="text-xs text-slate-400 mt-2">Registered accounts</p>
+</div>
+
+<div class="bg-white border rounded-xl p-5">
+<div class="flex justify-between">
+<p class="text-sm text-slate-500">Active Users</p>
+<i class="fas fa-user-check text-green-600"></i>
+</div>
+<h3 id="activeUsers" class="text-3xl font-bold mt-3">0</h3>
+<p class="text-xs text-slate-400 mt-2">Active accounts</p>
+</div>
+
+<div class="bg-white border rounded-xl p-5">
+<div class="flex justify-between">
+<p class="text-sm text-slate-500">Administrators</p>
+<i class="fas fa-user-shield text-blue-600"></i>
+</div>
+<h3 id="adminUsers" class="text-3xl font-bold mt-3">0</h3>
+<p class="text-xs text-slate-400 mt-2">Admin accounts</p>
+</div>
+
+<div class="bg-white border rounded-xl p-5">
+<div class="flex justify-between">
+<p class="text-sm text-slate-500">Inactive Users</p>
+<i class="fas fa-user-clock text-orange-500"></i>
+</div>
+<h3 id="inactiveUsers" class="text-3xl font-bold mt-3">0</h3>
+<p class="text-xs text-slate-400 mt-2">Inactive accounts</p>
+</div>
+
+</div>
+
+<div class="bg-white border rounded-xl overflow-hidden">
+<div class="p-5 border-b flex justify-between items-center">
+<div>
+<h3 class="font-bold">Recent Users</h3>
+<p class="text-xs text-slate-400 mt-1">Recently registered accounts</p>
+</div>
+<button onclick="navigate('users')" class="text-sm text-green-800 font-semibold">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="bg-slate-50 text-slate-500">
+<tr>
+<th class="px-5 py-3">User</th>
+<th class="px-5 py-3">Role</th>
+<th class="px-5 py-3">Status</th>
+<th class="px-5 py-3">Registered</th>
+</tr>
+</thead>
+<tbody id="recentUsers"></tbody>
+</table>
+</div>
+</div>
+</section>
+
+<!-- USERS -->
+<section id="users" class="page">
+<div class="flex flex-wrap justify-between gap-3 mb-6">
+<div>
+<h2 class="text-2xl font-bold">User Management</h2>
+<p class="text-sm text-slate-500 mt-1">Manage and maintain user records.</p>
+</div>
+<button id="addUserButton" onclick="openUserModal()" class="bg-green-800 text-white px-4 py-2.5 rounded-lg text-sm font-semibold">
+<i class="fas fa-plus mr-2"></i>New User
+</button>
+</div>
+
+<div class="bg-white border rounded-xl p-4 mb-4 flex flex-col sm:flex-row gap-3">
+<div class="relative flex-1">
+<i class="fas fa-search absolute left-3 top-3 text-slate-400"></i>
+<input id="userSearch" oninput="renderUsers()" placeholder="Search name, username or email..." class="w-full border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-600">
+</div>
+<select id="roleFilter" onchange="renderUsers()" class="border rounded-lg px-3 py-2 text-sm">
+<option value="all">All Roles</option>
+<option value="Admin">Administrator</option>
+<option value="User">User</option>
+</select>
+<select id="statusFilter" onchange="renderUsers()" class="border rounded-lg px-3 py-2 text-sm">
+<option value="all">All Status</option>
+<option value="Active">Active</option>
+<option value="Inactive">Inactive</option>
+</select>
+</div>
+
+<div class="bg-white border rounded-xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="bg-slate-50 text-slate-500">
+<tr>
+<th class="px-5 py-4">User Information</th>
+<th class="px-5 py-4">Phone</th>
+<th class="px-5 py-4">Role</th>
+<th class="px-5 py-4">Status</th>
+<th class="px-5 py-4">Date Created</th>
+<th class="px-5 py-4">Actions</th>
+</tr>
+</thead>
+<tbody id="userTable"></tbody>
+</table>
+</div>
+<div id="userCount" class="p-4 text-xs text-slate-400 border-t"></div>
+</div>
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+<div class="mb-6">
+<h2 class="text-2xl font-bold">My Profile</h2>
+<p class="text-sm text-slate-500 mt-1">Manage your personal information.</p>
+</div>
+
+<div class="max-w-2xl bg-white border rounded-xl p-6">
+<div class="flex items-center gap-4 mb-7">
+<div id="profileAvatar" class="w-16 h-16 rounded-full bg-green-100 text-green-800 flex items-center justify-center text-2xl font-bold">U</div>
+<div>
+<h3 id="profileHeading" class="font-bold text-lg"></h3>
+<p id="profileRole" class="text-sm text-slate-500"></p>
+</div>
+</div>
+
+<form id="profileForm" class="grid sm:grid-cols-2 gap-4">
+<div>
+<label class="text-sm font-semibold">Full Name</label>
+<input id="profileName" required class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Username</label>
+<input id="profileUsername" required class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Email</label>
+<input id="profileEmail" type="email" required class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Phone</label>
+<input id="profilePhone" class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div class="sm:col-span-2">
+<button class="bg-green-800 text-white px-5 py-2.5 rounded-lg text-sm font-semibold">Save Changes</button>
+</div>
+</form>
+</div>
+</section>
+
+</main>
+</div>
+</div>
+
+<!-- USER MODAL -->
+<div id="userModal" class="modal fixed inset-0 bg-slate-900/50 z-50 items-center justify-center p-4">
+<div class="bg-white rounded-2xl w-full max-w-lg p-6 shadow-2xl">
+<div class="flex justify-between items-center mb-5">
+<h3 id="modalTitle" class="font-bold text-lg">Add New User</h3>
+<button onclick="closeUserModal()" class="text-slate-400 hover:text-red-600"><i class="fas fa-times"></i></button>
+</div>
+
+<form id="userForm" class="space-y-3">
+<input type="hidden" id="editId">
+<div>
+<label class="text-sm font-semibold">Full Name</label>
+<input id="userName" required class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Username</label>
+<input id="userUsername" required class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Email</label>
+<input id="userEmail" type="email" required class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Phone</label>
+<input id="userPhone" class="w-full border rounded-lg px-3 py-2.5 mt-1">
+</div>
+<div>
+<label class="text-sm font-semibold">Password</label>
+<input id="userPassword" type="password" minlength="8" class="w-full border rounded-lg px-3 py-2.5 mt-1" placeholder="Required for new users">
+</div>
+<div id="passwordHelp" class="text-xs text-slate-400">Minimum 8 characters.</div>
+<div id="adminFields" class="grid grid-cols-2 gap-3">
+<div>
+<label class="text-sm font-semibold">Role</label>
+<select id="userRole" class="w-full border rounded-lg px-3 py-2.5 mt-1">
+<option value="User">User</option>
+<option value="Admin">Admin</option>
+</select>
+</div>
+<div>
+<label class="text-sm font-semibold">Status</label>
+<select id="userStatus" class="w-full border rounded-lg px-3 py-2.5 mt-1">
+<option value="Active">Active</option>
+<option value="Inactive">Inactive</option>
+</select>
+</div>
+</div>
+<div id="userModalError" class="text-red-600 text-sm"></div>
+<div class="flex justify-end gap-2 pt-3">
+<button type="button" onclick="closeUserModal()" class="border px-4 py-2 rounded-lg text-sm">Cancel</button>
+<button class="bg-green-800 text-white px-5 py-2 rounded-lg text-sm font-semibold">Save User</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- NOTIFICATION -->
+<div id="toast" class="fixed bottom-5 right-5 z-[60] bg-slate-900 text-white px-5 py-3 rounded-lg shadow-xl text-sm hidden"></div>
+
+<script>
+const STORAGE_KEY = "mono_user_database";
+const SESSION_KEY = "mono_current_user";
+
+let users = [];
+let currentUser = null;
+
+function loadData() {
+    try {
+        users = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        if (!Array.isArray(users)) users = [];
+    } catch {
+        users = [];
+    }
+}
+
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 3000);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
+}
+
+async function hashPassword(password) {
+    const data = new TextEncoder().encode(password);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hash))
+        .map(byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function showAuth(type) {
+    document.getElementById("loginForm").classList.toggle("hidden", type !== "login");
+    document.getElementById("registerForm").classList.toggle("hidden", type !== "register");
+}
+
+function getCurrentUser() {
+    const id = sessionStorage.getItem(SESSION_KEY);
+    return users.find(user => user.id === id && user.status === "Active") || null;
+}
+
+function showApplication() {
+    currentUser = getCurrentUser();
+
+    if (!currentUser) {
+        document.getElementById("authPage").classList.remove("hidden");
+        document.getElementById("appPage").classList.add("hidden");
+        return;
+    }
+
+    document.getElementById("authPage").classList.add("hidden");
+    document.getElementById("appPage").classList.remove("hidden");
+
+    document.getElementById("topUserName").textContent = currentUser.full_name;
+    document.getElementById("topUserRole").textContent = currentUser.role;
+
+    document.getElementById("adminTools").classList.toggle("hidden", currentUser.role !== "Admin");
+    document.getElementById("addUserButton").classList.toggle("hidden", currentUser.role !== "Admin");
+    document.getElementById("addUserDashboard").classList.toggle("hidden", currentUser.role !== "Admin");
+    document.getElementById("adminFields").classList.toggle("hidden", currentUser.role !== "Admin");
+
+    navigate("dashboard");
+    refreshDashboard();
+}
+
+document.getElementById("registerFormElement").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const full_name = document.getElementById("regName").value.trim();
+    const username = document.getElementById("regUsername").value.trim();
+    const email = document.getElementById("regEmail").value.trim().toLowerCase();
+    const phone = document.getElementById("regPhone").value.trim();
+    const password = document.getElementById("regPassword").value;
+    const confirm = document.getElementById("regConfirm").value;
+    const error = document.getElementById("registerError");
+
+    error.textContent = "";
+
+    if (password !== confirm) {
+        error.textContent = "Passwords do not match.";
+        return;
+    }
+
+    if (users.some(u => u.username.toLowerCase() === username.toLowerCase() || u.email === email)) {
+        error.textContent = "Username or email already exists.";
+        return;
+    }
+
+    const password_hash = await hashPassword(password);
+
+    const user = {
+        id: crypto.randomUUID(),
+        full_name,
+        username,
+        email,
+        phone,
+        password_hash,
+        role: users.length === 0 ? "Admin" : "User",
+        status: "Active",
+        created_at: new Date().toISOString()
+    };
+
+    users.push(user);
+    saveData();
+
+    showToast("Account registered successfully.");
+    document.getElementById("registerFormElement").reset();
+
+    sessionStorage.setItem(SESSION_KEY, user.id);
+    showApplication();
+});
+
+document.getElementById("loginFormElement").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const identity = document.getElementById("loginIdentity").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+    const error = document.getElementById("loginError");
+
+    error.textContent = "";
+
+    const user = users.find(u =>
+        u.username.toLowerCase() === identity || u.email.toLowerCase() === identity
+    );
+
+    if (!user || user.password_hash !== await hashPassword(password)) {
+        error.textContent = "Invalid username/email or password.";
+        return;
+    }
+
+    if (user.status !== "Active") {
+        error.textContent = "Your account is inactive.";
+        return;
+    }
+
+    sessionStorage.setItem(SESSION_KEY, user.id);
+    document.getElementById("loginFormElement").reset();
+    showApplication();
+});
+
+function logout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    currentUser = null;
+    showApplication();
+    showToast("You have signed out.");
+}
+
+function navigate(page) {
+    if (page === "users" && currentUser.role !== "Admin") {
+        showToast("Administrator access required.");
+        return;
+    }
+
+    document.querySelectorAll(".page").forEach(el => el.classList.remove("active"));
+    document.getElementById(page).classList.add("active");
+
+    document.querySelectorAll(".nav-item").forEach(el => {
+        el.classList.toggle("active", el.dataset.page === page);
+    });
+
+    document.getElementById("sidebar").classList.add("hidden");
+    document.getElementById("sidebar").classList.add("lg:block");
+
+    if (page === "users") renderUsers();
+    if (page === "profile") renderProfile();
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("hidden");
+    sidebar.classList.add("absolute", "z-20", "shadow-xl", "min-h-screen");
+}
+
+function refreshDashboard() {
+    document.getElementById("totalUsers").textContent = users.length;
+    document.getElementById("activeUsers").textContent = users.filter(u => u.status === "Active").length;
+    document.getElementById("inactiveUsers").textContent = users.filter(u => u.status === "Inactive").length;
+    document.getElementById("adminUsers").textContent = users.filter(u => u.role === "Admin").length;
+
+    document.getElementById("recentUsers").innerHTML = users.slice().sort((a,b) =>
+        new Date(b.created_at) - new Date(a.created_at)
+    ).slice(0, 5).map(u => `
+        <tr class="border-t">
+            <td class="px-5 py-3">
+                <div class="font-semibold">${escapeHTML(u.full_name)}</div>
+                <div class="text-xs text-slate-400">${escapeHTML(u.email)}</div>
+            </td>
+            <td class="px-5 py-3">${escapeHTML(u.role)}</td>
+            <td class="px-5 py-3">${statusBadge(u.status)}</td>
+            <td class="px-5 py-3 text-xs">${new Date(u.created_at).toLocaleDateString()}</td>
+        </tr>
+    `).join("") || `<tr><td colspan="4" class="p-8 text-center text-slate-400">No users registered.</td></tr>`;
+}
+
+function statusBadge(status) {
+    return `<span class="px-2 py-1 rounded-full text-xs ${status === "Active" ? "bg-green-50 text-green-700" : "bg-orange-50 text-orange-700"}">${escapeHTML(status)}</span>`;
+}
+
+function renderUsers() {
+    if (currentUser.role !== "Admin") return;
+
+    const search = document.getElementById("userSearch").value.toLowerCase();
+    const role = document.getElementById("roleFilter").value;
+    const status = document.getElementById("statusFilter").value;
+
+    const filtered = users.filter(u =>
+        [u.full_name, u.username, u.email, u.phone].join(" ").toLowerCase().includes(search) &&
+        (role === "all" || u.role === role) &&
+        (status === "all" || u.status === status)
+    );
+
+    document.getElementById("userTable").innerHTML = filtered.map(u => `
+        <tr class="border-t hover:bg-slate-50">
+            <td class="px-5 py-4">
+                <div class="font-semibold">${escapeHTML(u.full_name)}</div>
+                <div class="text-xs text-slate-400">${escapeHTML(u.username)} · ${escapeHTML(u.email)}</div>
+            </td>
+            <td class="px-5 py-4">${escapeHTML(u.phone || "-")}</td>
+            <td class="px-5 py-4">${escapeHTML(u.role)}</td>
+            <td class="px-5 py-4">${statusBadge(u.status)}</td>
+            <td class="px-5 py-4 text-xs">${new Date(u.created_at).toLocaleDateString()}</td>
+            <td class="px-5 py-4 whitespace-nowrap">
+                <button onclick="editUser('${u.id}')" class="text-blue-600 mr-3"><i class="fas fa-edit"></i></button>
+                ${u.id !== currentUser.id ? `<button onclick="deleteUser('${u.id}')" class="text-red-600"><i class="fas fa-trash"></i></button>` : ""}
+            </td>
+        </tr>
+    `).join("") || `<tr><td colspan="6" class="p-8 text-center text-slate-400">No matching users found.</td></tr>`;
+
+    document.getElementById("userCount").textContent = `Showing ${filtered.length} of ${users.length} users`;
+}
+
+function openUserModal() {
+    if (currentUser.role !== "Admin") return;
+    document.getElementById("userForm").reset();
+    document.getElementById("editId").value = "";
+    document.getElementById("modalTitle").textContent = "Add New User";
+    document.getElementById("passwordHelp").textContent = "Password is required. Minimum 8 characters.";
+    document.getElementById("userPassword").required = true;
+    document.getElementById("userModalError").textContent = "";
+    document.getElementById("userModal").classList.add("show");
+}
+
+function closeUserModal() {
+    document.getElementById("userModal").classList.remove("show");
+}
+
+function editUser(id) {
+    const u = users.find(user => user.id === id);
+    if (!u || currentUser.role !== "Admin") return;
+
+    openUserModal();
+
+    document.getElementById("editId").value = id;
+    document.getElementById("modalTitle").textContent = "Edit User";
+    document.getElementById("userName").value = u.full_name;
+    document.getElementById("userUsername").value = u.username;
+    document.getElementById("userEmail").value = u.email;
+    document.getElementById("userPhone").value = u.phone || "";
+    document.getElementById("userRole").value = u.role;
+    document.getElementById("userStatus").value = u.status;
+    document.getElementById("passwordHelp").textContent = "Leave password blank to retain the existing password.";
+    document.getElementById("userPassword").required = false;
+}
+
+document.getElementById("userForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (currentUser.role !== "Admin") return;
+
+    const id = document.getElementById("editId").value;
+    const username = document.getElementById("userUsername").value.trim();
+    const email = document.getElementById("userEmail").value.trim().toLowerCase();
+    const password = document.getElementById("userPassword").value;
+
+    const duplicate = users.find(u =>
+        u.id !== id &&
+        (u.username.toLowerCase() === username.toLowerCase() || u.email.toLowerCase() === email)
+    );
+
+    if (duplicate) {
+        document.getElementById("userModalError").textContent = "Username or email already exists.";
+        return;
+    }
+
+    if (!id && password.length < 8) {
+        document.getElementById("userModalError").textContent = "Password must be at least 8 characters.";
+        return;
+    }
+
+    const data = {
+        full_name: document.getElementById("userName").value.trim(),
+        username,
+        email,
+        phone: document.getElementById("userPhone").value.trim(),
+        role: document.getElementById("userRole").value,
+        status: document.getElementById("userStatus").value
+    };
+
+    if (id) {
+        const index = users.findIndex(u => u.id === id);
+        if (index < 0) return;
+
+        if (id === currentUser.id) {
+            data.role = "Admin";
+            data.status = "Active";
+        }
+
+        Object.assign(users[index], data);
+
+        if (password) {
+            if (password.length < 8) {
+                document.getElementById("userModalError").textContent = "Password must be at least 8 characters.";
+                return;
+            }
+            users[index].password_hash = await hashPassword(password);
+        }
+    } else {
+        data.id = crypto.randomUUID();
+        data.password_hash = await hashPassword(password);
+        data.created_at = new Date().toISOString();
+        users.push(data);
+    }
+
+    saveData();
+    closeUserModal();
+    refreshDashboard();
+    renderUsers();
+    showToast(id ? "User updated." : "User created.");
+});
+
+function deleteUser(id) {
+    if (currentUser.role !== "Admin") return;
+    if (id === currentUser.id) return;
+
+    const user = users.find(u => u.id === id);
+    if (!user) return;
+
+    if (!confirm(`Delete ${user.full_name}? This cannot be undone.`)) return;
+
+    users = users.filter(u => u.id !== id);
+    saveData();
+    refreshDashboard();
+    renderUsers();
+    showToast("User deleted.");
+}
+
+function renderProfile() {
+    const u = users.find(user => user.id === currentUser.id);
+    if (!u) return;
+
+    document.getElementById("profileHeading").textContent = u.full_name;
+    document.getElementById("profileRole").textContent = u.role;
+    document.getElementById("profileAvatar").textContent = u.full_name.charAt(0).toUpperCase();
+    document.getElementById("profileName").value = u.full_name;
+    document.getElementById("profileUsername").value = u.username;
+    document.getElementById("profileEmail").value = u.email;
+    document.getElementById("profilePhone").value = u.phone || "";
+}
+
+document.getElementById("profileForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const u = users.find(user => user.id === currentUser.id);
+    const username = document.getElementById("profileUsername").value.trim();
+    const email = document.getElementById("profileEmail").value.trim().toLowerCase();
+
+    if (users.some(other => other.id !== u.id &&
+        (other.username.toLowerCase() === username.toLowerCase() || other.email === email))) {
+        showToast("Username or email already exists.");
+        return;
+    }
+
+    Object.assign(u, {
+        full_name: document.getElementById("profileName").value.trim(),
+        username,
+        email,
+        phone: document.getElementById("profilePhone").value.trim()
+    });
+
+    saveData();
+    currentUser = u;
+    showApplication();
+    renderProfile();
+    showToast("Profile updated.");
+});
+
+// CSV EXPORT
+function exportCSV() {
+    if (currentUser.role !== "Admin") return;
+
+    const csv = Papa.unparse(users.map(u => ({
+        id: u.id,
+        full_name: u.full_name,
+        username: u.username,
+        email: u.email,
+        password_hash: u.password_hash,
+        phone: u.phone,
+        role: u.role,
+        status: u.status,
+        created_at: u.created_at
+    })));
+
+    const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "jobs.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showToast("CSV exported.");
+}
+
+// CSV IMPORT
+function importCSV(event) {
+    if (currentUser.role !== "Admin") return;
+
+    const file = event.target.files[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: results => {
+            const rows = results.data;
+            const required = ["id","full_name","username","email","password_hash","role","status","created_at"];
+
+            if (!rows.length || !required.every(field => field in rows[0])) {
+                showToast("Invalid CSV format.");
+                return;
+            }
+
+            if (!confirm("Importing will replace your current database. Continue?")) return;
+
+            const imported = rows.map(row => ({
+                id: row.id,
+                full_name: row.full_name,
+                username: row.username,
+                email: row.email,
+                password_hash: row.password_hash,
+                phone: row.phone || "",
+                role: row.role === "Admin" ? "Admin" : "User",
+                status: row.status === "Inactive" ? "Inactive" : "Active",
+                created_at: row.created_at
+            }));
+
+            if (imported.some(u => !u.id || !u.full_name || !u.username || !u.email || !u.password_hash) ||
+                new Set(imported.map(u => u.id)).size !== imported.length ||
+                new Set(imported.map(u => u.username.toLowerCase())).size !== imported.length ||
+                new Set(imported.map(u => u.email.toLowerCase())).size !== imported.length ||
+                !imported.some(u => u.role === "Admin")) {
+                showToast("CSV contains invalid or duplicate records.");
+                return;
+            }
+
+            users = imported;
+            saveData();
+            refreshDashboard();
+            renderUsers();
+            showToast("Database imported successfully.");
+        },
+        error: () => showToast("Unable to read CSV file.")
+    });
+
+    event.target.value = "";
+}
+
+// INITIALIZATION
+loadData();
+
+if (users.length === 0) {
+    showAuth("register");
+} else {
+    showAuth("login");
+}
+
+showApplication();
+</script>
+</body>
+</html>
