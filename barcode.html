@@ -6,7 +6,7 @@
   <title>Bank Asset Audit & Verification Suite</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- html5-qrcode for live continuous supermarket-grade camera scanning -->
+  <!-- html5-qrcode for live continuous camera scanning -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <!-- SheetJS & PapaParse for Excel/CSV parsing & reporting -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -26,11 +26,11 @@
         </div>
         <div>
           <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">Bank Asset Audit Suite</h1>
-          <p class="text-xs text-blue-400 font-medium">Supermarket-Grade Distance Scanning & Reporting</p>
+          <p class="text-xs text-blue-400 font-medium">Ultra-Fast Distance Capture & Reporting</p>
         </div>
       </div>
 
-      <!-- Branch Selection Selector & Quick Report Summary -->
+      <!-- Branch Selection Selector -->
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 text-sm shadow-inner">
           <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Branch:</span>
@@ -50,7 +50,7 @@
   <!-- Main Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT COLUMN: Supermarket-Grade Distance Scanner & Controls (5 Cols) -->
+    <!-- LEFT COLUMN: High-Speed Distance Scanner & Controls (5 Cols) -->
     <section class="lg:col-span-5 flex flex-col gap-5">
       
       <!-- Live Camera Scanner Card -->
@@ -58,20 +58,20 @@
         <div class="bg-slate-900 px-4 py-3 flex justify-between items-center border-b border-slate-800">
           <h2 class="font-semibold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span>
-            Supermarket Distance Scanner
+            High-Speed Distance Scanner
           </h2>
-          <span id="camera-status-badge" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Active Laser</span>
+          <span id="camera-status-badge" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Active HD</span>
         </div>
 
-        <!-- Camera Viewport Box with Supermarket Laser Alignment Guide -->
+        <!-- Camera Viewport Box with Targeting Guide -->
         <div class="relative bg-black w-full h-72 sm:h-80 flex items-center justify-center overflow-hidden">
           <div id="reader" class="w-full h-full scale-105"></div>
           
-          <!-- Supermarket Red Laser Line & Distance Guides -->
-          <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] pointer-events-none z-10 animate-pulse"></div>
-          <div class="absolute inset-x-8 inset-y-10 border border-blue-500/20 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
+          <!-- Red Laser Targeting Line -->
+          <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-red-500 shadow-[0_0_15px_rgba(239,68,68,1)] pointer-events-none z-10 animate-pulse"></div>
+          <div class="absolute inset-x-6 inset-y-8 border border-blue-500/30 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
             <div class="w-3 h-3 border-t-2 border-l-2 border-blue-400 self-start"></div>
-            <span class="text-blue-300 text-[10px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wider">Point from Distance & Align</span>
+            <span class="text-blue-300 text-[10px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wider">Point & Capture from Distance</span>
             <div class="w-3 h-3 border-b-2 border-r-2 border-blue-400 self-end"></div>
           </div>
         </div>
@@ -184,12 +184,12 @@
 
   </main>
 
-  <!-- MODAL 1: VERIFICATION MODAL (For existing items) -->
+  <!-- MODAL 1: VERIFICATION MODAL -->
   <div id="verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
         <div>
-          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">Distance Capture Match</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">HD Distance Capture Match</span>
           <h3 id="modal-asset-name" class="font-bold text-lg text-white mt-1.5">Asset Name</h3>
         </div>
         <button id="close-modal-btn" class="text-slate-400 hover:text-white text-xl font-bold p-1">&times;</button>
@@ -233,7 +233,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: REGISTER NEW ASSET MODAL (For unknown scanned barcodes) -->
+  <!-- MODAL 2: REGISTER NEW ASSET MODAL -->
   <div id="register-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
@@ -288,7 +288,6 @@
   </div>
 
   <script>
-    // INITIAL HARDCODED DATABASE WITH THE REQUESTED TEST BARCODE
     const DEFAULT_MASTER_DATABASE = [
       {
         barcode: "6297000907000",
@@ -300,14 +299,13 @@
       }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v6')) || DEFAULT_MASTER_DATABASE;
+    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v7')) || DEFAULT_MASTER_DATABASE;
     let html5QrCode = null;
     let activeScannedBarcode = null;
     let isProcessingScan = false;
 
-    // Save & Render
     function saveData() {
-      localStorage.setItem('bank_asset_inventory_v6', JSON.stringify(inventory));
+      localStorage.setItem('bank_asset_inventory_v7', JSON.stringify(inventory));
       renderTable();
       updateStats();
     }
@@ -371,7 +369,6 @@
       });
     }
 
-    // Modal Control: Existing Item Verification
     function openVerificationModal(barcode) {
       const item = inventory.find(i => i.barcode === barcode);
       if (!item) return;
@@ -409,7 +406,6 @@
       }
     });
 
-    // Modal Control: Register New Asset Form
     function openRegisterModal(barcode) {
       activeScannedBarcode = barcode;
       document.getElementById('reg-modal-barcode').value = barcode;
@@ -453,7 +449,6 @@
       closeRegisterModal();
     });
 
-    // Barcode Detection Handler with Distance Lock
     function handleBarcodeDetected(decodedText) {
       if (isProcessingScan) return;
       const cleanCode = decodedText.trim();
@@ -470,7 +465,6 @@
       }
     }
 
-    // Audio feedback beep
     function playBeep() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -486,33 +480,40 @@
       } catch(e) {}
     }
 
-    // Initialize html5-qrcode with Supermarket-Grade Long-Range configuration
+    // HD & High-Speed Distance Capture Camera Initialization
     function startCameraScanner() {
       if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
       }
 
-      const config = { 
-        fps: 25, // High FPS for instant supermarket laser responsiveness
+      // Forces high definition constraints for distant barcodes and high frame rates
+      const cameraConfig = {
+        facingMode: "environment",
+        advanced: [{ width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }]
+      };
+
+      const scannerConfig = { 
+        fps: 30, // 30 FPS for instant laser-like frame recognition
         qrbox: function(viewfinderWidth, viewfinderHeight) {
           return {
-            width: Math.floor(viewfinderWidth * 0.9),
-            height: Math.floor(viewfinderHeight * 0.5)
+            width: Math.floor(viewfinderWidth * 0.95),
+            height: Math.floor(viewfinderHeight * 0.4)
           };
         },
         aspectRatio: 1.333334
       };
 
       html5QrCode.start(
-        { facingMode: "environment" },
-        config,
+        cameraConfig,
+        scannerConfig,
         (decodedText) => {
           handleBarcodeDetected(decodedText);
         },
         (errorMessage) => {
-          // Ignore scanning frame parsing intervals
+          // Suppress frame miss logs
         }
       ).then(() => {
+        // Apply hardware continuous autofocus and zoom capability if supported by device
         try {
           const videoTrack = html5QrCode.getRunningTrack();
           if (videoTrack && videoTrack.getCapabilities) {
@@ -521,7 +522,11 @@
             if (capabilities.focusMode && capabilities.focusMode.includes('continuous')) {
               constraints.focusMode = 'continuous';
             }
-            if (constraints.focusMode) {
+            if (capabilities.zoom) {
+              // Slight default optical focus adjustment for distance capture
+              constraints.zoom = Math.min(1.5, capabilities.zoom.max);
+            }
+            if (Object.keys(constraints).length > 0) {
               videoTrack.applyConstraints({ advanced: [constraints] });
             }
           }
@@ -535,7 +540,7 @@
 
     document.getElementById('start-camera-btn').addEventListener('click', () => {
       startCameraScanner();
-      document.getElementById('camera-status-badge').innerText = "Active Laser";
+      document.getElementById('camera-status-badge').innerText = "Active HD";
       document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full";
     });
 
@@ -545,6 +550,14 @@
           document.getElementById('camera-status-badge').innerText = "Paused";
           document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full";
         }).catch(err => console.log(err));
+      }
+    });
+
+    document.getElementById('manual-submit-btn').addEventListener('click', () => {
+      const val = document.getElementById('manual-barcode-input').value.trim();
+      if (val) {
+        handleBarcodeDetal(val); // fixed helper fallback
+        document.getElementById('manual-barcode-input').value = '';
       }
     });
 
@@ -563,12 +576,10 @@
       }
     });
 
-    // Search filter
     document.getElementById('search-input').addEventListener('input', (e) => {
       renderTable(e.target.value);
     });
 
-    // Reset Database
     document.getElementById('reset-db-btn').addEventListener('click', () => {
       if (confirm("Reset database to initial test item?")) {
         inventory = JSON.parse(JSON.stringify(DEFAULT_MASTER_DATABASE));
@@ -576,7 +587,6 @@
       }
     });
 
-    // Export Detailed Audit Report
     document.getElementById('export-report-btn').addEventListener('click', () => {
       if (inventory.length === 0) return alert("No data to export.");
       const csv = Papa.unparse(inventory);
@@ -584,7 +594,6 @@
       saveAs(blob, "bank_asset_audit_complete_report.csv");
     });
 
-    // Excel / CSV Master List Import
     document.getElementById('import-excel-file').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -624,7 +633,6 @@
       saveAs(blob, "asset_master_template.csv");
     });
 
-    // Auto-start camera on load
     window.addEventListener('load', () => {
       saveData();
       setTimeout(() => {
