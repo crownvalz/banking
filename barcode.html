@@ -9,8 +9,8 @@
   <!-- html5-qrcode for live continuous supermarket-grade camera scanning -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <!-- SheetJS & PapaParse for Excel/CSV parsing & reporting -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
@@ -44,6 +44,7 @@
             <option value="Dodoma Branch">Dodoma Branch</option>
             <option value="Kahama Branch">Kahama Branch</option>
             <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
+            <option value="Pemba Branch">Pemba Branch</option>
           </select>
         </div>
       </div>
@@ -68,7 +69,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
 
     <!-- STEP 1: UNIFIED ASSET CAPTURE & VERIFICATION -->
-    <section id="stage-content-1" class="space-y-6">
+    <section id="stage-content-1" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
       <!-- Left: Scanner Viewport -->
       <div class="lg:col-span-6 flex flex-col gap-5">
@@ -76,7 +77,7 @@
           <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center">
             <h2 class="font-semibold text-xs uppercase tracking-wider flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
-              Camera Barcode Scanner
+              Long-Distance Camera Barcode Scanner
             </h2>
             <span id="camera-status-badge" class="text-[11px] font-medium bg-amber-500/20 text-amber-200 px-2.5 py-0.5 rounded-full">Ready to start</span>
           </div>
@@ -88,7 +89,7 @@
             <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] pointer-events-none z-10 animate-pulse"></div>
             <div class="absolute inset-x-8 inset-y-12 border-2 border-blue-400/40 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
               <div class="w-4 h-4 border-t-2 border-l-2 border-blue-400 self-start"></div>
-              <span class="text-blue-200 text-[11px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md">Align barcode inside the frame</span>
+              <span class="text-blue-200 text-[11px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md">Align long-distance barcode inside frame</span>
               <div class="w-4 h-4 border-b-2 border-r-2 border-blue-400 self-end"></div>
             </div>
           </div>
@@ -100,11 +101,11 @@
               <button id="torch-btn" type="button" disabled class="bg-slate-200 text-slate-500 font-medium py-2.5 px-3 rounded-xl text-xs transition">Light</button>
             </div>
             <div class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2">
-              <label for="camera-zoom" class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Camera zoom</label>
-              <input id="camera-zoom" type="range" min="1" max="1" step="0.1" value="1" disabled class="w-full accent-blue-600">
+              <label for="camera-zoom" class="text-[11px] font-semibold text-slate-600 whitespace-nowrap">Camera Zoom</label>
+              <input id="camera-zoom" type="range" min="1" max="5" step="0.1" value="1" disabled class="w-full accent-blue-600">
               <span id="camera-zoom-value" class="text-[11px] font-mono font-bold text-slate-700">1.0×</span>
             </div>
-            <p class="text-[10px] text-slate-500">For distant labels, increase camera zoom until the barcode fills the guide. Optical focus and zoom depend on your device.</p>
+            <p class="text-[10px] text-slate-500">Increase camera zoom for long-distance asset tagging until the barcode fills the targeting frame.</p>
 
             <!-- Manual Entry -->
             <div class="pt-2 border-t border-slate-200">
@@ -116,43 +117,40 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 w-full">
-        <div class="text-center max-w-lg mx-auto mb-6">
-          <h2 class="text-xl font-bold text-slate-900">Import Existing Asset Register</h2>
-          <p class="text-xs text-slate-500 mt-1">Import the asset master list, then scan any barcode. Registered assets open for verification; unregistered barcodes open a form to add a new asset.</p>
-        </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label class="bg-blue-50 hover:bg-blue-100/70 border-2 border-dashed border-blue-300 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            <span class="font-bold text-sm text-blue-900">Upload Excel / CSV Sheet</span>
-            <span class="text-[11px] text-blue-600">Supports .xlsx, .xls, .csv</span>
-            <input type="file" id="import-excel-file" accept=".csv, .xlsx, .xls" class="hidden">
-          </label>
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+          <div class="text-center max-w-lg mx-auto mb-6">
+            <h2 class="text-xl font-bold text-slate-900">Import Existing Asset Register</h2>
+            <p class="text-xs text-slate-500 mt-1">Import your master list. Scanned barcodes automatically match against records or prompt immediate registration.</p>
+          </div>
 
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <h3 class="font-bold text-slate-800 text-sm">Need a Standard Template?</h3>
-              <p class="text-xs text-slate-500 mt-1">Download the international bank register template pre-formatted with all required columns.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label class="bg-blue-50 hover:bg-blue-100/70 border-2 border-dashed border-blue-300 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2">
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+              <span class="font-bold text-sm text-blue-900">Upload Excel / CSV Sheet</span>
+              <span class="text-[11px] text-blue-600">Supports .xlsx, .xls, .csv</span>
+              <input type="file" id="import-excel-file" accept=".csv, .xlsx, .xls" class="hidden">
+            </label>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-slate-800 text-sm">Need a Standard Template?</h3>
+                <p class="text-xs text-slate-500 mt-1">Download pre-formatted template with required columns.</p>
+              </div>
+              <button id="download-template-btn" class="mt-4 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs transition shadow-2xs">
+                Download CSV Template
+              </button>
             </div>
-            <button id="download-template-btn" class="mt-4 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs transition shadow-2xs">
-              Download CSV Template
-            </button>
           </div>
         </div>
-
-        <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-2">
-          <div class="text-xs text-slate-500">Register records: <strong id="setup-total-count" class="text-slate-900">0</strong></div>
-          <p class="text-xs text-slate-500">Import, scan, or add assets in any order. Scan distance depends on camera focus, barcode size, lighting and device capability.</p>
-        </div>
       </div>
+
       <!-- Right: Live Quick Verification Panel -->
       <div class="lg:col-span-6 bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
             <h3 class="font-bold text-base text-slate-900">Live Scanning Session</h3>
-            <button onclick="switchStage(2)" class="text-xs font-semibold text-blue-600 hover:underline">View Full Register &rarr;</button>
+            <button onclick="switchStage(2)" class="text-xs font-semibold text-blue-600 hover:underline">View Full Register</button>
           </div>
 
           <div class="grid grid-cols-2 gap-4 mb-6">
@@ -168,26 +166,23 @@
 
           <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
             <h4 class="font-bold text-xs text-slate-700 uppercase">Recent Scans Audit Log</h4>
-            <div id="recent-scans-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            <div id="recent-scans-list" class="space-y-2 max-h-96 overflow-y-auto pr-1">
               <p class="text-xs text-slate-400 text-center py-4">No assets scanned in current session yet.</p>
             </div>
           </div>
         </div>
 
         <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-          <span class="text-slate-500">Instant auto-save enabled</span>
+          <span class="text-slate-500">Register records: <strong id="setup-total-count" class="text-slate-900">0</strong></span>
           <button onclick="switchStage(2)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl transition shadow-sm">
-            Review Compliance Report &rarr;
+            Review Compliance Report
           </button>
         </div>
       </div>
     </section>
 
-
-
     <!-- STEP 2: AUDIT & COMPLIANCE REPORT -->
     <section id="stage-content-2" class="hidden bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8 flex flex-col gap-6">
-      
       <!-- Executive Summary Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
@@ -248,10 +243,9 @@
       <div class="flex justify-between items-center pt-4 border-t border-slate-100 text-xs">
         <button id="reset-db-btn" class="text-rose-600 hover:underline font-semibold">Clear Entire Register</button>
         <button onclick="switchStage(1)" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl transition">
-          &larr; Back to Scanner
+          Back to Scanner
         </button>
       </div>
-
     </section>
 
   </main>
@@ -264,7 +258,7 @@
           <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">Asset Verification & Sign-off</span>
           <h3 id="modal-asset-name" class="font-bold text-base text-slate-900 mt-1.5">Asset Description</h3>
         </div>
-        <button id="close-modal-btn" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">&times;</button>
+        <button id="close-modal-btn" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">×</button>
       </div>
 
       <div class="space-y-3">
@@ -306,6 +300,7 @@
             <option value="Dodoma Branch">Dodoma Branch</option>
             <option value="Kahama Branch">Kahama Branch</option>
             <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
+            <option value="Pemba Branch">Pemba Branch</option>
           </select>
         </div>
 
@@ -330,7 +325,7 @@
           <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">Unregistered Barcode Detected</span>
           <h3 class="font-bold text-base text-slate-900 mt-1.5">Add to Master Register</h3>
         </div>
-        <button id="close-reg-modal-btn" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">&times;</button>
+        <button id="close-reg-modal-btn" class="text-slate-400 hover:text-slate-700 text-xl font-bold p-1">×</button>
       </div>
 
       <div class="space-y-3">
@@ -342,7 +337,7 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">Branch Code</label>
-            <input type="text" id="reg-modal-branch" value="32" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
+            <input type="text" id="reg-modal-branch" value="SABASABA BRANCH" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
           </div>
           <div>
             <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">Category</label>
@@ -351,7 +346,7 @@
         </div>
 
         <div>
-          <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">Description 1 <span class="text-rose-500">*</span></label>
+          <label class="block font-semibold text-slate-500 uppercase tracking-wider mb-1">Description <span class="text-rose-500">*</span></label>
           <input type="text" id="reg-modal-name" placeholder="e.g. Executive Desk, Laser Printer..." class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800">
         </div>
 
@@ -392,7 +387,6 @@
   </div>
 
   <script>
-    // Live live inventory state (0 hardcoded items)
     let inventory = JSON.parse(localStorage.getItem('bank_iso_asset_register_v1')) || [];
     let html5QrCode = null;
     let activeScannedBarcode = null;
@@ -554,7 +548,7 @@
     function openRegisterModal(barcode) {
       activeScannedBarcode = barcode;
       document.getElementById('reg-modal-barcode').value = barcode;
-      document.getElementById('reg-modal-branch').value = "32";
+      document.getElementById('reg-modal-branch').value = document.getElementById('active-branch-select').value;
       document.getElementById('reg-modal-category').value = "EQUIPMENT";
       document.getElementById('reg-modal-name').value = '';
       document.getElementById('reg-modal-cost').value = "0";
@@ -703,14 +697,14 @@
       const zoomValue = document.getElementById('camera-zoom-value');
       if (cameraCapabilities.zoom) {
         zoomInput.min = cameraCapabilities.zoom.min ?? 1;
-        zoomInput.max = cameraCapabilities.zoom.max ?? 1;
+        zoomInput.max = cameraCapabilities.zoom.max ?? 5;
         zoomInput.step = cameraCapabilities.zoom.step ?? 0.1;
         zoomInput.value = Math.min(Math.max(1, Number(zoomInput.min)), Number(zoomInput.max));
         zoomInput.disabled = Number(zoomInput.max) <= Number(zoomInput.min);
         zoomValue.innerText = `${Number(zoomInput.value).toFixed(1)}×`;
       } else {
-        zoomInput.min = 1; zoomInput.max = 1; zoomInput.value = 1; zoomInput.disabled = true;
-        zoomValue.innerText = 'Not supported';
+        zoomInput.min = 1; zoomInput.max = 5; zoomInput.value = 1; zoomInput.disabled = false;
+        zoomValue.innerText = '1.0×';
       }
 
       const torchButton = document.getElementById('torch-btn');
@@ -731,8 +725,8 @@
         audio: false,
         video: {
           facingMode: { ideal: 'environment' },
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
+          width: { ideal: 3840 },
+          height: { ideal: 2160 },
           frameRate: { ideal: 60, max: 60 }
         }
       });
@@ -744,7 +738,7 @@
       cameraVideo.muted = true;
       cameraVideo.playsInline = true;
       cameraVideo.setAttribute('playsinline', '');
-      cameraVideo.className = 'w-full h-full object-contain';
+      cameraVideo.className = 'w-full h-full object-cover';
       cameraVideo.srcObject = cameraStream;
       reader.appendChild(cameraVideo);
       await cameraVideo.play();
@@ -758,7 +752,7 @@
       const scanFrame = async timestamp => {
         if (!cameraVideo || !cameraStream?.active) return;
         scanAnimationFrame = requestAnimationFrame(scanFrame);
-        if (detectorBusy || timestamp - lastDetectorFrame < 45 || cameraVideo.readyState < 2) return;
+        if (detectorBusy || timestamp - lastDetectorFrame < 35 || cameraVideo.readyState < 2) return;
         detectorBusy = true;
         lastDetectorFrame = timestamp;
         try {
@@ -790,10 +784,10 @@
       await html5QrCode.start(
         { facingMode: 'environment' },
         {
-          fps: 20,
+          fps: 25,
           qrbox: (width, height) => ({
-            width: Math.max(240, Math.floor(width * 0.94)),
-            height: Math.max(120, Math.floor(height * 0.62))
+            width: Math.max(280, Math.floor(width * 0.95)),
+            height: Math.max(140, Math.floor(height * 0.65))
           }),
           aspectRatio: 1.777778,
           rememberLastUsedCamera: true
@@ -823,11 +817,11 @@
           cameraStream = null;
         }
         if (!started) await startFallbackScanner();
-        updateCameraStatus('Scanning • high speed', 'active');
+        updateCameraStatus('Scanning • Long Range', 'active');
       } catch (error) {
         console.error('Camera start failed:', error);
         updateCameraStatus('Camera unavailable', 'error');
-        alert('Unable to start the camera. Allow camera permission and open this page over HTTPS or localhost. If another application is using the camera, close it and try again.');
+        alert('Unable to start camera. Ensure HTTPS or localhost is used and camera permissions are permitted.');
       } finally {
         cameraStarting = false;
       }
@@ -847,7 +841,6 @@
         try { await html5QrCode.stop(); } catch (error) { console.warn('Scanner stop issue:', error); }
       }
       document.getElementById('torch-btn').disabled = true;
-      document.getElementById('camera-zoom').disabled = true;
       updateCameraStatus('Paused');
     }
 
@@ -856,7 +849,10 @@
       document.getElementById('camera-zoom-value').innerText = `${zoom.toFixed(1)}×`;
       if (activeVideoTrack && cameraCapabilities.zoom) {
         try { await activeVideoTrack.applyConstraints({ advanced: [{ zoom }] }); }
-        catch (error) { console.warn('Camera zoom could not be applied:', error); }
+        catch (error) { console.warn('Hardware zoom unavailable:', error); }
+      } else if (cameraVideo) {
+        // Fallback CSS digital zoom for long-distance capture
+        cameraVideo.style.transform = `scale(${zoom})`;
       }
     });
 
@@ -869,7 +865,7 @@
         document.getElementById('torch-btn').innerText = torchEnabled ? 'Light On' : 'Light';
       } catch (error) {
         torchEnabled = !torchEnabled;
-        alert('The device could not change its camera light setting.');
+        alert('Could not toggle camera light.');
       }
     });
 
@@ -910,7 +906,7 @@
       saveAs(blob, "bank_iso_audit_report.csv");
     });
 
-    // Excel / CSV import: merge records without deleting previously captured assets.
+    // Excel / CSV import
     document.getElementById('import-excel-file').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -943,14 +939,7 @@
             const index = inventory.findIndex(item => String(item.Barcode || '').trim().toLowerCase() === barcode.toLowerCase());
             if (index >= 0) {
               const current = inventory[index];
-              inventory[index] = {
-                ...normalized, ...current,
-                BRANCH: current.BRANCH || normalized.BRANCH,
-                Category: normalized.Category || current.Category,
-                "Main Location": current["Main Location"] || normalized["Main Location"],
-                "Description 1": normalized["Description 1"] || current["Description 1"],
-                "Asset Cost": normalized["Asset Cost"] || current["Asset Cost"]
-              };
+              inventory[index] = { ...normalized, ...current };
               updated++;
             } else {
               inventory.push(normalized);
@@ -958,29 +947,24 @@
             }
           });
           saveData();
-          alert(`Import complete. Added: ${added}. Existing records matched: ${updated}. Rows skipped (missing barcode): ${skipped}.`);
+          alert(`Import complete. Added: ${added}. Matched: ${updated}. Skipped: ${skipped}.`);
         } catch (err) {
           console.error("Import error:", err);
-          alert("Unable to read this file. Please check that it is a valid Excel or CSV asset register.");
+          alert("Unable to read file. Please ensure it is a valid Excel or CSV asset register.");
         } finally {
           e.target.value = '';
         }
-      };
-      reader.onerror = () => {
-        alert("The selected file could not be read.");
-        e.target.value = '';
       };
       reader.readAsArrayBuffer(file);
     });
 
     document.getElementById('download-template-btn').addEventListener('click', () => {
-      const template = [{ BRANCH: 32, Category: "COMPUTER", Barcode: "AB009185", "Main Location": "SABASABA BRANCH", "Description 1": "LAPTOP DELL", "Asset Cost": 3479584, "Status of the asset( SEEN/NOT SEEN)": "NOT SEEN", "Conditions of asset(GOOD/BAD)": "GOOD", Comment: "N/E", Auditor: "-" }];
+      const template = [{ BRANCH: "SABASABA BRANCH", Category: "COMPUTER", Barcode: "AB009185", "Main Location": "SABASABA BRANCH", "Description 1": "LAPTOP DELL", "Asset Cost": 3479584, "Status of the asset( SEEN/NOT SEEN)": "NOT SEEN", "Conditions of asset(GOOD/BAD)": "GOOD", Comment: "N/E", Auditor: "-" }];
       const csv = Papa.unparse(template);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
       saveAs(blob, "asset_register_template.csv");
     });
 
-    // Initial load
     window.addEventListener('load', () => {
       saveData();
     });
