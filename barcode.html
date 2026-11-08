@@ -169,7 +169,7 @@
 
   </main>
 
-  <!-- MODAL / DRAWER FOR CONDITION & RELOCATION VERIFICATION -->
+  <!-- MODAL 1: VERIFICATION MODAL (For existing items) -->
   <div id="verification-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
@@ -218,6 +218,60 @@
     </div>
   </div>
 
+  <!-- MODAL 2: REGISTER NEW ASSET MODAL (For unknown scanned barcodes) -->
+  <div id="register-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-md w-full p-6 shadow-2xl transform transition-all">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">Unregistered Barcode Detected</span>
+          <h3 class="font-bold text-lg text-white mt-1.5">Add to Master List</h3>
+        </div>
+        <button id="close-reg-modal-btn" class="text-slate-400 hover:text-white text-xl font-bold p-1">&times;</button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Scanned Barcode</label>
+          <input type="text" id="reg-modal-barcode" readonly class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-mono text-amber-400 font-semibold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Asset Name <span class="text-rose-500">*</span></label>
+          <input type="text" id="reg-modal-name" placeholder="e.g. Executive Desk, Receipt Printer..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Initial Condition</label>
+          <select id="reg-modal-condition" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
+            <option value="Excellent">Excellent</option>
+            <option value="Good" selected>Good</option>
+            <option value="Fair">Fair</option>
+            <option value="Needs Repair">Needs Repair</option>
+            <option value="Damaged">Damaged</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Assigned Branch / Location</label>
+          <select id="reg-modal-location" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none text-white">
+            <option value="Kariakoo Branch">Kariakoo Branch</option>
+            <option value="Dodoma Branch">Dodoma Branch</option>
+            <option value="Kahama Branch">Kahama Branch</option>
+            <option value="Arusha Main Branch">Arusha Main Branch</option>
+            <option value="Mwanza Branch">Mwanza Branch</option>
+            <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
+            <option value="Server Room / Storage">Server Room / Storage</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <button id="cancel-reg-btn" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 rounded-xl text-sm transition">Discard</button>
+        <button id="confirm-reg-btn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-lg shadow-amber-600/25">Register & Verify</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // INITIAL HARDCODED DATABASE WITH THE REQUESTED TEST BARCODE
     const DEFAULT_MASTER_DATABASE = [
@@ -231,14 +285,14 @@
       }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v3')) || DEFAULT_MASTER_DATABASE;
+    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v4')) || DEFAULT_MASTER_DATABASE;
     let html5QrCode = null;
     let activeScannedBarcode = null;
     let isProcessingScan = false;
 
     // Save & Render
     function saveData() {
-      localStorage.setItem('bank_asset_inventory_v3', JSON.stringify(inventory));
+      localStorage.setItem('bank_asset_inventory_v4', JSON.stringify(inventory));
       renderTable();
       updateStats();
     }
@@ -299,7 +353,7 @@
       });
     }
 
-    // Modal Control
+    // Modal Control: Existing Item Verification
     function openVerificationModal(barcode) {
       const item = inventory.find(i => i.barcode === barcode);
       if (!item) return;
@@ -337,7 +391,52 @@
       }
     });
 
-    // Barcode Detection Handler with Omni-Angle lock
+    // Modal Control: Register New Asset Form
+    function openRegisterModal(barcode) {
+      activeScannedBarcode = barcode;
+      document.getElementById('reg-modal-barcode').value = barcode;
+      document.getElementById('reg-modal-name').value = '';
+      document.getElementById('reg-modal-condition').value = 'Good';
+      document.getElementById('reg-modal-location').value = document.getElementById('active-branch-select').value;
+
+      document.getElementById('register-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('reg-modal-name').focus(), 100);
+    }
+
+    function closeRegisterModal() {
+      document.getElementById('register-modal').classList.add('hidden');
+      activeScannedBarcode = null;
+      isProcessingScan = false;
+    }
+
+    document.getElementById('close-reg-modal-btn').addEventListener('click', closeRegisterModal);
+    document.getElementById('cancel-reg-btn').addEventListener('click', closeRegisterModal);
+
+    document.getElementById('confirm-reg-btn').addEventListener('click', () => {
+      const nameVal = document.getElementById('reg-modal-name').value.trim();
+      if (!nameVal) {
+        alert('Please enter a valid asset name.');
+        document.getElementById('reg-modal-name').focus();
+        return;
+      }
+
+      if (!activeScannedBarcode) return;
+
+      // Insert new item into master list
+      inventory.unshift({
+        barcode: activeScannedBarcode,
+        name: nameVal,
+        status: "Verified",
+        condition: document.getElementById('reg-modal-condition').value,
+        location: document.getElementById('reg-modal-location').value,
+        lastUpdated: new Date().toLocaleString()
+      });
+
+      saveData();
+      closeRegisterModal();
+    });
+
+    // Barcode Detection Handler with Auto-Registration Workflow
     function handleBarcodeDetected(decodedText) {
       if (isProcessingScan) return;
       const cleanCode = decodedText.trim();
@@ -350,23 +449,8 @@
       if (item) {
         openVerificationModal(cleanCode);
       } else {
-        if (confirm(`Scanned unknown barcode: [${cleanCode}]. Register as a new asset?`)) {
-          const newName = prompt("Enter Asset Name (e.g. Printer, Chair, Screen):", "New Bank Asset");
-          if (newName) {
-            inventory.unshift({
-              barcode: cleanCode,
-              name: newName,
-              status: "Verified",
-              condition: "Good",
-              location: document.getElementById('active-branch-select').value,
-              lastUpdated: new Date().toLocaleString()
-            });
-            saveData();
-            openVerificationModal(cleanCode);
-            return;
-          }
-        }
-        isProcessingScan = false;
+        // Automatically open the registration modal for unknown codes
+        openRegisterModal(cleanCode);
       }
     }
 
