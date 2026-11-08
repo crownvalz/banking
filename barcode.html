@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank Asset Audit & Verification System</title>
+  <title>Bank Asset Audit & Verification Suite</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- html5-qrcode for live continuous camera scanning -->
+  <!-- html5-qrcode for live continuous supermarket-grade camera scanning -->
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  <!-- SheetJS & PapaParse for Excel/CSV parsing -->
+  <!-- SheetJS & PapaParse for Excel/CSV parsing & reporting -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
-<body class="bg-slate-900 min-h-screen flex flex-col font-sans text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+<body class="bg-slate-950 min-h-screen flex flex-col font-sans text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
 
   <!-- Top Navigation / Header -->
-  <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-3">
       <div class="flex items-center space-x-3">
         <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
@@ -26,21 +26,23 @@
         </div>
         <div>
           <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">Bank Asset Audit Suite</h1>
-          <p class="text-xs text-slate-400">Long-Range High-Speed Verification</p>
+          <p class="text-xs text-blue-400 font-medium">Supermarket-Grade Distance Scanning & Reporting</p>
         </div>
       </div>
 
-      <!-- Branch Selection Selector -->
-      <div class="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 text-sm shadow-inner">
-        <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Branch:</span>
-        <select id="active-branch-select" class="bg-slate-900 text-blue-400 font-semibold rounded-lg px-2.5 py-1 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm">
-          <option value="Kariakoo Branch">Kariakoo Branch</option>
-          <option value="Dodoma Branch">Dodoma Branch</option>
-          <option value="Kahama Branch">Kahama Branch</option>
-          <option value="Arusha Main Branch">Arusha Main Branch</option>
-          <option value="Mwanza Branch">Mwanza Branch</option>
-          <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
-        </select>
+      <!-- Branch Selection Selector & Quick Report Summary -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-slate-800/90 px-3 py-1.5 rounded-xl border border-slate-700 text-sm shadow-inner">
+          <span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Branch:</span>
+          <select id="active-branch-select" class="bg-slate-900 text-blue-400 font-semibold rounded-lg px-2.5 py-1 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm">
+            <option value="Kariakoo Branch">Kariakoo Branch</option>
+            <option value="Dodoma Branch">Dodoma Branch</option>
+            <option value="Kahama Branch">Kahama Branch</option>
+            <option value="Arusha Main Branch">Arusha Main Branch</option>
+            <option value="Mwanza Branch">Mwanza Branch</option>
+            <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
+          </select>
+        </div>
       </div>
     </div>
   </header>
@@ -48,43 +50,44 @@
   <!-- Main Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- LEFT COLUMN: Live Camera Scanner & Controls (5 Cols) -->
+    <!-- LEFT COLUMN: Supermarket-Grade Distance Scanner & Controls (5 Cols) -->
     <section class="lg:col-span-5 flex flex-col gap-5">
       
       <!-- Live Camera Scanner Card -->
-      <div class="bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-700/80 overflow-hidden flex flex-col">
-        <div class="bg-slate-800/80 px-4 py-3 flex justify-between items-center border-b border-slate-700/60">
+      <div class="bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-800 overflow-hidden flex flex-col">
+        <div class="bg-slate-900 px-4 py-3 flex justify-between items-center border-b border-slate-800">
           <h2 class="font-semibold text-xs uppercase tracking-wider text-slate-300 flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span>
-            Long-Range Camera Scanner
+            Supermarket Distance Scanner
           </h2>
-          <span id="camera-status-badge" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Active</span>
+          <span id="camera-status-badge" class="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">Active Laser</span>
         </div>
 
-        <!-- Camera Viewport Box -->
+        <!-- Camera Viewport Box with Supermarket Laser Alignment Guide -->
         <div class="relative bg-black w-full h-72 sm:h-80 flex items-center justify-center overflow-hidden">
           <div id="reader" class="w-full h-full scale-105"></div>
           
-          <!-- Wide Area Targeting Frame -->
-          <div class="absolute inset-x-4 inset-y-6 border border-blue-400/30 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3 transition-all duration-300">
-            <div class="w-4 h-4 border-t-2 border-l-2 border-blue-400 self-start"></div>
-            <span class="text-blue-300 text-[10px] font-medium bg-slate-900/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wide">Ready for Distance Scan</span>
-            <div class="w-4 h-4 border-b-2 border-r-2 border-blue-400 self-end"></div>
+          <!-- Supermarket Red Laser Line & Distance Guides -->
+          <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] pointer-events-none z-10 animate-pulse"></div>
+          <div class="absolute inset-x-8 inset-y-10 border border-blue-500/20 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
+            <div class="w-3 h-3 border-t-2 border-l-2 border-blue-400 self-start"></div>
+            <span class="text-blue-300 text-[10px] font-semibold bg-slate-950/80 px-3 py-1 rounded-full border border-blue-500/30 backdrop-blur-md tracking-wider">Point from Distance & Align</span>
+            <div class="w-3 h-3 border-b-2 border-r-2 border-blue-400 self-end"></div>
           </div>
         </div>
 
-        <div class="p-4 bg-slate-800/40 border-t border-slate-700/60 flex flex-col gap-3">
+        <div class="p-4 bg-slate-900/60 border-t border-slate-800 flex flex-col gap-3">
           <div class="flex gap-2">
             <button id="start-camera-btn" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-blue-600/25">Resume Camera</button>
-            <button id="stop-camera-btn" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition">Pause Camera</button>
+            <button id="stop-camera-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 px-3 rounded-xl text-xs sm:text-sm transition">Pause Camera</button>
           </div>
 
           <!-- Manual Barcode Input Fallback -->
-          <div class="pt-2 border-t border-slate-700/60">
+          <div class="pt-2 border-t border-slate-800">
             <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Quick Test / Manual Entry</label>
             <div class="flex gap-2">
-              <input type="text" id="manual-barcode-input" placeholder="Scan or enter code..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white font-mono">
-              <button id="manual-submit-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">Verify</button>
+              <input type="text" id="manual-barcode-input" placeholder="Scan or enter code..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-white font-mono">
+              <button id="manual-submit-btn" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow-sm">Verify</button>
             </div>
             <p class="text-[11px] text-slate-400 mt-1.5 flex items-center justify-between">
               <span>Test Barcode:</span>
@@ -95,14 +98,14 @@
       </div>
 
       <!-- Master Database Management Card -->
-      <div class="bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-700/80 p-4 flex flex-col gap-3">
+      <div class="bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-800 p-4 flex flex-col gap-3">
         <h3 class="font-semibold text-xs uppercase tracking-wider text-slate-300">Master Database Hub</h3>
         <div class="flex flex-col sm:flex-row gap-2">
-          <label class="flex-1 bg-slate-700/60 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-600 text-center cursor-pointer transition shadow-sm">
+          <label class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-700 text-center cursor-pointer transition shadow-sm">
             Import Excel / CSV
             <input type="file" id="import-excel-file" accept=".csv, .xlsx, .xls" class="hidden">
           </label>
-          <button id="download-template-btn" class="bg-slate-700/60 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-600 transition shadow-sm">
+          <button id="download-template-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-700 transition shadow-sm">
             Template
           </button>
         </div>
@@ -110,39 +113,49 @@
 
     </section>
 
-    <!-- RIGHT COLUMN: Verification & Audit Table (7 Cols) -->
-    <section class="lg:col-span-7 bg-slate-800/50 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-700/80 p-5 sm:p-6 flex flex-col">
+    <!-- RIGHT COLUMN: Reporting, Analytics & Audit Table (7 Cols) -->
+    <section class="lg:col-span-7 bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-xl border border-slate-800 p-5 sm:p-6 flex flex-col gap-5">
       
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-700/60">
-        <div>
-          <h2 class="font-bold text-base text-white tracking-tight">Audit & Reconciliation Dashboard</h2>
-          <p class="text-xs text-slate-400">Real-time asset condition & location tracking</p>
+      <!-- Executive Summary / Reporting Card -->
+      <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3 shadow-inner">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-blue-400">Audit Status & Analytics Report</h3>
+          <span id="audit-percentage" class="text-xs font-extrabold bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full">0% Completed</span>
         </div>
-        <div class="w-full sm:w-auto">
-          <input type="text" id="search-input" placeholder="Search master inventory..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-sm w-full sm:w-56 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500">
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+          <div id="audit-progress-bar" class="bg-gradient-to-r from-blue-600 to-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+          <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+            <span class="block text-[10px] text-slate-400 uppercase">Total Assets</span>
+            <span id="stat-total" class="text-base font-extrabold text-white">0</span>
+          </div>
+          <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+            <span class="block text-[10px] text-emerald-400 uppercase">Verified</span>
+            <span id="stat-verified" class="text-base font-extrabold text-emerald-400">0</span>
+          </div>
+          <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
+            <span class="block text-[10px] text-amber-400 uppercase">Pending</span>
+            <span id="stat-pending" class="text-base font-extrabold text-amber-400">0</span>
+          </div>
         </div>
       </div>
 
-      <!-- Audit Progress Stats Bar -->
-      <div class="grid grid-cols-3 gap-3 mb-4">
-        <div class="bg-slate-900/60 border border-slate-700/60 p-3 rounded-2xl text-center shadow-inner">
-          <span class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Inventory</span>
-          <span id="stat-total" class="text-lg sm:text-xl font-extrabold text-white">0</span>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h2 class="font-bold text-base text-white tracking-tight">Master Asset Registry</h2>
+          <p class="text-xs text-slate-400">Real-time condition & branch relocation tracker</p>
         </div>
-        <div class="bg-emerald-950/30 border border-emerald-800/30 p-3 rounded-2xl text-center shadow-inner">
-          <span class="block text-[10px] font-semibold text-emerald-400 uppercase tracking-wider">Verified</span>
-          <span id="stat-verified" class="text-lg sm:text-xl font-extrabold text-emerald-400">0</span>
-        </div>
-        <div class="bg-amber-950/30 border border-amber-800/30 p-3 rounded-2xl text-center shadow-inner">
-          <span class="block text-[10px] font-semibold text-amber-400 uppercase tracking-wider">Pending</span>
-          <span id="stat-pending" class="text-lg sm:text-xl font-extrabold text-amber-400">0</span>
+        <div class="w-full sm:w-auto">
+          <input type="text" id="search-input" placeholder="Search inventory..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-sm w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500">
         </div>
       </div>
 
       <!-- Asset Records Table -->
-      <div class="overflow-x-auto flex-1 border border-slate-700/60 rounded-2xl min-h-[300px] bg-slate-900/40">
+      <div class="overflow-x-auto flex-1 border border-slate-800 rounded-2xl min-h-[260px] bg-slate-950/40">
         <table class="min-w-full text-left border-collapse text-sm">
-          <thead class="bg-slate-800/60 text-slate-400 uppercase text-[11px] font-semibold border-b border-slate-700/60 tracking-wider">
+          <thead class="bg-slate-900 text-slate-400 uppercase text-[11px] font-semibold border-b border-slate-800 tracking-wider">
             <tr>
               <th class="p-3">Barcode</th>
               <th class="p-3">Asset Name</th>
@@ -158,11 +171,13 @@
         </table>
       </div>
 
-      <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-700/60 text-xs">
-        <button id="reset-db-btn" class="text-rose-400 hover:underline font-medium">Reset Default Master List</button>
-        <button id="export-audit-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-600/20">
-          Export Audit Report (CSV)
-        </button>
+      <div class="flex justify-between items-center pt-2 border-t border-slate-800 text-xs">
+        <button id="reset-db-btn" class="text-rose-400 hover:underline font-medium">Reset Master List</button>
+        <div class="flex gap-2">
+          <button id="export-report-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-blue-600/20">
+            Export Detailed Report (CSV)
+          </button>
+        </div>
       </div>
 
     </section>
@@ -285,14 +300,14 @@
       }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v5')) || DEFAULT_MASTER_DATABASE;
+    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v6')) || DEFAULT_MASTER_DATABASE;
     let html5QrCode = null;
     let activeScannedBarcode = null;
     let isProcessingScan = false;
 
     // Save & Render
     function saveData() {
-      localStorage.setItem('bank_asset_inventory_v5', JSON.stringify(inventory));
+      localStorage.setItem('bank_asset_inventory_v6', JSON.stringify(inventory));
       renderTable();
       updateStats();
     }
@@ -301,10 +316,13 @@
       const total = inventory.length;
       const verified = inventory.filter(i => i.status === 'Verified').length;
       const pending = total - verified;
+      const percentage = total > 0 ? Math.round((verified / total) * 100) : 0;
 
       document.getElementById('stat-total').innerText = total;
       document.getElementById('stat-verified').innerText = verified;
       document.getElementById('stat-pending').innerText = pending;
+      document.getElementById('audit-percentage').innerText = `${percentage}% Completed`;
+      document.getElementById('audit-progress-bar').style.width = `${percentage}%`;
     }
 
     function renderTable(filter = '') {
@@ -326,7 +344,7 @@
 
       filtered.forEach((item, index) => {
         const tr = document.createElement('tr');
-        tr.className = index % 2 === 0 ? 'hover:bg-slate-800/30 transition' : 'bg-slate-900/20 hover:bg-slate-800/30 transition';
+        tr.className = index % 2 === 0 ? 'hover:bg-slate-800/30 transition' : 'bg-slate-950/20 hover:bg-slate-800/30 transition';
 
         const isVerified = item.status === 'Verified';
         const badgeClass = isVerified 
@@ -468,20 +486,18 @@
       } catch(e) {}
     }
 
-    // Initialize html5-qrcode with optimized Long-Range High-Speed configuration
+    // Initialize html5-qrcode with Supermarket-Grade Long-Range configuration
     function startCameraScanner() {
       if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
       }
 
-      // Enhanced configuration for distance capture and wide scanning boxes
       const config = { 
-        fps: 20, // Increased frame scan rate for ultra-fast distance recognition
+        fps: 25, // High FPS for instant supermarket laser responsiveness
         qrbox: function(viewfinderWidth, viewfinderHeight) {
-          // Allows capturing barcodes across a wider viewport area
           return {
-            width: Math.floor(viewfinderWidth * 0.85),
-            height: Math.floor(viewfinderHeight * 0.6)
+            width: Math.floor(viewfinderWidth * 0.9),
+            height: Math.floor(viewfinderHeight * 0.5)
           };
         },
         aspectRatio: 1.333334
@@ -497,7 +513,6 @@
           // Ignore scanning frame parsing intervals
         }
       ).then(() => {
-        // Attempt to apply advanced camera controls (like autofocus/zoom if supported by mobile hardware)
         try {
           const videoTrack = html5QrCode.getRunningTrack();
           if (videoTrack && videoTrack.getCapabilities) {
@@ -520,7 +535,7 @@
 
     document.getElementById('start-camera-btn').addEventListener('click', () => {
       startCameraScanner();
-      document.getElementById('camera-status-badge').innerText = "Active";
+      document.getElementById('camera-status-badge').innerText = "Active Laser";
       document.getElementById('camera-status-badge').className = "text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full";
     });
 
@@ -561,12 +576,12 @@
       }
     });
 
-    // Export Audit Report
-    document.getElementById('export-audit-btn').addEventListener('click', () => {
+    // Export Detailed Audit Report
+    document.getElementById('export-report-btn').addEventListener('click', () => {
       if (inventory.length === 0) return alert("No data to export.");
       const csv = Papa.unparse(inventory);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      saveAs(blob, "bank_asset_audit_report.csv");
+      saveAs(blob, "bank_asset_audit_complete_report.csv");
     });
 
     // Excel / CSV Master List Import
