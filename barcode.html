@@ -1,238 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-900">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bank Physical Asset Audit & Verification System</title>
-  <!-- HTML5-QRCode for Live Continuous Camera Barcode Scanning -->
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <!-- FileSaver & PapaParse for CSV Export & Parse -->
-  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <!-- SheetJS for XLSX Import Support -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Asset Audit & Verification System</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            bank: {
-              navy: '#0B132B',
-              slate: '#1C2541',
-              accent: '#3A506B',
-              gold: '#D97706',
-              emerald: '#059669',
-              red: '#DC2626'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; touch-action: manipulation; }
-    .drawer-slide { transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-    .scan-pulse { animation: scanPulse 1.5s infinite ease-in-out; }
-    @keyframes scanPulse {
-      0%, 100% { border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.2); }
-      50% { border-color: rgba(59, 130, 246, 1); box-shadow: 0 0 20px 4px rgba(59, 130, 246, 0.4); }
-    }
-    #reader video { object-fit: cover !important; border-radius: 0.75rem; width: 100% !important; height: 100% !important; }
-    #reader { border: none !important; }
-  </style>
+  <!-- html5-qrcode for live continuous camera scanning -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <!-- SheetJS & PapaParse for Excel/CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
-<body class="h-full bg-slate-900 text-slate-100 flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900">
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-  <!-- Toast Notification Container -->
-  <div id="toast-container" class="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-md pointer-events-none space-y-2"></div>
-
-  <!-- Header -->
-  <header class="bg-bank-navy border-b border-slate-800 sticky top-0 z-30 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black text-lg shadow-lg shadow-amber-500/20">
-          <i class="fa-solid fa-building-columns"></i>
+  <!-- Top Navigation / Header -->
+  <header class="bg-blue-900 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-800 p-2 rounded-lg border border-blue-700">
+          <svg class="w-6 h-6 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012-2m-6 9l2 2 4-4"></path>
+          </svg>
         </div>
         <div>
-          <h1 class="font-bold text-sm leading-none text-white tracking-wide">BANK ASSET VERIFIER</h1>
-          <p class="text-[10px] text-slate-400 font-medium mt-0.5">Physical Asset Verification System</p>
+          <h1 class="font-bold text-lg tracking-wide">Bank Branch Asset Verification</h1>
+          <p class="text-xs text-blue-300">Live Barcode Audit & Location Tracking</p>
         </div>
       </div>
 
-      <!-- Auditor Badge & Master Import Quick Link -->
-      <div class="flex items-center gap-2">
-        <button onclick="switchView('import')" class="hidden sm:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1 rounded-full text-xs text-amber-400 font-semibold transition">
-          <i class="fa-solid fa-file-excel"></i> Import Master List
-        </button>
-        <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700/60 text-xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-slate-300 font-semibold text-[11px]">Auditor Mode</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content Body -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 pb-24 md:pb-6 overflow-y-auto">
-
-    <!-- VIEW 1: AUDIT SCANNER & SPEED CAPTURE -->
-    <section id="view-scanner" class="view-panel space-y-4">
-      
-      <!-- Current Target Location Bar -->
-      <div class="bg-slate-800/90 border border-slate-700/70 p-3.5 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
-            <i class="fa-solid fa-location-dot text-lg"></i>
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Audit Target Location</label>
-            <div class="flex items-center gap-2 mt-0.5">
-              <select id="audit-branch" onchange="onAuditLocationChange()" class="bg-slate-900 text-white text-xs sm:text-sm font-bold rounded-lg px-2.5 py-1 border border-slate-700 focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                <option value="Kariakoo Branch">Kariakoo Branch</option>
-                <option value="Dodoma Branch">Dodoma Branch</option>
-                <option value="Kahama Branch">Kahama Branch</option>
-                <option value="Arusha Main Branch">Arusha Main Branch</option>
-                <option value="Mwanza Branch">Mwanza Branch</option>
-                <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
-              </select>
-              <span class="text-slate-500 text-xs">•</span>
-              <select id="audit-room" onchange="onAuditLocationChange()" class="bg-slate-900 text-slate-300 text-xs font-semibold rounded-lg px-2 py-1 border border-slate-700 focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                <option value="Counter 1 - Cashier">Counter 1 - Cashier</option>
-                <option value="Counter 2 - Teller">Counter 2 - Teller</option>
-                <option value="Manager Office 101">Manager Office 101</option>
-                <option value="Operations Hall">Operations Hall</option>
-                <option value="Vault & Security Safe Room">Vault Room</option>
-                <option value="Customer Lounge">Customer Lounge</option>
-                <option value="IT Server Room">IT Server Room</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 border-slate-700/60 pt-2 sm:pt-0">
-          <div class="text-right">
-            <span class="text-[10px] text-slate-400 uppercase font-bold block">Branch Completion</span>
-            <span id="branch-progress-text" class="text-xs font-extrabold text-amber-400">0 / 0 Verified</span>
-          </div>
-          <div class="w-16 bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-700">
-            <div id="branch-progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-500"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Scanning Hub Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        
-        <!-- Left: Live Camera Viewfinder & Camera Controls (7 Cols) -->
-        <div class="lg:col-span-7 bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl flex flex-col justify-between space-y-4">
-          
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span id="camera-status-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <h2 class="font-bold text-sm text-white">Live Camera Barcode Scanner</h2>
-            </div>
-            <div class="flex items-center gap-2">
-              <select id="camera-select" onchange="switchCameraDevice(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 font-medium focus:outline-none focus:ring-1 focus:ring-amber-500 max-w-[150px] truncate">
-                <option value="">Detecting Cameras...</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Camera Surface Box -->
-          <div class="relative w-full h-64 sm:h-72 rounded-xl bg-slate-950 border-2 border-slate-700 overflow-hidden flex items-center justify-center shadow-inner">
-            <!-- HTML5 QR Code Video Target Element -->
-            <div id="reader" class="w-full h-full"></div>
-
-            <!-- Detection Flash Overlay -->
-            <div id="scan-flash" class="absolute inset-0 bg-emerald-500/30 opacity-0 pointer-events-none transition-opacity duration-150 z-20"></div>
-
-            <!-- Laser Scanning Animation Bar -->
-            <div class="absolute inset-x-0 top-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] opacity-80 pointer-events-none z-10"></div>
-
-            <!-- Scanner Status Banner Overlay -->
-            <div id="camera-msg-overlay" class="absolute bottom-2 inset-x-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/70 text-center z-20">
-              <span id="camera-status-msg" class="text-[11px] font-semibold text-emerald-400">Camera active. Point at barcode to scan.</span>
-            </div>
-          </div>
-
-          <!-- Camera Stream Manual Controls -->
-          <div class="flex items-center gap-2">
-            <button id="toggle-cam-btn" onclick="toggleCameraStream()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl py-2 text-xs font-bold transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-video"></i> Restart / Toggle Camera
-            </button>
-            <label for="barcode-file" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 rounded-xl px-4 py-2 text-xs font-bold flex items-center gap-2 cursor-pointer transition">
-              <i class="fa-solid fa-file-image"></i> Photo File
-              <input type="file" id="barcode-file" accept="image/*" class="hidden" onchange="handleImageScan(this)">
-            </label>
-          </div>
-
-          <!-- Quick Simulate Tap Buttons -->
-          <div class="pt-2 border-t border-slate-700/60">
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Hardware/Manual Test Tags (Tap sample master barcodes)</label>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="quick-demo-buttons">
-              <!-- Rendered dynamically from Database -->
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Right: Manual Entry & Live Session Stream (5 Cols) -->
-        <div class="lg:col-span-5 space-y-4">
-          
-          <!-- Manual Key In -->
-          <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl">
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Direct Asset Tag Key In</label>
-            <div class="flex gap-2">
-              <input type="text" id="manual-code-input" placeholder="e.g. BK-DAR-CH-0412" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs font-mono font-bold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none uppercase">
-              <button onclick="submitManualCode()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-1 shadow-md shadow-amber-500/20">
-                <i class="fa-solid fa-bolt"></i> Verify
-              </button>
-            </div>
-          </div>
-
-          <!-- Real-Time Audit Session Stream -->
-          <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl flex flex-col h-[340px]">
-            <div class="flex items-center justify-between mb-3 border-b border-slate-700/60 pb-2">
-              <h3 class="text-xs font-bold text-slate-200">Current Session Verifications</h3>
-              <span id="session-count" class="text-[10px] font-bold text-emerald-400">0 Items Verified</span>
-            </div>
-            
-            <div id="recent-scan-stream" class="flex-1 overflow-y-auto space-y-2 pr-1">
-              <p class="text-xs text-slate-500 text-center py-10 italic">Live camera active. Scanned items appear here automatically.</p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- VIEW 2: MASTER AUDIT RECONCILIATION LIST -->
-    <section id="view-master" class="view-panel space-y-4 hidden">
-      
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-        <div>
-          <h2 class="text-base font-bold text-white">Bank Master Inventory Audit</h2>
-          <p class="text-xs text-slate-400">Reconcile database master items against actual physical counts</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="exportAuditReportCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition shadow-md flex items-center gap-2">
-            <i class="fa-solid fa-download"></i> Export Audit Report CSV
-          </button>
-        </div>
-      </div>
-
-      <!-- Filters & Search Bar -->
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-        <input type="text" id="log-search-input" oninput="renderMasterTable()" placeholder="Search tag, asset name, room..." class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
-        <select id="log-branch-filter" onchange="renderMasterTable()" class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-2 text-slate-200 focus:outline-none">
-          <option value="ALL">All Branches</option>
+      <!-- Branch Selection Selector -->
+      <div class="flex items-center gap-2 bg-blue-800/80 px-3 py-1.5 rounded-lg border border-blue-700 text-sm">
+        <span class="text-blue-300 text-xs font-semibold uppercase">Active Branch:</span>
+        <select id="active-branch-select" class="bg-blue-900 text-white font-medium rounded px-2 py-1 border border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-400">
           <option value="Kariakoo Branch">Kariakoo Branch</option>
           <option value="Dodoma Branch">Dodoma Branch</option>
           <option value="Kahama Branch">Kahama Branch</option>
@@ -240,682 +41,250 @@
           <option value="Mwanza Branch">Mwanza Branch</option>
           <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
         </select>
-        <select id="log-status-filter" onchange="renderMasterTable()" class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-2 text-slate-200 focus:outline-none">
-          <option value="ALL">All Statuses</option>
-          <option value="Verified">Verified</option>
-          <option value="Transferred & Verified">Transferred & Verified</option>
-          <option value="Pending">Pending Audit</option>
-          <option value="Missing">Flagged Missing</option>
-        </select>
-        <select id="log-condition-filter" onchange="renderMasterTable()" class="bg-slate-800 border border-slate-700 text-xs rounded-xl px-3 py-2 text-slate-200 focus:outline-none">
-          <option value="ALL">All Conditions</option>
-          <option value="Excellent">Excellent</option>
-          <option value="Good">Good</option>
-          <option value="Fair">Fair</option>
-          <option value="Needs Repair">Needs Repair</option>
-          <option value="Damaged / Write-off">Damaged / Write-off</option>
-        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- LEFT COLUMN: Live Camera Scanner & Quick Controls (5 Cols) -->
+    <section class="lg:col-span-5 flex flex-col gap-5">
+      
+      <!-- Stage 1: Live Camera Scanner Card -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+        <div class="bg-slate-900 text-white px-4 py-3 flex justify-between items-center">
+          <h2 class="font-semibold text-sm flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Live Barcode Scanner
+          </h2>
+          <span id="camera-status-badge" class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Active Camera</span>
+        </div>
+
+        <!-- Camera Viewport Box -->
+        <div class="relative bg-black w-full h-64 sm:h-72 flex items-center justify-center overflow-hidden">
+          <div id="reader" class="w-full h-full"></div>
+          <!-- Target Overlay Box -->
+          <div class="absolute inset-x-12 inset-y-16 border-2 border-dashed border-emerald-400/70 rounded-xl pointer-events-none flex items-center justify-center">
+            <span class="text-emerald-300 text-xs bg-black/60 px-2 py-1 rounded backdrop-blur-sm">Align Barcode Here</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-50 border-t border-slate-100 flex flex-col gap-3">
+          <div class="flex gap-2">
+            <button id="start-camera-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-xl text-sm transition shadow-sm">Start Camera</button>
+            <button id="stop-camera-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium py-2 px-3 rounded-xl text-sm transition">Pause Camera</button>
+          </div>
+
+          <!-- Manual Barcode Input Fallback -->
+          <div class="pt-2 border-t border-slate-200">
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Manual Barcode Test Input</label>
+            <div class="flex gap-2">
+              <input type="text" id="manual-barcode-input" placeholder="Type barcode (e.g. 6297000907000)" class="flex-1 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono">
+              <button id="manual-submit-btn" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition">Verify</button>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Test Barcode: <span class="font-mono text-blue-600 font-semibold cursor-pointer underline" onclick="document.getElementById('manual-barcode-input').value='6297000907000'">6297000907000</span> (Table)</p>
+          </div>
+        </div>
       </div>
 
-      <!-- Inventory Reconciliation Table -->
-      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-900 text-slate-400 font-bold uppercase text-[10px] border-b border-slate-700">
-              <tr>
-                <th class="p-3">Asset Barcode</th>
-                <th class="p-3">Item Description</th>
-                <th class="p-3">Expected Location</th>
-                <th class="p-3">Audit Status</th>
-                <th class="p-3">Condition</th>
-                <th class="p-3 text-center">Quick Action</th>
-              </tr>
-            </thead>
-            <tbody id="master-table-body" class="divide-y divide-slate-800/80">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
+      <!-- Master Database Management Card -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex flex-col gap-3">
+        <h3 class="font-semibold text-sm text-slate-700">Master Asset Database Controls</h3>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <label class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-300 text-center cursor-pointer transition">
+            Import Excel / CSV List
+            <input type="file" id="import-excel-file" accept=".csv, .xlsx, .xls" class="hidden">
+          </label>
+          <button id="download-template-btn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl border border-slate-300 transition">
+            Template
+          </button>
         </div>
       </div>
 
     </section>
 
-    <!-- VIEW 3: EXCEL / CSV IMPORT & DATABASE SETUP -->
-    <section id="view-import" class="view-panel space-y-4 hidden">
-      <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+    <!-- RIGHT COLUMN: Verification & Audit Table (7 Cols) -->
+    <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 flex flex-col">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-3 border-b border-slate-100">
         <div>
-          <h2 class="text-base font-bold text-white">Database & Excel Master Import Hub</h2>
-          <p class="text-xs text-slate-400">Load or replace bank asset lists directly from Excel (.xlsx) or CSV files</p>
+          <h2 class="font-bold text-base text-slate-800">Branch Audit & Asset Verification</h2>
+          <p class="text-xs text-slate-500">Real-time reconciliation of scanned inventory</p>
         </div>
-        <button onclick="downloadSampleTemplate()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-600 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-download"></i> Download CSV Template
+        <div class="w-full sm:w-auto flex items-center gap-2">
+          <input type="text" id="search-input" placeholder="Search barcode, name, status..." class="border border-slate-300 rounded-xl px-3 py-1.5 text-sm w-full sm:w-56 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+
+      <!-- Audit Progress Stats Bar -->
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-center">
+          <span class="block text-xs font-semibold text-blue-600 uppercase">Total Items</span>
+          <span id="stat-total" class="text-lg font-bold text-blue-900">0</span>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-center">
+          <span class="block text-xs font-semibold text-emerald-600 uppercase">Verified</span>
+          <span id="stat-verified" class="text-lg font-bold text-emerald-900">0</span>
+        </div>
+        <div class="bg-amber-50 border border-amber-100 p-3 rounded-xl text-center">
+          <span class="block text-xs font-semibold text-amber-600 uppercase">Pending</span>
+          <span id="stat-pending" class="text-lg font-bold text-amber-900">0</span>
+        </div>
+      </div>
+
+      <!-- Asset Records Table -->
+      <div class="overflow-x-auto flex-1 border border-slate-200 rounded-xl min-h-[300px]">
+        <table class="min-w-full text-left border-collapse text-sm">
+          <thead class="bg-slate-50 text-slate-600 uppercase text-xs font-semibold border-b border-slate-200">
+            <tr>
+              <th class="p-3">Barcode</th>
+              <th class="p-3">Asset Name</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Condition</th>
+              <th class="p-3">Branch / Location</th>
+              <th class="p-3 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-table-body" class="divide-y divide-slate-100">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-100">
+        <button id="reset-db-btn" class="text-xs text-rose-600 hover:underline font-medium">Reset Default Database</button>
+        <button id="export-audit-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition shadow-sm">
+          Export Audit Report (CSV)
         </button>
       </div>
 
-      <!-- Drag and Drop Dropzone -->
-      <div class="bg-slate-800/40 border-2 border-dashed border-slate-700 hover:border-amber-500 rounded-2xl p-6 sm:p-10 text-center transition space-y-3 relative">
-        <input type="file" id="excel-import-file" accept=".csv, .xlsx, .xls" onchange="handleExcelImport(this)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
-        <div class="w-16 h-16 mx-auto bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl">
-          <i class="fa-solid fa-file-excel"></i>
-        </div>
-        <div>
-          <h3 class="text-sm font-bold text-white">Drag & drop your Bank Master Inventory File here</h3>
-          <p class="text-xs text-slate-400 mt-1">Supports Microsoft Excel (.xlsx, .xls) and standard CSV files</p>
-        </div>
-        <button class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition shadow-md">
-          Browse File Computer
-        </button>
-      </div>
-
-      <!-- Format Guidance Card -->
-      <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl space-y-2 text-xs">
-        <h4 class="font-bold text-slate-200">Required Column Headers in your Excel / CSV:</h4>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-400 font-mono text-[11px] pt-1">
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">1. Barcode / Asset Tag</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">2. Item Name</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">3. Category</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">4. Serial Number</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">5. Branch</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">6. Room / Office</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">7. Standard Condition</div>
-          <div class="bg-slate-900 p-2 rounded-lg border border-slate-800">8. Verification Status</div>
-        </div>
-      </div>
-
-      <!-- Backup / Reset Actions -->
-      <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs">
-        <button onclick="resetToDefaultDatabase()" class="text-red-400 hover:underline font-semibold">
-          <i class="fa-solid fa-rotate-left"></i> Reset to Default Bank Master Database
-        </button>
-        <span id="import-status-text" class="text-slate-400 italic">Current Database Records: <strong id="db-record-count" class="text-amber-400">8 Items</strong></span>
-      </div>
-    </section>
-
-    <!-- VIEW 4: EXECUTIVE BRANCH ANALYTICS -->
-    <section id="view-reports" class="view-panel space-y-4 hidden">
-      <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-        <h2 class="text-base font-bold text-white">Branch Verification Executive Analytics</h2>
-        <p class="text-xs text-slate-400">Real-time audit completion stats, relocation tracking & condition health</p>
-      </div>
-
-      <!-- Metric Cards Grid -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60">
-          <span class="text-[10px] font-bold text-slate-400 uppercase">Total Bank Assets</span>
-          <p id="stat-total-master" class="text-2xl font-black text-white mt-1">0</p>
-        </div>
-        <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60">
-          <span class="text-[10px] font-bold text-emerald-400 uppercase">Verified Items</span>
-          <p id="stat-verified-count" class="text-2xl font-black text-emerald-400 mt-1">0</p>
-        </div>
-        <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60">
-          <span class="text-[10px] font-bold text-amber-400 uppercase">Pending Verification</span>
-          <p id="stat-pending-count" class="text-2xl font-black text-amber-400 mt-1">0</p>
-        </div>
-        <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/60">
-          <span class="text-[10px] font-bold text-red-400 uppercase">Needs Repair / Damaged</span>
-          <p id="stat-damaged-count" class="text-2xl font-black text-red-400 mt-1">0</p>
-        </div>
-      </div>
-
-      <!-- Branch Audit Progress Breakdown List -->
-      <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl space-y-3">
-        <h3 class="text-xs font-bold text-slate-200">Branch Verification Breakdown</h3>
-        <div id="branch-breakdown-list" class="space-y-3">
-          <!-- Rendered via JS -->
-        </div>
-      </div>
     </section>
 
   </main>
 
-  <!-- ZERO-TYPING FAST AUDIT MODAL DRAWER -->
-  <div id="quick-drawer-backdrop" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity duration-200 flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div id="quick-drawer" class="w-full max-w-lg bg-slate-900 border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl space-y-4 drawer-slide translate-y-full sm:translate-y-0 sm:scale-95">
-      
-      <!-- Drawer Header -->
-      <div class="flex items-start justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg font-bold">
-            <i class="fa-solid fa-box-archive"></i>
-          </div>
-          <div>
-            <span id="drawer-asset-code" class="font-mono text-xs font-extrabold text-amber-400 block">BK-DAR-CH-0412</span>
-            <h3 id="drawer-asset-name" class="font-bold text-base text-white leading-tight">Ergonomic Teller Chair</h3>
-          </div>
-        </div>
-        <button onclick="closeQuickDrawer()" class="text-slate-400 hover:text-white p-1 text-lg">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- Asset Serial & Expected Info -->
-      <div class="grid grid-cols-2 gap-2 text-xs bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+  <!-- MODAL / DRAWER FOR CONDITION & RELOCATION VERIFICATION -->
+  <div id="verification-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 transform transition-all">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b">
         <div>
-          <span class="text-[10px] text-slate-500 uppercase font-bold block">Assigned Serial No</span>
-          <span id="drawer-asset-sn" class="font-mono font-medium text-slate-300">SN-99812-KAR</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Asset Verified</span>
+          <h3 id="modal-asset-name" class="font-bold text-lg text-slate-900 mt-1">Asset Name</h3>
         </div>
+        <button id="close-modal-btn" class="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">&times;</button>
+      </div>
+
+      <div class="space-y-4">
         <div>
-          <span class="text-[10px] text-slate-500 uppercase font-bold block">Expected Location</span>
-          <span id="drawer-expected-loc" class="font-medium text-slate-300">Kariakoo Branch</span>
-        </div>
-      </div>
-
-      <!-- Step 1: Select Item Condition (1-Tap Buttons) -->
-      <div>
-        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">1. Select Physical Condition (1-Tap)</label>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="condition-btn-group">
-          <button onclick="selectCondition('Excellent')" class="cond-btn p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 hover:border-emerald-500 text-left transition text-xs flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <span class="font-bold text-slate-200">Excellent</span>
-          </button>
-          <button onclick="selectCondition('Good')" class="cond-btn p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 hover:border-blue-500 text-left transition text-xs flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-            <span class="font-bold text-slate-200">Good</span>
-          </button>
-          <button onclick="selectCondition('Fair')" class="cond-btn p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 hover:border-amber-500 text-left transition text-xs flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-            <span class="font-bold text-slate-200">Fair</span>
-          </button>
-          <button onclick="selectCondition('Needs Repair')" class="cond-btn p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 hover:border-orange-500 text-left transition text-xs flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-            <span class="font-bold text-slate-200">Needs Repair</span>
-          </button>
-          <button onclick="selectCondition('Damaged / Write-off')" class="cond-btn p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 hover:border-red-500 text-left transition text-xs flex items-center gap-2 col-span-2 sm:col-span-1">
-            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span class="font-bold text-slate-200">Damaged</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 2: Location Verification & Relocation Toggle -->
-      <div>
-        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">2. Physical Location Status</label>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <label class="cursor-pointer">
-            <input type="radio" name="locMoveToggle" value="STAY" checked onchange="toggleLocationFields()" class="sr-only peer">
-            <div class="p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 peer-checked:border-amber-500 peer-checked:bg-amber-500/10 text-center text-slate-300 font-semibold transition">
-              At Current <span id="drawer-current-room-text" class="text-amber-400">Target Room</span>
-            </div>
-          </label>
-          <label class="cursor-pointer">
-            <input type="radio" name="locMoveToggle" value="MOVE" onchange="toggleLocationFields()" class="sr-only peer">
-            <div class="p-2.5 rounded-xl border-2 border-slate-800 bg-slate-950 peer-checked:border-indigo-500 peer-checked:bg-indigo-500/10 text-center text-slate-300 font-semibold transition">
-              Relocated / Transferred
-            </div>
-          </label>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Scanned Barcode</label>
+          <input type="text" id="modal-barcode" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono text-slate-700">
         </div>
 
-        <div id="relocate-selects" class="hidden mt-2 grid grid-cols-2 gap-2">
-          <select id="drawer-new-branch" class="bg-slate-950 text-white text-xs border border-slate-700 rounded-xl p-2 font-medium">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Update Item Condition</label>
+          <select id="modal-condition" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+            <option value="Excellent">Excellent</option>
+            <option value="Good" selected>Good</option>
+            <option value="Fair">Fair</option>
+            <option value="Needs Repair">Needs Repair</option>
+            <option value="Damaged">Damaged</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Assigned Branch / Location</label>
+          <select id="modal-location" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
             <option value="Kariakoo Branch">Kariakoo Branch</option>
             <option value="Dodoma Branch">Dodoma Branch</option>
             <option value="Kahama Branch">Kahama Branch</option>
             <option value="Arusha Main Branch">Arusha Main Branch</option>
             <option value="Mwanza Branch">Mwanza Branch</option>
             <option value="Dar es Salaam HQ">Dar es Salaam HQ</option>
-          </select>
-          <select id="drawer-new-room" class="bg-slate-950 text-white text-xs border border-slate-700 rounded-xl p-2 font-medium">
-            <option value="Counter 1 - Cashier">Counter 1 - Cashier</option>
-            <option value="Counter 2 - Teller">Counter 2 - Teller</option>
-            <option value="Manager Office 101">Manager Office 101</option>
-            <option value="Operations Hall">Operations Hall</option>
-            <option value="Vault & Security Safe Room">Vault Room</option>
-            <option value="Customer Lounge">Customer Lounge</option>
-            <option value="IT Server Room">IT Server Room</option>
+            <option value="Server Room / Storage">Server Room / Storage</option>
           </select>
         </div>
       </div>
 
-      <!-- Submit Button -->
-      <button id="commit-verify-btn" onclick="commitQuickVerification()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3 rounded-xl transition text-sm shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
-        <i class="fa-solid fa-circle-check text-base"></i> CONFIRM & VERIFY ASSET
-      </button>
-
+      <div class="mt-6 flex gap-3">
+        <button id="cancel-verification-btn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl text-sm transition">Cancel</button>
+        <button id="confirm-verification-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-sm">Confirm & Save</button>
+      </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar for Mobile Handheld Auditing -->
-  <nav class="fixed bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-800 z-40 backdrop-blur-md">
-    <div class="max-w-md mx-auto grid grid-cols-4 h-16 text-center text-[10px] font-bold">
-      <button onclick="switchView('scanner')" id="tab-scanner" class="flex flex-col items-center justify-center text-amber-400 gap-1 transition">
-        <i class="fa-solid fa-barcode text-lg"></i>
-        <span>Scan</span>
-      </button>
-      <button onclick="switchView('master')" id="tab-master" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 gap-1 transition">
-        <i class="fa-solid fa-clipboard-check text-lg"></i>
-        <span>Audit List</span>
-      </button>
-      <button onclick="switchView('import')" id="tab-import" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 gap-1 transition">
-        <i class="fa-solid fa-file-excel text-lg"></i>
-        <span>Excel Import</span>
-      </button>
-      <button onclick="switchView('reports')" id="tab-reports" class="flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 gap-1 transition">
-        <i class="fa-solid fa-chart-pie text-lg"></i>
-        <span>Reports</span>
-      </button>
-    </div>
-  </nav>
-
   <script>
-    // --- DEFAULT PRE-LOADED BANK MASTER DATABASE ---
-    const DEFAULT_MASTER_DATABASE = {
-      "BK-DAR-CH-0412": { name: "Ergonomic Teller Mesh Chair", category: "Furniture", serial: "SN-99812-KAR", branch: "Kariakoo Branch", room: "Counter 2 - Teller", stdCondition: "Good", auditStatus: "Pending" },
-      "BK-DAR-TV-1092": { name: "65\" Commercial Display Screen", category: "AV Equipment", serial: "SN-TV-65-881", branch: "Kariakoo Branch", room: "Customer Lounge", stdCondition: "Excellent", auditStatus: "Pending" },
-      "BK-DOD-PR-8801": { name: "Heavy Duty Thermal Receipt Printer", category: "IT Hardware", serial: "SN-PR-1102-DOD", branch: "Dodoma Branch", room: "Operations Hall", stdCondition: "Good", auditStatus: "Pending" },
-      "BK-KAH-SC-3341": { name: "High-Speed Document Duplex Scanner", category: "IT Hardware", serial: "SN-SC-4412-KAH", branch: "Kahama Branch", room: "Counter 1 - Cashier", stdCondition: "Fair", auditStatus: "Pending" },
-      "BK-DAR-LP-9011": { name: "Manager ThinkPad Laptop Core i7", category: "IT Hardware", serial: "SN-TP-9921-KAR", branch: "Kariakoo Branch", room: "Manager Office 101", stdCondition: "Excellent", auditStatus: "Pending" },
-      "BK-ARU-VS-0012": { name: "Dual-Lock Vault Security Safe Box", category: "Security", serial: "SN-VS-0012-ARU", branch: "Arusha Main Branch", room: "Vault & Security Safe Room", stdCondition: "Excellent", auditStatus: "Pending" },
-      "BK-MWZ-TB-4410": { name: "Executive Wooden Meeting Table", category: "Furniture", serial: "SN-TB-4410-MWZ", branch: "Mwanza Branch", room: "Manager Office 101", stdCondition: "Good", auditStatus: "Pending" },
-      "BK-DAR-CC-7712": { name: "Automated Currency Cash Counter Machine", category: "Banking Hardware", serial: "SN-CC-7712-KAR", branch: "Kariakoo Branch", room: "Counter 1 - Cashier", stdCondition: "Needs Repair", auditStatus: "Pending" }
-    };
-
-    // State Variables
-    let bankMasterDatabase = JSON.parse(localStorage.getItem('bank_master_db') || 'null') || { ...DEFAULT_MASTER_DATABASE };
-    let verifiedSessionCount = 0;
-    let activePendingAsset = null;
-    let selectedCondition = "Good";
-
-    // Camera State Variables
-    let html5QrCodeScanner = null;
-    let availableCameras = [];
-    let selectedCameraId = null;
-    let isScanningActive = false;
-    let scanCooldown = false;
-
-    window.onload = function() {
-      renderDemoButtons();
-      renderMasterTable();
-      updateAnalytics();
-      updateBranchProgress();
-
-      // Initialize Camera Engine automatically
-      initLiveCameraScanner();
-    };
-
-    function saveDatabaseState() {
-      localStorage.setItem('bank_master_db', JSON.stringify(bankMasterDatabase));
-    }
-
-    // --- HTML5-QRCODE LIVE CAMERA CONTROLLER ---
-    function initLiveCameraScanner() {
-      Html5Qrcode.getCameras().then(cameras => {
-        availableCameras = cameras;
-        const cameraSelect = document.getElementById('camera-select');
-        cameraSelect.innerHTML = '';
-
-        if (cameras && cameras.length > 0) {
-          // Default to rear environment camera if available
-          let rearCam = cameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('rear') || c.label.toLowerCase().includes('environment'));
-          selectedCameraId = rearCam ? rearCam.id : cameras[0].id;
-
-          cameras.forEach(cam => {
-            const opt = document.createElement('option');
-            opt.value = cam.id;
-            opt.innerText = cam.label || `Camera ${cameraSelect.children.length + 1}`;
-            if (cam.id === selectedCameraId) opt.selected = true;
-            cameraSelect.appendChild(opt);
-          });
-
-          startCameraStream(selectedCameraId);
-        } else {
-          // Fallback facing mode if labels not resolved
-          startCameraStream({ facingMode: "environment" });
-        }
-      }).catch(err => {
-        console.warn("Camera device enumeration failed, trying direct environment stream:", err);
-        startCameraStream({ facingMode: "environment" });
-      });
-    }
-
-    function startCameraStream(cameraIdOrConfig) {
-      if (html5QrCodeScanner) {
-        stopCameraStream().then(() => runCameraEngine(cameraIdOrConfig));
-      } else {
-        runCameraEngine(cameraIdOrConfig);
+    // INITIAL HARDCODED DATABASE (ONLY THE REQUESTED BARCODE FOR TESTING)
+    const DEFAULT_MASTER_DATABASE = [
+      {
+        barcode: "6297000907000",
+        name: "Table",
+        status: "Pending",
+        condition: "Good",
+        location: "Kariakoo Branch",
+        lastUpdated: "-"
       }
+    ];
+
+    let inventory = JSON.parse(localStorage.getItem('bank_asset_inventory_v2')) || DEFAULT_MASTER_DATABASE;
+    let html5QrCode = null;
+    let activeScannedBarcode = null;
+
+    // Save & Render
+    function saveData() {
+      localStorage.setItem('bank_asset_inventory_v2', JSON.stringify(inventory));
+      renderTable();
+      updateStats();
     }
 
-    function runCameraEngine(cameraIdOrConfig) {
-      html5QrCodeScanner = new Html5Qrcode("reader");
-      const config = { 
-        fps: 15, 
-        qrbox: { width: 250, height: 180 },
-        aspectRatio: 1.0
-      };
+    function updateStats() {
+      const total = inventory.length;
+      const verified = inventory.filter(i => i.status === 'Verified').length;
+      const pending = total - verified;
 
-      const statusMsg = document.getElementById('camera-status-msg');
-      const statusIndicator = document.getElementById('camera-status-indicator');
-
-      html5QrCodeScanner.start(
-        cameraIdOrConfig,
-        config,
-        onBarcodeDetected,
-        onScanFailure
-      ).then(() => {
-        isScanningActive = true;
-        if (statusMsg) statusMsg.innerText = "Camera active. Ready for barcodes.";
-        if (statusIndicator) statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-      }).catch(err => {
-        console.error("Error starting camera stream:", err);
-        isScanningActive = false;
-        if (statusMsg) statusMsg.innerText = "Camera error / Permission denied. Use manual key-in below.";
-        if (statusIndicator) statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-red-500";
-      });
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-verified').innerText = verified;
+      document.getElementById('stat-pending').innerText = pending;
     }
 
-    function stopCameraStream() {
-      if (html5QrCodeScanner && isScanningActive) {
-        return html5QrCodeScanner.stop().then(() => {
-          isScanningActive = false;
-        }).catch(err => console.warn("Error stopping scanner:", err));
-      }
-      return Promise.resolve();
-    }
-
-    function toggleCameraStream() {
-      if (isScanningActive) {
-        stopCameraStream();
-        document.getElementById('camera-status-msg').innerText = "Camera paused.";
-        document.getElementById('camera-status-indicator').className = "w-2.5 h-2.5 rounded-full bg-amber-500";
-      } else {
-        const camSelect = document.getElementById('camera-select');
-        const target = camSelect.value || { facingMode: "environment" };
-        startCameraStream(target);
-      }
-    }
-
-    function switchCameraDevice(camId) {
-      if (camId) {
-        selectedCameraId = camId;
-        startCameraStream(camId);
-      }
-    }
-
-    // Handle Live Barcode Hit
-    function onBarcodeDetected(decodedText) {
-      if (scanCooldown) return;
-      scanCooldown = true;
-
-      // Play subtle success audio feedback beep using Web Audio API
-      playScanBeepSound();
-
-      // Trigger visual camera green flash
-      const flash = document.getElementById('scan-flash');
-      if (flash) {
-        flash.style.opacity = '1';
-        setTimeout(() => flash.style.opacity = '0', 250);
-      }
-
-      // Process Code & Open Verification Drawer
-      triggerQuickScan(decodedText);
-
-      // Cooldown buffer to avoid accidental duplicate popups
-      setTimeout(() => {
-        scanCooldown = false;
-      }, 1500);
-    }
-
-    function onScanFailure(error) {
-      // Quiet fail during continuous scan cycle
-    }
-
-    function playScanBeepSound() {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.12);
-      } catch (e) {
-        // AudioContext may be restricted by browser policy
-      }
-    }
-
-    // Tab View Switching
-    function switchView(viewName) {
-      document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`view-${viewName}`).classList.remove('hidden');
-
-      const tabs = ['scanner', 'master', 'import', 'reports'];
-      tabs.forEach(t => {
-        const btn = document.getElementById(`tab-${t}`);
-        if (t === viewName) {
-          btn.className = "flex flex-col items-center justify-center text-amber-400 gap-1 transition font-bold";
-        } else {
-          btn.className = "flex flex-col items-center justify-center text-slate-400 hover:text-slate-200 gap-1 transition";
-        }
-      });
-    }
-
-    // Render Quick Barcode Buttons for Rapid Demo
-    function renderDemoButtons() {
-      const container = document.getElementById('quick-demo-buttons');
-      container.innerHTML = '';
-      
-      const keys = Object.keys(bankMasterDatabase).slice(0, 6);
-      keys.forEach(code => {
-        const item = bankMasterDatabase[code];
-        const btn = document.createElement('button');
-        btn.onclick = () => triggerQuickScan(code);
-        btn.className = "bg-slate-900 hover:bg-slate-800 text-left p-2 rounded-lg border border-slate-700 text-xs transition group";
-        btn.innerHTML = `
-          <span class="block font-mono font-bold text-amber-400 text-[11px]">${code}</span>
-          <span class="text-[10px] text-slate-400 truncate block">${item.name}</span>
-        `;
-        container.appendChild(btn);
-      });
-    }
-
-    // On Location Select Change
-    function onAuditLocationChange() {
-      updateBranchProgress();
-    }
-
-    // Trigger Scan (Simulated, Camera, or Manual Entry)
-    function triggerQuickScan(barcode) {
-      if (!barcode) return;
-      const cleanCode = barcode.trim().toUpperCase();
-      
-      const currentBranch = document.getElementById('audit-branch').value;
-      const currentRoom = document.getElementById('audit-room').value;
-
-      let masterItem = bankMasterDatabase[cleanCode];
-
-      if (!masterItem) {
-        // Unregistered item fallback
-        masterItem = {
-          name: `Unregistered Bank Asset (${cleanCode})`,
-          category: "General Asset",
-          serial: "SN-UNKNOWN",
-          branch: currentBranch,
-          room: currentRoom,
-          stdCondition: "Good",
-          auditStatus: "Pending"
-        };
-      }
-
-      activePendingAsset = {
-        barcode: cleanCode,
-        ...masterItem,
-        auditBranch: currentBranch,
-        auditRoom: currentRoom
-      };
-
-      // Populate Quick Drawer Modal
-      document.getElementById('drawer-asset-code').innerText = activePendingAsset.barcode;
-      document.getElementById('drawer-asset-name').innerText = activePendingAsset.name;
-      document.getElementById('drawer-asset-sn').innerText = activePendingAsset.serial;
-      document.getElementById('drawer-expected-loc').innerText = `${activePendingAsset.branch} (${activePendingAsset.room})`;
-      document.getElementById('drawer-current-room-text').innerText = `${currentRoom}`;
-      
-      document.getElementById('drawer-new-branch').value = currentBranch;
-      document.getElementById('drawer-new-room').value = currentRoom;
-
-      selectCondition(activePendingAsset.stdCondition || "Good");
-      openQuickDrawer();
-    }
-
-    function submitManualCode() {
-      const val = document.getElementById('manual-code-input').value;
-      if (val) {
-        triggerQuickScan(val);
-        document.getElementById('manual-code-input').value = '';
-      }
-    }
-
-    // Select Condition 1-Tap Buttons
-    function selectCondition(cond) {
-      selectedCondition = cond;
-      const buttons = document.querySelectorAll('#condition-btn-group .cond-btn');
-      buttons.forEach(btn => {
-        if (btn.innerText.includes(cond)) {
-          btn.classList.add('border-amber-500', 'bg-amber-500/10');
-          btn.classList.remove('border-slate-800');
-        } else {
-          btn.classList.remove('border-amber-500', 'bg-amber-500/10');
-          btn.classList.add('border-slate-800');
-        }
-      });
-    }
-
-    function toggleLocationFields() {
-      const isMove = document.querySelector('input[name="locMoveToggle"]:checked').value === 'MOVE';
-      const container = document.getElementById('relocate-selects');
-      if (isMove) {
-        container.classList.remove('hidden');
-      } else {
-        container.classList.add('hidden');
-      }
-    }
-
-    // 1-Tap Commit Verification
-    function commitQuickVerification() {
-      if (!activePendingAsset) return;
-
-      const isMoved = document.querySelector('input[name="locMoveToggle"]:checked').value === 'MOVE';
-      let finalBranch = activePendingAsset.auditBranch;
-      let finalRoom = activePendingAsset.auditRoom;
-
-      if (isMoved) {
-        finalBranch = document.getElementById('drawer-new-branch').value;
-        finalRoom = document.getElementById('drawer-new-room').value;
-      }
-
-      const timestamp = new Date().toLocaleString();
-
-      // Update Database Entry directly
-      bankMasterDatabase[activePendingAsset.barcode] = {
-        name: activePendingAsset.name,
-        category: activePendingAsset.category,
-        serial: activePendingAsset.serial,
-        branch: finalBranch,
-        room: finalRoom,
-        stdCondition: selectedCondition,
-        auditStatus: isMoved ? "Transferred & Verified" : "Verified",
-        verifiedAt: timestamp
-      };
-
-      saveDatabaseState();
-      verifiedSessionCount++;
-
-      closeQuickDrawer();
-      showToast(`Verified: ${activePendingAsset.name} (${selectedCondition})`, "success");
-      
-      renderMasterTable();
-      updateAnalytics();
-      updateBranchProgress();
-      renderRecentStream({
-        barcode: activePendingAsset.barcode,
-        name: activePendingAsset.name,
-        branch: finalBranch,
-        room: finalRoom,
-        condition: selectedCondition,
-        timestamp: timestamp
-      });
-    }
-
-    // Render Recent Stream Item
-    function renderRecentStream(item) {
-      const stream = document.getElementById('recent-scan-stream');
-      const countEl = document.getElementById('session-count');
-      countEl.innerText = `${verifiedSessionCount} Items Verified`;
-
-      const itemEl = document.createElement('div');
-      itemEl.className = "bg-slate-900 border border-slate-700/80 p-2.5 rounded-xl flex items-center justify-between text-xs";
-      itemEl.innerHTML = `
-        <div>
-          <span class="font-mono font-bold text-amber-400 text-[11px] block">${item.barcode}</span>
-          <span class="font-bold text-white text-xs">${item.name}</span>
-          <span class="text-[10px] text-slate-400 block">${item.branch} • ${item.room}</span>
-        </div>
-        <div class="text-right">
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${getConditionBadge(item.condition)}">${item.condition}</span>
-          <span class="text-[9px] text-slate-500 block mt-1">${item.timestamp.split(',')[1]}</span>
-        </div>
-      `;
-
-      if (stream.querySelector('p')) stream.innerHTML = '';
-      stream.insertBefore(itemEl, stream.firstChild);
-    }
-
-    // Render Master Inventory Reconciliation Table
-    function renderMasterTable() {
-      const tbody = document.getElementById('master-table-body');
+    function renderTable(filter = '') {
+      const tbody = document.getElementById('inventory-table-body');
       tbody.innerHTML = '';
 
-      const query = document.getElementById('log-search-input').value.toLowerCase();
-      const branchFilter = document.getElementById('log-branch-filter').value;
-      const statusFilter = document.getElementById('log-status-filter').value;
-      const condFilter = document.getElementById('log-condition-filter').value;
+      const query = filter.toLowerCase();
+      const filtered = inventory.filter(item => 
+        item.barcode.toLowerCase().includes(query) ||
+        item.name.toLowerCase().includes(query) ||
+        item.location.toLowerCase().includes(query) ||
+        item.status.toLowerCase().includes(query)
+      );
 
-      const keys = Object.keys(bankMasterDatabase);
-      const filteredKeys = keys.filter(code => {
-        const item = bankMasterDatabase[code];
-        const matchesQuery = code.toLowerCase().includes(query) || item.name.toLowerCase().includes(query) || item.room.toLowerCase().includes(query);
-        const matchesBranch = branchFilter === 'ALL' || item.branch === branchFilter;
-        const matchesStatus = statusFilter === 'ALL' || (item.auditStatus || 'Pending') === statusFilter;
-        const matchesCond = condFilter === 'ALL' || item.stdCondition === condFilter;
-        return matchesQuery && matchesBranch && matchesStatus && matchesCond;
-      });
-
-      document.getElementById('db-record-count').innerText = `${keys.length} Items`;
-
-      if (filteredKeys.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">No matching master inventory records found.</td></tr>`;
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 text-sm">No matching asset records found. Try scanning or importing master list.</td></tr>`;
         return;
       }
 
-      filteredKeys.forEach(code => {
-        const item = bankMasterDatabase[code];
-        const status = item.auditStatus || 'Pending';
-        
+      filtered.forEach((item, index) => {
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-800/40 transition";
+        tr.className = index % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-50';
+
+        const isVerified = item.status === 'Verified';
+        const badgeClass = isVerified 
+          ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
+          : 'bg-amber-100 text-amber-800 border-amber-200';
+
         tr.innerHTML = `
-          <td class="p-3 font-mono font-bold text-amber-400">${code}</td>
+          <td class="p-3 font-mono font-medium text-blue-600 text-xs">${item.barcode}</td>
+          <td class="p-3 font-medium text-slate-800 text-sm">${item.name}</td>
           <td class="p-3">
-            <span class="font-bold text-white block">${item.name}</span>
-            <span class="text-[10px] text-slate-400 font-mono">${item.serial} • ${item.category}</span>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeClass}">
+              ${item.status}
+            </span>
           </td>
-          <td class="p-3">
-            <span class="text-slate-200 block">${item.branch}</span>
-            <span class="text-[10px] text-slate-400">${item.room}</span>
-          </td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${getStatusBadge(status)}">${status}</span>
-          </td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${getConditionBadge(item.stdCondition)}">${item.stdCondition}</span>
-          </td>
+          <td class="p-3 text-slate-600 text-xs font-medium">${item.condition}</td>
+          <td class="p-3 text-slate-600 text-xs">${item.location}</td>
           <td class="p-3 text-center">
-            <button onclick="triggerQuickScan('${code}')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-700 transition">
-              Verify
+            <button onclick="openVerificationModal('${item.barcode}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium px-3 py-1 rounded-lg text-xs transition">
+              ${isVerified ? 'Edit' : 'Verify'}
             </button>
           </td>
         `;
@@ -923,217 +292,211 @@
       });
     }
 
-    // Analytics Calculation
-    function updateAnalytics() {
-      const keys = Object.keys(bankMasterDatabase);
-      const totalMaster = keys.length;
-      let verifiedCount = 0;
-      let damagedCount = 0;
+    // Modal Control
+    function openVerificationModal(barcode) {
+      const item = inventory.find(i => i.barcode === barcode);
+      if (!item) return;
 
-      keys.forEach(k => {
-        const item = bankMasterDatabase[k];
-        if (item.auditStatus === 'Verified' || item.auditStatus === 'Transferred & Verified') verifiedCount++;
-        if (item.stdCondition && (item.stdCondition.includes('Needs Repair') || item.stdCondition.includes('Damaged'))) damagedCount++;
-      });
+      activeScannedBarcode = barcode;
+      document.getElementById('modal-asset-name').innerText = item.name;
+      document.getElementById('modal-barcode').value = item.barcode;
+      document.getElementById('modal-condition').value = item.condition || 'Good';
+      document.getElementById('modal-location').value = item.location || document.getElementById('active-branch-select').value;
 
-      const pendingCount = Math.max(0, totalMaster - verifiedCount);
-
-      document.getElementById('stat-total-master').innerText = totalMaster;
-      document.getElementById('stat-verified-count').innerText = verifiedCount;
-      document.getElementById('stat-pending-count').innerText = pendingCount;
-      document.getElementById('stat-damaged-count').innerText = damagedCount;
-
-      // Branch Breakdown Metrics
-      const branches = ["Kariakoo Branch", "Dodoma Branch", "Kahama Branch", "Arusha Main Branch", "Mwanza Branch", "Dar es Salaam HQ"];
-      const breakdownContainer = document.getElementById('branch-breakdown-list');
-      breakdownContainer.innerHTML = '';
-
-      branches.forEach(b => {
-        const branchMasterCount = keys.filter(k => bankMasterDatabase[k].branch === b).length;
-        const branchVerifiedCount = keys.filter(k => bankMasterDatabase[k].branch === b && (bankMasterDatabase[k].auditStatus === 'Verified' || bankMasterDatabase[k].auditStatus === 'Transferred & Verified')).length;
-        const percent = branchMasterCount > 0 ? Math.round((branchVerifiedCount / branchMasterCount) * 100) : 0;
-
-        const el = document.createElement('div');
-        el.className = "space-y-1";
-        el.innerHTML = `
-          <div class="flex justify-between text-xs font-semibold">
-            <span class="text-slate-300">${b}</span>
-            <span class="text-amber-400">${branchVerifiedCount} / ${branchMasterCount} Verified (${percent}%)</span>
-          </div>
-          <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
-            <div class="bg-amber-500 h-full" style="width: ${percent}%"></div>
-          </div>
-        `;
-        breakdownContainer.appendChild(el);
-      });
+      document.getElementById('verification-modal').classList.remove('hidden');
     }
 
-    function updateBranchProgress() {
-      const activeBranch = document.getElementById('audit-branch').value;
-      const keys = Object.keys(bankMasterDatabase);
-      const branchMasterCount = keys.filter(k => bankMasterDatabase[k].branch === activeBranch).length;
-      const branchVerifiedCount = keys.filter(k => bankMasterDatabase[k].branch === activeBranch && (bankMasterDatabase[k].auditStatus === 'Verified' || bankMasterDatabase[k].auditStatus === 'Transferred & Verified')).length;
-
-      const pct = branchMasterCount > 0 ? Math.round((branchVerifiedCount / branchMasterCount) * 100) : 0;
-      
-      document.getElementById('branch-progress-text').innerText = `${branchVerifiedCount} / ${branchMasterCount} Verified`;
-      document.getElementById('branch-progress-bar').style.width = `${pct}%`;
+    function closeVerificationModal() {
+      document.getElementById('verification-modal').classList.add('hidden');
+      activeScannedBarcode = null;
     }
 
-    // Handle Excel / CSV Import File Parsing
-    function handleExcelImport(input) {
-      if (!input.files || input.files.length === 0) return;
-      const file = input.files[0];
-      const reader = new FileReader();
+    document.getElementById('close-modal-btn').addEventListener('click', closeVerificationModal);
+    document.getElementById('cancel-verification-btn').addEventListener('click', closeVerificationModal);
 
-      reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+    document.getElementById('confirm-verification-btn').addEventListener('click', () => {
+      if (!activeScannedBarcode) return;
 
-        if (jsonData.length === 0) {
-          showToast("Imported file is empty.", "warning");
-          return;
-        }
+      const itemIndex = inventory.findIndex(i => i.barcode === activeScannedBarcode);
+      if (itemIndex !== -1) {
+        inventory[itemIndex].status = 'Verified';
+        inventory[itemIndex].condition = document.getElementById('modal-condition').value;
+        inventory[itemIndex].location = document.getElementById('modal-location').value;
+        inventory[itemIndex].lastUpdated = new Date().toLocaleString();
+        
+        saveData();
+        closeVerificationModal();
+      }
+    });
 
-        let importedCount = 0;
-        jsonData.forEach(row => {
-          const barcode = row['Barcode'] || row['Asset Tag'] || row['barcode'] || row['tag'];
-          if (barcode) {
-            bankMasterDatabase[barcode.toString().trim().toUpperCase()] = {
-              name: row['Item Name'] || row['name'] || 'Bank Asset',
-              category: row['Category'] || row['category'] || 'General Asset',
-              serial: row['Serial Number'] || row['serial'] || 'N/A',
-              branch: row['Branch'] || row['branch'] || 'Kariakoo Branch',
-              room: row['Room / Office'] || row['room'] || 'Counter 1 - Cashier',
-              stdCondition: row['Standard Condition'] || row['condition'] || 'Good',
-              auditStatus: row['Verification Status'] || row['status'] || 'Pending'
-            };
-            importedCount++;
+    // Barcode Detection Handler
+    function handleBarcodeDetected(decodedText) {
+      const cleanCode = decodedText.trim();
+      const item = inventory.find(i => i.barcode === cleanCode);
+
+      if (item) {
+        // Play success tone
+        playBeep();
+        openVerificationModal(cleanCode);
+      } else {
+        // Unregistered barcode detected
+        if (confirm(`Scanned unknown barcode: [${cleanCode}]. Would you like to register it as a new asset?`)) {
+          const newName = prompt("Enter Asset Name (e.g. Printer, Chair, Screen):", "New Bank Asset");
+          if (newName) {
+            inventory.unshift({
+              barcode: cleanCode,
+              name: newName,
+              status: "Verified",
+              condition: "Good",
+              location: document.getElementById('active-branch-select').value,
+              lastUpdated: new Date().toLocaleString()
+            });
+            saveData();
+            openVerificationModal(cleanCode);
           }
-        });
-
-        saveDatabaseState();
-        renderDemoButtons();
-        renderMasterTable();
-        updateAnalytics();
-        updateBranchProgress();
-        showToast(`Successfully imported ${importedCount} master bank assets!`, "success");
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function downloadSampleTemplate() {
-      const templateData = [
-        { "Barcode": "6297000907000", "Item Name": "Ergonomic Teller Mesh Chair", "Category": "Furniture", "Serial Number": "SN-99812-KAR", "Branch": "Kariakoo Branch", "Room / Office": "Counter 2 - Teller", "Standard Condition": "Good", "Verification Status": "Pending" },
-        { "Barcode": "3129891785319", "Item Name": "Heavy Duty Thermal Receipt Printer", "Category": "IT Hardware", "Serial Number": "SN-PR-1102-DOD", "Branch": "Dodoma Branch", "Room / Office": "Operations Hall", "Standard Condition": "Good", "Verification Status": "Pending" }
-      ];
-      const csv = Papa.unparse(templateData);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      saveAs(blob, "Bank_Asset_Master_Template.csv");
-    }
-
-    function resetToDefaultDatabase() {
-      if (confirm("Reset database to default sample records?")) {
-        bankMasterDatabase = { ...DEFAULT_MASTER_DATABASE };
-        saveDatabaseState();
-        renderDemoButtons();
-        renderMasterTable();
-        updateAnalytics();
-        updateBranchProgress();
-        showToast("Database reset to defaults.", "info");
+        }
       }
     }
 
-    function exportAuditReportCSV() {
-      const exportData = Object.keys(bankMasterDatabase).map(code => ({
-        "Barcode / Tag": code,
-        "Asset Name": bankMasterDatabase[code].name,
-        "Category": bankMasterDatabase[code].category,
-        "Serial Number": bankMasterDatabase[code].serial,
-        "Branch": bankMasterDatabase[code].branch,
-        "Room / Office": bankMasterDatabase[code].room,
-        "Condition": bankMasterDatabase[code].stdCondition,
-        "Audit Status": bankMasterDatabase[code].auditStatus || "Pending",
-        "Verified Timestamp": bankMasterDatabase[code].verifiedAt || "N/A"
-      }));
+    // Simple audio beep generator
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      } catch(e) {}
+    }
 
-      const csv = Papa.unparse(exportData);
+    // Initialize html5-qrcode Live Camera
+    function startCameraScanner() {
+      if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+      }
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 150 }
+        },
+        (decodedText) => {
+          handleBarcodeDetected(decodedText);
+        },
+        (errorMessage) => {
+          // scanning frame parse errors can be ignored
+        }
+      ).catch(err => {
+        console.error("Camera start failed:", err);
+        document.getElementById('camera-status-badge').innerText = "Camera Error / Permission Denied";
+        document.getElementById('camera-status-badge').className = "text-xs bg-rose-800 text-white px-2 py-0.5 rounded";
+      });
+    }
+
+    document.getElementById('start-camera-btn').addEventListener('click', () => {
+      startCameraScanner();
+      document.getElementById('camera-status-badge').innerText = "Active Camera";
+      document.getElementById('camera-status-badge').className = "text-xs bg-emerald-800 text-white px-2 py-0.5 rounded";
+    });
+
+    document.getElementById('stop-camera-btn').addEventListener('click', () => {
+      if (html5QrCode) {
+        html5QrCode.stop().then(() => {
+          document.getElementById('camera-status-badge').innerText = "Paused";
+          document.getElementById('camera-status-badge').className = "text-xs bg-amber-800 text-white px-2 py-0.5 rounded";
+        }).catch(err => console.log(err));
+      }
+    });
+
+    // Manual Input Trigger
+    document.getElementById('manual-submit-btn').addEventListener('click', () => {
+      const val = document.getElementById('manual-barcode-input').value.trim();
+      if (val) {
+        handleBarcodeDetected(val);
+        document.getElementById('manual-barcode-input').value = '';
+      }
+    });
+
+    document.getElementById('manual-barcode-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('manual-submit-btn').click();
+      }
+    });
+
+    // Search filter
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      renderTable(e.target.value);
+    });
+
+    // Reset Database
+    document.getElementById('reset-db-btn').addEventListener('click', () => {
+      if (confirm("Reset database to initial test item?")) {
+        inventory = JSON.parse(JSON.stringify(DEFAULT_MASTER_DATABASE));
+        saveData();
+      }
+    });
+
+    // Export Audit Report
+    document.getElementById('export-audit-btn').addEventListener('click', () => {
+      if (inventory.length === 0) return alert("No data to export.");
+      const csv = Papa.unparse(inventory);
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-      saveAs(blob, `Bank_Master_Audit_Report_${new Date().toISOString().slice(0,10)}.csv`);
-      showToast("Audit Report CSV downloaded!", "success");
-    }
+      saveAs(blob, "bank_asset_audit_report.csv");
+    });
 
-    // Helper: Condition & Status Badges
-    function getConditionBadge(cond) {
-      if (!cond) return 'bg-slate-700 text-slate-300';
-      if (cond === 'Excellent') return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-      if (cond === 'Good') return 'bg-blue-500/20 text-blue-400 border border-blue-500/30';
-      if (cond === 'Fair') return 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
-      if (cond === 'Needs Repair') return 'bg-orange-500/20 text-orange-400 border border-orange-500/30';
-      return 'bg-red-500/20 text-red-400 border border-red-500/30';
-    }
+    // Excel / CSV Master List Import
+    document.getElementById('import-excel-file').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    function getStatusBadge(status) {
-      if (status === 'Verified') return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-      if (status === 'Transferred & Verified') return 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30';
-      if (status === 'Missing') return 'bg-red-500/20 text-red-400 border border-red-500/30';
-      return 'bg-slate-700 text-slate-400';
-    }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
 
-    // Modal Controls
-    function openQuickDrawer() {
-      const backdrop = document.getElementById('quick-drawer-backdrop');
-      const drawer = document.getElementById('quick-drawer');
-      backdrop.classList.remove('hidden');
+          if (rows.length > 0) {
+            inventory = rows.map(r => ({
+              barcode: String(r.barcode || r.Barcode || r.BARCODE || ''),
+              name: r.name || r.Name || r.NAME || 'Unknown Asset',
+              status: r.status || r.Status || 'Pending',
+              condition: r.condition || r.Condition || 'Good',
+              location: r.location || r.Location || 'Kariakoo Branch',
+              lastUpdated: r.lastUpdated || '-'
+            })).filter(i => i.barcode !== '');
+
+            saveData();
+            alert(`Successfully imported ${inventory.length} master items.`);
+          }
+        } catch (err) {
+          alert('Error parsing Excel/CSV file format.');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    document.getElementById('download-template-btn').addEventListener('click', () => {
+      const template = [{ barcode: "6297000907000", name: "Table", status: "Pending", condition: "Good", location: "Kariakoo Branch", lastUpdated: "-" }];
+      const csv = Papa.unparse(template);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      saveAs(blob, "asset_master_template.csv");
+    });
+
+    // Auto-start camera on load
+    window.addEventListener('load', () => {
+      saveData();
       setTimeout(() => {
-        backdrop.classList.remove('opacity-0');
-        drawer.classList.remove('translate-y-full');
-      }, 10);
-    }
-
-    function closeQuickDrawer() {
-      const backdrop = document.getElementById('quick-drawer-backdrop');
-      const drawer = document.getElementById('quick-drawer');
-      drawer.classList.add('translate-y-full');
-      backdrop.classList.add('opacity-0');
-      setTimeout(() => {
-        backdrop.classList.add('hidden');
-        activePendingAsset = null;
-      }, 200);
-    }
-
-    // Fallback Image Barcode Decoder via HTML5Qrcode
-    function handleImageScan(input) {
-      if (!input.files || input.files.length === 0) return;
-      const file = input.files[0];
-      const html5QrCode = new Html5Qrcode("reader");
-      
-      html5QrCode.scanFile(file, true)
-        .then(decodedText => {
-          onBarcodeDetected(decodedText);
-        })
-        .catch(err => {
-          showToast("No barcode detected in photo. Try another or use manual entry.", "warning");
-        });
-    }
-
-    function showToast(msg, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      let bg = "bg-slate-800 text-white border-slate-700";
-      if (type === 'success') bg = "bg-emerald-600 text-white border-emerald-500 shadow-emerald-600/30";
-      if (type === 'warning') bg = "bg-amber-600 text-white border-amber-500";
-
-      toast.className = `p-3 rounded-xl border ${bg} text-xs font-bold shadow-xl flex items-center justify-between pointer-events-auto transition-all duration-300`;
-      toast.innerHTML = `<span>${msg}</span> <i class="fa-solid fa-check-circle text-sm"></i>`;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-      }, 2500);
-    }
+        startCameraScanner();
+      }, 1000);
+    });
   </script>
 </body>
 </html>
