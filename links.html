@@ -140,6 +140,11 @@ button:disabled { opacity: .5; cursor: not-allowed; }
                 </button>
                 <input type="file" id="bookmark-file-input" accept=".html,.htm,.json" class="hidden">
 
+                <button id="csv-library-button" class="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-xs font-medium border border-emerald-200 dark:border-emerald-800">
+                    <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i>
+                    <span class="hidden md:inline">CSV Library</span>
+                </button>
+
                 <button id="collections-button" class="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium">
                     <i class="fa-solid fa-folder-plus text-indigo-500"></i>
                     <span class="hidden md:inline">Collections</span>
@@ -324,8 +329,43 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     </div>
 </div>
 
+<!-- GITHUB CSV LIBRARY -->
+<div id="csv-library-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+                <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white"><i class="fa-solid fa-database text-emerald-600 mr-2"></i>My GitHub CSV Library</h3>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Upload CSV files and retrieve your saved link collections.</p>
+            </div>
+            <button data-close="csv-library-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div class="rounded-xl border border-emerald-200 dark:border-emerald-900 bg-emerald-50/70 dark:bg-emerald-950/30 p-3 mb-4">
+            <label class="form-label" for="csv-upload-input">Upload a CSV file</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <input type="file" id="csv-upload-input" accept=".csv,text/csv" class="form-input flex-1">
+                <button id="csv-upload-button" type="button" class="modal-submit shrink-0"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Upload CSV</button>
+            </div>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-2">Required columns: title,url. Optional: category,icon,keywords. Files are stored as link1.csv, link2.csv, and so on.</p>
+        </div>
+        <div class="flex items-center justify-between gap-2 mb-2">
+            <label class="form-label mb-0">Your uploaded files</label>
+            <button id="csv-refresh-button" type="button" class="text-xs text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-rotate mr-1"></i>Refresh</button>
+        </div>
+        <div id="csv-library-list" class="max-h-72 overflow-y-auto space-y-2 custom-scrollbar">
+            <p class="text-xs text-slate-400 text-center py-6">Connect the CSV service to view your files.</p>
+        </div>
+        <div class="flex justify-end pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
+            <button data-close="csv-library-modal" class="modal-cancel">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
 "use strict";
+/* GITHUB CSV LIBRARY CONFIGURATION */
+const CSV_API_BASE = "https://bank-links-api.YOUR-SUBDOMAIN.workers.dev";
+let remoteCsvFiles = [];
+
 
 /* DEFAULT BOOKMARKS */
 const defaultBookmarks = [
@@ -1157,10 +1197,168 @@ function renderDashboard() {
     $("no-results").classList.toggle("flex", filtered.length === 0);
 }
 
+
+/* GITHUB CSV LIBRARY */
+function csvServiceReady() {
+    return CSV_API_BASE && !CSV_API_BASE.includes("YOUR-SUBDOMAIN");
+}
+
+function parseCSV(content) {
+    const rows = [];
+    let row = [], value = "", quoted = false;
+    for (let i = 0; i < content.length; i++) {
+        const char = content[i], next = content[i + 1];
+        if (char === '"' && quoted && next === '"') { value += '"'; i++; }
+        else if (char === '"') quoted = !quoted;
+        else if (char === "," && !quoted) { row.push(value); value = ""; }
+        else if ((char === "\n" || char === "\r") && !quoted) {
+            if (char === "\r" && next === "\n") i++;
+            row.push(value);
+            if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
+            row = []; value = "";
+        } else value += char;
+    }
+    row.push(value);
+    if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
+    if (!rows.length) return [];
+    const headers = rows.shift().map(value => String(value).trim().toLowerCase().replace(/^\uFEFF/, ""));
+    return rows.map(values => {
+        const item = {};
+        headers.forEach((header, index) => item[header] = String(values[index] ?? "").trim());
+        return item;
+    });
+}
+
+async function csvApi(path, options = {}) {
+    if (!csvServiceReady()) throw new Error("CSV service is not configured yet. Deploy the Cloudflare Worker and set its URL in links.html.");
+    const response = await fetch(CSV_API_BASE + path, {
+        ...options,
+        credentials: "include",
+        headers: { "Content-Type": "application/json", ...(options.headers || {}) }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || "CSV service request failed.");
+    return data;
+}
+
+function openCsvLibrary() {
+    showModal("csv-library-modal");
+    refreshRemoteCsvFiles();
+}
+
+async function refreshRemoteCsvFiles() {
+    const container = $("csv-library-list");
+    if (!csvServiceReady()) {
+        container.innerHTML = '<p class="text-xs text-amber-600 dark:text-amber-400 text-center py-6">CSV service setup is pending. Deploy the Worker and update CSV_API_BASE.</p>';
+        return;
+    }
+    container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading your files...</p>';
+    try {
+        const data = await csvApi("/api/files");
+        remoteCsvFiles = Array.isArray(data.files) ? data.files : [];
+        renderRemoteCsvFiles();
+    } catch (error) {
+        container.innerHTML = '<p class="text-xs text-red-500 text-center py-6">' + escapeHTML(error.message) + '</p>';
+    }
+}
+
+function renderRemoteCsvFiles() {
+    const container = $("csv-library-list");
+    if (!remoteCsvFiles.length) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">You have not uploaded any CSV files yet.</p>';
+        return;
+    }
+    container.innerHTML = remoteCsvFiles.map(file => `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+            <div class="min-w-0">
+                <div class="font-semibold text-xs text-slate-800 dark:text-slate-200"><i class="fa-solid fa-file-csv text-emerald-600 mr-2"></i>${escapeHTML(file.file_name)}</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${escapeHTML(file.original_name || "CSV file")} · ${Number(file.row_count || 0)} links · ${escapeHTML(file.uploaded_at || "")}</div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" data-csv-load="${escapeHTML(file.file_name)}" class="px-3 py-2 rounded-lg bg-blue-600 text-white text-[11px] font-semibold hover:bg-blue-700">Load links</button>
+                <button type="button" data-csv-download="${escapeHTML(file.file_name)}" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-semibold">Download</button>
+            </div>
+        </div>`).join("");
+}
+
+async function uploadCsvToGitHub() {
+    const file = $("csv-upload-input").files?.[0];
+    if (!file) { showToast("Choose a CSV file first."); return; }
+    if (!file.name.toLowerCase().endsWith(".csv")) { showToast("Only CSV files are accepted."); return; }
+    if (file.size > 1024 * 1024) { showToast("CSV file must be 1 MB or smaller."); return; }
+    const button = $("csv-upload-button");
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i>Uploading...';
+    try {
+        const content = await file.text();
+        const rows = parseCSV(content);
+        if (!rows.length || !rows[0].title || !rows[0].url) {
+            throw new Error("CSV must contain title and url columns with at least one data row.");
+        }
+        const data = await csvApi("/api/upload", {
+            method: "POST",
+            body: JSON.stringify({ original_name: file.name, content })
+        });
+        $("csv-upload-input").value = "";
+        showToast("Uploaded as " + data.file_name);
+        await refreshRemoteCsvFiles();
+    } catch (error) {
+        showToast(error.message);
+    } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Upload CSV';
+    }
+}
+
+async function downloadRemoteCsv(fileName) {
+    try {
+        const data = await csvApi("/api/download?file=" + encodeURIComponent(fileName));
+        const blob = new Blob([data.content], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = fileName;
+        anchor.click();
+        URL.revokeObjectURL(url);
+    } catch (error) { showToast(error.message); }
+}
+
+async function loadRemoteCsv(fileName) {
+    try {
+        const data = await csvApi("/api/download?file=" + encodeURIComponent(fileName));
+        const rows = parseCSV(data.content);
+        let imported = 0, skipped = 0;
+        rows.forEach(row => {
+            const title = String(row.title || "").trim();
+            const url = safeURL(row.url);
+            if (!title || !url || bookmarks.some(item => item.url === url)) { skipped++; return; }
+            const category = String(row.category || "Uploaded CSV").trim() || "Uploaded CSV";
+            if (!collections.includes(category)) collections.push(category);
+            customBookmarks.push({
+                id: createId(), title, url, category,
+                icon: String(row.icon || "fa-link").trim(),
+                keywords: String(row.keywords || title).toLowerCase()
+            });
+            imported++;
+        });
+        refreshBookmarks();
+        cleanStoredIds();
+        saveAll();
+        renderCategoryTabs();
+        populateCollectionDropdowns();
+        renderCollectionsList();
+        renderDashboard();
+        showToast(imported + " links loaded; " + skipped + " skipped.");
+    } catch (error) { showToast(error.message); }
+}
+
 /* EVENT HANDLERS */
 function bindEvents() {
     $("import-button").addEventListener("click", () => $("bookmark-file-input").click());
     $("collections-button").addEventListener("click", openCollectionsModal);
+    $("csv-library-button").addEventListener("click", openCsvLibrary);
+    $("csv-upload-button").addEventListener("click", uploadCsvToGitHub);
+    $("csv-refresh-button").addEventListener("click", refreshRemoteCsvFiles);
     $("add-button").addEventListener("click", openAddModal);
     $("theme-toggle").addEventListener("click", toggleTheme);
     $("backup-button").addEventListener("click", exportData);
@@ -1204,6 +1402,12 @@ function bindEvents() {
             deleteCollection(deleteButton.dataset.deleteCollection);
             return;
         }
+
+        const csvLoadButton = event.target.closest("[data-csv-load]");
+        if (csvLoadButton) { await loadRemoteCsv(csvLoadButton.dataset.csvLoad); return; }
+
+        const csvDownloadButton = event.target.closest("[data-csv-download]");
+        if (csvDownloadButton) { await downloadRemoteCsv(csvDownloadButton.dataset.csvDownload); return; }
 
         const restoreButton = event.target.closest("[data-restore]");
         if (restoreButton) {
