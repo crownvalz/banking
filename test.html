@@ -126,11 +126,17 @@
     </header>
 
     <!-- PDF Parsing Progress Overlay (Global Floating Toast) -->
-    <div id="pdfParsingBanner" class="hidden fixed top-20 right-4 z-50 no-print bg-slate-900 border border-emerald-500/50 rounded-xl p-4 shadow-2xl flex items-center space-x-3 animate-bounce">
-        <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-xl fa-spin"></i>
-        <div class="text-xs text-emerald-200">
-            <strong class="block text-white">Gemini AI Analyzing CV...</strong>
-            Reading and intelligently mapping sections into respective database fields.
+    <div id="pdfParsingBanner" class="hidden fixed top-20 right-4 z-50 no-print bg-slate-900 border border-brand-500/50 rounded-xl p-5 shadow-2xl space-y-3 min-w-[300px]">
+        <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-2xl animate-pulse"></i>
+            <div>
+                <strong class="block text-white text-xs">Gemini AI Processing CV...</strong>
+                <span id="pdfAiStatusText" class="text-[11px] text-brand-300">Extracting PDF text content...</span>
+            </div>
+        </div>
+        <!-- Progress Step Indicator Bar -->
+        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div id="pdfAiProgressBar" class="bg-gradient-to-r from-brand-500 to-emerald-400 h-full w-1/3 transition-all duration-500"></div>
         </div>
     </div>
 
@@ -1307,8 +1313,17 @@
 
         // SMART GEMINI AI PDF PARSER INTEGRATION
         async function parseCVWithGemini(extractedText) {
-            const systemPrompt = "You are an expert HR Resume Parser. Extract all structured candidate information accurately from the provided resume text and map it into the JSON schema format.";
-            const userQuery = `Analyze and parse this CV text:\n\n${extractedText}`;
+            const systemPrompt = `You are a world-class HR Resume Parser & Professional Executive Editor.
+Your job is to read raw candidate CV text and perform intelligent parsing, section auto-detection, and high-impact paraphrasing.
+
+CRITICAL PARSING & PARAPHRASING INSTRUCTIONS:
+1. SECTION AUTO-DETECTION: Detect sections even if headings are missing or non-standard (e.g., recognize degree names, universities, and years as Education even if labeled "Academic Pathway" or unlabelled).
+2. PROFILE SUMMARY PARAPHRASING: Rewrite the biography/summary into a polished, executive-level professional bio. Refine informal or poorly structured text into a strong statement of background and core competencies.
+3. EXPERIENCE DUTIES REWRITING: Rewrite work duties and achievements using strong action verbs (e.g., "Led", "Managed", "Architected", "Spearheaded", "Facilitated"), maintaining high grammatical accuracy and clarity.
+4. NORMALIZE TERMS: Map work terms to standard options ("Permanent", "Internship", "Specified Contract", or "Apprenticeship"). Map skill levels to ("Expert", "Advanced", "Intermediate", "Beginner").
+5. ACCURATE JSON SCHEMA OUTPUT: Output ONLY valid JSON adhering strictly to the provided response schema.`;
+
+            const userQuery = `Intelligently analyze, paraphrase, refine, and map the following CV text into structured fields:\n\n${extractedText}`;
 
             const jsonSchema = {
                 type: "OBJECT",
@@ -1400,7 +1415,6 @@
             const apiKey = ""; // Canvas runtime automatically supplies key when blank
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
 
-            // Exponential backoff fetch implementation
             let attempt = 0;
             const maxAttempts = 3;
             let delay = 1000;
@@ -1465,7 +1479,12 @@
             if (!file || file.type !== 'application/pdf') return;
 
             const banner = document.getElementById('pdfParsingBanner');
+            const statusText = document.getElementById('pdfAiStatusText');
+            const progressBar = document.getElementById('pdfAiProgressBar');
+
             banner.classList.remove('hidden');
+            statusText.innerText = "Extracting raw text from PDF document...";
+            progressBar.style.width = "30%";
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
@@ -1478,13 +1497,19 @@
                     fullText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
 
-                // Call Gemini AI Structured Parsing
+                statusText.innerText = "Gemini AI paraphrasing & structuring fields...";
+                progressBar.style.width = "70%";
+
+                // Call Gemini AI Structured Parsing & Paraphrasing
                 let parsedResult = await parseCVWithGemini(fullText);
 
                 // If AI call failed, use heuristic fallback
                 if (!parsedResult) {
                     parsedResult = parseCVWithFallback(fullText);
                 }
+
+                statusText.innerText = "Populating portal database fields...";
+                progressBar.style.width = "100%";
 
                 const newId = 'ai_' + Date.now();
                 const parsedState = {
@@ -1540,12 +1565,16 @@
                 };
 
                 PORTAL_DATABASE[newId] = parsedState;
-                selectProfileAndEdit(newId);
+                setTimeout(() => {
+                    selectProfileAndEdit(newId);
+                }, 400);
             } catch (err) {
                 alert('Could not parse text from PDF file.');
             } finally {
-                banner.classList.add('hidden');
-                event.target.value = ''; // Reset input
+                setTimeout(() => {
+                    banner.classList.add('hidden');
+                }, 600);
+                event.target.value = '';
             }
         }
     </script>
