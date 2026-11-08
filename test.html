@@ -372,8 +372,14 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Biography / Professional Profile Summary</label>
-                        <textarea id="aboutme" rows="4" oninput="handleInputChange()" class="w-full text-xs p-3 bg-slate-900 text-white border border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-y"></textarea>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-semibold text-slate-300">Biography / Professional Profile Summary</label>
+                            <button type="button" onclick="generateAiSummary()" id="aiSummaryBtn" class="bg-gradient-to-r from-amber-500 to-brand-600 hover:from-amber-400 hover:to-brand-500 text-white text-[11px] font-bold px-3 py-1 rounded-lg shadow-md transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-200"></i>
+                                <span>Auto-Generate with AI</span>
+                            </button>
+                        </div>
+                        <textarea id="aboutme" rows="4" oninput="handleInputChange()" placeholder="Click 'Auto-Generate with AI' above to auto-create a professional bio based on your job title and details..." class="w-full text-xs p-3 bg-slate-900 text-white border border-slate-700 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none resize-y"></textarea>
                     </div>
                 </div>
 
@@ -1309,6 +1315,72 @@
                 }
             };
             reader.readAsText(event.target.files[0]);
+        }
+
+        // AI AUTO-GENERATE SUMMARY FUNCTION
+        async function generateAiSummary() {
+            const btn = document.getElementById('aiSummaryBtn');
+            const textarea = document.getElementById('aboutme');
+            const originalText = btn.innerHTML;
+
+            const p = state.personal;
+            const jobTitle = p.jobtitle || 'Professional';
+            const fullName = `${p.firstname || ''} ${p.surname || ''}`.trim() || 'Candidate';
+            
+            // Gather work experience context
+            const expContext = state.experiences.map(e => `${e.jobtitle} at ${e.company} (${e.duties || ''})`).join('; ');
+            const skillsContext = state.skills.map(s => s.name).join(', ');
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Generating...</span>`;
+
+            const systemPrompt = `You are an expert HR recruiter and executive resume writer. 
+Generate a concise, compelling 2 to 3 sentence professional executive bio for a CV/Resume tailored specifically to the candidate's current role and experience. 
+Keep the tone confident, professional, and impactful. Do not include markdown or quotation marks.`;
+
+            const userQuery = `Write a professional summary for candidate ${fullName}. 
+Current Job Title: ${jobTitle}. 
+Previous Experience Context: ${expContext || 'Experienced in domain operational tasks and strategic relationship management'}. 
+Skills: ${skillsContext || 'Leadership, Communication, Operations'}.`;
+
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            const apiKey = ""; // Canvas runtime handles key injection
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        const cleanedText = text.trim().replace(/^["']|["']$/g, '');
+                        textarea.value = cleanedText;
+                        state.personal.aboutme = cleanedText;
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Generated!</span>`;
+                        setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 2000);
+                        return;
+                    }
+                }
+            } catch (err) {
+                // Ignore API error and fall back to local template below
+            }
+
+            // Fallback Generator if offline/throttled
+            const fallbackBio = `As a results-driven ${jobTitle} with a proven track record, I possess deep expertise in strategic planning, project execution, and organizational performance. ${expContext ? `Having managed key responsibilities including ${state.experiences[0]?.duties || 'core operations'}, ` : ''}I excel in building high-performing workflows and driving sustainable business outcomes.`;
+            
+            textarea.value = fallbackBio;
+            state.personal.aboutme = fallbackBio;
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> <span>Generated!</span>`;
+            setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 2000);
         }
 
         // SMART GEMINI AI PDF PARSER INTEGRATION
