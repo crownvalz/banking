@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Bank Physical Asset Audit & Verification System</title>
-  <!-- QuaggaJS for Barcode Decoding -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+  <!-- HTML5-QRCode for Live Continuous Camera Barcode Scanning -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <!-- FileSaver & PapaParse for CSV Export & Parse -->
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -42,6 +42,8 @@
       0%, 100% { border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.2); }
       50% { border-color: rgba(59, 130, 246, 1); box-shadow: 0 0 20px 4px rgba(59, 130, 246, 0.4); }
     }
+    #reader video { object-fit: cover !important; border-radius: 0.75rem; width: 100% !important; height: 100% !important; }
+    #reader { border: none !important; }
   </style>
 </head>
 <body class="h-full bg-slate-900 text-slate-100 flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900">
@@ -126,44 +128,52 @@
       <!-- Main Scanning Hub Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
         
-        <!-- Left: Barcode Scanner Viewfinder (7 Cols) -->
+        <!-- Left: Live Camera Viewfinder & Camera Controls (7 Cols) -->
         <div class="lg:col-span-7 bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl flex flex-col justify-between space-y-4">
           
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <i class="fa-solid fa-barcode text-amber-400 text-sm"></i>
-              <h2 class="font-bold text-sm text-white">Asset Tag Barcode Scanner</h2>
+              <span id="camera-status-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h2 class="font-bold text-sm text-white">Live Camera Barcode Scanner</h2>
             </div>
-            <span class="text-[11px] bg-emerald-500/10 text-emerald-400 font-semibold px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-              Database Match Active
-            </span>
+            <div class="flex items-center gap-2">
+              <select id="camera-select" onchange="switchCameraDevice(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1 font-medium focus:outline-none focus:ring-1 focus:ring-amber-500 max-w-[150px] truncate">
+                <option value="">Detecting Cameras...</option>
+              </select>
+            </div>
           </div>
 
-          <!-- Scanner Surface Box -->
-          <div class="relative w-full h-52 sm:h-60 rounded-xl bg-slate-950 border-2 border-dashed border-slate-700 flex flex-col items-center justify-center overflow-hidden scan-pulse">
-            <div id="scanner-placeholder" class="text-center p-4 space-y-2">
-              <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-2xl">
-                <i class="fa-solid fa-camera"></i>
-              </div>
-              <p class="text-xs font-semibold text-slate-300">Scan barcode photo or tap quick sample assets below</p>
-              <p class="text-[10px] text-slate-500">Supports Code-128, EAN-13, QR Code Asset Tags</p>
-            </div>
+          <!-- Camera Surface Box -->
+          <div class="relative w-full h-64 sm:h-72 rounded-xl bg-slate-950 border-2 border-slate-700 overflow-hidden flex items-center justify-center shadow-inner">
+            <!-- HTML5 QR Code Video Target Element -->
+            <div id="reader" class="w-full h-full"></div>
 
-            <!-- Laser Animation Bar -->
-            <div class="absolute inset-x-0 top-1/2 h-0.5 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)] opacity-70 pointer-events-none"></div>
+            <!-- Detection Flash Overlay -->
+            <div id="scan-flash" class="absolute inset-0 bg-emerald-500/30 opacity-0 pointer-events-none transition-opacity duration-150 z-20"></div>
+
+            <!-- Laser Scanning Animation Bar -->
+            <div class="absolute inset-x-0 top-1/2 h-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.9)] opacity-80 pointer-events-none z-10"></div>
+
+            <!-- Scanner Status Banner Overlay -->
+            <div id="camera-msg-overlay" class="absolute bottom-2 inset-x-2 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/70 text-center z-20">
+              <span id="camera-status-msg" class="text-[11px] font-semibold text-emerald-400">Camera active. Point at barcode to scan.</span>
+            </div>
           </div>
 
-          <!-- File Upload Barcode Trigger -->
-          <div>
-            <label for="barcode-file" class="w-full bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 rounded-xl p-2.5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition">
-              <i class="fa-solid fa-upload text-amber-400"></i> Upload & Scan Barcode Photo
+          <!-- Camera Stream Manual Controls -->
+          <div class="flex items-center gap-2">
+            <button id="toggle-cam-btn" onclick="toggleCameraStream()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 rounded-xl py-2 text-xs font-bold transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-video"></i> Restart / Toggle Camera
+            </button>
+            <label for="barcode-file" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 rounded-xl px-4 py-2 text-xs font-bold flex items-center gap-2 cursor-pointer transition">
+              <i class="fa-solid fa-file-image"></i> Photo File
               <input type="file" id="barcode-file" accept="image/*" class="hidden" onchange="handleImageScan(this)">
             </label>
           </div>
 
           <!-- Quick Simulate Tap Buttons -->
           <div class="pt-2 border-t border-slate-700/60">
-            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Simulate Hardware Scanner (Tap sample master barcodes)</label>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Hardware/Manual Test Tags (Tap sample master barcodes)</label>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="quick-demo-buttons">
               <!-- Rendered dynamically from Database -->
             </div>
@@ -186,14 +196,14 @@
           </div>
 
           <!-- Real-Time Audit Session Stream -->
-          <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl flex flex-col h-[300px]">
+          <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl flex flex-col h-[340px]">
             <div class="flex items-center justify-between mb-3 border-b border-slate-700/60 pb-2">
               <h3 class="text-xs font-bold text-slate-200">Current Session Verifications</h3>
               <span id="session-count" class="text-[10px] font-bold text-emerald-400">0 Items Verified</span>
             </div>
             
             <div id="recent-scan-stream" class="flex-1 overflow-y-auto space-y-2 pr-1">
-              <p class="text-xs text-slate-500 text-center py-10 italic">Scan an asset barcode to begin verification.</p>
+              <p class="text-xs text-slate-500 text-center py-10 italic">Live camera active. Scanned items appear here automatically.</p>
             </div>
           </div>
 
@@ -506,15 +516,165 @@
     let activePendingAsset = null;
     let selectedCondition = "Good";
 
+    // Camera State Variables
+    let html5QrCodeScanner = null;
+    let availableCameras = [];
+    let selectedCameraId = null;
+    let isScanningActive = false;
+    let scanCooldown = false;
+
     window.onload = function() {
       renderDemoButtons();
       renderMasterTable();
       updateAnalytics();
       updateBranchProgress();
+
+      // Initialize Camera Engine automatically
+      initLiveCameraScanner();
     };
 
     function saveDatabaseState() {
       localStorage.setItem('bank_master_db', JSON.stringify(bankMasterDatabase));
+    }
+
+    // --- HTML5-QRCODE LIVE CAMERA CONTROLLER ---
+    function initLiveCameraScanner() {
+      Html5Qrcode.getCameras().then(cameras => {
+        availableCameras = cameras;
+        const cameraSelect = document.getElementById('camera-select');
+        cameraSelect.innerHTML = '';
+
+        if (cameras && cameras.length > 0) {
+          // Default to rear environment camera if available
+          let rearCam = cameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('rear') || c.label.toLowerCase().includes('environment'));
+          selectedCameraId = rearCam ? rearCam.id : cameras[0].id;
+
+          cameras.forEach(cam => {
+            const opt = document.createElement('option');
+            opt.value = cam.id;
+            opt.innerText = cam.label || `Camera ${cameraSelect.children.length + 1}`;
+            if (cam.id === selectedCameraId) opt.selected = true;
+            cameraSelect.appendChild(opt);
+          });
+
+          startCameraStream(selectedCameraId);
+        } else {
+          // Fallback facing mode if labels not resolved
+          startCameraStream({ facingMode: "environment" });
+        }
+      }).catch(err => {
+        console.warn("Camera device enumeration failed, trying direct environment stream:", err);
+        startCameraStream({ facingMode: "environment" });
+      });
+    }
+
+    function startCameraStream(cameraIdOrConfig) {
+      if (html5QrCodeScanner) {
+        stopCameraStream().then(() => runCameraEngine(cameraIdOrConfig));
+      } else {
+        runCameraEngine(cameraIdOrConfig);
+      }
+    }
+
+    function runCameraEngine(cameraIdOrConfig) {
+      html5QrCodeScanner = new Html5Qrcode("reader");
+      const config = { 
+        fps: 15, 
+        qrbox: { width: 250, height: 180 },
+        aspectRatio: 1.0
+      };
+
+      const statusMsg = document.getElementById('camera-status-msg');
+      const statusIndicator = document.getElementById('camera-status-indicator');
+
+      html5QrCodeScanner.start(
+        cameraIdOrConfig,
+        config,
+        onBarcodeDetected,
+        onScanFailure
+      ).then(() => {
+        isScanningActive = true;
+        if (statusMsg) statusMsg.innerText = "Camera active. Ready for barcodes.";
+        if (statusIndicator) statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+      }).catch(err => {
+        console.error("Error starting camera stream:", err);
+        isScanningActive = false;
+        if (statusMsg) statusMsg.innerText = "Camera error / Permission denied. Use manual key-in below.";
+        if (statusIndicator) statusIndicator.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+      });
+    }
+
+    function stopCameraStream() {
+      if (html5QrCodeScanner && isScanningActive) {
+        return html5QrCodeScanner.stop().then(() => {
+          isScanningActive = false;
+        }).catch(err => console.warn("Error stopping scanner:", err));
+      }
+      return Promise.resolve();
+    }
+
+    function toggleCameraStream() {
+      if (isScanningActive) {
+        stopCameraStream();
+        document.getElementById('camera-status-msg').innerText = "Camera paused.";
+        document.getElementById('camera-status-indicator').className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+      } else {
+        const camSelect = document.getElementById('camera-select');
+        const target = camSelect.value || { facingMode: "environment" };
+        startCameraStream(target);
+      }
+    }
+
+    function switchCameraDevice(camId) {
+      if (camId) {
+        selectedCameraId = camId;
+        startCameraStream(camId);
+      }
+    }
+
+    // Handle Live Barcode Hit
+    function onBarcodeDetected(decodedText) {
+      if (scanCooldown) return;
+      scanCooldown = true;
+
+      // Play subtle success audio feedback beep using Web Audio API
+      playScanBeepSound();
+
+      // Trigger visual camera green flash
+      const flash = document.getElementById('scan-flash');
+      if (flash) {
+        flash.style.opacity = '1';
+        setTimeout(() => flash.style.opacity = '0', 250);
+      }
+
+      // Process Code & Open Verification Drawer
+      triggerQuickScan(decodedText);
+
+      // Cooldown buffer to avoid accidental duplicate popups
+      setTimeout(() => {
+        scanCooldown = false;
+      }, 1500);
+    }
+
+    function onScanFailure(error) {
+      // Quiet fail during continuous scan cycle
+    }
+
+    function playScanBeepSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.12);
+      } catch (e) {
+        // AudioContext may be restricted by browser policy
+      }
     }
 
     // Tab View Switching
@@ -557,7 +717,7 @@
       updateBranchProgress();
     }
 
-    // Trigger Scan (Simulated or Manual Entry)
+    // Trigger Scan (Simulated, Camera, or Manual Entry)
     function triggerQuickScan(barcode) {
       if (!barcode) return;
       const cleanCode = barcode.trim().toUpperCase();
@@ -944,27 +1104,19 @@
       }, 200);
     }
 
-    // Image Barcode Decoder (Quagga)
+    // Fallback Image Barcode Decoder via HTML5Qrcode
     function handleImageScan(input) {
       if (!input.files || input.files.length === 0) return;
       const file = input.files[0];
-      const reader = new FileReader();
-
-      reader.onload = function(e) {
-        Quagga.decodeSingle({
-          src: e.target.result,
-          numOfWorkers: 0,
-          inputStream: { size: 800 },
-          decoder: { readers: ["code_128_reader", "ean_reader", "upc_reader"] }
-        }, function(result) {
-          if (result && result.codeResult && result.codeResult.code) {
-            triggerQuickScan(result.codeResult.code);
-          } else {
-            showToast("No barcode detected in image. Enter barcode manually.", "warning");
-          }
+      const html5QrCode = new Html5Qrcode("reader");
+      
+      html5QrCode.scanFile(file, true)
+        .then(decodedText => {
+          onBarcodeDetected(decodedText);
+        })
+        .catch(err => {
+          showToast("No barcode detected in photo. Try another or use manual entry.", "warning");
         });
-      };
-      reader.readAsDataURL(file);
     }
 
     function showToast(msg, type = 'info') {
