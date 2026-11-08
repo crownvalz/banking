@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crownvalz - Enterprise CV & Resume Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <!-- PDF.js CDN for extracting text from uploaded PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Configure PDF.js worker
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0f172a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['Merriweather', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Print Styles for A4 Page Output */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-area {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+            .page-break-inside-avoid {
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .tab-btn.active {
+            background-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="no-print bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-brand-600 to-indigo-600 text-white p-2.5 rounded-xl font-bold text-xl flex items-center justify-center w-10 h-10 shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg leading-none tracking-tight text-white">Crownvalz <span class="text-brand-500 font-normal">CV Hub</span></h1>
+                    <p class="text-[11px] text-slate-400">Database Profile Resume Builder</p>
+                </div>
+            </div>
+
+            <!-- Global Actions & Profile Switches -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- User DB Portal Switcher -->
+                <div class="flex items-center space-x-2 bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-database text-brand-400 text-xs"></i>
+                    <span class="text-xs text-slate-300 font-medium hidden md:inline">Portal DB Profile:</span>
+                    <select id="dbProfileSelect" onchange="switchDatabaseProfile(this.value)" class="bg-slate-900 text-white text-xs rounded border border-slate-700 px-2 py-1 focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer">
+                        <option value="godfrey">User #101: Godfrey A. Mono (Banking)</option>
+                        <option value="sarah">User #102: Sarah K. Jenkins (Tech Lead)</option>
+                        <option value="scratch">-- Create From Scratch --</option>
+                    </select>
+                </div>
+
+                <!-- Template Layout Selector -->
+                <div class="hidden lg:flex items-center space-x-2 bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-palette text-amber-400 text-xs"></i>
+                    <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-slate-900 text-white text-xs rounded border border-slate-700 px-2 py-1 focus:outline-none cursor-pointer">
+                        <option value="modern">Modern Executive</option>
+                        <option value="classic">Classic Corporate</option>
+                        <option value="sidebar">Sidebar Creative</option>
+                    </select>
+                </div>
+
+                <!-- PDF Import Parser Button -->
+                <button onclick="document.getElementById('importPdfInput').click()" title="Import & Parse PDF Resume" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white p-2 rounded-lg text-xs font-semibold shadow-md transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span class="hidden xl:inline">Import PDF</span>
+                </button>
+                <input type="file" id="importPdfInput" accept=".pdf" class="hidden" onchange="handlePdfUpload(event)">
+
+                <!-- Import/Export & Print -->
+                <button onclick="exportJSONProfile()" title="Export DB JSON" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 text-xs transition flex items-center space-x-1">
+                    <i class="fa-solid fa-download"></i>
+                    <span class="hidden xl:inline">Export</span>
+                </button>
+                <button onclick="document.getElementById('importJsonInput').click()" title="Import DB JSON" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2 rounded-lg border border-slate-700 text-xs transition flex items-center space-x-1">
+                    <i class="fa-solid fa-upload"></i>
+                    <span class="hidden xl:inline">Import</span>
+                </button>
+                <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="importJSONProfile(event)">
+
+                <button onclick="window.print()" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-lg shadow-md flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden sm:inline">Export PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile View Mode Toggle Bar (Visible on mobile screens) -->
+    <div class="no-print lg:hidden bg-slate-800 border-b border-slate-700 p-2 sticky top-16 z-40">
+        <div class="flex rounded-lg bg-slate-900 p-1">
+            <button onclick="toggleMobileView('editor')" id="m-btn-editor" class="flex-1 py-1.5 text-xs font-semibold rounded-md text-white bg-brand-600 transition text-center">
+                <i class="fa-solid fa-pen-to-square mr-1"></i> Form Editor
+            </button>
+            <button onclick="toggleMobileView('preview')" id="m-btn-preview" class="flex-1 py-1.5 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition text-center">
+                <i class="fa-solid fa-eye mr-1"></i> Live CV Preview
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- LEFT PANEL: Dynamic Form Editor -->
+            <div id="panel-editor" class="no-print lg:col-span-5 space-y-5">
+                
+                <!-- Database Sync Status Banner -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 flex items-start space-x-3 shadow-md backdrop-blur">
+                    <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                        <i class="fa-solid fa-circle-check text-base"></i>
+                    </div>
+                    <div class="text-xs text-slate-300">
+                        <span class="font-semibold block text-sm text-white">Database Profile Loaded</span>
+                        <span id="syncStatusText">Data pre-populated from user profile table. Modify fields below or import a PDF resume to auto-parse.</span>
+                    </div>
+                </div>
+
+                <!-- PDF Parsing Progress Overlay (hidden by default) -->
+                <div id="pdfParsingBanner" class="hidden bg-emerald-950/80 border border-emerald-600/50 rounded-xl p-3 flex items-center space-x-3">
+                    <i class="fa-solid fa-spinner fa-spin text-emerald-400 text-lg"></i>
+                    <div class="text-xs text-emerald-200">
+                        <strong class="block text-white">Parsing Uploaded PDF Resume...</strong>
+                        Extracting contact info, work history, education & skills.
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs for Form Sections -->
+                <div class="flex bg-slate-800 p-1 rounded-xl shadow-inner border border-slate-700/60 overflow-x-auto text-xs font-medium space-x-1 no-scrollbar">
+                    <button onclick="switchTab('tab-personal')" id="btn-tab-personal" class="tab-btn active flex-1 py-2 px-3 rounded-lg text-center transition whitespace-nowrap">
+                        <i class="fa-solid fa-user mr-1"></i> Profile & Photo
+                    </button>
+                    <button onclick="switchTab('tab-experience')" id="btn-tab-experience" class="tab-btn flex-1 py-2 px-3 rounded-lg text-center transition text-slate-400 hover:text-white whitespace-nowrap">
+                        <i class="fa-solid fa-briefcase mr-1"></i> Experience
+                    </button>
+                    <button onclick="switchTab('tab-education')" id="btn-tab-education" class="tab-btn flex-1 py-2 px-3 rounded-lg text-center transition text-slate-400 hover:text-white whitespace-nowrap">
+                        <i class="fa-solid fa-graduation-cap mr-1"></i> Education
+                    </button>
+                    <button onclick="switchTab('tab-skills')" id="btn-tab-skills" class="tab-btn flex-1 py-2 px-3 rounded-lg text-center transition text-slate-400 hover:text-white whitespace-nowrap">
+                        <i class="fa-solid fa-screwdriver-wrench mr-1"></i> Skills & Courses
+                    </button>
+                    <button onclick="switchTab('tab-more')" id="btn-tab-more" class="tab-btn flex-1 py-2 px-3 rounded-lg text-center transition text-slate-400 hover:text-white whitespace-nowrap">
+                        <i class="fa-solid fa-puzzle-piece mr-1"></i> Hobbies & Referees
+                    </button>
+                </div>
+
+                <!-- Form Card Box -->
+                <div class="bg-slate-800/60 rounded-xl shadow-xl border border-slate-700/60 p-5 space-y-4 backdrop-blur">
+                    
+                    <!-- TAB 1: PERSONAL & PHOTO -->
+                    <div id="tab-personal" class="tab-content space-y-4">
+                        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-2 flex justify-between items-center">
+                            <span>1. Personal Info & Photo</span>
+                            <span class="text-brand-400 font-normal lowercase text-[11px]"><i class="fa-solid fa-database mr-1"></i>Synced to DB</span>
+                        </h2>
+
+                        <!-- Photo Upload Section -->
+                        <div class="flex items-center space-x-4 p-3 bg-slate-900/60 rounded-xl border border-slate-700/50">
+                            <div class="relative group">
+                                <img id="photoPreview" src="https://placehold.co/150x150/1e293b/94a3b8?text=Photo" alt="Profile Photo" class="w-16 h-16 rounded-full object-cover border-2 border-brand-500 shadow-md">
+                                <button onclick="removePhoto()" title="Remove Photo" class="absolute -top-1 -right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] hidden group-hover:flex">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                            <div class="flex-1 text-xs">
+                                <label class="block font-semibold text-slate-300 mb-1">Upload Passport Photo</label>
+                                <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-600 file:text-white hover:file:bg-brand-700 cursor-pointer">
+                                <p class="text-[10px] text-slate-500 mt-1">Recommended: Square format (PNG/JPG, &lt; 2MB)</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">First / Given Names</label>
+                                <input type="text" id="firstname" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Surname</label>
+                                <input type="text" id="surname" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Current Job Title</label>
+                                <input type="text" id="jobtitle" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                                <input type="email" id="email" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Phone Number</label>
+                                <input type="text" id="phone" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Gender</label>
+                                <select id="gender" onchange="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Location / Address</label>
+                                <input type="text" id="address" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Birth Date</label>
+                                <input type="date" id="dob" onchange="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn / Portfolio URL</label>
+                            <input type="text" id="linkedin" oninput="handleInputChange()" placeholder="e.g. linkedin.com/in/username" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Profile Bio / Professional Summary</label>
+                            <textarea id="aboutme" rows="4" oninput="handleInputChange()" class="w-full text-xs p-2.5 bg-slate-900 text-white border border-slate-700 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none resize-y"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: WORK EXPERIENCE -->
+                    <div id="tab-experience" class="tab-content space-y-4 hidden">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">2. Work Experience</h2>
+                            <button onclick="toggleQuickAdd('experienceForm')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center space-x-1">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add Position</span>
+                            </button>
+                        </div>
+
+                        <!-- Add Experience Mini Form -->
+                        <div id="experienceForm" class="hidden bg-slate-900/90 border border-slate-700 p-3 rounded-xl space-y-2">
+                            <h3 class="text-xs font-bold text-slate-300 uppercase">Append Work Position</h3>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="newExpTitle" placeholder="Job Title (e.g. Branch Manager)" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                <input type="text" id="newExpCompany" placeholder="Company (e.g. NMB Bank)" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="newExpPosition" placeholder="Position / Level" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                <select id="newExpTerm" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <option value="Permanent">Permanent</option>
+                                    <option value="Internship">Internship</option>
+                                    <option value="Contract">Specified Contract</option>
+                                    <option value="Apprenticeship">Apprenticeship</option>
+                                </select>
+                            </div>
+                            <textarea id="newExpDuties" rows="2" placeholder="Key Duties & Achievements..." class="w-full text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded"></textarea>
+                            <div class="flex justify-end space-x-2 pt-1">
+                                <button onclick="toggleQuickAdd('experienceForm')" class="text-xs text-slate-400 px-3 py-1">Cancel</button>
+                                <button onclick="addExperience()" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-3 py-1 rounded-lg font-medium">Save Position</button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic List -->
+                        <div id="experienceList" class="space-y-2.5"></div>
+                    </div>
+
+                    <!-- TAB 3: EDUCATION -->
+                    <div id="tab-education" class="tab-content space-y-4 hidden">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">3. Education & Academic</h2>
+                            <button onclick="toggleQuickAdd('educationForm')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center space-x-1">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add Qualification</span>
+                            </button>
+                        </div>
+
+                        <!-- Add Education Form -->
+                        <div id="educationForm" class="hidden bg-slate-900/90 border border-slate-700 p-3 rounded-xl space-y-2">
+                            <h3 class="text-xs font-bold text-slate-300 uppercase">Append Academic Record</h3>
+                            <div class="grid grid-cols-3 gap-2">
+                                <select id="newEduLevel" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <option value="Masters Degree">Masters Degree</option>
+                                    <option value="Bachelor Degree">Bachelor Degree</option>
+                                    <option value="Diploma / Cert">Diploma / Cert</option>
+                                </select>
+                                <input type="text" id="newEduDegree" placeholder="Degree Program" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                <input type="text" id="newEduYear" placeholder="Year (e.g. 2022)" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                            </div>
+                            <input type="text" id="newEduUniversity" placeholder="University / College Name" class="w-full text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                            <div class="flex justify-end space-x-2 pt-1">
+                                <button onclick="toggleQuickAdd('educationForm')" class="text-xs text-slate-400 px-3 py-1">Cancel</button>
+                                <button onclick="addEducation()" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-3 py-1 rounded-lg font-medium">Save Qualification</button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic List -->
+                        <div id="educationList" class="space-y-2.5"></div>
+                    </div>
+
+                    <!-- TAB 4: SKILLS & CERTIFICATIONS -->
+                    <div id="tab-skills" class="tab-content space-y-4 hidden">
+                        <!-- Skills Section -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">4A. Professional Skills</h2>
+                                <button onclick="toggleQuickAdd('skillForm')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center space-x-1">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Add Skill</span>
+                                </button>
+                            </div>
+
+                            <div id="skillForm" class="hidden bg-slate-900/90 border border-slate-700 p-3 rounded-xl space-y-2">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" id="newSkillName" placeholder="Skill Name (e.g. Financial Risk Management)" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <select id="newSkillLevel" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                        <option value="Expert">Expert</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Beginner">Beginner</option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-end space-x-2 pt-1">
+                                    <button onclick="toggleQuickAdd('skillForm')" class="text-xs text-slate-400 px-3 py-1">Cancel</button>
+                                    <button onclick="addSkill()" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-3 py-1 rounded-lg font-medium">Save Skill</button>
+                                </div>
+                            </div>
+
+                            <div id="skillsList" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <!-- Trainings & Certifications Section -->
+                        <div class="space-y-3 pt-3 border-t border-slate-700">
+                            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">4B. Professional Trainings</h2>
+                                <button onclick="toggleQuickAdd('trainingForm')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center space-x-1">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Add Training</span>
+                                </button>
+                            </div>
+
+                            <div id="trainingForm" class="hidden bg-slate-900/90 border border-slate-700 p-3 rounded-xl space-y-2">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" id="newTrainTitle" placeholder="Course / Certification Title" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <input type="text" id="newTrainIssuer" placeholder="Institution / Issuer" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                </div>
+                                <input type="text" id="newTrainYear" placeholder="Year / Date (e.g. 2023)" class="w-full text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                <div class="flex justify-end space-x-2 pt-1">
+                                    <button onclick="toggleQuickAdd('trainingForm')" class="text-xs text-slate-400 px-3 py-1">Cancel</button>
+                                    <button onclick="addTraining()" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-3 py-1 rounded-lg font-medium">Save Training</button>
+                                </div>
+                            </div>
+
+                            <div id="trainingsList" class="space-y-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: HOBBIES & REFEREES -->
+                    <div id="tab-more" class="tab-content space-y-4 hidden">
+                        <!-- Hobbies Section -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">5A. Hobbies & Interests</h2>
+                                <button onclick="toggleQuickAdd('hobbyForm')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center space-x-1">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Add Hobby</span>
+                                </button>
+                            </div>
+
+                            <div id="hobbyForm" class="hidden bg-slate-900/90 border border-slate-700 p-3 rounded-xl space-y-2">
+                                <div class="flex space-x-2">
+                                    <input type="text" id="newHobbyName" placeholder="Hobby / Interest (e.g. Chess, Swimming)" class="flex-1 text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <button onclick="addHobby()" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-3 py-1 rounded-lg font-medium">Add</button>
+                                </div>
+                            </div>
+
+                            <div id="hobbiesList" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <!-- Referees Section -->
+                        <div class="space-y-3 pt-3 border-t border-slate-700">
+                            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">5B. Referees & Declaration</h2>
+                                <button onclick="toggleQuickAdd('refereeForm')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center space-x-1">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Add Referee</span>
+                                </button>
+                            </div>
+
+                            <div id="refereeForm" class="hidden bg-slate-900/90 border border-slate-700 p-3 rounded-xl space-y-2">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" id="newRefName" placeholder="Referee Full Name" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <input type="text" id="newRefDesignation" placeholder="Designation / Position" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="text" id="newRefCompany" placeholder="Company / Organization" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                    <input type="text" id="newRefPhone" placeholder="Mobile Phone" class="text-xs p-2 bg-slate-800 text-white border border-slate-700 rounded">
+                                </div>
+                                <div class="flex justify-end space-x-2 pt-1">
+                                    <button onclick="toggleQuickAdd('refereeForm')" class="text-xs text-slate-400 px-3 py-1">Cancel</button>
+                                    <button onclick="addReferee()" class="text-xs bg-brand-600 hover:bg-brand-500 text-white px-3 py-1 rounded-lg font-medium">Save Referee</button>
+                                </div>
+                            </div>
+
+                            <div id="refereesList" class="space-y-2"></div>
+                        </div>
+
+                        <!-- Declaration Toggle -->
+                        <div class="pt-3 border-t border-slate-700">
+                            <label class="flex items-start space-x-2 cursor-pointer">
+                                <input type="checkbox" id="declarationCheck" checked onchange="handleInputChange()" class="mt-0.5 rounded text-brand-600 focus:ring-brand-500 bg-slate-900 border-slate-700">
+                                <span class="text-xs text-slate-400">
+                                    <strong class="text-slate-300">Include Official Declaration:</strong> "I declare that every detail given is true and complete..."
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Live CV Preview -->
+            <div id="panel-preview" class="lg:col-span-7">
+                <div class="sticky top-20 space-y-3">
+                    <div class="flex items-center justify-between no-print px-1">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>Live Paper Preview (A4 Paper Sync)</span>
+                        </span>
+                        <div class="flex items-center space-x-2 text-xs text-slate-400">
+                            <span>Theme:</span>
+                            <span id="currentThemeBadge" class="bg-slate-800 text-brand-400 border border-slate-700 px-2 py-0.5 rounded font-mono text-[10px]">Modern Executive</span>
+                        </div>
+                    </div>
+
+                    <!-- Printable A4 Document Container -->
+                    <div id="cvPreviewContainer" class="print-area bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-800 p-8 sm:p-10 min-h-[842px] transition-all">
+                        <!-- Dynamic Resume Content Rendered Here -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Simulated Database Table: user_profiles
+        const DATABASE_PROFILES = {
+            godfrey: {
+                theme: 'modern',
+                personal: {
+                    firstname: "Godfrey Abraham",
+                    surname: "Mono",
+                    jobtitle: "Senior Relationship Officer & Banking Specialist",
+                    email: "godfrey.mono@example.com",
+                    phone: "+255 784 123 456",
+                    gender: "Male",
+                    address: "P.O. Box 4501, Dar es Salaam, Tanzania",
+                    dob: "1992-05-14",
+                    linkedin: "linkedin.com/in/godfrey-mono",
+                    photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250",
+                    aboutme: "As a Relationship Officer and seasoned Business Professional, I possess a wealth of experience in the dynamic realms of core banking. My expertise spans relationship building, corporate account management, and financial operations. I excel in cross-selling banking products, Fund Transfers, TAX banking, and ATM custodianship."
+                },
+                experiences: [
+                    {
+                        id: 1,
+                        jobtitle: "Senior Relationship Officer",
+                        company: "NMB Bank Plc",
+                        position: "Corporate Banking",
+                        term: "Permanent",
+                        duties: "Managed high-net-worth portfolio of corporate clients, facilitated multi-currency tax payments, and consistently achieved 120%+ of cross-selling performance targets."
+                    },
+                    {
+                        id: 2,
+                        jobtitle: "Customer Operations Officer",
+                        company: "CRDB Bank",
+                        position: "Branch Operations",
+                        term: "Permanent",
+                        duties: "Handled inward/outward clearing, ATM cash reconciliation custodianship, and client treasury queries."
+                    }
+                ],
+                education: [
+                    {
+                        id: 1,
+                        level: "Masters Degree",
+                        degree: "Masters of Business Administration (MBA)",
+                        university: "Mzumbe University",
+                        year: "2021"
+                    },
+                    {
+                        id: 2,
+                        level: "Bachelor Degree",
+                        degree: "Bachelor of Public Administration",
+                        university: "University of Dar es Salaam",
+                        year: "2018"
+                    }
+                ],
+                skills: [
+                    { id: 1, name: "Corporate Banking", level: "Expert" },
+                    { id: 2, name: "Credit Risk Analysis", level: "Advanced" },
+                    { id: 3, name: "Tax Banking & Operations", level: "Expert" },
+                    { id: 4, name: "Relationship Management", level: "Advanced" }
+                ],
+                trainings: [
+                    { id: 1, title: "Certified Banking Relationship Professional", issuer: "Tanzania Institute of Bankers", year: "2022" },
+                    { id: 2, title: "Anti-Money Laundering (AML) Compliance", issuer: "Financial Intelligence Unit", year: "2023" }
+                ],
+                hobbies: ["Financial Analysis", "Chess", "Networking"],
+                referees: [
+                    {
+                        id: 1,
+                        name: "Dr. Josephat Mwanza",
+                        designation: "Head of Retail Banking",
+                        company: "NMB Bank Plc",
+                        phone: "+255 712 999 888"
+                    },
+                    {
+                        id: 2,
+                        name: "Aisha Bakari",
+                        designation: "Operations Manager",
+                        company: "CRDB Bank",
+                        phone: "+255 754 111 222"
+                    }
+                ]
+            },
+            sarah: {
+                theme: 'sidebar',
+                personal: {
+                    firstname: "Sarah K.",
+                    surname: "Jenkins",
+                    jobtitle: "Lead Full-Stack Software Engineer",
+                    email: "sarah.jenkins@techdev.io",
+                    phone: "+254 711 333 444",
+                    gender: "Female",
+                    address: "Nairobi, Kenya",
+                    dob: "1994-08-22",
+                    linkedin: "github.com/sarahjenkins",
+                    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250",
+                    aboutme: "Passionate Lead Software Engineer with over 7 years of expertise in cloud microservices, React, Python, and scalable FinTech architectures. Proven track record of scaling user portals to 1M+ active monthly users."
+                },
+                experiences: [
+                    {
+                        id: 1,
+                        jobtitle: "Lead Tech Architect",
+                        company: "FinTech Innovations Ltd",
+                        position: "Lead Engineer",
+                        term: "Permanent",
+                        duties: "Architected modern payment gateway integrations, managed CI/CD pipelines, and led a high-performing engineering team."
+                    }
+                ],
+                education: [
+                    {
+                        id: 1,
+                        level: "Bachelor Degree",
+                        degree: "B.Sc. Computer Science",
+                        university: "University of Nairobi",
+                        year: "2017"
+                    }
+                ],
+                skills: [
+                    { id: 1, name: "JavaScript / TypeScript", level: "Expert" },
+                    { id: 2, name: "React & TailWind", level: "Expert" },
+                    { id: 3, name: "Python / Django", level: "Advanced" },
+                    { id: 4, name: "AWS Cloud & DevOps", level: "Advanced" }
+                ],
+                trainings: [
+                    { id: 1, title: "AWS Certified Solutions Architect", issuer: "Amazon Web Services", year: "2023" }
+                ],
+                hobbies: ["Open Source Contributing", "Cycling", "AI Research"],
+                referees: [
+                    {
+                        id: 1,
+                        name: "Mark Omondi",
+                        designation: "VP of Engineering",
+                        company: "FinTech Innovations Ltd",
+                        phone: "+254 722 000 111"
+                    }
+                ]
+            },
+            scratch: {
+                theme: 'modern',
+                personal: {
+                    firstname: "",
+                    surname: "",
+                    jobtitle: "",
+                    email: "",
+                    phone: "",
+                    gender: "Male",
+                    address: "",
+                    dob: "",
+                    linkedin: "",
+                    photo: "",
+                    aboutme: ""
+                },
+                experiences: [],
+                education: [],
+                skills: [],
+                trainings: [],
+                hobbies: [],
+                referees: []
+            }
+        };
+
+        // Application State
+        let state = JSON.parse(JSON.stringify(DATABASE_PROFILES.godfrey));
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateIntoForm();
+            renderAll();
+        });
+
+        // Toggle Mobile View Mode
+        function toggleMobileView(view) {
+            const editorPanel = document.getElementById('panel-editor');
+            const previewPanel = document.getElementById('panel-preview');
+            const btnEditor = document.getElementById('m-btn-editor');
+            const btnPreview = document.getElementById('m-btn-preview');
+
+            if (view === 'editor') {
+                editorPanel.classList.remove('hidden');
+                previewPanel.classList.add('hidden');
+                btnEditor.classList.add('bg-brand-600', 'text-white');
+                btnEditor.classList.remove('text-slate-400');
+                btnPreview.classList.remove('bg-brand-600', 'text-white');
+                btnPreview.classList.add('text-slate-400');
+            } else {
+                editorPanel.classList.add('hidden');
+                previewPanel.classList.remove('hidden');
+                btnPreview.classList.add('bg-brand-600', 'text-white');
+                btnPreview.classList.remove('text-slate-400');
+                btnEditor.classList.remove('bg-brand-600', 'text-white');
+                btnEditor.classList.add('text-slate-400');
+            }
+        }
+
+        // Switch Form Tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        // Change Profile DB Selection
+        function switchDatabaseProfile(key) {
+            if (DATABASE_PROFILES[key]) {
+                state = JSON.parse(JSON.stringify(DATABASE_PROFILES[key]));
+                loadStateIntoForm();
+                renderAll();
+                
+                const statusText = document.getElementById('syncStatusText');
+                if (key === 'godfrey') {
+                    statusText.innerHTML = `Loaded profile for <strong>Godfrey Abraham Mono</strong> (Banking Specialist).`;
+                } else if (key === 'sarah') {
+                    statusText.innerHTML = `Loaded profile for <strong>Sarah K. Jenkins</strong> (Tech Lead).`;
+                } else {
+                    statusText.innerHTML = `Blank form canvas activated. Write your custom CV from scratch!`;
+                }
+            }
+        }
+
+        // Change Theme Layout
+        function changeTheme(themeName) {
+            state.theme = themeName;
+            const badge = document.getElementById('currentThemeBadge');
+            badge.innerText = themeName === 'modern' ? 'Modern Executive' : (themeName === 'classic' ? 'Classic Corporate' : 'Sidebar Creative');
+            renderLivePreview();
+        }
+
+        // Load Form Values
+        function loadStateIntoForm() {
+            const p = state.personal;
+            document.getElementById('firstname').value = p.firstname || '';
+            document.getElementById('surname').value = p.surname || '';
+            document.getElementById('jobtitle').value = p.jobtitle || '';
+            document.getElementById('email').value = p.email || '';
+            document.getElementById('phone').value = p.phone || '';
+            document.getElementById('gender').value = p.gender || 'Male';
+            document.getElementById('address').value = p.address || '';
+            document.getElementById('dob').value = p.dob || '';
+            document.getElementById('linkedin').value = p.linkedin || '';
+            document.getElementById('aboutme').value = p.aboutme || '';
+            document.getElementById('photoPreview').src = p.photo || 'https://placehold.co/150x150/1e293b/94a3b8?text=Photo';
+            
+            if (state.theme) {
+                document.getElementById('themeSelect').value = state.theme;
+            }
+        }
+
+        // Sync Input Controls
+        function handleInputChange() {
+            state.personal.firstname = document.getElementById('firstname').value;
+            state.personal.surname = document.getElementById('surname').value;
+            state.personal.jobtitle = document.getElementById('jobtitle').value;
+            state.personal.email = document.getElementById('email').value;
+            state.personal.phone = document.getElementById('phone').value;
+            state.personal.gender = document.getElementById('gender').value;
+            state.personal.address = document.getElementById('address').value;
+            state.personal.dob = document.getElementById('dob').value;
+            state.personal.linkedin = document.getElementById('linkedin').value;
+            state.personal.aboutme = document.getElementById('aboutme').value;
+
+            renderLivePreview();
+        }
+
+        // Photo Upload Handling
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    state.personal.photo = e.target.result;
+                    document.getElementById('photoPreview').src = e.target.result;
+                    renderLivePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removePhoto() {
+            state.personal.photo = '';
+            document.getElementById('photoPreview').src = 'https://placehold.co/150x150/1e293b/94a3b8?text=Photo';
+            document.getElementById('photoInput').value = '';
+            renderLivePreview();
+        }
+
+        function toggleQuickAdd(formId) {
+            document.getElementById(formId).classList.toggle('hidden');
+        }
+
+        // EXPERIENCE ACTIONS
+        function addExperience() {
+            const title = document.getElementById('newExpTitle').value.trim();
+            const company = document.getElementById('newExpCompany').value.trim();
+            if (!title || !company) return;
+
+            state.experiences.push({
+                id: Date.now(),
+                jobtitle: title,
+                company: company,
+                position: document.getElementById('newExpPosition').value || title,
+                term: document.getElementById('newExpTerm').value,
+                duties: document.getElementById('newExpDuties').value
+            });
+
+            document.getElementById('newExpTitle').value = '';
+            document.getElementById('newExpCompany').value = '';
+            document.getElementById('newExpDuties').value = '';
+            toggleQuickAdd('experienceForm');
+            renderAll();
+        }
+
+        function removeExperience(id) {
+            state.experiences = state.experiences.filter(i => i.id !== id);
+            renderAll();
+        }
+
+        // EDUCATION ACTIONS
+        function addEducation() {
+            const degree = document.getElementById('newEduDegree').value.trim();
+            const uni = document.getElementById('newEduUniversity').value.trim();
+            if (!degree || !uni) return;
+
+            state.education.push({
+                id: Date.now(),
+                level: document.getElementById('newEduLevel').value,
+                degree: degree,
+                university: uni,
+                year: document.getElementById('newEduYear').value || 'Present'
+            });
+
+            document.getElementById('newEduDegree').value = '';
+            document.getElementById('newEduUniversity').value = '';
+            toggleQuickAdd('educationForm');
+            renderAll();
+        }
+
+        function removeEducation(id) {
+            state.education = state.education.filter(i => i.id !== id);
+            renderAll();
+        }
+
+        // SKILLS ACTIONS
+        function addSkill() {
+            const name = document.getElementById('newSkillName').value.trim();
+            if (!name) return;
+
+            state.skills.push({
+                id: Date.now(),
+                name: name,
+                level: document.getElementById('newSkillLevel').value
+            });
+
+            document.getElementById('newSkillName').value = '';
+            toggleQuickAdd('skillForm');
+            renderAll();
+        }
+
+        function removeSkill(id) {
+            state.skills = state.skills.filter(i => i.id !== id);
+            renderAll();
+        }
+
+        // TRAININGS ACTIONS
+        function addTraining() {
+            const title = document.getElementById('newTrainTitle').value.trim();
+            if (!title) return;
+
+            state.trainings.push({
+                id: Date.now(),
+                title: title,
+                issuer: document.getElementById('newTrainIssuer').value,
+                year: document.getElementById('newTrainYear').value
+            });
+
+            document.getElementById('newTrainTitle').value = '';
+            document.getElementById('newTrainIssuer').value = '';
+            toggleQuickAdd('trainingForm');
+            renderAll();
+        }
+
+        function removeTraining(id) {
+            state.trainings = state.trainings.filter(i => i.id !== id);
+            renderAll();
+        }
+
+        // HOBBIES ACTIONS
+        function addHobby() {
+            const val = document.getElementById('newHobbyName').value.trim();
+            if (val && !state.hobbies.includes(val)) {
+                state.hobbies.push(val);
+                document.getElementById('newHobbyName').value = '';
+                renderAll();
+            }
+        }
+
+        function removeHobby(index) {
+            state.hobbies.splice(index, 1);
+            renderAll();
+        }
+
+        // REFEREE ACTIONS
+        function addReferee() {
+            const name = document.getElementById('newRefName').value.trim();
+            if (!name) return;
+
+            state.referees.push({
+                id: Date.now(),
+                name: name,
+                designation: document.getElementById('newRefDesignation').value,
+                company: document.getElementById('newRefCompany').value,
+                phone: document.getElementById('newRefPhone').value
+            });
+
+            document.getElementById('newRefName').value = '';
+            toggleQuickAdd('refereeForm');
+            renderAll();
+        }
+
+        function removeReferee(id) {
+            state.referees = state.referees.filter(i => i.id !== id);
+            renderAll();
+        }
+
+        // RENDER ALL UI SECTIONS
+        function renderAll() {
+            renderFormLists();
+            renderLivePreview();
+        }
+
+        // Render Form Editable Items
+        function renderFormLists() {
+            // Experiences
+            document.getElementById('experienceList').innerHTML = state.experiences.length === 0 ? '<p class="text-xs text-slate-500 italic">No position added.</p>' :
+                state.experiences.map(exp => `
+                    <div class="bg-slate-900/60 border border-slate-700/80 p-2.5 rounded-lg flex items-start justify-between text-xs">
+                        <div>
+                            <div class="font-bold text-slate-200">${exp.jobtitle}</div>
+                            <div class="text-slate-400">${exp.company} &bull; <span class="text-slate-500">${exp.term}</span></div>
+                        </div>
+                        <button onclick="removeExperience(${exp.id})" class="text-red-400 hover:text-red-300 p-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+            // Education
+            document.getElementById('educationList').innerHTML = state.education.length === 0 ? '<p class="text-xs text-slate-500 italic">No academic record added.</p>' :
+                state.education.map(edu => `
+                    <div class="bg-slate-900/60 border border-slate-700/80 p-2.5 rounded-lg flex items-start justify-between text-xs">
+                        <div>
+                            <div class="font-bold text-slate-200">${edu.degree} (${edu.year})</div>
+                            <div class="text-slate-400">${edu.university}</div>
+                        </div>
+                        <button onclick="removeEducation(${edu.id})" class="text-red-400 hover:text-red-300 p-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+            // Skills
+            document.getElementById('skillsList').innerHTML = state.skills.map(s => `
+                <span class="inline-flex items-center space-x-1.5 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-md text-xs text-slate-300">
+                    <span>${s.name}</span>
+                    <span class="text-[9px] bg-brand-900/80 text-brand-300 px-1 rounded font-mono">${s.level}</span>
+                    <button onclick="removeSkill(${s.id})" class="text-slate-500 hover:text-red-400 ml-1"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+
+            // Trainings
+            document.getElementById('trainingsList').innerHTML = state.trainings.map(t => `
+                <div class="bg-slate-900/60 border border-slate-700/80 p-2 rounded-lg flex items-start justify-between text-xs">
+                    <div>
+                        <div class="font-semibold text-slate-300">${t.title}</div>
+                        <div class="text-slate-500 text-[11px]">${t.issuer} &bull; ${t.year}</div>
+                    </div>
+                    <button onclick="removeTraining(${t.id})" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            `).join('');
+
+            // Hobbies
+            document.getElementById('hobbiesList').innerHTML = state.hobbies.map((h, index) => `
+                <span class="inline-flex items-center space-x-1 bg-slate-900 border border-slate-700 px-2.5 py-1 rounded-md text-xs text-slate-300">
+                    <span>${h}</span>
+                    <button onclick="removeHobby(${index})" class="text-slate-500 hover:text-red-400 ml-1"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+
+            // Referees
+            document.getElementById('refereesList').innerHTML = state.referees.map(r => `
+                <div class="bg-slate-900/60 border border-slate-700/80 p-2 rounded-lg flex items-start justify-between text-xs">
+                    <div>
+                        <div class="font-bold text-slate-200">${r.name}</div>
+                        <div class="text-slate-400 text-[11px]">${r.designation} - ${r.company}</div>
+                    </div>
+                    <button onclick="removeReferee(${r.id})" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            `).join('');
+        }
+
+        // RENDER PREVIEW BASED ON TEMPLATE THEME
+        function renderLivePreview() {
+            const p = state.personal;
+            const container = document.getElementById('cvPreviewContainer');
+            const fullname = `${p.firstname || ''} ${p.surname || ''}`.trim() || 'YOUR NAME';
+            const theme = state.theme || 'modern';
+
+            if (theme === 'modern') {
+                container.innerHTML = `
+                    <div class="space-y-6">
+                        <!-- Modern Header -->
+                        <div class="border-b-2 border-slate-900 pb-5 flex items-start justify-between">
+                            <div class="space-y-1">
+                                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight uppercase">${fullname}</h1>
+                                <p class="text-brand-700 font-bold text-sm sm:text-base">${p.jobtitle || 'Professional Title'}</p>
+                                <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 pt-2">
+                                    ${p.phone ? `<span><i class="fa-solid fa-phone text-slate-400 mr-1"></i>${p.phone}</span>` : ''}
+                                    ${p.email ? `<span><i class="fa-solid fa-envelope text-slate-400 mr-1"></i>${p.email}</span>` : ''}
+                                    ${p.address ? `<span><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${p.address}</span>` : ''}
+                                    ${p.linkedin ? `<span><i class="fa-brands fa-linkedin text-slate-400 mr-1"></i>${p.linkedin}</span>` : ''}
+                                </div>
+                            </div>
+                            ${p.photo ? `<img src="${p.photo}" class="w-24 h-24 rounded-xl object-cover border-2 border-slate-200 shadow-sm ml-4">` : ''}
+                        </div>
+
+                        <!-- Bio Summary -->
+                        ${p.aboutme ? `
+                        <div class="page-break-inside-avoid">
+                            <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2 flex items-center">
+                                <i class="fa-solid fa-user-tie text-brand-600 mr-2"></i> Professional Summary
+                            </h2>
+                            <p class="text-xs leading-relaxed text-slate-700 text-justify">${p.aboutme}</p>
+                        </div>` : ''}
+
+                        <!-- Work Experience -->
+                        ${state.experiences.length > 0 ? `
+                        <div class="page-break-inside-avoid">
+                            <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-3 flex items-center">
+                                <i class="fa-solid fa-briefcase text-brand-600 mr-2"></i> Work Experience
+                            </h2>
+                            <div class="space-y-4">
+                                ${state.experiences.map(e => `
+                                    <div class="border-l-2 border-brand-600 pl-3 py-0.5">
+                                        <div class="flex justify-between items-baseline">
+                                            <h3 class="text-xs font-bold text-slate-900">${e.jobtitle}</h3>
+                                            <span class="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">${e.term}</span>
+                                        </div>
+                                        <div class="text-xs text-brand-700 font-semibold">${e.company} ${e.position ? `&bull; (${e.position})` : ''}</div>
+                                        ${e.duties ? `<p class="text-xs text-slate-600 mt-1 leading-relaxed">${e.duties}</p>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>` : ''}
+
+                        <!-- Education & Skills 2-Column Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            ${state.education.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-3 flex items-center">
+                                    <i class="fa-solid fa-graduation-cap text-brand-600 mr-2"></i> Education
+                                </h2>
+                                <div class="space-y-2.5">
+                                    ${state.education.map(e => `
+                                        <div class="bg-slate-50 p-2.5 rounded border border-slate-100">
+                                            <div class="text-xs font-bold text-slate-900">${e.degree}</div>
+                                            <div class="text-xs text-slate-600">${e.university}</div>
+                                            <div class="text-[10px] text-brand-700 font-semibold mt-0.5">${e.year}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+
+                            ${state.skills.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-3 flex items-center">
+                                    <i class="fa-solid fa-screwdriver-wrench text-brand-600 mr-2"></i> Key Skills
+                                </h2>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${state.skills.map(s => `
+                                        <span class="bg-slate-100 text-slate-800 text-xs px-2.5 py-1 rounded border border-slate-200 font-medium">
+                                            ${s.name} <span class="text-[9px] text-brand-600 font-semibold">(${s.level})</span>
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Professional Trainings & Hobbies -->
+                        ${(state.trainings.length > 0 || state.hobbies.length > 0) ? `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                            ${state.trainings.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2 flex items-center">
+                                    <i class="fa-solid fa-certificate text-brand-600 mr-2"></i> Certifications
+                                </h2>
+                                <ul class="space-y-1.5 text-xs text-slate-700">
+                                    ${state.trainings.map(t => `
+                                        <li><strong>${t.title}</strong> - <span class="text-slate-500">${t.issuer} (${t.year})</span></li>
+                                    `).join('')}
+                                </ul>
+                            </div>` : ''}
+
+                            ${state.hobbies.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2 flex items-center">
+                                    <i class="fa-solid fa-icons text-brand-600 mr-2"></i> Hobbies & Interests
+                                </h2>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${state.hobbies.map(h => `<span class="bg-slate-50 text-slate-700 text-xs px-2 py-0.5 rounded border">${h}</span>`).join('')}
+                                </div>
+                            </div>` : ''}
+                        </div>` : ''}
+
+                        <!-- Referees -->
+                        ${state.referees.length > 0 ? `
+                        <div class="page-break-inside-avoid">
+                            <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-3 flex items-center">
+                                <i class="fa-solid fa-users text-brand-600 mr-2"></i> Referees
+                            </h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                ${state.referees.map(r => `
+                                    <div class="text-xs border-l-2 border-slate-300 pl-2.5">
+                                        <div class="font-bold text-slate-900">${r.name}</div>
+                                        <div class="text-slate-600 text-[11px]">${r.designation} &bull; ${r.company}</div>
+                                        <div class="text-brand-700 font-medium text-[11px] mt-0.5">${r.phone}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>` : ''}
+
+                        <!-- Declaration -->
+                        ${document.getElementById('declarationCheck').checked ? `
+                        <div class="pt-4 border-t border-slate-200 text-[11px] italic text-slate-600">
+                            <strong>Declaration:</strong> I declare that every detail given is true and complete to the best of my knowledge.
+                        </div>` : ''}
+                    </div>
+                `;
+            } else if (theme === 'sidebar') {
+                container.innerHTML = `
+                    <div class="grid grid-cols-12 gap-6 min-h-[750px]">
+                        <!-- Sidebar Left Column -->
+                        <div class="col-span-4 bg-slate-900 text-white -m-8 sm:-m-10 p-6 space-y-6 rounded-l-xl">
+                            <div class="text-center space-y-3">
+                                ${p.photo ? `<img src="${p.photo}" class="w-28 h-28 rounded-full object-cover border-2 border-brand-400 mx-auto shadow-md">` : '<div class="w-20 h-20 bg-slate-800 rounded-full mx-auto flex items-center justify-center text-slate-500"><i class="fa-solid fa-user text-2xl"></i></div>'}
+                                <div>
+                                    <h1 class="text-base font-bold uppercase tracking-wide leading-tight">${fullname}</h1>
+                                    <p class="text-brand-400 text-xs mt-1 font-medium">${p.jobtitle || ''}</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 text-[11px] text-slate-300 border-t border-slate-800 pt-4">
+                                ${p.phone ? `<p><i class="fa-solid fa-phone text-brand-400 w-4"></i> ${p.phone}</p>` : ''}
+                                ${p.email ? `<p class="break-all"><i class="fa-solid fa-envelope text-brand-400 w-4"></i> ${p.email}</p>` : ''}
+                                ${p.address ? `<p><i class="fa-solid fa-location-dot text-brand-400 w-4"></i> ${p.address}</p>` : ''}
+                            </div>
+
+                            ${state.skills.length > 0 ? `
+                            <div class="border-t border-slate-800 pt-4 space-y-2">
+                                <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider">Skills</h3>
+                                <div class="space-y-1.5 text-xs">
+                                    ${state.skills.map(s => `
+                                        <div>
+                                            <div class="flex justify-between text-[11px]"><span>${s.name}</span><span class="text-slate-400 text-[9px]">${s.level}</span></div>
+                                            <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden mt-0.5"><div class="bg-brand-500 h-full w-4/5"></div></div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+
+                            ${state.hobbies.length > 0 ? `
+                            <div class="border-t border-slate-800 pt-4 space-y-2">
+                                <h3 class="text-xs font-bold text-brand-400 uppercase tracking-wider">Hobbies</h3>
+                                <div class="flex flex-wrap gap-1">
+                                    ${state.hobbies.map(h => `<span class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded">${h}</span>`).join('')}
+                                </div>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Main Right Content -->
+                        <div class="col-span-8 space-y-5 pl-2">
+                            ${p.aboutme ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">Profile Summary</h2>
+                                <p class="text-xs text-slate-700 leading-relaxed text-justify">${p.aboutme}</p>
+                            </div>` : ''}
+
+                            ${state.experiences.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-3">Work Experience</h2>
+                                <div class="space-y-3">
+                                    ${state.experiences.map(e => `
+                                        <div class="text-xs">
+                                            <div class="font-bold text-slate-900">${e.jobtitle} <span class="font-normal text-slate-500">&bull; ${e.company}</span></div>
+                                            <p class="text-slate-600 mt-1 text-[11px]">${e.duties || ''}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+
+                            ${state.education.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-3">Education</h2>
+                                <div class="space-y-2">
+                                    ${state.education.map(e => `
+                                        <div class="text-xs">
+                                            <div class="font-bold text-slate-900">${e.degree}</div>
+                                            <div class="text-slate-600 text-[11px]">${e.university} (${e.year})</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>` : ''}
+
+                            ${state.referees.length > 0 ? `
+                            <div>
+                                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-1 mb-2">Referees</h2>
+                                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                                    ${state.referees.map(r => `<div><strong>${r.name}</strong><br><span class="text-slate-500">${r.company}</span></div>`).join('')}
+                                </div>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Classic Corporate Theme
+                container.innerHTML = `
+                    <div class="space-y-5 font-serif">
+                        <div class="text-center border-b-2 border-slate-800 pb-4 space-y-1">
+                            <h1 class="text-2xl font-bold uppercase text-slate-900">${fullname}</h1>
+                            <p class="text-xs italic text-slate-700">${p.jobtitle || ''}</p>
+                            <p class="text-[11px] text-slate-600">${[p.phone, p.email, p.address].filter(Boolean).join(' | ')}</p>
+                        </div>
+
+                        ${p.aboutme ? `<div class="text-xs leading-relaxed text-slate-800 text-justify font-sans"><strong class="font-serif">OBJECTIVE:</strong> ${p.aboutme}</div>` : ''}
+
+                        ${state.experiences.length > 0 ? `
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider border-b border-slate-300 pb-1 mb-2">Professional Experience</h2>
+                            <div class="space-y-3 font-sans">
+                                ${state.experiences.map(e => `
+                                    <div class="text-xs">
+                                        <div class="flex justify-between font-bold text-slate-900"><span>${e.jobtitle} - ${e.company}</span><span>${e.term}</span></div>
+                                        <p class="text-slate-700 mt-1 text-[11px]">${e.duties || ''}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>` : ''}
+
+                        ${state.education.length > 0 ? `
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider border-b border-slate-300 pb-1 mb-2">Education & Credentials</h2>
+                            <div class="space-y-2 font-sans text-xs">
+                                ${state.education.map(e => `<div><strong>${e.degree}</strong> - ${e.university} (${e.year})</div>`).join('')}
+                            </div>
+                        </div>` : ''}
+
+                        ${state.referees.length > 0 ? `
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider border-b border-slate-300 pb-1 mb-2">References</h2>
+                            <div class="grid grid-cols-2 gap-3 font-sans text-xs">
+                                ${state.referees.map(r => `<div><strong>${r.name}</strong><br>${r.designation}, ${r.company}<br>${r.phone}</div>`).join('')}
+                            </div>
+                        </div>` : ''}
+                    </div>
+                `;
+            }
+        }
+
+        // Export JSON Profile Data
+        function exportJSONProfile() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `CV_Profile_${state.personal.surname || 'User'}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        // Import JSON Profile Data
+        function importJSONProfile(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.personal) {
+                        state = imported;
+                        loadStateIntoForm();
+                        renderAll();
+                        alert('Database Record imported successfully!');
+                    }
+                } catch (err) {
+                    alert('Invalid JSON file format.');
+                }
+            };
+            fileReader.readAsText(event.target.files[0]);
+        }
+
+        // ==========================================
+        // PDF UPLOAD & PARSING FUNCTIONALITY (PDF.js)
+        // ==========================================
+        async function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (!file || file.type !== 'application/pdf') {
+                alert('Please select a valid PDF file.');
+                return;
+            }
+
+            const parsingBanner = document.getElementById('pdfParsingBanner');
+            parsingBanner.classList.remove('hidden');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n';
+                }
+
+                // Parse extracted text into structured CV state
+                parsePdfTextToState(fullText);
+
+                // Update UI
+                loadStateIntoForm();
+                renderAll();
+
+                const statusText = document.getElementById('syncStatusText');
+                statusText.innerHTML = `Successfully parsed <strong>${file.name}</strong> and auto-filled state.`;
+            } catch (error) {
+                console.error('PDF parsing error:', error);
+                alert('Failed to parse PDF resume text. Please ensure it is a text-readable PDF document.');
+            } finally {
+                parsingBanner.classList.add('hidden');
+                event.target.value = '';
+            }
+        }
+
+        // Intelligently parse extracted text using regex patterns
+        function parsePdfTextToState(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+            const textBlock = lines.join(' ');
+
+            // 1. Email Extraction
+            const emailMatch = textBlock.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/i);
+            if (emailMatch) state.personal.email = emailMatch[0];
+
+            // 2. Phone Extraction
+            const phoneMatch = textBlock.match(/(\+?\d{1,4}[\s-]?\(?\d{1,3}\)?[\s-]?\d{3,4}[\s-]?\d{3,4})/);
+            if (phoneMatch) state.personal.phone = phoneMatch[0];
+
+            // 3. Name & Title Heuristic (First line / clean words)
+            if (lines.length > 0) {
+                const nameLine = lines[0].replace(/[^a-zA-Z\s]/g, '').trim();
+                const nameParts = nameLine.split(/\s+/);
+                if (nameParts.length >= 2) {
+                    state.personal.firstname = nameParts[0];
+                    state.personal.surname = nameParts.slice(1).join(' ');
+                } else if (nameParts.length === 1) {
+                    state.personal.firstname = nameParts[0];
+                }
+            }
+
+            if (lines.length > 1) {
+                const possibleTitle = lines[1];
+                if (possibleTitle.length < 60 && !possibleTitle.includes('@') && !possibleTitle.match(/\d/)) {
+                    state.personal.jobtitle = possibleTitle;
+                }
+            }
+
+            // 4. LinkedIn / Links
+            const linkedinMatch = textBlock.match(/(linkedin\.com\/in\/[a-zA-Z0-9_-]+)/i);
+            if (linkedinMatch) state.personal.linkedin = linkedinMatch[0];
+
+            // 5. Skills Extraction
+            const knownSkills = ["JavaScript", "TypeScript", "React", "Python", "Java", "C++", "HTML", "CSS", "Tailwind", "SQL", "Git", "Project Management", "Banking", "Accounting", "Leadership", "Customer Service", "Sales", "Data Analysis", "Communication"];
+            const extractedSkills = [];
+            knownSkills.forEach(skill => {
+                const reg = new RegExp(`\\b${skill}\\b`, 'i');
+                if (reg.test(textBlock) && !extractedSkills.some(s => s.name.toLowerCase() === skill.toLowerCase())) {
+                    extractedSkills.push({
+                        id: Date.now() + Math.random(),
+                        name: skill,
+                        level: "Advanced"
+                    });
+                }
+            });
+            if (extractedSkills.length > 0) {
+                state.skills = extractedSkills;
+            }
+
+            // 6. Section Parsing (Bio / Experience / Education)
+            const experienceKeywords = ["experience", "work history", "employment", "professional background"];
+            const educationKeywords = ["education", "academic", "degrees", "qualification"];
+            const summaryKeywords = ["summary", "profile", "about me", "objective"];
+
+            let currentSection = 'summary';
+            let summaryBuffer = [];
+            let expBuffer = [];
+            let eduBuffer = [];
+
+            lines.forEach(line => {
+                const lower = line.toLowerCase();
+                if (summaryKeywords.some(k => lower.includes(k))) {
+                    currentSection = 'summary';
+                    return;
+                }
+                if (experienceKeywords.some(k => lower.includes(k))) {
+                    currentSection = 'experience';
+                    return;
+                }
+                if (educationKeywords.some(k => lower.includes(k))) {
+                    currentSection = 'education';
+                    return;
+                }
+
+                if (currentSection === 'summary') summaryBuffer.push(line);
+                else if (currentSection === 'experience') expBuffer.push(line);
+                else if (currentSection === 'education') eduBuffer.push(line);
+            });
+
+            if (summaryBuffer.length > 0) {
+                state.personal.aboutme = summaryBuffer.slice(1, 6).join(' ').substring(0, 500);
+            }
+
+            // Extract Work Experience items from buffer
+            if (expBuffer.length > 0) {
+                const newExps = [];
+                let currentExp = null;
+
+                expBuffer.forEach(line => {
+                    if (line.match(/(19|20)\d{2}/) || line.toLowerCase().includes('present') || line.toLowerCase().includes('inc') || line.toLowerCase().includes('ltd')) {
+                        if (currentExp) newExps.push(currentExp);
+                        currentExp = {
+                            id: Date.now() + Math.random(),
+                            jobtitle: line.split('-')[0] || line,
+                            company: line.split('-')[1] || "Company",
+                            position: "Full-Time",
+                            term: "Permanent",
+                            duties: ""
+                        };
+                    } else if (currentExp) {
+                        currentExp.duties += line + " ";
+                    }
+                });
+                if (currentExp) newExps.push(currentExp);
+                if (newExps.length > 0) state.experiences = newExps;
+            }
+
+            // Extract Education items from buffer
+            if (eduBuffer.length > 0) {
+                const newEdus = [];
+                eduBuffer.forEach(line => {
+                    if (line.match(/(bachelor|master|diploma|certificate|degree|university|college|b\.s|m\.s)/i)) {
+                        const yearMatch = line.match(/(19|20)\d{2}/);
+                        newEdus.push({
+                            id: Date.now() + Math.random(),
+                            level: line.toLowerCase().includes('master') ? 'Masters Degree' : 'Bachelor Degree',
+                            degree: line,
+                            university: "Institution",
+                            year: yearMatch ? yearMatch[0] : "2022"
+                        });
+                    }
+                });
+                if (newEdus.length > 0) state.education = newEdus;
+            }
+        }
+    </script>
+</body>
+</html>
