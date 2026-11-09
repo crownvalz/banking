@@ -75,7 +75,7 @@ body { font-family: Inter, sans-serif; }
     box-shadow: 0 0 0 2px rgba(59,130,246,.15);
 }
 
-.modal-cancel, .modal-submit {
+.modal-cancel, .modal-submit, .modal-danger {
     padding: 9px 16px;
     border-radius: 10px;
     font-size: 12px;
@@ -96,8 +96,13 @@ body { font-family: Inter, sans-serif; }
     background: #2563eb;
     color: white;
 }
-
 .modal-submit:hover { background: #1d4ed8; }
+
+.modal-danger {
+    background: #dc2626;
+    color: white;
+}
+.modal-danger:hover { background: #b91c1c; }
 
 button:disabled { opacity: .5; cursor: not-allowed; }
 
@@ -251,17 +256,18 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     <span id="toast-message">Action completed</span>
 </div>
 
-<!-- ADD LINK MODAL -->
+<!-- ADD / EDIT LINK MODAL -->
 <div id="add-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
     <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            <h3 id="add-modal-title" class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
                 <i class="fa-solid fa-circle-plus text-blue-600 mr-2"></i>Add Custom Resource
             </h3>
             <button data-close="add-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
 
         <form id="add-link-form" class="space-y-3.5">
+            <input type="hidden" id="edit-link-id" value="">
             <div>
                 <label class="form-label" for="custom-title">Title</label>
                 <input type="text" id="custom-title" required maxlength="120" placeholder="e.g. Branch Cash Report" class="form-input">
@@ -280,9 +286,48 @@ button:disabled { opacity: .5; cursor: not-allowed; }
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button type="button" data-close="add-modal" class="modal-cancel">Cancel</button>
-                <button type="submit" class="modal-submit">Save Link</button>
+                <button type="submit" id="save-link-btn" class="modal-submit">Save Link</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- MOVE LINK MODAL -->
+<div id="move-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+                <i class="fa-solid fa-arrows-up-down-left-right text-blue-600 mr-2"></i>Move Link
+            </h3>
+            <button data-close="move-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <form id="move-link-form" class="space-y-3.5">
+            <input type="hidden" id="move-link-id" value="">
+            <div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Select a new destination collection for <strong id="move-link-title" class="text-slate-800 dark:text-slate-200"></strong>:</p>
+                <select id="move-target-category" class="form-input" required></select>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" data-close="move-modal" class="modal-cancel">Cancel</button>
+                <button type="submit" class="modal-submit">Move Link</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div id="delete-confirm-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center gap-3 mb-3 text-red-600 dark:text-red-400">
+            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            <h3 class="font-bold text-base text-slate-900 dark:text-white">Delete Link</h3>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 mb-5">Are you sure you want to delete <strong id="delete-item-title"></strong>? This action cannot be undone.</p>
+        <div class="flex justify-end gap-2">
+            <button type="button" data-close="delete-confirm-modal" class="modal-cancel">Cancel</button>
+            <button type="button" id="confirm-delete-link-btn" class="modal-danger">Delete</button>
+        </div>
     </div>
 </div>
 
@@ -307,6 +352,30 @@ button:disabled { opacity: .5; cursor: not-allowed; }
         <div class="flex justify-end pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
             <button data-close="collections-modal" class="modal-cancel">Done</button>
         </div>
+    </div>
+</div>
+
+<!-- RENAME COLLECTION MODAL -->
+<div id="rename-collection-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base text-slate-900 dark:text-white">
+                <i class="fa-solid fa-pen-to-square text-indigo-600 mr-2"></i>Rename Collection
+            </h3>
+            <button data-close="rename-collection-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <form id="rename-collection-form" class="space-y-3.5">
+            <input type="hidden" id="rename-old-name" value="">
+            <div>
+                <label class="form-label" for="rename-new-name">New Collection Name</label>
+                <input type="text" id="rename-new-name" required maxlength="60" class="form-input">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" data-close="rename-collection-modal" class="modal-cancel">Cancel</button>
+                <button type="submit" class="modal-submit">Rename</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -362,10 +431,13 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
 <script>
 "use strict";
+
 /* GITHUB CSV LIBRARY CONFIGURATION */
 const CSV_API_BASE = "https://bank-links-api.YOUR-SUBDOMAIN.workers.dev";
 let remoteCsvFiles = [];
 
+/* SYSTEM PROTECTED CONSTANTS */
+const SYSTEM_PROTECTED_COLLECTIONS = ["All Collections", "Imported"];
 
 /* DEFAULT BOOKMARKS */
 const defaultBookmarks = [
@@ -413,6 +485,7 @@ const defaultBookmarks = [
 ];
 
 const defaultCollections = [
+    "Imported",
     "Operations & CASA",
     "Finance & Recon",
     "Core Banking",
@@ -424,13 +497,18 @@ const defaultCollections = [
 const STORAGE = {
     collections: "azania_collections",
     custom: "azania_custom_bookmarks",
+    deletedDefaults: "azania_deleted_default_ids",
+    deletedPresetUrls: "azania_deleted_preset_urls",
     hidden: "azania_hidden_ids",
     pinned: "azania_pinned_ids",
-    view: "azania_view_mode"
+    view: "azania_view_mode",
+    csvPresetLoaded: "azania_csv_preset_loaded"
 };
 
 let collections = [];
 let customBookmarks = [];
+let deletedDefaultIds = [];
+let deletedPresetUrls = [];
 let hiddenIds = [];
 let pinnedIds = [];
 let bookmarks = [];
@@ -438,6 +516,7 @@ let activeCategory = "all";
 let searchQuery = "";
 let viewMode = "grid";
 let toastTimer;
+let deleteTargetId = null;
 
 /* STORAGE */
 function readStorage(key, fallback) {
@@ -460,6 +539,7 @@ function saveStorage(key, value) {
 }
 
 function loadData() {
+    // 1. Collections
     const savedCollections = readStorage(STORAGE.collections, defaultCollections);
     collections = Array.isArray(savedCollections) ? savedCollections : [...defaultCollections];
 
@@ -467,8 +547,15 @@ function loadData() {
         if (!collections.includes(name)) collections.push(name);
     });
 
+    // 2. Custom Bookmarks & Deletion tracking
     customBookmarks = readStorage(STORAGE.custom, []);
     if (!Array.isArray(customBookmarks)) customBookmarks = [];
+
+    deletedDefaultIds = readStorage(STORAGE.deletedDefaults, []);
+    if (!Array.isArray(deletedDefaultIds)) deletedDefaultIds = [];
+
+    deletedPresetUrls = readStorage(STORAGE.deletedPresetUrls, []);
+    if (!Array.isArray(deletedPresetUrls)) deletedPresetUrls = [];
 
     hiddenIds = readStorage(STORAGE.hidden, []);
     if (!Array.isArray(hiddenIds)) hiddenIds = [];
@@ -485,11 +572,16 @@ function loadData() {
     refreshBookmarks();
     cleanStoredIds();
     saveAll();
+
+    // 3. Preset links.csv Integration
+    loadPresetLinksCsv();
 }
 
 function saveAll() {
     saveStorage(STORAGE.collections, collections);
     saveStorage(STORAGE.custom, customBookmarks);
+    saveStorage(STORAGE.deletedDefaults, deletedDefaultIds);
+    saveStorage(STORAGE.deletedPresetUrls, deletedPresetUrls);
     saveStorage(STORAGE.hidden, hiddenIds);
     saveStorage(STORAGE.pinned, pinnedIds);
 }
@@ -501,7 +593,63 @@ function cleanStoredIds() {
 }
 
 function refreshBookmarks() {
-    bookmarks = [...defaultBookmarks, ...customBookmarks];
+    const activeDefaults = defaultBookmarks.filter(b => !deletedDefaultIds.includes(b.id));
+    const activeCustoms = customBookmarks.filter(b => !deletedPresetUrls.includes(b.url));
+    bookmarks = [...activeDefaults, ...activeCustoms];
+}
+
+/* PRESET LINKS.CSV AUTOMATIC LOAD */
+async function loadPresetLinksCsv() {
+    try {
+        const response = await fetch("links.csv");
+        if (!response.ok) return;
+        const text = await response.text();
+        if (!text || !text.trim()) return;
+
+        const rows = parseCSV(text);
+        if (!rows || !rows.length) return;
+
+        let addedCount = 0;
+        rows.forEach(row => {
+            const title = String(row.title || row.name || "").trim();
+            const url = safeURL(row.url || row.link);
+            if (!title || !url) return;
+
+            // Prevent continuous re-import of deleted preset URLs
+            if (deletedPresetUrls.includes(url)) return;
+
+            // Prevent duplicate creation
+            if (bookmarks.some(b => b.url === url)) return;
+
+            const category = String(row.category || row.collection || "Imported").trim() || "Imported";
+
+            if (!collections.includes(category)) {
+                collections.push(category);
+            }
+
+            customBookmarks.push({
+                id: createId(),
+                title,
+                url,
+                category,
+                icon: String(row.icon || "fa-link").trim(),
+                keywords: String(row.keywords || title).toLowerCase(),
+                isPresetCsv: true
+            });
+            addedCount++;
+        });
+
+        if (addedCount > 0) {
+            refreshBookmarks();
+            saveAll();
+            renderCategoryTabs();
+            populateCollectionDropdowns();
+            renderCollectionsList();
+            renderDashboard();
+        }
+    } catch (e) {
+        // Silently skip if links.csv is not available
+    }
 }
 
 /* HELPERS */
@@ -549,19 +697,13 @@ function showToast(message) {
     }, 2600);
 }
 
-function updateClock() {
-    $("live-clock").textContent = new Date().toLocaleTimeString("en-GB");
-}
-
 /* THEME */
 function initTheme() {
     let theme = "light";
-
     try {
         theme = localStorage.getItem("theme") ||
             (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     } catch {}
-
     document.documentElement.classList.toggle("dark", theme === "dark");
     updateThemeIcon();
 }
@@ -591,14 +733,14 @@ function hideModal(id) {
 }
 
 function closeAllModals() {
-    ["add-modal", "collections-modal", "hidden-modal"].forEach(hideModal);
+    ["add-modal", "move-modal", "delete-confirm-modal", "collections-modal", "rename-collection-modal", "hidden-modal", "csv-library-modal"].forEach(hideModal);
 }
 
-/* COLLECTIONS */
+/* COLLECTIONS MANAGEMENT */
 function renderCategoryTabs() {
     const tabs = [
         { id: "all", name: "All Collections", icon: "fa-border-all" },
-        ...collections.map(name => ({ id: name, name, icon: "fa-folder" }))
+        ...collections.map(name => ({ id: name, name, icon: name === "Imported" ? "fa-file-arrow-up" : "fa-folder" }))
     ];
 
     $("category-tabs").innerHTML = tabs.map(tab => {
@@ -623,9 +765,13 @@ function setCategory(category) {
 }
 
 function populateCollectionDropdowns() {
-    $("custom-category").innerHTML = collections.map(category =>
+    const validCollections = collections.filter(c => c !== "All Collections");
+    const options = validCollections.map(category =>
         `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`
     ).join("");
+
+    $("custom-category").innerHTML = options;
+    $("move-target-category").innerHTML = options;
 }
 
 function openCollectionsModal() {
@@ -635,20 +781,23 @@ function openCollectionsModal() {
 
 function renderCollectionsList() {
     $("collections-list").innerHTML = collections.map(category => {
-        const isDefault = defaultCollections.includes(category);
+        const isSystemProtected = SYSTEM_PROTECTED_COLLECTIONS.includes(category);
         const count = bookmarks.filter(item => item.category === category).length;
 
         return `
             <div class="flex items-center justify-between gap-2 p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
                 <div class="min-w-0">
                     <span class="font-medium text-slate-800 dark:text-slate-200 block truncate">
-                        <i class="fa-solid fa-folder text-indigo-500 mr-2"></i>${escapeHTML(category)}
+                        <i class="fa-solid ${category === "Imported" ? "fa-file-arrow-up" : "fa-folder"} text-indigo-500 mr-2"></i>${escapeHTML(category)}
                     </span>
                     <span class="text-[10px] text-slate-400 ml-5">${count} links</span>
                 </div>
-                ${isDefault
-                    ? `<span class="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded shrink-0">Default</span>`
-                    : `<button data-delete-collection="${escapeHTML(category)}" class="text-red-500 hover:text-red-700 p-1 shrink-0" title="Delete collection"><i class="fa-solid fa-trash"></i></button>`
+                ${isSystemProtected
+                    ? `<span class="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded shrink-0">System</span>`
+                    : `<div class="flex items-center gap-1 shrink-0">
+                        <button data-rename-collection="${escapeHTML(category)}" class="text-indigo-600 hover:text-indigo-800 p-1" title="Rename collection"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button data-delete-collection="${escapeHTML(category)}" class="text-red-500 hover:text-red-700 p-1" title="Delete collection"><i class="fa-solid fa-trash"></i></button>
+                       </div>`
                 }
             </div>`;
     }).join("");
@@ -677,46 +826,123 @@ function addCollection(name) {
     showToast("Collection created.");
 }
 
+function openRenameCollectionModal(oldName) {
+    if (SYSTEM_PROTECTED_COLLECTIONS.includes(oldName)) {
+        showToast("System collections cannot be renamed.");
+        return;
+    }
+    $("rename-old-name").value = oldName;
+    $("rename-new-name").value = oldName;
+    showModal("rename-collection-modal");
+}
+
+function handleRenameCollection(event) {
+    event.preventDefault();
+    const oldName = $("rename-old-name").value;
+    const newName = $("rename-new-name").value.trim();
+
+    if (!newName) {
+        showToast("Collection name cannot be empty.");
+        return;
+    }
+
+    if (oldName === newName) {
+        hideModal("rename-collection-modal");
+        return;
+    }
+
+    if (collections.some(c => c.toLowerCase() === newName.toLowerCase())) {
+        showToast("A collection with this name already exists.");
+        return;
+    }
+
+    // Update collection list
+    const index = collections.indexOf(oldName);
+    if (index !== -1) collections[index] = newName;
+
+    // Update associated links
+    defaultBookmarks.forEach(b => { if (b.category === oldName) b.category = newName; });
+    customBookmarks.forEach(b => { if (b.category === oldName) b.category = newName; });
+
+    if (activeCategory === oldName) activeCategory = newName;
+
+    saveAll();
+    refreshBookmarks();
+    renderCollectionsList();
+    renderCategoryTabs();
+    populateCollectionDropdowns();
+    renderDashboard();
+    hideModal("rename-collection-modal");
+    showToast("Collection renamed.");
+}
+
 function deleteCollection(name) {
-    if (defaultCollections.includes(name)) {
-        showToast("Default collections cannot be deleted.");
+    if (SYSTEM_PROTECTED_COLLECTIONS.includes(name)) {
+        showToast("System protected collections cannot be deleted.");
         return;
     }
 
-    const hasLinks = bookmarks.some(item => item.category === name);
+    // Reassign orphan links to 'All Collections' (represented by setting category to default or fallback)
+    defaultBookmarks.forEach(item => {
+        if (item.category === name) item.category = "Imported";
+    });
 
-    if (hasLinks) {
-        showToast("Move or remove its links before deleting this collection.");
-        return;
-    }
+    customBookmarks.forEach(item => {
+        if (item.category === name) item.category = "Imported";
+    });
 
     collections = collections.filter(item => item !== name);
 
     if (activeCategory === name) activeCategory = "all";
 
-    saveStorage(STORAGE.collections, collections);
+    saveAll();
+    refreshBookmarks();
     renderCollectionsList();
     renderCategoryTabs();
     populateCollectionDropdowns();
     renderDashboard();
-    showToast("Collection deleted.");
+    showToast(`Collection deleted. Associated links moved to Imported.`);
 }
 
-/* ADD LINKS */
-function openAddModal() {
+/* LINK ACTIONS: ADD, EDIT, DELETE, MOVE */
+function openAddModal(defaultCat = null) {
     populateCollectionDropdowns();
+    $("add-link-form").reset();
+    $("edit-link-id").value = "";
+    $("add-modal-title").innerHTML = '<i class="fa-solid fa-circle-plus text-blue-600 mr-2"></i>Add Custom Resource';
+    $("save-link-btn").textContent = "Save Link";
+
+    const selectCategory = (defaultCat && collections.includes(defaultCat) && defaultCat !== "all") 
+        ? defaultCat 
+        : (activeCategory !== "all" ? activeCategory : collections[0]);
+
+    if (selectCategory) $("custom-category").value = selectCategory;
+
     showModal("add-modal");
     $("custom-title").focus();
 }
 
-function closeAddModal() {
-    hideModal("add-modal");
-    $("add-link-form").reset();
+function openEditModal(id) {
+    const link = bookmarks.find(item => String(item.id) === String(id));
+    if (!link) return;
+
+    populateCollectionDropdowns();
+    $("edit-link-id").value = link.id;
+    $("custom-title").value = link.title;
+    $("custom-url").value = link.url;
+    $("custom-category").value = link.category;
+    $("custom-keywords").value = link.keywords || "";
+
+    $("add-modal-title").innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-600 mr-2"></i>Edit Link';
+    $("save-link-btn").textContent = "Update Link";
+
+    showModal("add-modal");
 }
 
 function handleSaveCustomLink(event) {
     event.preventDefault();
 
+    const editId = $("edit-link-id").value;
     const title = $("custom-title").value.trim();
     const url = safeURL($("custom-url").value);
     const category = $("custom-category").value;
@@ -727,38 +953,102 @@ function handleSaveCustomLink(event) {
         return;
     }
 
-    if (!collections.includes(category)) {
-        showToast("Select a valid collection.");
-        return;
-    }
+    if (editId) {
+        // Edit flow
+        const existing = bookmarks.find(b => String(b.id) === String(editId));
+        if (existing) {
+            existing.title = title;
+            existing.url = url;
+            existing.category = category;
+            existing.keywords = `${title} ${keywords}`.toLowerCase();
+        }
+        showToast("Link updated successfully.");
+    } else {
+        // Add flow
+        if (bookmarks.some(item => item.url === url)) {
+            showToast("This URL already exists.");
+            return;
+        }
 
-    if (bookmarks.some(item => item.url === url)) {
-        showToast("This URL already exists.");
-        return;
+        customBookmarks.push({
+            id: createId(),
+            title,
+            url,
+            category,
+            icon: "fa-link",
+            keywords: `${title} ${keywords}`.toLowerCase()
+        });
+        showToast("Link saved successfully.");
     }
-
-    customBookmarks.push({
-        id: createId(),
-        title,
-        url,
-        category,
-        icon: "fa-link",
-        keywords: `${title} ${keywords}`.toLowerCase()
-    });
 
     refreshBookmarks();
     saveAll();
-
-    closeAddModal();
+    closeAllModals();
     renderCollectionsList();
     renderDashboard();
-    showToast("Link saved successfully.");
+}
+
+function openMoveModal(id) {
+    const link = bookmarks.find(item => String(item.id) === String(id));
+    if (!link) return;
+
+    populateCollectionDropdowns();
+    $("move-link-id").value = link.id;
+    $("move-link-title").textContent = link.title;
+    $("move-target-category").value = link.category;
+
+    showModal("move-modal");
+}
+
+function handleMoveLink(event) {
+    event.preventDefault();
+    const id = $("move-link-id").value;
+    const targetCat = $("move-target-category").value;
+
+    const link = bookmarks.find(item => String(item.id) === String(id));
+    if (link) {
+        link.category = targetCat;
+        saveAll();
+        refreshBookmarks();
+        renderDashboard();
+        showToast(`Moved link to ${targetCat}`);
+    }
+    hideModal("move-modal");
+}
+
+function openDeleteConfirmModal(id) {
+    const link = bookmarks.find(item => String(item.id) === String(id));
+    if (!link) return;
+
+    deleteTargetId = id;
+    $("delete-item-title").textContent = link.title;
+    showModal("delete-confirm-modal");
+}
+
+function handleConfirmDeleteLink() {
+    if (!deleteTargetId) return;
+
+    const isDefault = defaultBookmarks.some(item => String(item.id) === String(deleteTargetId));
+    const targetLink = bookmarks.find(item => String(item.id) === String(deleteTargetId));
+
+    if (isDefault) {
+        deletedDefaultIds.push(Number(deleteTargetId));
+    } else {
+        if (targetLink) deletedPresetUrls.push(targetLink.url);
+        customBookmarks = customBookmarks.filter(item => String(item.id) !== String(deleteTargetId));
+    }
+
+    deleteTargetId = null;
+    saveAll();
+    refreshBookmarks();
+    renderDashboard();
+    hideModal("delete-confirm-modal");
+    showToast("Link deleted.");
 }
 
 /* PINNED */
 function togglePin(id) {
     const exists = pinnedIds.some(item => String(item) === String(id));
-
     pinnedIds = exists
         ? pinnedIds.filter(item => String(item) !== String(id))
         : [...pinnedIds, id];
@@ -826,42 +1116,35 @@ async function copyToClipboard(url) {
             input.remove();
             if (!copied) throw new Error("Copy failed");
         }
-
         showToast("URL copied.");
     } catch {
         showToast("Unable to copy URL. Check browser permissions.");
     }
 }
 
-/* IMPORT */
+/* IMPORT / EXPORT */
 function handleBookmarkImport(event) {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.onload = () => {
         try {
             const content = String(reader.result || "");
-
             if (file.name.toLowerCase().endsWith(".json")) {
                 importJSONBackup(content);
             } else {
                 parseNetscapeBookmarks(content);
             }
         } catch (error) {
-            console.error(error);
             showToast("The selected file could not be imported.");
         }
-
         event.target.value = "";
     };
-
     reader.onerror = () => {
         showToast("Unable to read the selected file.");
         event.target.value = "";
     };
-
     reader.readAsText(file);
 }
 
@@ -882,17 +1165,12 @@ function parseNetscapeBookmarks(html) {
         const url = safeURL(anchor.getAttribute("href"));
         const title = anchor.textContent.trim() || "Imported Link";
 
-        if (!url) {
+        if (!url || bookmarks.some(item => item.url === url)) {
             skipped++;
             return;
         }
 
-        if (bookmarks.some(item => item.url === url)) {
-            skipped++;
-            return;
-        }
-
-        const category = findBookmarkFolder(anchor);
+        const category = findBookmarkFolder(anchor) || "Imported";
 
         if (!collections.includes(category)) {
             collections.push(category);
@@ -906,11 +1184,10 @@ function parseNetscapeBookmarks(html) {
             icon: "fa-bookmark",
             keywords: `${title} ${category} imported bookmark`.toLowerCase()
         });
-
         imported++;
-        refreshBookmarks();
     });
 
+    refreshBookmarks();
     saveAll();
     renderCategoryTabs();
     populateCollectionDropdowns();
@@ -926,22 +1203,18 @@ function findBookmarkFolder(anchor) {
 
     while (currentList) {
         const heading = currentList.previousElementSibling?.querySelector("h3");
-
         if (heading?.textContent.trim()) {
             folder = heading.textContent.trim();
             break;
         }
-
         const parent = currentList.parentElement;
         currentList = parent?.closest("dl") || null;
     }
-
-    return folder || "Imported Bookmarks";
+    return folder || "Imported";
 }
 
 function importJSONBackup(content) {
     const data = JSON.parse(content);
-
     if (!data || typeof data !== "object" || !Array.isArray(data.customBookmarks)) {
         showToast("This is not a valid portal backup file.");
         return;
@@ -952,8 +1225,7 @@ function importJSONBackup(content) {
 
     if (Array.isArray(data.collections)) {
         data.collections.forEach(name => {
-            if (typeof name === "string" && name.trim() &&
-                !collections.some(item => item.toLowerCase() === name.toLowerCase())) {
+            if (typeof name === "string" && name.trim() && !collections.includes(name.trim())) {
                 collections.push(name.trim());
             }
         });
@@ -968,8 +1240,7 @@ function importJSONBackup(content) {
             return;
         }
 
-        const category = String(item.category || "Imported Bookmarks").trim();
-
+        const category = String(item.category || "Imported").trim();
         if (!collections.includes(category)) collections.push(category);
 
         customBookmarks.push({
@@ -980,21 +1251,10 @@ function importJSONBackup(content) {
             icon: item.icon || "fa-bookmark",
             keywords: String(item.keywords || title).toLowerCase()
         });
-
-        refreshBookmarks();
         imported++;
     });
 
-    if (Array.isArray(data.hiddenIds)) {
-        hiddenIds = [...new Set([...hiddenIds, ...data.hiddenIds])];
-    }
-
-    if (Array.isArray(data.pinnedIds)) {
-        pinnedIds = [...new Set([...pinnedIds, ...data.pinnedIds])];
-    }
-
-    saveAll();
-    cleanStoredIds();
+    refreshBookmarks();
     saveAll();
 
     renderCategoryTabs();
@@ -1005,7 +1265,6 @@ function importJSONBackup(content) {
     showToast(`Backup restored: ${imported} links added, ${skipped} skipped.`);
 }
 
-/* BACKUP */
 function exportData() {
     const backup = {
         application: "Mono Enterprise Smart Portal",
@@ -1018,14 +1277,9 @@ function exportData() {
         viewMode
     };
 
-    const blob = new Blob(
-        [JSON.stringify(backup, null, 2)],
-        { type: "application/json" }
-    );
-
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
-
     anchor.href = url;
     anchor.download = `azania_portal_backup_${new Date().toISOString().slice(0,10)}.json`;
 
@@ -1037,13 +1291,10 @@ function exportData() {
     showToast("Backup downloaded successfully.");
 }
 
-/* VIEW MODE */
+/* VIEW MODE & SEARCH */
 function setViewMode(mode) {
     viewMode = mode === "list" ? "list" : "grid";
-
-    try {
-        localStorage.setItem(STORAGE.view, viewMode);
-    } catch {}
+    try { localStorage.setItem(STORAGE.view, viewMode); } catch {}
 
     const active = "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm";
     const inactive = "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
@@ -1054,14 +1305,9 @@ function setViewMode(mode) {
     renderDashboard();
 }
 
-/* SEARCH */
 function calculateAIScore(item, tokens) {
     if (!tokens.length) return 1;
-
-    const searchable = normalizeSearch(
-        `${item.title} ${item.category} ${item.keywords || ""} ${item.url}`
-    );
-
+    const searchable = normalizeSearch(`${item.title} ${item.category} ${item.keywords || ""} ${item.url}`);
     const matches = tokens.filter(token => searchable.includes(token)).length;
     return matches / tokens.length;
 }
@@ -1077,7 +1323,7 @@ function resetSearch() {
     renderDashboard();
 }
 
-/* CARD GENERATOR */
+/* CARD UI GENERATOR */
 function createCardHTML(item) {
     const url = safeURL(item.url);
     if (!url) return "";
@@ -1095,14 +1341,20 @@ function createCardHTML(item) {
 
     const actions = `
         <div class="flex items-center gap-1 shrink-0">
-            <button data-copy="${escapeHTML(url)}" class="p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-700" title="Copy URL">
+            <button data-copy="${escapeHTML(url)}" class="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-700" title="Copy URL">
                 <i class="fa-solid fa-copy text-xs"></i>
             </button>
-            <button data-pin="${id}" class="p-2 rounded-lg ${pinClass}" title="${pinned ? "Unpin" : "Pin"}">
+            <button data-edit-link="${id}" class="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-700" title="Edit Link">
+                <i class="fa-solid fa-pen text-xs"></i>
+            </button>
+            <button data-move-link="${id}" class="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-700" title="Move Link">
+                <i class="fa-solid fa-arrows-up-down-left-right text-xs"></i>
+            </button>
+            <button data-pin="${id}" class="p-1.5 sm:p-2 rounded-lg ${pinClass}" title="${pinned ? "Unpin" : "Pin"}">
                 <i class="fa-solid fa-star text-xs"></i>
             </button>
-            <button data-hide="${id}" class="p-2 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700" title="Hide link">
-                <i class="fa-solid fa-eye-slash text-xs"></i>
+            <button data-delete-link="${id}" class="p-1.5 sm:p-2 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700" title="Delete Link">
+                <i class="fa-solid fa-trash text-xs"></i>
             </button>
         </div>`;
 
@@ -1145,7 +1397,7 @@ function createCardHTML(item) {
         </article>`;
 }
 
-/* DASHBOARD */
+/* DASHBOARD RENDER */
 function renderDashboard() {
     const visible = bookmarks.filter(item =>
         !hiddenIds.some(id => String(id) === String(item.id))
@@ -1177,28 +1429,17 @@ function renderDashboard() {
     $("pinned-section").classList.toggle("hidden", !showPinned);
     $("pinned-count-badge-inline").textContent = pinnedItems.length;
 
-    $("pinned-grid").className = viewMode === "list"
-        ? "flex flex-col gap-2.5"
-        : "auto-grid";
+    $("pinned-grid").className = viewMode === "list" ? "flex flex-col gap-2.5" : "auto-grid";
+    $("pinned-grid").innerHTML = showPinned ? pinnedItems.map(createCardHTML).join("") : "";
 
-    if (showPinned) {
-        $("pinned-grid").innerHTML = pinnedItems.map(createCardHTML).join("");
-    } else {
-        $("pinned-grid").innerHTML = "";
-    }
-
-    $("links-container").className = viewMode === "list"
-        ? "flex flex-col gap-2.5"
-        : "auto-grid";
-
+    $("links-container").className = viewMode === "list" ? "flex flex-col gap-2.5" : "auto-grid";
     $("links-container").innerHTML = filtered.map(createCardHTML).join("");
 
     $("no-results").classList.toggle("hidden", filtered.length !== 0);
     $("no-results").classList.toggle("flex", filtered.length === 0);
 }
 
-
-/* GITHUB CSV LIBRARY */
+/* GITHUB CSV LIBRARY INTEGRATION */
 function csvServiceReady() {
     return CSV_API_BASE && !CSV_API_BASE.includes("YOUR-SUBDOMAIN");
 }
@@ -1221,7 +1462,7 @@ function parseCSV(content) {
     row.push(value);
     if (row.some(cell => String(cell).trim() !== "")) rows.push(row);
     if (!rows.length) return [];
-    const headers = rows.shift().map(value => String(value).trim().toLowerCase().replace(/^\uFEFF/, ""));
+    const headers = rows.shift().map(val => String(val).trim().toLowerCase().replace(/^\uFEFF/, ""));
     return rows.map(values => {
         const item = {};
         headers.forEach((header, index) => item[header] = String(values[index] ?? "").trim());
@@ -1230,14 +1471,14 @@ function parseCSV(content) {
 }
 
 async function csvApi(path, options = {}) {
-    if (!csvServiceReady()) throw new Error("CSV service is not configured yet. Deploy the Cloudflare Worker and set its URL in links.html.");
+    if (!csvServiceReady()) throw new Error("CSV service URL not configured.");
     const response = await fetch(CSV_API_BASE + path, {
         ...options,
         credentials: "include",
         headers: { "Content-Type": "application/json", ...(options.headers || {}) }
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || "CSV service request failed.");
+    if (!response.ok) throw new Error(data.error || "CSV request failed.");
     return data;
 }
 
@@ -1249,10 +1490,10 @@ function openCsvLibrary() {
 async function refreshRemoteCsvFiles() {
     const container = $("csv-library-list");
     if (!csvServiceReady()) {
-        container.innerHTML = '<p class="text-xs text-amber-600 dark:text-amber-400 text-center py-6">CSV service setup is pending. Deploy the Worker and update CSV_API_BASE.</p>';
+        container.innerHTML = '<p class="text-xs text-amber-600 dark:text-amber-400 text-center py-6">CSV service setup is pending. Update CSV_API_BASE.</p>';
         return;
     }
-    container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading your files...</p>';
+    container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading files...</p>';
     try {
         const data = await csvApi("/api/files");
         remoteCsvFiles = Array.isArray(data.files) ? data.files : [];
@@ -1265,62 +1506,44 @@ async function refreshRemoteCsvFiles() {
 function renderRemoteCsvFiles() {
     const container = $("csv-library-list");
     if (!remoteCsvFiles.length) {
-        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">You have not uploaded any CSV files yet.</p>';
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No CSV files uploaded yet.</p>';
         return;
     }
     container.innerHTML = remoteCsvFiles.map(file => `
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
             <div class="min-w-0">
                 <div class="font-semibold text-xs text-slate-800 dark:text-slate-200"><i class="fa-solid fa-file-csv text-emerald-600 mr-2"></i>${escapeHTML(file.file_name)}</div>
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${escapeHTML(file.original_name || "CSV file")} · ${Number(file.row_count || 0)} links · ${escapeHTML(file.uploaded_at || "")}</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${escapeHTML(file.original_name || "CSV file")} · ${Number(file.row_count || 0)} links</div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
                 <button type="button" data-csv-load="${escapeHTML(file.file_name)}" class="px-3 py-2 rounded-lg bg-blue-600 text-white text-[11px] font-semibold hover:bg-blue-700">Load links</button>
-                <button type="button" data-csv-download="${escapeHTML(file.file_name)}" class="px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-semibold">Download</button>
             </div>
         </div>`).join("");
 }
 
 async function uploadCsvToGitHub() {
     const file = $("csv-upload-input").files?.[0];
-    if (!file) { showToast("Choose a CSV file first."); return; }
-    if (!file.name.toLowerCase().endsWith(".csv")) { showToast("Only CSV files are accepted."); return; }
-    if (file.size > 1024 * 1024) { showToast("CSV file must be 1 MB or smaller."); return; }
+    if (!file) { showToast("Select a CSV file."); return; }
     const button = $("csv-upload-button");
     button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i>Uploading...';
     try {
         const content = await file.text();
         const rows = parseCSV(content);
         if (!rows.length || !rows[0].title || !rows[0].url) {
-            throw new Error("CSV must contain title and url columns with at least one data row.");
+            throw new Error("CSV must contain title and url columns.");
         }
-        const data = await csvApi("/api/upload", {
+        await csvApi("/api/upload", {
             method: "POST",
             body: JSON.stringify({ original_name: file.name, content })
         });
         $("csv-upload-input").value = "";
-        showToast("Uploaded as " + data.file_name);
+        showToast("Uploaded successfully.");
         await refreshRemoteCsvFiles();
     } catch (error) {
         showToast(error.message);
     } finally {
         button.disabled = false;
-        button.innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Upload CSV';
     }
-}
-
-async function downloadRemoteCsv(fileName) {
-    try {
-        const data = await csvApi("/api/download?file=" + encodeURIComponent(fileName));
-        const blob = new Blob([data.content], { type: "text/csv;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = fileName;
-        anchor.click();
-        URL.revokeObjectURL(url);
-    } catch (error) { showToast(error.message); }
 }
 
 async function loadRemoteCsv(fileName) {
@@ -1332,7 +1555,7 @@ async function loadRemoteCsv(fileName) {
             const title = String(row.title || "").trim();
             const url = safeURL(row.url);
             if (!title || !url || bookmarks.some(item => item.url === url)) { skipped++; return; }
-            const category = String(row.category || "Uploaded CSV").trim() || "Uploaded CSV";
+            const category = String(row.category || "Imported").trim() || "Imported";
             if (!collections.includes(category)) collections.push(category);
             customBookmarks.push({
                 id: createId(), title, url, category,
@@ -1342,24 +1565,23 @@ async function loadRemoteCsv(fileName) {
             imported++;
         });
         refreshBookmarks();
-        cleanStoredIds();
         saveAll();
         renderCategoryTabs();
         populateCollectionDropdowns();
         renderCollectionsList();
         renderDashboard();
-        showToast(imported + " links loaded; " + skipped + " skipped.");
+        showToast(imported + " links loaded.");
     } catch (error) { showToast(error.message); }
 }
 
-/* EVENT HANDLERS */
+/* EVENT DELEGATION & LISTENERS */
 function bindEvents() {
     $("import-button").addEventListener("click", () => $("bookmark-file-input").click());
     $("collections-button").addEventListener("click", openCollectionsModal);
     $("csv-library-button").addEventListener("click", openCsvLibrary);
     $("csv-upload-button").addEventListener("click", uploadCsvToGitHub);
     $("csv-refresh-button").addEventListener("click", refreshRemoteCsvFiles);
-    $("add-button").addEventListener("click", openAddModal);
+    $("add-button").addEventListener("click", () => openAddModal());
     $("theme-toggle").addEventListener("click", toggleTheme);
     $("backup-button").addEventListener("click", exportData);
     $("hidden-button").addEventListener("click", openHiddenModal);
@@ -1369,6 +1591,9 @@ function bindEvents() {
 
     $("bookmark-file-input").addEventListener("change", handleBookmarkImport);
     $("add-link-form").addEventListener("submit", handleSaveCustomLink);
+    $("move-link-form").addEventListener("submit", handleMoveLink);
+    $("rename-collection-form").addEventListener("submit", handleRenameCollection);
+    $("confirm-delete-link-btn").addEventListener("click", handleConfirmDeleteLink);
 
     $("collection-form").addEventListener("submit", event => {
         event.preventDefault();
@@ -1385,54 +1610,68 @@ function bindEvents() {
     $("no-results-clear").addEventListener("click", resetSearch);
 
     document.addEventListener("click", async event => {
-        const closeButton = event.target.closest("[data-close]");
-        if (closeButton) {
-            hideModal(closeButton.dataset.close);
+        const closeBtn = event.target.closest("[data-close]");
+        if (closeBtn) {
+            hideModal(closeBtn.dataset.close);
             return;
         }
 
-        const categoryButton = event.target.closest("[data-category]");
-        if (categoryButton) {
-            setCategory(categoryButton.dataset.category);
+        const categoryBtn = event.target.closest("[data-category]");
+        if (categoryBtn) {
+            setCategory(categoryBtn.dataset.category);
             return;
         }
 
-        const deleteButton = event.target.closest("[data-delete-collection]");
-        if (deleteButton) {
-            deleteCollection(deleteButton.dataset.deleteCollection);
+        const deleteColBtn = event.target.closest("[data-delete-collection]");
+        if (deleteColBtn) {
+            deleteCollection(deleteColBtn.dataset.deleteCollection);
             return;
         }
 
-        const csvLoadButton = event.target.closest("[data-csv-load]");
-        if (csvLoadButton) { await loadRemoteCsv(csvLoadButton.dataset.csvLoad); return; }
-
-        const csvDownloadButton = event.target.closest("[data-csv-download]");
-        if (csvDownloadButton) { await downloadRemoteCsv(csvDownloadButton.dataset.csvDownload); return; }
-
-        const restoreButton = event.target.closest("[data-restore]");
-        if (restoreButton) {
-            unhideLink(restoreButton.dataset.restore);
+        const renameColBtn = event.target.closest("[data-rename-collection]");
+        if (renameColBtn) {
+            openRenameCollectionModal(renameColBtn.dataset.renameCollection);
             return;
         }
 
-        const copyButton = event.target.closest("[data-copy]");
-        if (copyButton) {
+        const editLinkBtn = event.target.closest("[data-edit-link]");
+        if (editLinkBtn) {
             event.stopPropagation();
-            await copyToClipboard(copyButton.dataset.copy);
+            openEditModal(editLinkBtn.dataset.editLink);
             return;
         }
 
-        const pinButton = event.target.closest("[data-pin]");
-        if (pinButton) {
+        const moveLinkBtn = event.target.closest("[data-move-link]");
+        if (moveLinkBtn) {
             event.stopPropagation();
-            togglePin(pinButton.dataset.pin);
+            openMoveModal(moveLinkBtn.dataset.moveLink);
             return;
         }
 
-        const hideButton = event.target.closest("[data-hide]");
-        if (hideButton) {
+        const deleteLinkBtn = event.target.closest("[data-delete-link]");
+        if (deleteLinkBtn) {
             event.stopPropagation();
-            hideLink(hideButton.dataset.hide);
+            openDeleteConfirmModal(deleteLinkBtn.dataset.deleteLink);
+            return;
+        }
+
+        const csvLoadBtn = event.target.closest("[data-csv-load]");
+        if (csvLoadBtn) { await loadRemoteCsv(csvLoadBtn.dataset.csvLoad); return; }
+
+        const restoreBtn = event.target.closest("[data-restore]");
+        if (restoreBtn) { unhideLink(restoreBtn.dataset.restore); return; }
+
+        const copyBtn = event.target.closest("[data-copy]");
+        if (copyBtn) {
+            event.stopPropagation();
+            await copyToClipboard(copyBtn.dataset.copy);
+            return;
+        }
+
+        const pinBtn = event.target.closest("[data-pin]");
+        if (pinBtn) {
+            event.stopPropagation();
+            togglePin(pinBtn.dataset.pin);
             return;
         }
 
@@ -1451,19 +1690,17 @@ function bindEvents() {
     document.addEventListener("keydown", event => {
         const tag = document.activeElement?.tagName;
         const typing = ["INPUT", "TEXTAREA", "SELECT"].includes(tag);
-
         if (event.key === "/" && !typing) {
             event.preventDefault();
             $("search-input").focus();
         }
-
         if (event.key === "Escape") {
             closeAllModals();
         }
     });
 }
 
-/* START APPLICATION */
+/* INITIALIZATION */
 function initApp() {
     loadData();
     initTheme();
@@ -1473,9 +1710,6 @@ function initApp() {
     populateCollectionDropdowns();
     renderCollectionsList();
     setViewMode(viewMode);
-
-    updateClock();
-    setInterval(updateClock, 1000);
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
