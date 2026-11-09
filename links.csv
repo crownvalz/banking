@@ -43,3 +43,5 @@ SMS Alert,http://172.16.3.34:8443/login,Core Banking,fa-sms,Register user to sms
 Digital Loan (Pensionaire),http://10.168.202.98/,Core Banking,fa-money,Digital loan system with various loan products
 Correspondence Management system,https://p2pay.azaniabank.co.tz/,Core Banking,fa-fax,Correspondence Management system
 Data Cleanup - Images,https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/Customer_Image/Accounts_without_image/Accounts_without_image.xdo,Data Cleanup,fa-person,Accounts missing images and signature
+Cheque Book request,https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CHEQUEBOOK_RPT/CHEQUEBOOK_RPT.xdo,Core Banking,fa-book,Cheque Book request
+Standing Instruction SI,https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/SI_REPORT/BOOKED_SI/BOOKED_SI.xdo,Core Banking,fa-car,Standing Instruction report
