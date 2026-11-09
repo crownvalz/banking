@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mono Bank - Fast Interactive RCSA Working Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0a2540',
+                            blue: '#1a56db',
+                            amber: '#d97706',
+                            emerald: '#059669',
+                            rose: '#e11d48'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .cat-tab-active {
+            background-color: #1a56db !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            border-color: #1a56db !important;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-blue selection:text-white">
+
+    <!-- TOP NAV HEADER -->
+    <header class="bg-brand-navy text-white shadow-lg sticky top-0 z-30 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & System Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-blue-600 to-amber-500 flex items-center justify-center font-bold text-xl text-white shadow-md">
+                        AB
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight tracking-wide">Mono BANK LIMITED</h1>
+                        <p class="text-xs text-blue-200">Interactive RCSA Fast-Working Portal</p>
+                    </div>
+                </div>
+
+                <!-- Global Quick Action Tools -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <button onclick="markAllVisibleAsYes()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center shadow-sm transition" title="Quickly set all checks in current category to YES">
+                        <i class="fa-solid fa-check-double mr-1.5"></i> Mark Category All YES
+                    </button>
+                    <button onclick="startNewMonthAssessment()" class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-lg text-xs font-bold flex items-center shadow-sm transition">
+                        <i class="fa-solid fa-calendar-plus mr-1.5"></i> New Month
+                    </button>
+                    <button onclick="exportToCSV()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center shadow-sm transition">
+                        <i class="fa-solid fa-file-excel mr-1.5"></i> Export CSV
+                    </button>
+                    <button onclick="window.print()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-semibold flex items-center shadow-sm transition">
+                        <i class="fa-solid fa-print mr-1.5"></i> Print
+                    </button>
+                    <button onclick="resetToDefaultData()" title="Reset back to default dataset" class="px-2.5 py-2 bg-slate-800 hover:bg-rose-900 text-slate-300 hover:text-white rounded-lg text-xs font-medium transition">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- PERIOD & MAIN PROCESS CATEGORY SELECTOR BAR -->
+    <section class="bg-white border-b border-slate-200 shadow-sm no-print sticky top-16 z-20">
+        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-3">
+            
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <!-- Branch & Period Controls -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase px-2">Branch:</span>
+                        <select id="select-branch" onchange="onBranchOrMonthChange()" class="bg-white border border-slate-300 text-xs font-bold text-slate-800 rounded-md px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Pemba Branch">Pemba Branch</option>
+                            <option value="Sabasaba Service Center">Sabasaba Service Center</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg border border-slate-200">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase px-2"><i class="fa-solid fa-calendar-days mr-1 text-blue-600"></i> Period:</span>
+                        <select id="select-month" onchange="onBranchOrMonthChange()" class="bg-white border border-slate-300 text-xs font-bold text-slate-800 rounded-md px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- Category Selector Dropdown -->
+                    <div class="flex items-center space-x-1.5 bg-blue-50 p-1 rounded-lg border border-blue-200">
+                        <span class="text-[11px] font-bold text-blue-700 uppercase px-2"><i class="fa-solid fa-layer-group mr-1"></i> Main Process:</span>
+                        <select id="select-process-category" onchange="onCategoryDropdownChange(this.value)" class="bg-white border border-blue-300 text-xs font-bold text-blue-900 rounded-md px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[260px] truncate">
+                            <!-- Populated dynamically with unique categories -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filters & Search Bar -->
+                <div class="flex items-center flex-wrap gap-2">
+                    <!-- Outcome Filter -->
+                    <div class="relative">
+                        <select id="filter-status" onchange="renderDashboard()" class="bg-slate-50 border border-slate-300 text-xs text-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold">
+                            <option value="ALL">All Outcomes</option>
+                            <option value="YES">Compliant (YES)</option>
+                            <option value="NO">Deficiencies (NO)</option>
+                            <option value="N/E">Not Evaluated (N/E)</option>
+                        </select>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="relative flex-1 min-w-[200px]">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
+                        <input type="text" id="filter-search" onkeyup="renderDashboard()" placeholder="Search question, remarks, GLs..." class="w-full bg-slate-50 border border-slate-300 text-xs rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN PROCESS QUICK TABS HORIZONTAL SCROLL BAR -->
+            <div class="flex items-center space-x-1 overflow-x-auto pb-1 pt-1 no-scrollbar border-t border-slate-100" id="category-tabs-container">
+                <!-- Grouped category chips injected dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- KPI SUMMARY RIBBON -->
+    <div class="bg-slate-100 border-b border-slate-200 py-3 no-print">
+        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+                <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Category Progress</p>
+                    <p id="kpi-cat-summary" class="text-base font-bold text-slate-800 mt-0.5">0 / 0 YES</p>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Compliance Rate</p>
+                    <p id="kpi-rate" class="text-base font-bold text-emerald-600 mt-0.5">0%</p>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Total Audited Checks</p>
+                    <p id="kpi-total" class="text-base font-bold text-slate-800 mt-0.5">0</p>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Deficiencies (NO)</p>
+                    <p id="kpi-no" class="text-base font-bold text-rose-600 mt-0.5">0</p>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Action Resolution</p>
+                    <p id="kpi-resolution" class="text-base font-bold text-amber-600 mt-0.5">0%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN WORKING TABLE CONTAINER -->
+    <main class="flex-1 max-w-12xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <!-- Table Header Bar -->
+            <div class="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm flex items-center">
+                        <i class="fa-solid fa-list-check text-blue-600 mr-2"></i>
+                        <span id="heading-active-category">ALL PROCESS CATEGORIES</span>
+                    </h3>
+                    <p class="text-xs text-slate-500" id="subheading-count">Showing 0 control assessment items</p>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-semibold text-slate-500">Auto-Save:</span>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full flex items-center">
+                        <i class="fa-solid fa-circle text-[8px] mr-1 text-emerald-500 animate-pulse"></i> Live Active
+                    </span>
+                </div>
+            </div>
+
+            <!-- FAST DIRECT-EDITING AUDIT TABLE -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-600 font-semibold uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3 px-3 w-10 text-center">#</th>
+                            <th class="py-3 px-3">Control Assessment Question</th>
+                            <th class="py-3 px-3 w-20 text-center">Vol/Amt</th>
+                            <th class="py-3 px-3 w-28 text-center bg-blue-50/50">Outcome</th>
+                            <th class="py-3 px-3 w-48">Audit Remarks / Findings</th>
+                            <th class="py-3 px-3 w-48">Corrective Action Plan</th>
+                            <th class="py-3 px-3 w-28">Target Date</th>
+                            <th class="py-3 px-3 w-32 text-center bg-amber-50/50">Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fast-audit-tbody" class="divide-y divide-slate-200 bg-white">
+                        <!-- Fast editable rows injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- NEW ASSESSMENT MONTH MODAL -->
+    <div id="newMonthModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 hidden no-print">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200">
+            <div class="bg-brand-navy text-white px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-base flex items-center">
+                    <i class="fa-solid fa-calendar-plus mr-2 text-amber-400"></i> Start New Assessment Period
+                </h3>
+                <button onclick="closeNewMonthModal()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="confirmCreateNewMonth(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Target Branch</label>
+                    <select id="modal-new-branch" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold">
+                        <option value="Pemba Branch">Pemba Branch</option>
+                        <option value="Sabasaba Service Center">Sabasaba Service Center</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">New Period (Month & Year)</label>
+                    <input type="month" id="modal-new-period" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold">
+                </div>
+                <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 space-y-1">
+                    <p class="font-bold"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Automatic Rollover:</p>
+                    <p>Copies all categorized control questions and carries over unresolved deficiencies from the previous month for continuous tracking.</p>
+                </div>
+                <div class="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200">
+                    <button type="button" onclick="closeNewMonthModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-lg">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs rounded-lg shadow-sm">Generate Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- APPLICATION LOGIC & PRE-POPULATED DATASET -->
+    <script>
+        // FULL PRE-POPULATED MASTER DATASETS EXTRACTED DIRECTLY FROM THE EXCEL FILE
+        const pembaSept2026Raw = [
+            { id: 1, category: "COMPLIANCE ISSUES", description: "Fire certificate presence and validity", volume: "N/E", status: "NO", remarks: "We are making followup to get the certificates", action: "Coordinate with local fire department for renewal", target: "30/10/2026", progress: "In Progress" },
+            { id: 2, category: "COMPLIANCE ISSUES", description: "Latest bank tarrifs (Published on June 2025)", volume: "N/E", status: "YES", remarks: "Available in banking hall", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 3, category: "COMPLIANCE ISSUES", description: "President potrait", volume: "N/E", status: "YES", remarks: "Displayed properly", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 4, category: "COMPLIANCE ISSUES", description: "Latest Financials", volume: "N/E", status: "YES", remarks: "Displayed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 5, category: "COMPLIANCE ISSUES", description: "Bank Business Licence (with Mono BANK PLC)", volume: "N/E", status: "YES", remarks: "Displayed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 6, category: "COMPLIANCE ISSUES", description: "Branch valid Business Licence,", volume: "N/E", status: "YES", remarks: "Valid and current", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 7, category: "COMPLIANCE ISSUES", description: "Certificate of Incorporation", volume: "N/E", status: "YES", remarks: "Framed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 8, category: "COMPLIANCE ISSUES", description: "VAT", volume: "N/E", status: "YES", remarks: "Displayed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 9, category: "COMPLIANCE ISSUES", description: "TIN Certificate,", volume: "N/E", status: "YES", remarks: "Displayed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 10, category: "COMPLIANCE ISSUES", description: "Customer charter", volume: "N/E", status: "YES", remarks: "Available", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 11, category: "COMPLIANCE ISSUES", description: "Customer Complaints Guideline", volume: "N/E", status: "YES", remarks: "Available", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 12, category: "PHYSICAL SECURITY ISSUES", description: "Did you test alarms during the month and record them in the physical security register ? (Specify date)", volume: "N/E", status: "YES", remarks: "Tested 16/09/2026", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 13, category: "PHYSICAL SECURITY ISSUES", description: "Did you test fire and record it in the physical security register? (Specify date)", volume: "N/E", status: "YES", remarks: "Tested 14/09/2026", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 14, category: "PHYSICAL SECURITY ISSUES", description: "Did you test the intruder alarm during the month and record results in security register?", volume: "N/E", status: "YES", remarks: "Tested 16/09/2026", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 15, category: "PHYSICAL SECURITY ISSUES", description: "Did you check if fire extinguishers are in order (not overdue for service)?", volume: "N/E", status: "YES", remarks: "Next service July 2027", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 16, category: "PHYSICAL SECURITY ISSUES", description: "Did you review CCTV footage during the month and record results in register?", volume: "N/E", status: "NO", remarks: "Will be reviewed this month.", action: "Complete branch CCTV log audit", target: "30/10/2026", progress: "Not Started" },
+            { id: 17, category: "OHS(OSHA) COMPLIANCE", description: "OSHA certificate of registration of work place", volume: "N/E", status: "NO", remarks: "We are making followup to get the certificates", action: "Follow up with OSHA regional office", target: "30/10/2026", progress: "In Progress" },
+            { id: 18, category: "OHS(OSHA) COMPLIANCE", description: "OHS certificate of Compliance", volume: "N/E", status: "NO", remarks: "We are making followup to get the certificates", action: "Follow up with OSHA regional office", target: "30/10/2026", progress: "In Progress" },
+            { id: 19, category: "OHS(OSHA) COMPLIANCE", description: "Electrical danger signs on the main distribution board", volume: "N/E", status: "YES", remarks: "Signs fixed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 20, category: "OHS(OSHA) COMPLIANCE", description: "OHS Policy statement", volume: "N/E", status: "YES", remarks: "Displayed", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 21, category: "OHS(OSHA) COMPLIANCE", description: "Abstract of the act", volume: "N/E", status: "YES", remarks: "Available", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 22, category: "OHS(OSHA) COMPLIANCE", description: "First Aiders name and contacts", volume: "N/E", status: "YES", remarks: "Posted", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 23, category: "OHS(OSHA) COMPLIANCE", description: "Appointment letters & Certificates for OHS representatives", volume: "N/E", status: "NO", remarks: "We currently do not have Official members for OSH with Appointment letters.", action: "Issue appointment letters", target: "30/10/2026", progress: "Not Started" },
+            { id: 24, category: "PERSONAL ACCOUNTS", description: "Were application forms filled properly?", volume: "603", status: "YES", remarks: "Verified in CBS", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 25, category: "PERSONAL ACCOUNTS", description: "Were Application forms signed by bank officers?", volume: "603", status: "YES", remarks: "Verified", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 26, category: "PERSONAL ACCOUNTS", description: "Did signatures along with signing instructions and photo images uploaded into CBS?", volume: "603", status: "YES", remarks: "Uploaded", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 27, category: "CORPORATE ACCOUNTS", description: "Were Forms filled properly?", volume: "8", status: "YES", remarks: "Complete", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 28, category: "CORPORATE ACCOUNTS", description: "Was Brella search in respect of registered bodies done and report stamped?", volume: "8", status: "YES", remarks: "Attached in mandate file", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 29, category: "WAKALA ACCOUNTS", description: "Were Forms filled properly and signed?", volume: "3", status: "YES", remarks: "Complete", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 30, category: "CASH MANAGEMENT", description: "Vault snap checks conducted and recorded in Treasury register?", volume: "N/E", status: "YES", remarks: "Done On 19/09/2026", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 31, category: "CASH MANAGEMENT", description: "Teller Intraday snap check conducted weekly and recorded?", volume: "N/E", status: "YES", remarks: "Done On 21&23/09/2026", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 32, category: "CASH MANAGEMENT", description: "Are CIT officers photo and IDs verified against master list?", volume: "N/E", status: "NO", remarks: "For Pemba we do not have CIT officials. Branch Manager making followup.", action: "Arrange proper cash transit handling", target: "30/10/2026", progress: "In Progress" },
+            { id: 33, category: "CHEQUE BOOKS", description: "Are all issued cheque books having the delivered status in CBS?", volume: "1", status: "NO", remarks: "NOT COLLECTED YET", action: "Contact customer for collection", target: "30/10/2026", progress: "In Progress" },
+            { id: 34, category: "SUSPENSE ACCOUNT RECONCILIATIONS", description: "Outstanding entries > 7 days in Credit/Insurance GLs", volume: "2", status: "YES", remarks: "LI148046 PROPERTY INSURANCE PAYABLE - 912,151.18 TZS", action: "Will be cleared this month", target: "30/10/2026", progress: "In Progress" },
+            { id: 35, category: "ATM CARDS", description: "Take ATM cards application, verify forms, metal box locked, register signed daily", volume: "216", status: "YES", remarks: "Verified", action: "N/A", target: "N/A", progress: "Resolved" },
+            { id: 36, category: "FUND TRANSFERS", description: "Customer info filled, CSO/supervisor sign, callback done, verification in place", volume: "26", status: "YES", remarks: "Verified", action: "N/A", target: "N/A", progress: "Resolved" }
+        ];
+
+        const sabasabaMay2026Raw = [
+            { id: 101, category: "COMPLIANCE ISSUES", description: "Branch valid Business Licence", volume: "N/E", status: "NO", remarks: "Service Center Supervisor is aware of this.", action: "Renewal in progress", target: "30th June 2026", progress: "In Progress" },
+            { id: 102, category: "PHYSICAL SECURITY ISSUES", description: "Did you test fire and record it in the physical security register?", volume: "N/E", status: "NO", remarks: "Will be tested on June 2026", action: "Conduct fire drill test", target: "30th June 2026", progress: "In Progress" },
+            { id: 103, category: "PHYSICAL SECURITY ISSUES", description: "Did you test intruder alarm and record results?", volume: "N/E", status: "NO", remarks: "Technician updated PIN. Test pending log.", action: "Ensure all alarm tests logged", target: "30th June 2026", progress: "In Progress" },
+            { id: 104, category: "SUSPENSE ACCOUNT RECONCILIATIONS", description: "Outstanding entries > 7 days in Credit Outstanding GLs", volume: "724,160 TZS", status: "YES", remarks: "LI145055 - CREDIT OUTSTANDING- LCY", action: "Will be cleared this month", target: "30th June 2026", progress: "In Progress" },
+            { id: 105, category: "PERSONAL ACCOUNTS", description: "Were application forms filled properly and signed?", volume: "862", status: "YES", remarks: "Verified in CBS", action: "N/A", target: "N/A", progress: "Resolved" }
+        ];
+
+        // Application State Variables
+        let masterData = {};
+        let currentBranch = "Pemba Branch";
+        let currentMonth = "2026-09";
+        let selectedCategoryFilter = "ALL";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadMasterData();
+            initBranchAndMonthSelectors();
+            renderDashboard();
+        });
+
+        function loadMasterData() {
+            const stored = localStorage.getItem("Mono_RCSA_FAST_STORE");
+            if (stored) {
+                try {
+                    masterData = JSON.parse(stored);
+                } catch(e) {
+                    masterData = getDefaultMaster();
+                }
+            } else {
+                masterData = getDefaultMaster();
+                saveMasterData();
+            }
+        }
+
+        function getDefaultMaster() {
+            return {
+                "Pemba Branch": { "2026-09": pembaSept2026Raw },
+                "Sabasaba Service Center": { "2026-05": sabasabaMay2026Raw }
+            };
+        }
+
+        function saveMasterData() {
+            localStorage.setItem("Mono_RCSA_FAST_STORE", JSON.stringify(masterData));
+        }
+
+        function resetToDefaultData() {
+            if (confirm("Reset all working assessment records back to default state?")) {
+                masterData = getDefaultMaster();
+                saveMasterData();
+                initBranchAndMonthSelectors();
+                renderDashboard();
+            }
+        }
+
+        function initBranchAndMonthSelectors() {
+            document.getElementById("select-branch").value = currentBranch;
+            populateMonthDropdown();
+        }
+
+        function populateMonthDropdown() {
+            const monthSelect = document.getElementById("select-month");
+            monthSelect.innerHTML = "";
+
+            const availableMonths = Object.keys(masterData[currentBranch] || {}).sort().reverse();
+            if (availableMonths.length === 0) {
+                masterData[currentBranch] = { "2026-09": [] };
+                availableMonths.push("2026-09");
+            }
+
+            if (!availableMonths.includes(currentMonth)) {
+                currentMonth = availableMonths[0];
+            }
+
+            availableMonths.forEach(m => {
+                const opt = document.createElement("option");
+                opt.value = m;
+                opt.textContent = formatMonthLabel(m);
+                if (m === currentMonth) opt.selected = true;
+                monthSelect.appendChild(opt);
+            });
+
+            populateCategorySelectors();
+        }
+
+        function formatMonthLabel(ym) {
+            const [y, m] = ym.split("-");
+            const date = new Date(y, parseInt(m) - 1, 1);
+            return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+        }
+
+        function onBranchOrMonthChange() {
+            currentBranch = document.getElementById("select-branch").value;
+            const newMonth = document.getElementById("select-month").value;
+
+            if (!masterData[currentBranch] || !masterData[currentBranch][newMonth]) {
+                populateMonthDropdown();
+            } else {
+                currentMonth = newMonth;
+            }
+
+            selectedCategoryFilter = "ALL";
+            populateCategorySelectors();
+            renderDashboard();
+        }
+
+        function getActiveItems() {
+            if (!masterData[currentBranch]) masterData[currentBranch] = {};
+            if (!masterData[currentBranch][currentMonth]) masterData[currentBranch][currentMonth] = [];
+            return masterData[currentBranch][currentMonth];
+        }
+
+        function populateCategorySelectors() {
+            const items = getActiveItems();
+            const categories = [...new Set(items.map(item => item.category))].sort();
+
+            // 1. Top Dropdown
+            const selectDropdown = document.getElementById('select-process-category');
+            selectDropdown.innerHTML = '<option value="ALL">📁 ALL MAIN PROCESSES (' + categories.length + ')</option>';
+            categories.forEach(cat => {
+                const count = items.filter(i => i.category === cat).length;
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = `${cat} (${count})`;
+                selectDropdown.appendChild(opt);
+            });
+            selectDropdown.value = selectedCategoryFilter;
+
+            // 2. Horizontal Scroll Tabs
+            const tabsContainer = document.getElementById('category-tabs-container');
+            let tabsHtml = `
+                <button onclick="onCategoryDropdownChange('ALL')" class="px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition border border-slate-300 ${selectedCategoryFilter === 'ALL' ? 'cat-tab-active' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
+                    All Categories (${items.length})
+                </button>
+            `;
+
+            categories.forEach(cat => {
+                const count = items.filter(i => i.category === cat).length;
+                const noCount = items.filter(i => i.category === cat && i.status === 'NO').length;
+                const isActive = selectedCategoryFilter === cat;
+
+                tabsHtml += `
+                    <button onclick="onCategoryDropdownChange('${cat.replace(/'/g, "\\'")}')" class="px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition border border-slate-300 flex items-center space-x-1 ${isActive ? 'cat-tab-active' : 'bg-white text-slate-700 hover:bg-slate-100'}">
+                        <span>${cat}</span>
+                        <span class="${isActive ? 'bg-white text-blue-700' : 'bg-slate-200 text-slate-700'} text-[10px] font-bold px-1.5 py-0.2 rounded-full">${count}</span>
+                        ${noCount > 0 ? `<span class="bg-rose-500 text-white text-[9px] font-bold px-1 rounded-full">${noCount} NO</span>` : ''}
+                    </button>
+                `;
+            });
+            tabsContainer.innerHTML = tabsHtml;
+        }
+
+        function onCategoryDropdownChange(catVal) {
+            selectedCategoryFilter = catVal;
+            document.getElementById('select-process-category').value = catVal;
+            populateCategorySelectors();
+            renderDashboard();
+        }
+
+        function getFilteredItems() {
+            const items = getActiveItems();
+            const statusFilter = document.getElementById('filter-status').value;
+            const searchText = document.getElementById('filter-search').value.toLowerCase();
+
+            return items.filter(item => {
+                if (selectedCategoryFilter !== 'ALL' && item.category !== selectedCategoryFilter) return false;
+                if (statusFilter !== 'ALL' && item.status !== statusFilter) return false;
+                if (searchText) {
+                    const matchText = `${item.description} ${item.remarks} ${item.action} ${item.category}`.toLowerCase();
+                    if (!matchText.includes(searchText)) return false;
+                }
+                return true;
+            });
+        }
+
+        function renderDashboard() {
+            const items = getFilteredItems();
+            const allItems = getActiveItems();
+
+            // Overall KPIs
+            const total = allItems.length;
+            const yesCount = allItems.filter(i => i.status === 'YES').length;
+            const noCount = allItems.filter(i => i.status === 'NO').length;
+            const rate = total > 0 ? Math.round((yesCount / total) * 100) : 0;
+
+            const actionItems = allItems.filter(i => i.status === 'NO');
+            const resolvedCount = actionItems.filter(i => i.progress === 'Resolved').length;
+            const resolutionRate = actionItems.length > 0 ? Math.round((resolvedCount / actionItems.length) * 100) : 0;
+
+            // Selected Category KPI
+            const activeCatItems = selectedCategoryFilter === 'ALL' ? allItems : allItems.filter(i => i.category === selectedCategoryFilter);
+            const activeCatYes = activeCatItems.filter(i => i.status === 'YES').length;
+            document.getElementById('kpi-cat-summary').innerText = `${activeCatYes} / ${activeCatItems.length} YES`;
+
+            document.getElementById('kpi-rate').innerText = `${rate}%`;
+            document.getElementById('kpi-total').innerText = total;
+            document.getElementById('kpi-no').innerText = noCount;
+            document.getElementById('kpi-resolution').innerText = `${resolutionRate}%`;
+
+            // Heading Labels
+            document.getElementById('heading-active-category').innerText = selectedCategoryFilter === 'ALL' ? 'ALL MAIN PROCESS CATEGORIES' : selectedCategoryFilter.toUpperCase();
+            document.getElementById('subheading-count').innerText = `Showing ${items.length} control questions for ${currentBranch} (${formatMonthLabel(currentMonth)})`;
+
+            renderFastTable(items);
+        }
+
+        function renderFastTable(items) {
+            const tbody = document.getElementById('fast-audit-tbody');
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="py-12 text-center text-slate-400 font-medium">No audit control questions found matching current selection.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map((item, idx) => `
+                <tr class="hover:bg-slate-50/80 transition text-xs border-b border-slate-100">
+                    <!-- Ref # -->
+                    <td class="py-2.5 px-3 text-center font-mono text-slate-400">${idx + 1}</td>
+                    
+
+
+                    <!-- Question Description -->
+                    <td class="py-2.5 px-3 font-medium text-slate-800 leading-snug max-w-sm">
+                        ${item.description}
+                    </td>
+
+                    <!-- Volume / Amount -->
+                    <td class="py-2.5 px-3 text-center font-mono text-slate-600">
+                        <input type="text" value="${item.volume || 'N/E'}" onchange="updateInlineField(${item.id}, 'volume', this.value)" class="w-16 bg-transparent hover:bg-slate-100 border border-transparent hover:border-slate-300 rounded text-center text-xs py-1 focus:bg-white focus:border-blue-500">
+                    </td>
+
+                    <!-- DIRECT INLINE OUTCOME SELECTOR -->
+                    <td class="py-2.5 px-3 text-center bg-blue-50/30">
+                        <select onchange="updateInlineField(${item.id}, 'status', this.value)" class="text-xs font-bold rounded-lg px-2 py-1 border shadow-2xs focus:outline-none transition cursor-pointer ${getOutcomeSelectClass(item.status)}">
+                            <option value="YES" class="text-emerald-700 font-bold" ${item.status === 'YES' ? 'selected' : ''}>✓ YES</option>
+                            <option value="NO" class="text-rose-700 font-bold" ${item.status === 'NO' ? 'selected' : ''}>✕ NO</option>
+                            <option value="N/E" class="text-slate-600 font-bold" ${item.status === 'N/E' ? 'selected' : ''}>- N/E</option>
+                            <option value="N/A" class="text-slate-600 font-bold" ${item.status === 'N/A' ? 'selected' : ''}>- N/A</option>
+                        </select>
+                    </td>
+
+                    <!-- INLINE REMARKS -->
+                    <td class="py-2.5 px-3">
+                        <textarea rows="1" onchange="updateInlineField(${item.id}, 'remarks', this.value)" placeholder="Add remark..." class="w-full bg-slate-50 hover:bg-white border border-slate-200 rounded-md p-1.5 text-xs text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 transition">${item.remarks || ''}</textarea>
+                    </td>
+
+                    <!-- INLINE ACTION PLAN -->
+                    <td class="py-2.5 px-3">
+                        <textarea rows="1" onchange="updateInlineField(${item.id}, 'action', this.value)" placeholder="Action plan..." class="w-full bg-slate-50 hover:bg-white border border-slate-200 rounded-md p-1.5 text-xs text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 transition">${item.action !== 'N/A' ? item.action : ''}</textarea>
+                    </td>
+
+                    <!-- INLINE TARGET DATE -->
+                    <td class="py-2.5 px-3">
+                        <input type="text" value="${item.target !== 'N/A' ? item.target : ''}" onchange="updateInlineField(${item.id}, 'target', this.value)" placeholder="Target/Officer..." class="w-full bg-slate-50 hover:bg-white border border-slate-200 rounded-md p-1.5 text-xs text-slate-700 focus:bg-white focus:ring-2 focus:ring-blue-500 transition">
+                    </td>
+
+                    <!-- DIRECT INLINE PROGRESS SELECTOR -->
+                    <td class="py-2.5 px-3 text-center bg-amber-50/30">
+                        <select onchange="updateInlineField(${item.id}, 'progress', this.value)" class="text-xs font-semibold rounded-lg px-2 py-1 border shadow-2xs focus:outline-none transition cursor-pointer ${getProgressSelectClass(item.progress)}">
+                            <option value="Not Started" ${item.progress === 'Not Started' ? 'selected' : ''}>Not Started</option>
+                            <option value="In Progress" ${item.progress === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="Resolved" ${item.progress === 'Resolved' ? 'selected' : ''}>Resolved / Closed</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getOutcomeSelectClass(status) {
+            if (status === 'YES') return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+            if (status === 'NO') return 'bg-rose-100 text-rose-800 border-rose-300 font-bold animate-pulse';
+            return 'bg-slate-100 text-slate-700 border-slate-300';
+        }
+
+        function getProgressSelectClass(progress) {
+            if (progress === 'Resolved') return 'bg-emerald-50 text-emerald-700 border-emerald-300';
+            if (progress === 'In Progress') return 'bg-amber-50 text-amber-700 border-amber-300 font-bold';
+            return 'bg-rose-50 text-rose-700 border-rose-300';
+        }
+
+        // LIGHTNING FAST INLINE DATA UPDATER
+        function updateInlineField(id, field, value) {
+            const items = getActiveItems();
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            item[field] = value;
+
+            // Auto status/progress sync logic
+            if (field === 'status') {
+                if (value === 'YES') {
+                    item.progress = 'Resolved';
+                } else if (value === 'NO' && item.progress === 'Resolved') {
+                    item.progress = 'In Progress';
+                }
+            } else if (field === 'progress') {
+                if (value === 'Resolved') {
+                    item.status = 'YES';
+                }
+            }
+
+            saveMasterData();
+            renderDashboard();
+        }
+
+        // BATCH ACTION: MARK ALL VISIBLE QUESTIONS AS YES
+        function markAllVisibleAsYes() {
+            const items = getFilteredItems();
+            if (items.length === 0) return;
+
+            if (confirm(`Set outcome to YES for all ${items.length} checks in "${selectedCategoryFilter}"?`)) {
+                items.forEach(item => {
+                    item.status = 'YES';
+                    item.progress = 'Resolved';
+                });
+                saveMasterData();
+                renderDashboard();
+            }
+        }
+
+        // NEW MONTH MODAL LOGIC
+        function startNewMonthAssessment() {
+            document.getElementById("modal-new-branch").value = currentBranch;
+            const today = new Date();
+            document.getElementById("modal-new-period").value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            document.getElementById("newMonthModal").classList.remove("hidden");
+        }
+
+        function closeNewMonthModal() { document.getElementById("newMonthModal").classList.add("hidden"); }
+
+        function confirmCreateNewMonth(e) {
+            e.preventDefault();
+            const targetBranch = document.getElementById("modal-new-branch").value;
+            const newPeriod = document.getElementById("modal-new-period").value;
+
+            if (!masterData[targetBranch]) masterData[targetBranch] = {};
+
+            if (masterData[targetBranch][newPeriod]) {
+                alert(`Report for ${targetBranch} (${formatMonthLabel(newPeriod)}) already exists.`);
+            } else {
+                const prevMonths = Object.keys(masterData[targetBranch]).sort().reverse();
+                let newItems = [];
+                if (prevMonths.length > 0) {
+                    const lastMonthItems = masterData[targetBranch][prevMonths[0]];
+                    newItems = lastMonthItems.map(prev => ({
+                        ...prev,
+                        id: Date.now() + Math.floor(Math.random() * 1000),
+                        status: prev.status === 'NO' ? 'NO' : 'YES',
+                        progress: prev.status === 'NO' ? 'In Progress' : 'Resolved'
+                    }));
+                } else {
+                    newItems = JSON.parse(JSON.stringify(pembaSept2026Raw));
+                }
+                masterData[targetBranch][newPeriod] = newItems;
+                saveMasterData();
+            }
+
+            currentBranch = targetBranch;
+            currentMonth = newPeriod;
+            closeNewMonthModal();
+            initBranchAndMonthSelectors();
+            renderDashboard();
+        }
+
+        // EXPORT TO CSV
+        function exportToCSV() {
+            const items = getFilteredItems();
+            if (items.length === 0) { alert("No items to export."); return; }
+
+            const headers = ["ID", "Branch", "Period", "Category", "Question", "Volume", "Outcome", "Progress", "Remarks", "Action Plan", "Target Date"];
+            const rows = items.map(i => [
+                i.id, `"${currentBranch}"`, `"${currentMonth}"`, `"${i.category}"`, `"${i.description.replace(/"/g, '""')}"`, `"${i.volume}"`, `"${i.status}"`, `"${i.progress}"`, `"${(i.remarks || '').replace(/"/g, '""')}"`, `"${(i.action || '').replace(/"/g, '""')}"`, `"${(i.target || '').replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Mono_Bank_${currentBranch.replace(/\s+/g, '_')}_${currentMonth}_RCSA.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
