@@ -127,7 +127,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
                 <div class="min-w-0">
                     <div class="flex items-center gap-1.5">
                         <h1 class="font-bold text-sm sm:text-base lg:text-lg text-slate-900 dark:text-white truncate">Mono</h1>
-                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full">Hub</span>
+                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-semibold uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-full">Hub AI</span>
                     </div>
                     <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">Systems & Bookmarks Portal</p>
                 </div>
@@ -174,15 +174,28 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 <!-- STICKY SEARCH AND CATEGORY SECTION -->
 <section id="sticky-search" class="sticky top-16 z-40 space-y-3">
 
-    <!-- SEARCH BOX -->
+    <!-- AI SEARCH BOX -->
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-4 sm:p-6 lg:p-8 text-white shadow-xl">
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div class="relative z-10 max-w-3xl">
-            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-2">What would you like to do today?</h2>
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">What would you like to do today?</h2>
+                <span id="ai-badge" class="px-2.5 py-1 text-[10px] font-semibold bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full flex items-center gap-1 shadow-sm"><i class="fa-solid fa-sparkles text-[9px]"></i> AI Search Active</span>
+            </div>
             <div class="relative flex items-center">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 text-blue-400"></i>
-                <input type="text" id="search-input" class="w-full pl-11 pr-20 py-3 sm:py-3.5 bg-white/10 text-white placeholder-blue-200/60 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs sm:text-sm" placeholder="Search resources, e.g. GL statement, vault cash, NIDA..." autocomplete="off">
-                <button id="clear-search" class="hidden absolute right-2 text-xs text-white px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20">Clear</button>
+                <i id="search-icon-indicator" class="fa-solid fa-sparkles absolute left-4 text-indigo-400"></i>
+                <input type="text" id="search-input" class="w-full pl-11 pr-24 py-3 sm:py-3.5 bg-white/10 text-white placeholder-blue-200/60 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-xs sm:text-sm" placeholder="Ask in natural language e.g. 'I want to check customer account balances'..." autocomplete="off">
+                <div class="absolute right-2 flex items-center gap-1">
+                    <button id="clear-search" class="hidden text-xs text-white px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20">Clear</button>
+                </div>
+            </div>
+            <!-- Dynamic AI suggestions container -->
+            <div id="ai-suggestions-bar" class="mt-2.5 flex items-center gap-2 overflow-x-auto custom-scrollbar text-[11px] text-blue-200/80">
+                <span class="shrink-0 font-medium text-indigo-300"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Try:</span>
+                <button type="button" class="ai-sample-query px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 whitespace-nowrap transition-colors">Check account balances</button>
+                <button type="button" class="ai-sample-query px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 whitespace-nowrap transition-colors">Submit staff leave requests</button>
+                <button type="button" class="ai-sample-query px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 whitespace-nowrap transition-colors">Process customer account opening</button>
+                <button type="button" class="ai-sample-query px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 whitespace-nowrap transition-colors">Vault cash position report</button>
             </div>
         </div>
     </div>
@@ -201,6 +214,30 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
 </section>
 
+    <!-- COLLECTION MANAGEMENT BAR (When inside a specific collection) -->
+    <section id="collection-toolbar-section" class="hidden bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/80 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-folder-open text-xs"></i>
+            </div>
+            <div>
+                <h4 id="collection-active-name" class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Collection Toolbar</h4>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Manage, add existing, or move links within this collection.</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+            <button id="btn-add-existing-links" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-list-check"></i> Add Existing Links
+            </button>
+            <button id="btn-add-new-direct" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-plus"></i> Add New Link
+            </button>
+            <button id="btn-bulk-move" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-xl text-xs font-semibold flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i> Move Links
+            </button>
+        </div>
+    </section>
+
     <!-- PINNED -->
     <section id="pinned-section" class="hidden">
         <div class="flex items-center gap-2 mb-3">
@@ -209,6 +246,19 @@ button:disabled { opacity: .5; cursor: not-allowed; }
             <span id="pinned-count-badge-inline" class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 font-semibold">0</span>
         </div>
         <div id="pinned-grid" class="auto-grid"></div>
+    </section>
+
+    <!-- AI RECOMMENDATIONS BANNER (Dynamic) -->
+    <section id="ai-recommendations-section" class="hidden bg-gradient-to-r from-indigo-50/80 via-blue-50/80 to-purple-50/80 dark:from-slate-800/80 dark:via-indigo-950/40 dark:to-slate-800/80 border border-indigo-100 dark:border-indigo-900/50 rounded-2xl p-4 space-y-2.5">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 font-bold text-xs sm:text-sm">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-500"></i>
+                <span>Smart AI Recommendations & Context</span>
+            </div>
+            <span id="ai-match-confidence" class="text-[10px] bg-indigo-100 dark:bg-indigo-900/70 text-indigo-800 dark:text-indigo-200 px-2 py-0.5 rounded-full font-semibold">High Match</span>
+        </div>
+        <div id="ai-explanation-text" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"></div>
+        <div id="ai-recommended-chips" class="flex items-center gap-2 overflow-x-auto pt-1 custom-scrollbar"></div>
     </section>
 
     <!-- LINKS -->
@@ -233,7 +283,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
                 <i class="fa-solid fa-magnifying-glass-slash"></i>
             </div>
             <h4 class="font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200">No matching links found</h4>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try another search or clear your current filter.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try describing what you need in natural language or clear search filters.</p>
             <button id="no-results-clear" class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium">Clear Search</button>
         </div>
     </section>
@@ -246,7 +296,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
             <i class="fa-solid fa-shield-halved text-blue-600 dark:text-blue-400"></i>
             <span>Mono Enterprise Portal</span>
         </div>
-        <span class="text-[11px]">Responsive Bookmark Management System</span>
+        <span class="text-[11px]">Responsive Bookmark & AI Intelligent Search Management System</span>
     </div>
 </footer>
 
@@ -289,6 +339,64 @@ button:disabled { opacity: .5; cursor: not-allowed; }
                 <button type="submit" id="save-link-btn" class="modal-submit">Save Link</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- ADD EXISTING LINKS TO COLLECTION MODAL -->
+<div id="add-existing-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+                <i class="fa-solid fa-list-check text-indigo-600 mr-2"></i>Add Links to <span id="add-existing-collection-name" class="text-indigo-600 dark:text-indigo-400"></span>
+            </h3>
+            <button data-close="add-existing-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <div class="mb-3">
+            <input type="text" id="existing-links-filter" placeholder="Filter available links..." class="form-input text-xs">
+        </div>
+
+        <div class="flex items-center justify-between mb-2 px-1">
+            <span class="text-[11px] font-semibold text-slate-500 uppercase">Select Links</span>
+            <button type="button" id="btn-select-all-existing" class="text-[11px] text-blue-600 hover:underline">Select All</button>
+        </div>
+
+        <div id="existing-links-selector-list" class="max-h-64 overflow-y-auto space-y-1.5 custom-scrollbar border border-slate-200 dark:border-slate-700 rounded-xl p-2 bg-slate-50 dark:bg-slate-900">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
+            <button data-close="add-existing-modal" class="modal-cancel">Cancel</button>
+            <button type="button" id="btn-confirm-add-existing" class="modal-submit">Add Selected Links</button>
+        </div>
+    </div>
+</div>
+
+<!-- BULK MOVE / ASSIGN MODAL -->
+<div id="bulk-move-modal" class="modal fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+                <i class="fa-solid fa-arrows-up-down-left-right text-indigo-600 mr-2"></i>Move Collection Links
+            </h3>
+            <button data-close="bulk-move-modal" class="text-slate-400"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <div class="space-y-3">
+            <div>
+                <label class="form-label">Destination Collection</label>
+                <select id="bulk-move-target-select" class="form-input" required></select>
+            </div>
+            <div>
+                <label class="form-label">Links in Current Collection</label>
+                <div id="bulk-move-links-list" class="max-h-56 overflow-y-auto space-y-1.5 custom-scrollbar border border-slate-200 dark:border-slate-700 rounded-xl p-2 bg-slate-50 dark:bg-slate-900">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 mt-4 border-t border-slate-200 dark:border-slate-700">
+            <button data-close="bulk-move-modal" class="modal-cancel">Cancel</button>
+            <button type="button" id="btn-confirm-bulk-move" class="modal-submit">Move Links</button>
+        </div>
     </div>
 </div>
 
@@ -441,47 +549,47 @@ const SYSTEM_PROTECTED_COLLECTIONS = ["All Collections", "Imported"];
 
 /* DEFAULT BOOKMARKS */
 const defaultBookmarks = [
-{id:1,title:"Mono (Outlook Mail)",url:"https://outlook.office.com/mail/",category:"External & Productivity",icon:"fa-envelope",keywords:"email office mail outlook mono inbox message"},
-{id:2,title:"GL_STMT (GL Revaluation)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/ACCOUNT_STATEMENT_FOR_GL_REVALUATION/ACCOUNT_STATEMENT_FOR_GL_REVALUATION.xdo",category:"Finance & Recon",icon:"fa-calculator",keywords:"gl statement revaluation oracle bi publisher finance balance sheet ledger"},
-{id:3,title:"New Flex (Flexcube Core)",url:"https://fcubs.azaniabank.co.tz/FCJNeoWeb/LoginServlet?entity=ENTITY_ID1",category:"Core Banking",icon:"fa-building-columns",keywords:"flexcube core banking fcubs login flex account transaction"},
-{id:4,title:"IT Central Portal",url:"https://itcentral.azaniabank.co.tz/portal/auth",category:"Core Banking",icon:"fa-headset",keywords:"it central support portal helpdesk ticket technical issue"},
-{id:5,title:"CIF Modified Old Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/TEST1/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF_MODIFIED_REPORT/CIF_MODIFIED_REPORT.xdo",category:"Operations & CASA",icon:"fa-user-pen",keywords:"cif modified old casa operations report customer information file"},
-{id:6,title:"NIDA Verification | NIDA Portal",url:"https://10.158.112.26:30030/v1/nida",category:"Core Banking",icon:"fa-id-card",keywords:"nida identity verification national id citizen check"},
-{id:7,title:"TD Certificate Headed",url:"https://bipreports.azaniabank.co.tz/xmlpserver/FLEXCUBE+7.2+REPORTS/Revised+ABL+Reports/Operations/FDR/30801+TD+Certificate+Headed.xdo",category:"Operations & CASA",icon:"fa-certificate",keywords:"td term deposit certificate fdr operations fixed deposit"},
-{id:8,title:"CIF 4 CLEANUP Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CIF+FOR+CLEANUP+FINAL.xdo",category:"Operations & CASA",icon:"fa-user-gear",keywords:"cif cleanup final casa customer data audit correction"},
-{id:9,title:"Account Statement For GL",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/ACCOUNT_STATEMENT_FOR_GL/ACCOUNT_STATEMENT_FOR_GL.xdo",category:"Finance & Recon",icon:"fa-file-invoice-dollar",keywords:"account statement gl general ledger oracle bi publisher finance"},
-{id:10,title:"STATIC DATA CHANGE",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/STATIC+DATA+CHANGE/STATIC+DATA+CHANGE.xdo",category:"Operations & CASA",icon:"fa-sliders",keywords:"static data change casa operations customer details update"},
-{id:11,title:"Onboarding Branch Portal",url:"https://digital.azaniabank.co.tz/onboard-branch/#/tasks",category:"Core Banking",icon:"fa-user-plus",keywords:"onboarding branch tasks digital customer account creation opening"},
-{id:12,title:"BATCH REPORT HISTORY",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/BATCH+REPORTS/BATCH_REPORT_HISTORY/BATCH_REPORT_HISTORY.xdo",category:"Finance & Recon",icon:"fa-clock-rotate-left",keywords:"batch report history finance gl journals end of day eod"},
-{id:13,title:"FTMS Checker Pending Documents",url:"https://ftms.azaniabank.co.tz:30056/checker/pending-documents",category:"Core Banking",icon:"fa-file-signature",keywords:"ftms funds transfer management system checker pending authorization"},
-{id:14,title:"IDs CLEANUP - Customer IDs",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/IDs+FOR+DATA+CLEANUP/CUSTOMER+IDs++FOR+CLEANUP.xdo",category:"Operations & CASA",icon:"fa-address-card",keywords:"ids cleanup customer data verification casa identification"},
-{id:15,title:"Loan Schedule Account Wise",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Credit/LOAN_SCHEDULE_ACCOUNT_WISE/LOAN_SCHEDULE_ACCOUNT_WISE.xdo",category:"Credit & Loans",icon:"fa-chart-line",keywords:"loan schedule account wise credit repayments installment schedule"},
-{id:16,title:"Funds Transfer Selected Products",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/FUNDS+TRANSFER/Funds+Transfer+Report+Selected+Products.xdo",category:"Operations & CASA",icon:"fa-money-bill-transfer",keywords:"funds transfer report ft selected products operations"},
-{id:17,title:"BATCH CALL BO (30100 Tx Search)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/30100+Transactions+Search.xdo",category:"Operations & CASA",icon:"fa-receipt",keywords:"batch call bo 30100 transactions search operations back office"},
-{id:18,title:"Vault Cash Position By Date",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/Cash+Balances/30402+Vault+Cash+Position+By+Date.xdo",category:"Finance & Recon",icon:"fa-vault",keywords:"vault cash position balance date finance operations 30402 teller cash"},
-{id:19,title:"Mobile Banking Admin Portal (MB)",url:"https://digital.azaniabank.co.tz:9090/admin-portal/login",category:"Core Banking",icon:"fa-mobile-screen-button",keywords:"mobile banking admin portal mb digital app"},
-{id:20,title:"Opened Account Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/OPENED_ACCOUNT_REPORT/OPENED_ACCOUNT_REPORT.xdo",category:"Operations & CASA",icon:"fa-folder-open",keywords:"opened account report casa new accounts daily summary"},
-{id:21,title:"SWIFT OUT TISS (K-Printer)",url:"https://k-printer.azaniabank.co.tz/kprinter/index.aspx?pg=mx%20out&msg=pacs.008.&hvps=true",category:"Core Banking",icon:"fa-print",keywords:"swift out tiss k-printer pacs 008 hvps transfer payment messaging"},
-{id:22,title:"HRMS Portal",url:"https://hrms.azaniabank.co.tz/nuhomer",category:"Core Banking",icon:"fa-users-gear",keywords:"hrms human resource management leave portal staff payroll"},
-{id:23,title:"OD Report (Without Facility)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/OD_DATEWISE_WITHOUT_FACILITY/OD_DATEWISE_WITHOUT_FACILITY_NEW.xdo",category:"Operations & CASA",icon:"fa-triangle-exclamation",keywords:"od overdraft datewise without facility casa report unauthorized"},
-{id:24,title:"Top Depositors By Date",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/TOP_DEPOSITORS_BY_DATE/TOP_DEPOSITORS_BY_DATE.xdo",category:"Operations & CASA",icon:"fa-arrow-trend-up",keywords:"top depositors date casa high net worth deposit analytics"},
-{id:25,title:"GL Breakdown New",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Finance/GL+BREAKDOWN+NEW.xdo",category:"Finance & Recon",icon:"fa-layer-group",keywords:"gl breakdown new finance general ledger accounts summary"},
-{id:26,title:"GM1821 Customer Dashboard",url:"https://172.16.3.184:8506/FCJNeoWeb/SMMDIFRM.jsp#hrefDBoardCustomer",category:"Core Banking",icon:"fa-chart-pie",keywords:"gm1821 flexcube customer dashboard fcjneoweb profile"},
-{id:27,title:"Corporate CIF Missing TIN / Reg No",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CORPORATE+CIF+MISSING+TIN+OR+REG+NO.xdo",category:"Operations & CASA",icon:"fa-building-un",keywords:"corporate cif missing tin registration number cleanup compliance"},
-{id:28,title:"Teller Transaction General Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/TELLER_REPORT/Teller_Transaction_General_Report_history/Teller_Transaction_General_Report_history.xdo",category:"Operations & CASA",icon:"fa-cash-register",keywords:"teller transaction general report history operations cash drawer"},
-{id:29,title:"Operations Checklist Portal",url:"https://operations.azania.co.tz/",category:"Core Banking",icon:"fa-list-check",keywords:"operations checklist portal home workflow daily tasks"},
-{id:30,title:"BioStar 2 Access Control",url:"https://127.0.0.1/#/login",category:"Core Banking",icon:"fa-fingerprint",keywords:"biostar 2 biometric door access login security"},
-{id:31,title:"Customer Information Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CUSTOMER+INFORMATION+REPORT/CUSTOMER+INFORMATION+REPORT.xdo",category:"Operations & CASA",icon:"fa-user-check",keywords:"customer information report cif details profile lookup"},
-{id:32,title:"80506v2 Deposits & Withdrawals",url:"https://192.168.5.154:9503/xmlpserver/Revised+ABL+Reports/Strategy+and+Buss+Dev/Performance+Reports/BranchWise+Reports/80506v2+Deposits+and+Withdrawals.xdo",category:"Strategy & Performance",icon:"fa-chart-simple",keywords:"80506v2 deposits withdrawals branchwise strategy performance analytics"},
-{id:33,title:"Batch Journal Revised Report",url:"http://reports.azania.co.tz/xmlpserver/AzaniaBank_Reports/Finance/BATCH+REPORTS/BATCH_REPORT_REVISED/BATCH_REPORT_REVISED.xdo",category:"Finance & Recon",icon:"fa-book-journal-whills",keywords:"batch journal revised finance reports accounting entries"},
-{id:34,title:"Account Statement Reconciliation",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Finance/200207+Account+Statement+Reconciliation.xdo",category:"Finance & Recon",icon:"fa-scale-balanced",keywords:"200207 account statement reconciliation finance recon match"},
-{id:35,title:"TRA & GePG Payment Gateway",url:"https://172.16.3.16:8088/realbus/#/home",category:"Core Banking",icon:"fa-building-columns",keywords:"tra gepg tax government payment gateway realbus revenue collection"},
-{id:36,title:"Examination Results | MU-ARMS",url:"https://arms.mzumbe.ac.tz/academic-records/exam-results-home",category:"External & Productivity",icon:"fa-graduation-cap",keywords:"mzumbe mu-arms academic exam results university"},
-{id:37,title:"iCloud Drive",url:"https://www.icloud.com/iclouddrive/",category:"External & Productivity",icon:"fa-cloud",keywords:"icloud drive apple cloud storage backup files"},
-{id:38,title:"80506 Daily Transactions Reporting",url:"http://reports.azania.co.tz/xmlpserver/Revised+ABL+Reports/Strategy+and+Buss+Dev/Performance+Reports/80506+Daily+Transactions+Reporting.xdo",category:"Strategy & Performance",icon:"fa-chart-column",keywords:"80506 daily transactions reporting strategy business dev analytics"},
-{id:39,title:"ChatGPT AI Assistant",url:"https://chatgpt.com/",category:"External & Productivity",icon:"fa-robot",keywords:"chatgpt ai openai productivity tool assistant code write"},
-{id:40,title:"Firebase Console",url:"https://console.firebase.google.com/",category:"External & Productivity",icon:"fa-fire",keywords:"firebase console google cloud dev database backend"},
-{id:41,title:"Mail - Godfrey Mono - Outlook",url:"https://outlook.office.com/mail/inbox/",category:"External & Productivity",icon:"fa-inbox",keywords:"outlook mail godfrey mono inbox office email messages"}
+{id:1,title:"Mono (Outlook Mail)",url:"https://outlook.office.com/mail/",category:"External & Productivity",icon:"fa-envelope",keywords:"email office mail outlook mono inbox message staff communication write email"},
+{id:2,title:"GL_STMT (GL Revaluation)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/ACCOUNT_STATEMENT_FOR_GL_REVALUATION/ACCOUNT_STATEMENT_FOR_GL_REVALUATION.xdo",category:"Finance & Recon",icon:"fa-calculator",keywords:"gl statement revaluation oracle bi publisher finance balance sheet ledger accounting valuation trial balance"},
+{id:3,title:"New Flex (Flexcube Core)",url:"https://fcubs.azaniabank.co.tz/FCJNeoWeb/LoginServlet?entity=ENTITY_ID1",category:"Core Banking",icon:"fa-building-columns",keywords:"flexcube core banking fcubs login flex account transaction check customer balances deposit withdrawal balance inquiry"},
+{id:4,title:"IT Central Portal",url:"https://itcentral.azaniabank.co.tz/portal/auth",category:"Core Banking",icon:"fa-headset",keywords:"it central support portal helpdesk ticket technical issue pass reset system error bug help"},
+{id:5,title:"CIF Modified Old Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/TEST1/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF_MODIFIED_REPORT/CIF_MODIFIED_REPORT.xdo",category:"Operations & CASA",icon:"fa-user-pen",keywords:"cif modified old casa operations report customer information file changes audits"},
+{id:6,title:"NIDA Verification | NIDA Portal",url:"https://10.158.112.26:30030/v1/nida",category:"Core Banking",icon:"fa-id-card",keywords:"nida identity verification national id citizen check customer verification identity lookup national identity card"},
+{id:7,title:"TD Certificate Headed",url:"https://bipreports.azaniabank.co.tz/xmlpserver/FLEXCUBE+7.2+REPORTS/Revised+ABL+Reports/Operations/FDR/30801+TD+Certificate+Headed.xdo",category:"Operations & CASA",icon:"fa-certificate",keywords:"td term deposit certificate fdr operations fixed deposit interest statement investment"},
+{id:8,title:"CIF 4 CLEANUP Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CIF+FOR+CLEANUP+FINAL.xdo",category:"Operations & CASA",icon:"fa-user-gear",keywords:"cif cleanup final casa customer data audit correction invalid missing details"},
+{id:9,title:"Account Statement For GL",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/ACCOUNT_STATEMENT_FOR_GL/ACCOUNT_STATEMENT_FOR_GL.xdo",category:"Finance & Recon",icon:"fa-file-invoice-dollar",keywords:"account statement gl general ledger oracle bi publisher finance ledger balance statement reconciliation"},
+{id:10,title:"STATIC DATA CHANGE",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/STATIC+DATA+CHANGE/STATIC+DATA+CHANGE.xdo",category:"Operations & CASA",icon:"fa-sliders",keywords:"static data change casa operations customer details update phone address modification"},
+{id:11,title:"Onboarding Branch Portal",url:"https://digital.azaniabank.co.tz/onboard-branch/#/tasks",category:"Core Banking",icon:"fa-user-plus",keywords:"onboarding branch tasks digital customer account creation opening process customer account openings new customer registration"},
+{id:12,title:"BATCH REPORT HISTORY",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Finance/BATCH+REPORTS/BATCH_REPORT_HISTORY/BATCH_REPORT_HISTORY.xdo",category:"Finance & Recon",icon:"fa-clock-rotate-left",keywords:"batch report history finance gl journals end of day eod posting audit log"},
+{id:13,title:"FTMS Checker Pending Documents",url:"https://ftms.azaniabank.co.tz:30056/checker/pending-documents",category:"Core Banking",icon:"fa-file-signature",keywords:"ftms funds transfer management system checker pending authorization rtgs transaction wire transfer payment authorization processing rtgs transactions"},
+{id:14,title:"IDs CLEANUP - Customer IDs",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/IDs+FOR+DATA+CLEANUP/CUSTOMER+IDs++FOR+CLEANUP.xdo",category:"Operations & CASA",icon:"fa-address-card",keywords:"ids cleanup customer data verification casa identification nida passport driving license audit"},
+{id:15,title:"Loan Schedule Account Wise",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Credit/LOAN_SCHEDULE_ACCOUNT_WISE/LOAN_SCHEDULE_ACCOUNT_WISE.xdo",category:"Credit & Loans",icon:"fa-chart-line",keywords:"loan schedule account wise credit repayments installment schedule interest rates principal amortization"},
+{id:16,title:"Funds Transfer Selected Products",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/FUNDS+TRANSFER/Funds+Transfer+Report+Selected+Products.xdo",category:"Operations & CASA",icon:"fa-money-bill-transfer",keywords:"funds transfer report ft selected products operations internal wire transfer remittances"},
+{id:17,title:"BATCH CALL BO (30100 Tx Search)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/30100+Transactions+Search.xdo",category:"Operations & CASA",icon:"fa-receipt",keywords:"batch call bo 30100 transactions search operations back office voucher search teller journal"},
+{id:18,title:"Vault Cash Position By Date",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/Cash+Balances/30402+Vault+Cash+Position+By+Date.xdo",category:"Finance & Recon",icon:"fa-vault",keywords:"vault cash position balance date finance operations 30402 teller cash physical money balance"},
+{id:19,title:"Mobile Banking Admin Portal (MB)",url:"https://digital.azaniabank.co.tz:9090/admin-portal/login",category:"Core Banking",icon:"fa-mobile-screen-button",keywords:"mobile banking admin portal mb digital app pin reset user block unlock mobile app"},
+{id:20,title:"Opened Account Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/OPENED_ACCOUNT_REPORT/OPENED_ACCOUNT_REPORT.xdo",category:"Operations & CASA",icon:"fa-folder-open",keywords:"opened account report casa new accounts daily summary generating operational reports new accounts opening stats"},
+{id:21,title:"SWIFT OUT TISS (K-Printer)",url:"https://k-printer.azaniabank.co.tz/kprinter/index.aspx?pg=mx%20out&msg=pacs.008.&hvps=true",category:"Core Banking",icon:"fa-print",keywords:"swift out tiss k-printer pacs 008 hvps transfer payment messaging international transfers rtgs prints"},
+{id:22,title:"HRMS Portal",url:"https://hrms.azaniabank.co.tz/nuhomer",category:"Core Banking",icon:"fa-users-gear",keywords:"hrms human resource management leave portal staff payroll submit staff leave requests annual leave vacation sick leave"},
+{id:23,title:"OD Report (Without Facility)",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/OD_DATEWISE_WITHOUT_FACILITY/OD_DATEWISE_WITHOUT_FACILITY_NEW.xdo",category:"Operations & CASA",icon:"fa-triangle-exclamation",keywords:"od overdraft datewise without facility casa report unauthorized negative balance exception"},
+{id:24,title:"Top Depositors By Date",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/TOP_DEPOSITORS_BY_DATE/TOP_DEPOSITORS_BY_DATE.xdo",category:"Operations & CASA",icon:"fa-arrow-trend-up",keywords:"top depositors date casa high net worth deposit analytics large balance customer list"},
+{id:25,title:"GL Breakdown New",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Finance/GL+BREAKDOWN+NEW.xdo",category:"Finance & Recon",icon:"fa-layer-group",keywords:"gl breakdown new finance general ledger accounts summary subhead breakdown"},
+{id:26,title:"GM1821 Customer Dashboard",url:"https://172.16.3.184:8506/FCJNeoWeb/SMMDIFRM.jsp#hrefDBoardCustomer",category:"Core Banking",icon:"fa-chart-pie",keywords:"gm1821 flexcube customer dashboard fcjneoweb profile total exposure customer summary"},
+{id:27,title:"Corporate CIF Missing TIN / Reg No",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CORPORATE+CIF+MISSING+TIN+OR+REG+NO.xdo",category:"Operations & CASA",icon:"fa-building-un",keywords:"corporate cif missing tin registration number cleanup compliance business customer tax id"},
+{id:28,title:"Teller Transaction General Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/TELLER_REPORT/Teller_Transaction_General_Report_history/Teller_Transaction_General_Report_history.xdo",category:"Operations & CASA",icon:"fa-cash-register",keywords:"teller transaction general report history operations cash drawer cash till summary"},
+{id:29,title:"Operations Checklist Portal",url:"https://operations.azania.co.tz/",category:"Core Banking",icon:"fa-list-check",keywords:"operations checklist portal home workflow daily tasks daily branch operational activities"},
+{id:30,title:"BioStar 2 Access Control",url:"https://127.0.0.1/#/login",category:"Core Banking",icon:"fa-fingerprint",keywords:"biostar 2 biometric door access login security door entry staff attendance"},
+{id:31,title:"Customer Information Report",url:"https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CUSTOMER+INFORMATION+REPORT/CUSTOMER+INFORMATION+REPORT.xdo",category:"Operations & CASA",icon:"fa-user-check",keywords:"customer information report cif details profile lookup search customer profile"},
+{id:32,title:"80506v2 Deposits & Withdrawals",url:"https://192.168.5.154:9503/xmlpserver/Revised+ABL+Reports/Strategy+and+Buss+Dev/Performance+Reports/BranchWise+Reports/80506v2+Deposits+and+Withdrawals.xdo",category:"Strategy & Performance",icon:"fa-chart-simple",keywords:"80506v2 deposits withdrawals branchwise strategy performance analytics checking branch performance portal for checking branch performance"},
+{id:33,title:"Batch Journal Revised Report",url:"http://reports.azania.co.tz/xmlpserver/AzaniaBank_Reports/Finance/BATCH+REPORTS/BATCH_REPORT_REVISED/BATCH_REPORT_REVISED.xdo",category:"Finance & Recon",icon:"fa-book-journal-whills",keywords:"batch journal revised finance reports accounting entries ledger postings"},
+{id:34,title:"Account Statement Reconciliation",url:"https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Finance/200207+Account+Statement+Reconciliation.xdo",category:"Finance & Recon",icon:"fa-scale-balanced",keywords:"200207 account statement reconciliation finance recon match bank statement clearing"},
+{id:35,title:"TRA & GePG Payment Gateway",url:"https://172.16.3.16:8088/realbus/#/home",category:"Core Banking",icon:"fa-building-columns",keywords:"tra gepg tax government payment gateway realbus revenue collection government bill payment"},
+{id:36,title:"Examination Results | MU-ARMS",url:"https://arms.mzumbe.ac.tz/academic-records/exam-results-home",category:"External & Productivity",icon:"fa-graduation-cap",keywords:"mzumbe mu-arms academic exam results university grades marks transcript"},
+{id:37,title:"iCloud Drive",url:"https://www.icloud.com/iclouddrive/",category:"External & Productivity",icon:"fa-cloud",keywords:"icloud drive apple cloud storage backup files personal storage documents"},
+{id:38,title:"80506 Daily Transactions Reporting",url:"http://reports.azania.co.tz/xmlpserver/Strategy+and+Buss+Dev/Performance+Reports/80506+Daily+Transactions+Reporting.xdo",category:"Strategy & Performance",icon:"fa-chart-column",keywords:"80506 daily transactions reporting strategy business dev analytics overall bank activity daily transaction volume"},
+{id:39,title:"ChatGPT AI Assistant",url:"https://chatgpt.com/",category:"External & Productivity",icon:"fa-robot",keywords:"chatgpt ai openai productivity tool assistant code write draft email question answer"},
+{id:40,title:"Firebase Console",url:"https://console.firebase.google.com/",category:"External & Productivity",icon:"fa-fire",keywords:"firebase console google cloud dev database backend push notifications web hosting"},
+{id:41,title:"Mail - Godfrey Mono - Outlook",url:"https://outlook.office.com/mail/inbox/",category:"External & Productivity",icon:"fa-inbox",keywords:"outlook mail godfrey mono inbox office email messages personal inbox staff mail"}
 ];
 
 const defaultCollections = [
@@ -502,7 +610,7 @@ const STORAGE = {
     hidden: "azania_hidden_ids",
     pinned: "azania_pinned_ids",
     view: "azania_view_mode",
-    csvPresetLoaded: "azania_csv_preset_loaded"
+    multiCollectionMap: "azania_multi_collection_map" // Maps URL -> Array of Collection names
 };
 
 let collections = [];
@@ -512,13 +620,74 @@ let deletedPresetUrls = [];
 let hiddenIds = [];
 let pinnedIds = [];
 let bookmarks = [];
+let multiCollectionMap = {};
 let activeCategory = "all";
 let searchQuery = "";
 let viewMode = "grid";
 let toastTimer;
 let deleteTargetId = null;
 
-/* STORAGE */
+/* AI INTENT DICTIONARY FOR NATURAL LANGUAGE ENGINE */
+const INTENT_KNOWLEDGE_BASE = [
+    {
+        intent: "account_opening",
+        phrases: ["process customer account openings", "account opening", "open account", "new customer registration", "onboard customer", "create new account"],
+        targetKeywords: ["onboarding", "opened account report", "account creation", "onboard"],
+        suggestedTitle: "Onboarding Branch Portal",
+        explanation: "Matches customer account creation and onboarding workflows."
+    },
+    {
+        intent: "check_balances",
+        phrases: ["checking customer account balances", "check balance", "account balance", "balance inquiry", "view balances", "customer balance"],
+        targetKeywords: ["flexcube core", "new flex", "cif", "customer dashboard", "gm1821"],
+        suggestedTitle: "New Flex (Flexcube Core)",
+        explanation: "Core banking platform used for balance inquiries and account lookups."
+    },
+    {
+        intent: "leave_requests",
+        phrases: ["submit staff leave requests", "leave request", "annual leave", "sick leave", "apply for leave", "staff leave", "hrms"],
+        targetKeywords: ["hrms portal", "leave", "human resource"],
+        suggestedTitle: "HRMS Portal",
+        explanation: "Portal dedicated to staff HR services, leave management, and employee self-service."
+    },
+    {
+        intent: "rtgs_transactions",
+        phrases: ["processing rtgs transactions", "rtgs transactions", "funds transfer", "wire transfer", "swift", "ftms", "checker pending"],
+        targetKeywords: ["ftms checker pending documents", "swift out tiss", "funds transfer"],
+        suggestedTitle: "FTMS Checker Pending Documents",
+        explanation: "System used for authorizing and processing high-value RTGS and funds transfer transactions."
+    },
+    {
+        intent: "branch_performance",
+        phrases: ["checking branch performance", "branch performance", "performance portal", "branch wise report", "deposits and withdrawals report"],
+        targetKeywords: ["80506v2 deposits & withdrawals", "80506 daily transactions", "strategy & performance"],
+        suggestedTitle: "80506v2 Deposits & Withdrawals",
+        explanation: "Strategic dashboard evaluating branch-level deposit growth, withdrawal volumes, and targets."
+    },
+    {
+        intent: "operational_reports",
+        phrases: ["generating operational reports", "operational reports", "casa reports", "bipreports", "opened account report"],
+        targetKeywords: ["opened account report", "teller transaction general report", "cif modified old report", "static data change"],
+        suggestedTitle: "Opened Account Report",
+        explanation: "Primary portal module for generating daily operational summary reports."
+    },
+    {
+        intent: "cash_vault",
+        phrases: ["vault cash position", "teller cash", "cash balance", "vault money", "physical cash"],
+        targetKeywords: ["vault cash position by date", "cash balances"],
+        suggestedTitle: "Vault Cash Position By Date",
+        explanation: "Finance report tracking physical cash balances held across bank vaults."
+    },
+    {
+        intent: "identity_nida",
+        phrases: ["nida verification", "national id check", "verify customer identity", "citizen search"],
+        targetKeywords: ["nida verification | nida portal", "customer information report"],
+        suggestedTitle: "NIDA Verification | NIDA Portal",
+        explanation: "Direct integration portal with NIDA for national identity card validations."
+    }
+];
+
+/* STORAGE UTILITIES */
 function readStorage(key, fallback) {
     try {
         const data = localStorage.getItem(key);
@@ -539,7 +708,6 @@ function saveStorage(key, value) {
 }
 
 function loadData() {
-    // 1. Collections
     const savedCollections = readStorage(STORAGE.collections, defaultCollections);
     collections = Array.isArray(savedCollections) ? savedCollections : [...defaultCollections];
 
@@ -547,7 +715,6 @@ function loadData() {
         if (!collections.includes(name)) collections.push(name);
     });
 
-    // 2. Custom Bookmarks & Deletion tracking
     customBookmarks = readStorage(STORAGE.custom, []);
     if (!Array.isArray(customBookmarks)) customBookmarks = [];
 
@@ -563,6 +730,9 @@ function loadData() {
     pinnedIds = readStorage(STORAGE.pinned, [1, 3, 4]);
     if (!Array.isArray(pinnedIds)) pinnedIds = [1, 3, 4];
 
+    multiCollectionMap = readStorage(STORAGE.multiCollectionMap, {});
+    if (typeof multiCollectionMap !== "object" || multiCollectionMap === null) multiCollectionMap = {};
+
     viewMode = localStorage.getItem(STORAGE.view) === "list" ? "list" : "grid";
 
     customBookmarks = customBookmarks.filter(item =>
@@ -573,7 +743,6 @@ function loadData() {
     cleanStoredIds();
     saveAll();
 
-    // 3. Preset links.csv Integration
     loadPresetLinksCsv();
 }
 
@@ -584,6 +753,7 @@ function saveAll() {
     saveStorage(STORAGE.deletedPresetUrls, deletedPresetUrls);
     saveStorage(STORAGE.hidden, hiddenIds);
     saveStorage(STORAGE.pinned, pinnedIds);
+    saveStorage(STORAGE.multiCollectionMap, multiCollectionMap);
 }
 
 function cleanStoredIds() {
@@ -596,6 +766,15 @@ function refreshBookmarks() {
     const activeDefaults = defaultBookmarks.filter(b => !deletedDefaultIds.includes(b.id));
     const activeCustoms = customBookmarks.filter(b => !deletedPresetUrls.includes(b.url));
     bookmarks = [...activeDefaults, ...activeCustoms];
+
+    // Ensure multi-collection assignments are populated
+    bookmarks.forEach(link => {
+        if (!multiCollectionMap[link.url]) {
+            multiCollectionMap[link.url] = [link.category];
+        } else if (!multiCollectionMap[link.url].includes(link.category)) {
+            multiCollectionMap[link.url].push(link.category);
+        }
+    });
 }
 
 /* PRESET LINKS.CSV AUTOMATIC LOAD */
@@ -615,10 +794,7 @@ async function loadPresetLinksCsv() {
             const url = safeURL(row.url || row.link);
             if (!title || !url) return;
 
-            // Prevent continuous re-import of deleted preset URLs
             if (deletedPresetUrls.includes(url)) return;
-
-            // Prevent duplicate creation
             if (bookmarks.some(b => b.url === url)) return;
 
             const category = String(row.category || row.collection || "Imported").trim() || "Imported";
@@ -647,9 +823,7 @@ async function loadPresetLinksCsv() {
             renderCollectionsList();
             renderDashboard();
         }
-    } catch (e) {
-        // Silently skip if links.csv is not available
-    }
+    } catch (e) {}
 }
 
 /* HELPERS */
@@ -721,7 +895,7 @@ function updateThemeIcon() {
     $("theme-icon").className = `fa-solid ${dark ? "fa-sun" : "fa-moon"} text-sm`;
 }
 
-/* MODALS */
+/* MODAL DISPLAY HELPERS */
 function showModal(id) {
     $(id).classList.remove("hidden");
     $(id).classList.add("flex");
@@ -733,10 +907,10 @@ function hideModal(id) {
 }
 
 function closeAllModals() {
-    ["add-modal", "move-modal", "delete-confirm-modal", "collections-modal", "rename-collection-modal", "hidden-modal", "csv-library-modal"].forEach(hideModal);
+    ["add-modal", "move-modal", "delete-confirm-modal", "collections-modal", "rename-collection-modal", "hidden-modal", "csv-library-modal", "add-existing-modal", "bulk-move-modal"].forEach(hideModal);
 }
 
-/* COLLECTIONS MANAGEMENT */
+/* COLLECTIONS NAVIGATION & RENDERING */
 function renderCategoryTabs() {
     const tabs = [
         { id: "all", name: "All Collections", icon: "fa-border-all" },
@@ -761,7 +935,18 @@ function renderCategoryTabs() {
 function setCategory(category) {
     activeCategory = collections.includes(category) || category === "all" ? category : "all";
     renderCategoryTabs();
+    updateCollectionToolbarUI();
     renderDashboard();
+}
+
+function updateCollectionToolbarUI() {
+    const toolbar = $("collection-toolbar-section");
+    if (activeCategory !== "all" && collections.includes(activeCategory)) {
+        toolbar.classList.remove("hidden");
+        $("collection-active-name").textContent = `Managing Collection: "${activeCategory}"`;
+    } else {
+        toolbar.classList.add("hidden");
+    }
 }
 
 function populateCollectionDropdowns() {
@@ -772,6 +957,7 @@ function populateCollectionDropdowns() {
 
     $("custom-category").innerHTML = options;
     $("move-target-category").innerHTML = options;
+    $("bulk-move-target-select").innerHTML = options;
 }
 
 function openCollectionsModal() {
@@ -782,7 +968,7 @@ function openCollectionsModal() {
 function renderCollectionsList() {
     $("collections-list").innerHTML = collections.map(category => {
         const isSystemProtected = SYSTEM_PROTECTED_COLLECTIONS.includes(category);
-        const count = bookmarks.filter(item => item.category === category).length;
+        const count = getLinksForCollection(category).length;
 
         return `
             <div class="flex items-center justify-between gap-2 p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
@@ -856,13 +1042,17 @@ function handleRenameCollection(event) {
         return;
     }
 
-    // Update collection list
     const index = collections.indexOf(oldName);
     if (index !== -1) collections[index] = newName;
 
-    // Update associated links
-    defaultBookmarks.forEach(b => { if (b.category === oldName) b.category = newName; });
-    customBookmarks.forEach(b => { if (b.category === oldName) b.category = newName; });
+    // Update link multi-collection maps
+    Object.keys(multiCollectionMap).forEach(url => {
+        const arr = multiCollectionMap[url];
+        const idx = arr.indexOf(oldName);
+        if (idx !== -1) arr[idx] = newName;
+    });
+
+    bookmarks.forEach(b => { if (b.category === oldName) b.category = newName; });
 
     if (activeCategory === oldName) activeCategory = newName;
 
@@ -871,6 +1061,7 @@ function handleRenameCollection(event) {
     renderCollectionsList();
     renderCategoryTabs();
     populateCollectionDropdowns();
+    updateCollectionToolbarUI();
     renderDashboard();
     hideModal("rename-collection-modal");
     showToast("Collection renamed.");
@@ -882,13 +1073,13 @@ function deleteCollection(name) {
         return;
     }
 
-    // Reassign orphan links to 'All Collections' (represented by setting category to default or fallback)
-    defaultBookmarks.forEach(item => {
+    // Safety rule: Reassign links to "Imported" or unassigned location, never permanently delete links
+    bookmarks.forEach(item => {
         if (item.category === name) item.category = "Imported";
-    });
-
-    customBookmarks.forEach(item => {
-        if (item.category === name) item.category = "Imported";
+        if (multiCollectionMap[item.url]) {
+            multiCollectionMap[item.url] = multiCollectionMap[item.url].filter(c => c !== name);
+            if (multiCollectionMap[item.url].length === 0) multiCollectionMap[item.url].push("Imported");
+        }
     });
 
     collections = collections.filter(item => item !== name);
@@ -900,8 +1091,144 @@ function deleteCollection(name) {
     renderCollectionsList();
     renderCategoryTabs();
     populateCollectionDropdowns();
+    updateCollectionToolbarUI();
     renderDashboard();
-    showToast(`Collection deleted. Associated links moved to Imported.`);
+    showToast(`Collection deleted. Links preserved in 'Imported'.`);
+}
+
+/* ADVANCED COLLECTION MANAGEMENT: ADD EXISTING & BULK MOVE */
+function getLinksForCollection(colName) {
+    if (colName === "all" || colName === "All Collections") return bookmarks;
+    return bookmarks.filter(b => {
+        const assigned = multiCollectionMap[b.url] || [b.category];
+        return assigned.includes(colName);
+    });
+}
+
+function openAddExistingModal() {
+    if (activeCategory === "all" || !collections.includes(activeCategory)) return;
+    $("add-existing-collection-name").textContent = activeCategory;
+    renderExistingLinksSelectorList();
+    showModal("add-existing-modal");
+}
+
+function renderExistingLinksSelectorList() {
+    const filterText = ($("existing-links-filter").value || "").toLowerCase().trim();
+    const currentCategoryLinks = getLinksForCollection(activeCategory).map(b => b.url);
+
+    const availableLinks = bookmarks.filter(b => {
+        const matchFilter = !filterText || (b.title.toLowerCase().includes(filterText) || b.url.toLowerCase().includes(filterText));
+        return matchFilter;
+    });
+
+    if (!availableLinks.length) {
+        $("existing-links-selector-list").innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">No matching links found.</p>';
+        return;
+    }
+
+    $("existing-links-selector-list").innerHTML = availableLinks.map(link => {
+        const isAlreadyInCat = currentCategoryLinks.includes(link.url);
+        return `
+            <label class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs cursor-pointer hover:border-indigo-400">
+                <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                    <input type="checkbox" data-link-url="${escapeHTML(link.url)}" class="existing-link-checkbox rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" ${isAlreadyInCat ? 'checked disabled' : ''}>
+                    <div class="min-w-0">
+                        <div class="font-medium text-slate-800 dark:text-slate-200 truncate">${escapeHTML(link.title)}</div>
+                        <div class="text-[10px] text-slate-400 font-mono truncate">${escapeHTML(link.url)}</div>
+                    </div>
+                </div>
+                ${isAlreadyInCat ? '<span class="text-[9px] bg-slate-100 dark:bg-slate-700 text-slate-500 px-2 py-0.5 rounded font-semibold shrink-0">Added</span>' : ''}
+            </label>`;
+    }).join("");
+}
+
+function confirmAddExistingToCollection() {
+    const checkboxes = [...document.querySelectorAll(".existing-link-checkbox:checked:not(:disabled)")];
+    if (!checkboxes.length) {
+        showToast("Select at least one link to add.");
+        return;
+    }
+
+    let addedCount = 0;
+    checkboxes.forEach(cb => {
+        const url = cb.dataset.linkUrl;
+        if (url) {
+            if (!multiCollectionMap[url]) multiCollectionMap[url] = [];
+            if (!multiCollectionMap[url].includes(activeCategory)) {
+                multiCollectionMap[url].push(activeCategory);
+                addedCount++;
+            }
+        }
+    });
+
+    saveAll();
+    renderDashboard();
+    renderCollectionsList();
+    hideModal("add-existing-modal");
+    showToast(`Added ${addedCount} link(s) to ${activeCategory}.`);
+}
+
+function openBulkMoveModal() {
+    if (activeCategory === "all" || !collections.includes(activeCategory)) return;
+    populateCollectionDropdowns();
+    
+    // Select default target as first collection other than current
+    const alternative = collections.find(c => c !== activeCategory && c !== "All Collections");
+    if (alternative) $("bulk-move-target-select").value = alternative;
+
+    renderBulkMoveLinksList();
+    showModal("bulk-move-modal");
+}
+
+function renderBulkMoveLinksList() {
+    const currentLinks = getLinksForCollection(activeCategory);
+
+    if (!currentLinks.length) {
+        $("bulk-move-links-list").innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">No links in this collection to move.</p>';
+        return;
+    }
+
+    $("bulk-move-links-list").innerHTML = currentLinks.map(link => `
+        <label class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs cursor-pointer">
+            <div class="flex items-center gap-2 min-w-0 pr-2">
+                <input type="checkbox" data-move-url="${escapeHTML(link.url)}" class="bulk-move-checkbox rounded border-slate-300 text-indigo-600" checked>
+                <span class="font-medium text-slate-800 dark:text-slate-200 truncate">${escapeHTML(link.title)}</span>
+            </div>
+        </label>`).join("");
+}
+
+function confirmBulkMove() {
+    const targetCat = $("bulk-move-target-select").value;
+    if (!targetCat) {
+        showToast("Select a valid destination collection.");
+        return;
+    }
+
+    const checkboxes = [...document.querySelectorAll(".bulk-move-checkbox:checked")];
+    if (!checkboxes.length) {
+        showToast("Select at least one link to move.");
+        return;
+    }
+
+    let movedCount = 0;
+    checkboxes.forEach(cb => {
+        const url = cb.dataset.moveUrl;
+        if (url && multiCollectionMap[url]) {
+            // Remove from current active category
+            multiCollectionMap[url] = multiCollectionMap[url].filter(c => c !== activeCategory);
+            // Add to new target category
+            if (!multiCollectionMap[url].includes(targetCat)) {
+                multiCollectionMap[url].push(targetCat);
+            }
+            movedCount++;
+        }
+    });
+
+    saveAll();
+    renderDashboard();
+    renderCollectionsList();
+    hideModal("bulk-move-modal");
+    showToast(`Moved ${movedCount} link(s) to ${targetCat}.`);
 }
 
 /* LINK ACTIONS: ADD, EDIT, DELETE, MOVE */
@@ -954,17 +1281,17 @@ function handleSaveCustomLink(event) {
     }
 
     if (editId) {
-        // Edit flow
         const existing = bookmarks.find(b => String(b.id) === String(editId));
         if (existing) {
             existing.title = title;
             existing.url = url;
             existing.category = category;
             existing.keywords = `${title} ${keywords}`.toLowerCase();
+            if (!multiCollectionMap[url]) multiCollectionMap[url] = [category];
+            else if (!multiCollectionMap[url].includes(category)) multiCollectionMap[url].push(category);
         }
         showToast("Link updated successfully.");
     } else {
-        // Add flow
         if (bookmarks.some(item => item.url === url)) {
             showToast("This URL already exists.");
             return;
@@ -978,6 +1305,7 @@ function handleSaveCustomLink(event) {
             icon: "fa-link",
             keywords: `${title} ${keywords}`.toLowerCase()
         });
+        multiCollectionMap[url] = [category];
         showToast("Link saved successfully.");
     }
 
@@ -1008,6 +1336,7 @@ function handleMoveLink(event) {
     const link = bookmarks.find(item => String(item.id) === String(id));
     if (link) {
         link.category = targetCat;
+        multiCollectionMap[link.url] = [targetCat];
         saveAll();
         refreshBookmarks();
         renderDashboard();
@@ -1046,7 +1375,7 @@ function handleConfirmDeleteLink() {
     showToast("Link deleted.");
 }
 
-/* PINNED */
+/* PINNED & HIDDEN UTILITIES */
 function togglePin(id) {
     const exists = pinnedIds.some(item => String(item) === String(id));
     pinnedIds = exists
@@ -1058,7 +1387,6 @@ function togglePin(id) {
     showToast(exists ? "Removed from favorites." : "Added to favorites.");
 }
 
-/* HIDDEN LINKS */
 function hideLink(id) {
     if (!hiddenIds.some(item => String(item) === String(id))) {
         hiddenIds.push(id);
@@ -1184,6 +1512,7 @@ function parseNetscapeBookmarks(html) {
             icon: "fa-bookmark",
             keywords: `${title} ${category} imported bookmark`.toLowerCase()
         });
+        multiCollectionMap[url] = [category];
         imported++;
     });
 
@@ -1251,6 +1580,7 @@ function importJSONBackup(content) {
             icon: item.icon || "fa-bookmark",
             keywords: String(item.keywords || title).toLowerCase()
         });
+        multiCollectionMap[url] = [category];
         imported++;
     });
 
@@ -1268,12 +1598,13 @@ function importJSONBackup(content) {
 function exportData() {
     const backup = {
         application: "Mono Enterprise Smart Portal",
-        version: 2,
+        version: 3,
         exportedAt: new Date().toISOString(),
         customBookmarks,
         collections,
         hiddenIds,
         pinnedIds,
+        multiCollectionMap,
         viewMode
     };
 
@@ -1291,7 +1622,7 @@ function exportData() {
     showToast("Backup downloaded successfully.");
 }
 
-/* VIEW MODE & SEARCH */
+/* VIEW MODE & SEARCH CONTROLS */
 function setViewMode(mode) {
     viewMode = mode === "list" ? "list" : "grid";
     try { localStorage.setItem(STORAGE.view, viewMode); } catch {}
@@ -1305,13 +1636,6 @@ function setViewMode(mode) {
     renderDashboard();
 }
 
-function calculateAIScore(item, tokens) {
-    if (!tokens.length) return 1;
-    const searchable = normalizeSearch(`${item.title} ${item.category} ${item.keywords || ""} ${item.url}`);
-    const matches = tokens.filter(token => searchable.includes(token)).length;
-    return matches / tokens.length;
-}
-
 function normalizeSearch(value) {
     return String(value || "").toLowerCase().trim().replace(/\s+/g, " ");
 }
@@ -1320,11 +1644,66 @@ function resetSearch() {
     searchQuery = "";
     $("search-input").value = "";
     $("clear-search").classList.add("hidden");
+    $("ai-recommendations-section").classList.add("hidden");
     renderDashboard();
 }
 
+/* AI NATURAL LANGUAGE ENGINE & INTENT RECOGNITION */
+function evaluateAISearch(item, query) {
+    const normQuery = normalizeSearch(query);
+    if (!normQuery) return { score: 1, isAiMatch: false, explanation: "" };
+
+    // 1. Direct Intent Recognition Match
+    for (const kb of INTENT_KNOWLEDGE_BASE) {
+        for (const phrase of kb.phrases) {
+            if (normQuery.includes(phrase) || phrase.includes(normQuery)) {
+                // Check if item matches target keywords or title
+                const matchTitle = item.title.toLowerCase().includes(kb.suggestedTitle.toLowerCase());
+                const matchKw = kb.targetKeywords.some(kw => 
+                    item.title.toLowerCase().includes(kw) || (item.keywords && item.keywords.toLowerCase().includes(kw))
+                );
+
+                if (matchTitle || matchKw) {
+                    return {
+                        score: 0.98,
+                        isAiMatch: true,
+                        explanation: kb.explanation,
+                        matchedIntent: kb.intent
+                    };
+                }
+            }
+        }
+    }
+
+    // 2. Semantic Token & Synonym Scoring
+    const tokens = normQuery.split(/\s+/).filter(Boolean);
+    const searchable = normalizeSearch(`${item.title} ${item.category} ${item.keywords || ""} ${item.url}`);
+    
+    let tokenMatches = 0;
+    tokens.forEach(tok => {
+        if (searchable.includes(tok)) tokenMatches++;
+        else {
+            // Partial/Typo tolerance match (substring length >= 3)
+            if (tok.length >= 4 && searchable.split(/\s+/).some(word => word.includes(tok) || tok.includes(word))) {
+                tokenMatches += 0.7;
+            }
+        }
+    });
+
+    const semanticScore = tokenMatches / tokens.length;
+    if (semanticScore >= 0.4) {
+        return {
+            score: semanticScore,
+            isAiMatch: semanticScore >= 0.7,
+            explanation: semanticScore >= 0.7 ? `Matches natural language query intent based on keywords: "${tokens.join(', ')}"` : ""
+        };
+    }
+
+    return { score: semanticScore, isAiMatch: false, explanation: "" };
+}
+
 /* CARD UI GENERATOR */
-function createCardHTML(item) {
+function createCardHTML(item, aiMetadata = {}) {
     const url = safeURL(item.url);
     if (!url) return "";
 
@@ -1338,6 +1717,10 @@ function createCardHTML(item) {
     const pinClass = pinned
         ? "text-amber-500 bg-amber-50 dark:bg-amber-950/40"
         : "text-slate-300 dark:text-slate-600 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-700";
+
+    const aiBadgeHTML = aiMetadata.isAiMatch 
+        ? `<span class="inline-flex items-center gap-1 text-[9px] font-semibold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-800 shrink-0"><i class="fa-solid fa-sparkles text-[8px]"></i> AI Match</span>`
+        : '';
 
     const actions = `
         <div class="flex items-center gap-1 shrink-0">
@@ -1366,7 +1749,10 @@ function createCardHTML(item) {
                         <i class="fa-solid ${icon}"></i>
                     </div>
                     <div class="min-w-0">
-                        <h4 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-blue-600">${title}</h4>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-blue-600">${title}</h4>
+                            ${aiBadgeHTML}
+                        </div>
                         <div class="flex items-center gap-2 mt-1 flex-wrap">
                             <span class="text-[10px] text-slate-400 font-mono">${domain}</span>
                             <span class="text-[10px] text-slate-500 dark:text-slate-400">${category}</span>
@@ -1386,6 +1772,9 @@ function createCardHTML(item) {
                     </div>
                     ${actions}
                 </div>
+                <div class="flex items-center gap-1.5 mb-1.5">
+                    ${aiBadgeHTML}
+                </div>
                 <h4 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white leading-relaxed mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400">${title}</h4>
             </div>
             <div class="pt-2.5 mt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between gap-2">
@@ -1397,30 +1786,56 @@ function createCardHTML(item) {
         </article>`;
 }
 
-/* DASHBOARD RENDER */
+/* DASHBOARD RENDER WITH AI REASONING */
 function renderDashboard() {
-    const visible = bookmarks.filter(item =>
+    // Determine visible links by collection assignment
+    const visibleInCollection = getLinksForCollection(activeCategory).filter(item =>
         !hiddenIds.some(id => String(id) === String(item.id))
     );
 
-    const tokens = searchQuery.split(/\s+/).filter(Boolean);
+    let evaluatedResults = [];
+    let topAiExplanation = "";
 
-    const filtered = visible.filter(item => {
-        const categoryMatch = activeCategory === "all" || item.category === activeCategory;
-        if (!categoryMatch) return false;
-        if (!searchQuery) return true;
+    if (searchQuery) {
+        evaluatedResults = visibleInCollection.map(item => {
+            const ai = evaluateAISearch(item, searchQuery);
+            if (ai.isAiMatch && !topAiExplanation) {
+                topAiExplanation = ai.explanation;
+            }
+            return { item, ...ai };
+        }).filter(res => res.score >= 0.4)
+          .sort((a, b) => b.score - a.score);
+    } else {
+        evaluatedResults = visibleInCollection.map(item => ({ item, score: 1, isAiMatch: false, explanation: "" }));
+    }
 
-        return calculateAIScore(item, tokens) >= 0.5;
-    });
+    const filteredLinks = evaluatedResults.map(r => r.item);
 
-    $("total-count-badge").textContent = visible.length;
-    $("filtered-count").textContent = filtered.length;
+    $("total-count-badge").textContent = bookmarks.filter(b => !hiddenIds.includes(b.id)).length;
+    $("filtered-count").textContent = filteredLinks.length;
     $("hidden-count").textContent = hiddenIds.length;
 
     $("current-category-title").textContent =
         activeCategory === "all" ? "All Resources" : activeCategory;
 
-    const pinnedItems = visible.filter(item =>
+    // AI Recommendations Banner logic
+    const recSection = $("ai-recommendations-section");
+    if (searchQuery && topAiExplanation) {
+        recSection.classList.remove("hidden");
+        $("ai-explanation-text").innerHTML = `<strong>AI Insight:</strong> ${escapeHTML(topAiExplanation)}`;
+
+        // Related search suggestions
+        const relatedChips = evaluatedResults.slice(0, 3).map(r => 
+            `<button data-open="${escapeHTML(r.item.url)}" class="px-2.5 py-1 bg-white dark:bg-slate-700 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 rounded-lg text-[10px] font-semibold hover:bg-indigo-50 shrink-0 transition-colors">
+                <i class="fa-solid fa-link text-[9px] mr-1"></i>${escapeHTML(r.item.title)}
+            </button>`
+        ).join("");
+        $("ai-recommended-chips").innerHTML = relatedChips;
+    } else {
+        recSection.classList.add("hidden");
+    }
+
+    const pinnedItems = visibleInCollection.filter(item =>
         pinnedIds.some(id => String(id) === String(item.id))
     );
 
@@ -1430,13 +1845,13 @@ function renderDashboard() {
     $("pinned-count-badge-inline").textContent = pinnedItems.length;
 
     $("pinned-grid").className = viewMode === "list" ? "flex flex-col gap-2.5" : "auto-grid";
-    $("pinned-grid").innerHTML = showPinned ? pinnedItems.map(createCardHTML).join("") : "";
+    $("pinned-grid").innerHTML = showPinned ? pinnedItems.map(item => createCardHTML(item)).join("") : "";
 
     $("links-container").className = viewMode === "list" ? "flex flex-col gap-2.5" : "auto-grid";
-    $("links-container").innerHTML = filtered.map(createCardHTML).join("");
+    $("links-container").innerHTML = evaluatedResults.map(res => createCardHTML(res.item, res)).join("");
 
-    $("no-results").classList.toggle("hidden", filtered.length !== 0);
-    $("no-results").classList.toggle("flex", filtered.length === 0);
+    $("no-results").classList.toggle("hidden", filteredLinks.length !== 0);
+    $("no-results").classList.toggle("flex", filteredLinks.length === 0);
 }
 
 /* GITHUB CSV LIBRARY INTEGRATION */
@@ -1562,6 +1977,7 @@ async function loadRemoteCsv(fileName) {
                 icon: String(row.icon || "fa-link").trim(),
                 keywords: String(row.keywords || title).toLowerCase()
             });
+            multiCollectionMap[url] = [category];
             imported++;
         });
         refreshBookmarks();
@@ -1586,6 +2002,20 @@ function bindEvents() {
     $("backup-button").addEventListener("click", exportData);
     $("hidden-button").addEventListener("click", openHiddenModal);
 
+    // Collection management buttons inside selected collection view
+    $("btn-add-existing-links").addEventListener("click", openAddExistingModal);
+    $("btn-add-new-direct").addEventListener("click", () => openAddModal(activeCategory));
+    $("btn-bulk-move").addEventListener("click", openBulkMoveModal);
+    $("btn-confirm-add-existing").addEventListener("click", confirmAddExistingToCollection);
+    $("btn-confirm-bulk-move").addEventListener("click", confirmBulkMove);
+
+    $("existing-links-filter").addEventListener("input", renderExistingLinksSelectorList);
+    $("btn-select-all-existing").addEventListener("click", () => {
+        const boxes = document.querySelectorAll(".existing-link-checkbox:not(:disabled)");
+        const allChecked = [...boxes].every(b => b.checked);
+        boxes.forEach(b => b.checked = !allChecked);
+    });
+
     $("view-grid-btn").addEventListener("click", () => setViewMode("grid"));
     $("view-list-btn").addEventListener("click", () => setViewMode("list"));
 
@@ -1604,6 +2034,17 @@ function bindEvents() {
         searchQuery = normalizeSearch(event.target.value);
         $("clear-search").classList.toggle("hidden", !searchQuery);
         renderDashboard();
+    });
+
+    // Sample query chips click
+    document.querySelectorAll(".ai-sample-query").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const query = btn.textContent.trim();
+            $("search-input").value = query;
+            searchQuery = normalizeSearch(query);
+            $("clear-search").classList.remove("hidden");
+            renderDashboard();
+        });
     });
 
     $("clear-search").addEventListener("click", resetSearch);
@@ -1709,6 +2150,7 @@ function initApp() {
     renderCategoryTabs();
     populateCollectionDropdowns();
     renderCollectionsList();
+    updateCollectionToolbarUI();
     setViewMode(viewMode);
 }
 
