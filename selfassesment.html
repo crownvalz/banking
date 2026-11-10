@@ -3,85 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azania Bank - Operational Risk & Compliance System</title>
+    <title>Azania Bank PLC - Risk, Compliance & Maintenance Platform</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f7ff',
-                            100: '#e0effe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e'
-                        },
                         azania: {
-                            blue: '#0f2b5c',
+                            navy: '#1e3a8a',
+                            navyDark: '#0f172a',
+                            blue: '#2563eb',
                             gold: '#d97706',
                             goldLight: '#fef3c7'
                         }
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                        sans: ['Inter', 'sans-serif']
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .tab-btn.active {
-            color: #0f2b5c;
-            border-bottom-color: #0f2b5c;
-            background-color: #ffffff;
-            font-weight: 700;
-        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col antialiased selection:bg-amber-100 selection:text-amber-900">
+<body class="min-h-screen flex flex-col antialiased bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-blue-100 selection:text-blue-900 transition-colors duration-200">
 
-    <!-- Header Navigation -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <!-- Top Executive Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-sm transition-colors duration-200">
         <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="bg-gradient-to-tr from-azania-blue to-blue-700 p-2.5 rounded-xl shadow-md text-white">
-                    <i class="fa-solid fa-building-columns text-lg"></i>
+                <div class="bg-azania-navy dark:bg-blue-600 text-white p-2.5 rounded-xl shadow-sm">
+                    <i class="fa-solid fa-building-columns text-base"></i>
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <h1 class="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">AZANIA BANK</h1>
-                        <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Ops Risk</span>
+                        <h1 class="font-extrabold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg">AZANIA BANK PLC</h1>
+                        <span class="bg-blue-50 dark:bg-blue-950/60 text-azania-navy dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Risk & Audit</span>
                     </div>
-                    <p class="text-xs text-slate-500 font-medium hidden sm:block">Compliance, Maintenance & Statutory Validity System</p>
                 </div>
             </div>
 
+            <!-- Action Controls -->
             <div class="flex items-center space-x-2 sm:space-x-3">
-                <button onclick="openAddModal()" class="bg-azania-blue hover:bg-blue-900 text-white px-3.5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all shadow-sm flex items-center space-x-2">
+                <!-- Session Context Switcher -->
+                <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 px-2 hidden lg:inline flex items-center gap-1">
+                        <i class="fa-solid fa-user-shield text-azania-navy dark:text-blue-400"></i> View:
+                    </span>
+                    <select id="userSessionSelect" onchange="changeUserSession(this.value)" class="bg-white dark:bg-slate-900 text-xs font-bold text-azania-navy dark:text-blue-400 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-azania-navy shadow-sm cursor-pointer">
+                        <option value="HQ">🏢 All Branches (HQ)</option>
+                        <option value="Pemba Branch">📍 Pemba Branch</option>
+                        <option value="Sabasaba Service Center">📍 Sabasaba Center</option>
+                        <option value="Main Branch Dar">📍 Main Branch Dar</option>
+                        <option value="Arusha Branch">📍 Arusha Branch</option>
+                        <option value="Mwanza Branch">📍 Mwanza Branch</option>
+                    </select>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleDarkMode()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 p-2 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 transition flex items-center justify-center" title="Toggle Dark/Light Mode">
+                    <i id="themeToggleIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+
+                <button onclick="openAddModal()" class="bg-azania-navy hover:bg-blue-900 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-3.5 py-2 rounded-lg font-semibold text-xs sm:text-sm transition flex items-center space-x-2 shadow-sm">
                     <i class="fa-solid fa-plus text-amber-400"></i>
-                    <span>Log New Issue</span>
+                    <span>Log Issue</span>
                 </button>
-                <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
-                <button onclick="exportCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 transition flex items-center space-x-1.5" title="Export CSV">
-                    <i class="fa-solid fa-file-csv text-emerald-600"></i>
-                    <span class="hidden md:inline">Export CSV</span>
+                <div class="h-5 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block"></div>
+                <button onclick="exportCSV()" class="bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 transition flex items-center space-x-1.5" title="Export CSV">
+                    <i class="fa-solid fa-file-csv text-emerald-600 dark:text-emerald-400"></i>
+                    <span class="hidden md:inline">Export</span>
                 </button>
-                <button onclick="resetData()" class="bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 hover:border-rose-200 transition flex items-center space-x-1.5" title="Reset Default Excel Data">
+                <button onclick="resetData()" class="bg-slate-50 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 px-3 py-2 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 hover:border-rose-200 dark:hover:border-rose-800 transition flex items-center space-x-1.5" title="Reset Default Excel Data">
                     <i class="fa-solid fa-arrow-rotate-left text-xs"></i>
                     <span class="hidden lg:inline">Reset</span>
                 </button>
@@ -89,96 +96,103 @@
         </div>
     </header>
 
-    <!-- Main Body Container -->
+    <!-- Role Privilege Context Banner -->
+    <div id="sessionPrivilegeBanner" class="bg-blue-50/80 dark:bg-blue-950/40 border-b border-blue-100 dark:border-blue-900/40 px-4 sm:px-8 py-2 text-xs flex items-center justify-between transition-colors duration-200">
+        <!-- Injected via JS -->
+    </div>
+
+    <!-- Main Container -->
     <main class="flex-grow max-w-12xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-        <!-- Module Navigation Tabs -->
-        <div class="bg-slate-200/80 p-1.5 rounded-2xl flex flex-wrap gap-1 border border-slate-200 shadow-inner">
-            <button onclick="switchTab('maintenance')" id="tab-maintenance" class="tab-btn flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-2 border-b-2 border-transparent">
-                <i class="fa-solid fa-wrench text-amber-600"></i>
-                <span>Pending Ops & Maintenance</span>
-                <span id="badgePendingCount" class="ml-1 bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+        <!-- Executive KPI Overview Banner -->
+        <section id="kpiContainer" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Dynamic KPI Cards Injected Here -->
+        </section>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-slate-200/80 dark:bg-slate-900 p-1.5 rounded-xl flex flex-wrap gap-1.5 border border-slate-300/80 dark:border-slate-800">
+            <button onclick="switchTab('maintenance')" id="tab-maintenance"
+                class="tab-btn flex-1 min-w-[150px] py-2.5 px-4 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-screwdriver-wrench text-amber-600 dark:text-amber-400"></i>
+                <span>Ops & Maintenance</span>
+                <span id="badgePendingCount" class="ml-1 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
             </button>
 
-            <button onclick="switchTab('licences')" id="tab-licences" class="tab-btn flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-2 border-b-2 border-transparent">
-                <i class="fa-solid fa-award text-blue-600"></i>
-                <span>Statutory Licences & Permits</span>
-                <span id="badgeLicenceAlert" class="ml-1 bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+            <button onclick="switchTab('licences')" id="tab-licences"
+                class="tab-btn flex-1 min-w-[150px] py-2.5 px-4 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-award text-blue-600 dark:text-blue-400"></i>
+                <span>Licences & Permits</span>
+                <span id="badgeLicenceAlert" class="ml-1 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
             </button>
 
-            <button onclick="switchTab('rcsa')" id="tab-rcsa" class="tab-btn flex-1 min-w-[160px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-2 border-b-2 border-transparent">
-                <i class="fa-solid fa-clipboard-check text-emerald-600"></i>
-                <span>Monthly RCSA Self-Assessment</span>
-                <span class="ml-1 bg-slate-400 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">306</span>
+            <button onclick="switchTab('rcsa')" id="tab-rcsa"
+                class="tab-btn flex-1 min-w-[150px] py-2.5 px-4 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-clipboard-check text-emerald-600 dark:text-emerald-400"></i>
+                <span>RCSA Assessment</span>
+                <span class="ml-1 bg-slate-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">306</span>
             </button>
         </div>
 
-        <!-- Global Quick Filters Bar -->
-        <section class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+        <!-- Global Search & Filter Bar -->
+        <section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 shadow-sm">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
-                    <input type="text" id="searchInput" placeholder="Search title, details, officer..." 
-                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-azania-blue focus:ring-1 focus:ring-azania-blue transition">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchInput" placeholder="Search..." 
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:border-azania-navy dark:focus:border-blue-500 transition">
                 </div>
                 <div>
-                    <select id="branchFilter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-azania-blue">
-                        <option value="ALL">All Branches / Units</option>
+                    <select id="branchFilter" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:outline-none">
+                        <option value="ALL">All Branches</option>
                     </select>
                 </div>
                 <div>
-                    <select id="categoryFilter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-azania-blue">
+                    <select id="categoryFilter" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:outline-none">
                         <option value="ALL">All Categories</option>
                     </select>
                 </div>
-                <div id="statusFilterContainer">
-                    <select id="statusFilter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-azania-blue">
+                <div>
+                    <select id="statusFilter" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:bg-white dark:focus:bg-slate-900 focus:outline-none">
                         <option value="ALL">All Statuses</option>
                     </select>
                 </div>
             </div>
         </section>
 
-        <!-- KPI Summary Cards (Dynamic according to active tab) -->
-        <section id="kpiContainer" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <!-- Dynamic KPIs generated by JS -->
-        </section>
-
         <!-- MODULE 1: PENDING OPERATIONAL & MAINTENANCE ISSUES -->
         <section id="module-maintenance" class="space-y-4 tab-content hidden">
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                <div class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center space-x-3">
-                        <div class="p-2 bg-amber-100 text-amber-700 rounded-lg">
+                        <div class="p-2 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-lg border border-amber-200 dark:border-amber-800">
                             <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
                         </div>
                         <div>
-                            <h2 class="text-sm font-bold text-slate-900">Pending Operations & Branch Maintenance Register</h2>
-                            <p class="text-xs text-slate-500">Track generator servicing, security sensors, hardware, and physical fixes</p>
+                            <h2 class="text-sm font-bold text-slate-900 dark:text-white">Ops & Maintenance Issues</h2>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <label class="text-xs text-slate-500 font-medium">Show Resolved:</label>
-                        <input type="checkbox" id="toggleResolvedCheck" onchange="renderApp()" class="w-4 h-4 text-azania-blue rounded border-slate-300 focus:ring-azania-blue">
+                        <label class="text-xs text-slate-600 dark:text-slate-400 font-medium">Show Resolved:</label>
+                        <input type="checkbox" id="toggleResolvedCheck" onchange="renderApp()" class="w-4 h-4 text-azania-navy rounded border-slate-300 dark:border-slate-700 dark:bg-slate-800 focus:ring-azania-navy">
                     </div>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-100 text-slate-600 uppercase tracking-wider font-semibold border-b border-slate-200">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
                             <tr>
                                 <th class="py-3 px-3 w-12 text-center">Ref</th>
-                                <th class="py-3 px-3">Branch</th>
-                                <th class="py-3 px-4 min-w-[240px]">Issue Title & Details</th>
-                                <th class="py-3 px-3">Priority</th>
-                                <th class="py-3 px-3">Assigned Officer</th>
-                                <th class="py-3 px-3">Target Date</th>
-                                <th class="py-3 px-3 text-center">Status</th>
-                                <th class="py-3 px-3 text-center">Action</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Branch</th>
+                                <th class="py-3 px-3 min-w-[220px]">Issue Title</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Priority</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Officer</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Target Date</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="maintenanceTableBody" class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Dynamic Content -->
+                        <tbody id="maintenanceTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                            <!-- Dynamic Rows -->
                         </tbody>
                     </table>
                 </div>
@@ -187,89 +201,65 @@
 
         <!-- MODULE 2: STATUTORY LICENCES & PERMITS VALIDITY TRACKER -->
         <section id="module-licences" class="space-y-4 tab-content hidden">
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                <div class="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-2 bg-blue-100 text-blue-700 rounded-lg">
-                            <i class="fa-solid fa-certificate text-sm"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-sm font-bold text-slate-900">Statutory Licences & Compliance Certificates Expiry Monitor</h2>
-                            <p class="text-xs text-slate-500">Monitors OSHA, Fire Certificates, Tariff displays, Business Licenses, and TIN/VAT</p>
-                        </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 flex items-center space-x-3">
+                    <div class="p-2 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <i class="fa-solid fa-certificate text-sm"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-slate-900 dark:text-white">Licences & Permits Tracker</h2>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-100 text-slate-600 uppercase tracking-wider font-semibold border-b border-slate-200">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
                             <tr>
                                 <th class="py-3 px-3 w-12 text-center">Ref</th>
-                                <th class="py-3 px-3">Branch</th>
-                                <th class="py-3 px-4 min-w-[240px]">Certificate / License Title</th>
-                                <th class="py-3 px-3">Issuer / Authority</th>
-                                <th class="py-3 px-3">Expiry Date</th>
-                                <th class="py-3 px-3">Days Remaining</th>
-                                <th class="py-3 px-3 text-center">Validity Status</th>
-                                <th class="py-3 px-3 text-center">Action</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Branch</th>
+                                <th class="py-3 px-3 min-w-[220px]">License Name</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Authority</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Expiry Date</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Days Left</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="licenceTableBody" class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Dynamic Content -->
+                        <tbody id="licenceTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                            <!-- Dynamic Rows -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- MODULE 3: RCSA SELF ASSESSMENT REGISTER -->
+        <!-- MODULE 3: RCSA AUDIT CHECKLIST (306 ITEMS) -->
         <section id="module-rcsa" class="space-y-4 tab-content hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                <!-- Doughnut Chart -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-chart-pie text-emerald-600"></i> Compliance Breakdown
-                    </h3>
-                    <div class="relative h-44 flex items-center justify-center">
-                        <canvas id="rcsaStatusChart"></canvas>
-                    </div>
-                </div>
-                <!-- Category Bar Chart -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between lg:col-span-2">
-                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <i class="fa-solid fa-chart-bar text-blue-600"></i> Assessment Findings by Category
-                    </h3>
-                    <div class="relative h-44">
-                        <canvas id="rcsaCategoryChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                <div class="p-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 flex items-center justify-between">
                     <div>
-                        <h2 class="text-sm font-bold text-slate-900">RCSA Assessment Checklist Register</h2>
-                        <p class="text-xs text-slate-500" id="rcsaCountSummary">Showing 0 items</p>
+                        <h2 class="text-sm font-bold text-slate-900 dark:text-white">RCSA Assessment Checklist</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" id="rcsaCountSummary">306 Audit Items</p>
                     </div>
                 </div>
 
                 <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-100 text-slate-600 uppercase tracking-wider font-semibold border-b border-slate-200">
+                    <table class="w-full text-left text-xs table-auto">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-slate-800">
                             <tr>
-                                <th class="py-3 px-3 w-12 text-center">ID</th>
-                                <th class="py-3 px-3">Branch</th>
-                                <th class="py-3 px-3">Category</th>
-                                <th class="py-3 px-4 min-w-[280px]">Audit Assessment Checklist Item</th>
-                                <th class="py-3 px-3 text-center">Status</th>
-                                <th class="py-3 px-4">Remarks / Findings</th>
-                                <th class="py-3 px-4">Action Plan</th>
-                                <th class="py-3 px-3">Target Date</th>
-                                <th class="py-3 px-3 text-center">Action</th>
+                                <th class="py-3 px-3 w-10 text-center">ID</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Branch</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Category</th>
+                                <th class="py-3 px-3 min-w-[200px] max-w-xs md:max-w-md">Audit Control Item</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Status</th>
+                                <th class="py-3 px-3 min-w-[160px] max-w-xs">Remarks</th>
+                                <th class="py-3 px-3 min-w-[160px] max-w-xs">Action Plan</th>
+                                <th class="py-3 px-3 whitespace-nowrap">Target Date</th>
+                                <th class="py-3 px-3 text-center whitespace-nowrap">Edit</th>
                             </tr>
                         </thead>
-                        <tbody id="rcsaTableBody" class="divide-y divide-slate-100 text-slate-700">
-                            <!-- Dynamic Content -->
+                        <tbody id="rcsaTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                            <!-- Dynamic Rows -->
                         </tbody>
                     </table>
                 </div>
@@ -278,14 +268,14 @@
 
     </main>
 
-    <!-- Unified Item Modal -->
-    <div id="itemModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
-        <div class="bg-white border border-slate-200 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden my-8 transition-all">
-            <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2" id="modalTitle">
-                    <i class="fa-solid fa-plus-circle text-azania-blue"></i> Log New Item
+    <!-- Unified Form Modal -->
+    <div id="itemModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-xl shadow-xl overflow-hidden my-8 transition-all">
+            <div class="bg-slate-50 dark:bg-slate-800/60 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2" id="modalTitle">
+                    <i class="fa-solid fa-plus-circle text-azania-navy dark:text-blue-400"></i> Log Issue
                 </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
                     <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
@@ -293,10 +283,9 @@
             <form id="unifiedForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
                 <input type="hidden" id="modalItemId" value="">
                 
-                <!-- Target Module Selection -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Select Module / Issue Type *</label>
-                    <select id="modalModule" onchange="toggleModalFields()" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-azania-blue">
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Target Module / Issue Type *</label>
+                    <select id="modalModule" onchange="toggleModalFields()" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:border-azania-navy">
                         <option value="maintenance">Pending Ops & Maintenance Task</option>
                         <option value="licences">Statutory Licence / Permit Expiry Track</option>
                         <option value="rcsa">RCSA Audit Assessment Item</option>
@@ -305,72 +294,75 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Branch / Unit *</label>
-                        <select id="modalBranch" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-azania-blue"></select>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Branch / Unit *</label>
+                        <select id="modalBranch" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:border-azania-navy"></select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Category *</label>
-                        <select id="modalCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-azania-blue"></select>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Category *</label>
+                        <select id="modalCategory" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:border-azania-navy"></select>
                     </div>
                 </div>
 
-                <!-- Title / Description -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1" id="lblTitle">Title / Item Description *</label>
-                    <textarea id="modalTitleText" rows="2" required placeholder="Describe the maintenance issue or licence title..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-azania-blue"></textarea>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Title / Description *</label>
+                    <textarea id="modalTitleText" rows="2" required placeholder="Describe issue title or checklist details..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-xs text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:border-azania-navy"></textarea>
                 </div>
 
-                <!-- DYNAMIC FIELDS PER MODULE -->
-                <!-- Module 1 Fields -->
+                <!-- Module 1: Maintenance Fields -->
                 <div id="fieldsMaintenance" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Priority</label>
-                            <select id="maintPriority" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Priority</label>
+                            <select id="maintPriority" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                                 <option value="High">High Priority</option>
                                 <option value="Medium" selected>Medium Priority</option>
                                 <option value="Low">Low Priority</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Assigned Officer</label>
-                            <input type="text" id="maintOfficer" placeholder="e.g. BOE / Facilities" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Assigned Officer *</label>
+                            <select id="maintOfficer" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 font-semibold focus:outline-none focus:border-azania-navy">
+                                <option value="Security Manager">Security Manager</option>
+                                <option value="Operations Control Manager">Operations Control Manager</option>
+                                <option value="Legal Manager">Legal Manager</option>
+                                <option value="SMRB">SMRB</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
-                            <select id="maintStatus" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
+                            <select id="maintStatus" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                                 <option value="Open">Open</option>
                                 <option value="In Progress">In Progress</option>
-                                <option value="Resolved">Resolved (Archive)</option>
+                                <option value="Resolved">Resolved</option>
                             </select>
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Target Resolution Date</label>
-                        <input type="date" id="maintTargetDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Target Resolution Date</label>
+                        <input type="date" id="maintTargetDate" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                     </div>
                 </div>
 
-                <!-- Module 2 Fields -->
+                <!-- Module 2: Licence Fields -->
                 <div id="fieldsLicences" class="space-y-4 hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Issuing Authority</label>
-                            <input type="text" id="licenceAuthority" placeholder="e.g. OSHA, Fire Dept, BRELA" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Issuing Authority</label>
+                            <input type="text" id="licenceAuthority" placeholder="e.g. OSHA, Fire Dept, BRELA" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Expiration Date *</label>
-                            <input type="date" id="licenceExpiryDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Expiration Date *</label>
+                            <input type="date" id="licenceExpiryDate" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                         </div>
                     </div>
                 </div>
 
-                <!-- Module 3 Fields -->
+                <!-- Module 3: RCSA Fields -->
                 <div id="fieldsRcsa" class="space-y-4 hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Compliance Status</label>
-                            <select id="rcsaStatus" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Audit Status</label>
+                            <select id="rcsaStatus" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                                 <option value="YES">YES (Compliant)</option>
                                 <option value="NO">NO (Non-Compliant)</option>
                                 <option value="N/A">N/A (Not Applicable)</option>
@@ -378,266 +370,394 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Date</label>
-                            <input type="date" id="rcsaTargetDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800">
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Target Date</label>
+                            <input type="date" id="rcsaTargetDate" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Remarks / Findings</label>
-                        <textarea id="rcsaRemarks" rows="2" placeholder="Audit findings or observations..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800"></textarea>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Remarks / Findings</label>
+                        <textarea id="rcsaRemarks" rows="2" placeholder="Audit findings or observations..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-xs text-slate-800 dark:text-slate-100"></textarea>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Action Plan</label>
-                        <textarea id="rcsaActionPlan" rows="2" placeholder="Corrective action plan..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800"></textarea>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Action Plan</label>
+                        <textarea id="rcsaActionPlan" rows="2" placeholder="Corrective action plan..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-xs text-slate-800 dark:text-slate-100"></textarea>
                     </div>
                 </div>
 
-                <div class="pt-4 border-t border-slate-200 flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition">Cancel</button>
-                    <button type="submit" class="px-5 py-2 rounded-xl bg-azania-blue hover:bg-blue-900 text-white text-xs font-bold shadow-sm transition">Save Record</button>
+                <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end space-x-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold transition">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-lg bg-azania-navy hover:bg-blue-900 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition">Save Record</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl z-50 flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none text-xs font-semibold">
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 dark:bg-slate-800 text-white border border-slate-800 dark:border-slate-700 px-4 py-3 rounded-xl shadow-xl z-50 flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none text-xs font-semibold">
         <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
         <span id="toastMessage">Action completed!</span>
     </div>
 
     <script>
-        // Core Datasets
-        const SAMPLE_MAINTENANCE_ISSUES = [
-            { id: 101, branch: "Pemba Branch", category: "Physical Security", title: "Strong room intruder alarm sensor defect on back wall", priority: "High", officer: "Facility Supervisor", targetDate: "2026-11-20", status: "Open" },
-            { id: 102, branch: "Pemba Branch", category: "Power & Utilities", title: "Standby Generator monthly servicing and fuel filter replacement", priority: "Medium", officer: "Branch Operations Engineer", targetDate: "2026-11-25", status: "In Progress" },
-            { id: 103, branch: "Sabasaba Service Center", category: "HVAC Systems", title: "Banking hall AC Unit #2 compressor gas refill", priority: "Low", officer: "Service Center Admin", targetDate: "2026-11-18", status: "Open" },
-            { id: 104, branch: "Main Branch Dar", category: "IT Infrastructure", title: "ATM #1 receipt printer gear replacement", priority: "High", officer: "IT Support Officer", targetDate: "2026-11-12", status: "Resolved" }
+        // DARK MODE TOGGLE LOGIC
+        function initTheme() {
+            const savedTheme = localStorage.getItem('azania_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            updateThemeIcon();
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('azania_theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+            renderApp(); // Re-render charts with adapted colors
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeToggleIcon');
+            if (!icon) return;
+            if (document.documentElement.classList.contains('dark')) {
+                icon.className = 'fa-solid fa-sun text-amber-400 text-sm';
+            } else {
+                icon.className = 'fa-solid fa-moon text-slate-600 text-sm';
+            }
+        }
+
+        // CORE INITIAL DATASETS
+        const INITIAL_MAINTENANCE = [
+            { id: 101, branch: "Pemba Branch", category: "Physical Security", title: "Strong room intruder alarm sensor defect on back wall", priority: "High", officer: "Security Manager", targetDate: "2026-11-20", status: "Open" },
+            { id: 102, branch: "Pemba Branch", category: "Power & Utilities", title: "Standby Generator monthly servicing and fuel filter replacement", priority: "Medium", officer: "Operations Control Manager", targetDate: "2026-11-25", status: "In Progress" },
+            { id: 103, branch: "Sabasaba Service Center", category: "HVAC Systems", title: "Banking hall AC Unit #2 compressor gas refill", priority: "Low", officer: "SMRB", targetDate: "2026-11-18", status: "Open" },
+            { id: 104, branch: "Main Branch Dar", category: "IT Infrastructure", title: "ATM #1 receipt printer gear replacement", priority: "High", officer: "Operations Control Manager", targetDate: "2026-11-12", status: "Resolved" }
         ];
 
-        const SAMPLE_LICENCES = [
-            { id: 201, branch: "Pemba Branch", category: "Statutory Licence", title: "Branch Business License (Pemba Council)", authority: "Pemba Municipal", expiryDate: "2026-11-28" },
-            { id: 202, branch: "Pemba Branch", category: "Safety Certificate", title: "OSHA Workplace Registration Certificate", authority: "OSHA Tanzania", expiryDate: "2026-10-15" },
-            { id: 203, branch: "Pemba Branch", category: "Fire Safety", title: "Fire Safety Compliance Certificate", authority: "Fire & Rescue Force", expiryDate: "2027-05-30" },
-            { id: 204, branch: "Sabasaba Service Center", category: "Statutory Licence", title: "Valid Banking Service License Notice Display", authority: "Bank of Tanzania", expiryDate: "2027-12-31" },
-            { id: 205, branch: "Sabasaba Service Center", category: "Tax Compliance", title: "TIN & VAT Display Notice", authority: "TRA", expiryDate: "2026-12-05" }
+        const INITIAL_LICENCES = [
+            { id: 201, branch: "Pemba Branch", category: "Statutory Licence", title: "Branch Business Licence (Pemba Council)", authority: "Pemba Municipal", expiryDate: "2026-11-28", status: "Valid" },
+            { id: 202, branch: "Pemba Branch", category: "Safety Certificate", title: "OSHA Workplace Registration Certificate", authority: "OSHA Tanzania", expiryDate: "2026-10-15", status: "Expired" },
+            { id: 203, branch: "Pemba Branch", category: "Fire Safety", title: "Fire Certificate", authority: "Fire & Rescue Force", expiryDate: "2027-05-30", status: "Valid" },
+            { id: 204, branch: "Sabasaba Service Center", category: "Statutory Licence", title: "Latest bank tarrifs (Published on June 2025)", authority: "Bank of Tanzania", expiryDate: "2027-12-31", status: "Valid" },
+            { id: 205, branch: "Sabasaba Service Center", category: "Tax Compliance", title: "TIN & VAT Certificate", authority: "TRA", expiryDate: "2026-12-05", status: "Renewal Pending" }
         ];
 
-        // RCSA 306 Sample Dataset
+        // Exact RCSA Audit Checklist Questions from the Excel Self-Assessment Template
+        const EXCEL_TEMPLATE_QUESTIONS = [
+            // COMPLIANCE ISSUES
+            { category: "COMPLIANCE ISSUES", item: "Fire certificate" },
+            { category: "COMPLIANCE ISSUES", item: "Latest bank tarrifs (Published on June 2025)" },
+            { category: "COMPLIANCE ISSUES", item: "President potrait" },
+            { category: "COMPLIANCE ISSUES", item: "Latest Financials" },
+            { category: "COMPLIANCE ISSUES", item: "Bank Business Licence (with AZANIA BANK PLC)" },
+            { category: "COMPLIANCE ISSUES", item: "Branch valid Business Licence," },
+            { category: "COMPLIANCE ISSUES", item: "Certificate of Incorporation" },
+            { category: "COMPLIANCE ISSUES", item: "VAT" },
+            { category: "COMPLIANCE ISSUES", item: "TIN Certificate," },
+            { category: "COMPLIANCE ISSUES", item: "Customer charter" },
+            { category: "COMPLIANCE ISSUES", item: "Customer Complaints Guideline" },
+
+            // PHYSICAL SECURITY ISSUES
+            { category: "PHYSICAL SECURITY ISSUES", item: "Did you test alarms during the month and record them in the physical security register ? (Specify the date when the test was done.)" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Did you test fire and record it in the physical security register? (Specify the date when the test was done.)" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Did you test the intruder alarm during the month and record the results in the physical security register? (Specify the date when the test was done.)" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Did you check if fire extinguishers are in order.(not overdue for service)" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Did you review CCTV footage during the month and record results in the physical register? (Specify the date when the test was done.)" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "OSHA certificate of registration of work place" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "OHS certificate of Compliance" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Electrical danger signs on the main distribution board" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "OHS Policy statement" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Abstract of the act" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "First Aiders name and contacts" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Fire certificate" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "OHS current Risk Assesment report for 2024" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "OHS committee quartely Minutes for review period" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "First Aid kit if reprenished" },
+            { category: "PHYSICAL SECURITY ISSUES", item: "Appointment letters & Certificates for OHS representatives" },
+
+            // ACCOUNT OPENING & MANDATES
+            { category: "ACCOUNT OPENING", item: "Were application forms filled properly?" },
+            { category: "ACCOUNT OPENING", item: "Were application forms signed by bank officers?" },
+            { category: "ACCOUNT OPENING", item: "Did signatures along with signing instructions and photo images uploaded into CBS? (https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/Customer_Image/Accounts_without_image/Accounts_without_image.xdo)" },
+            { category: "ACCOUNT OPENING", item: "All customer information were captured as per customer mandates eg. Physical address,Telephone number,Prefix, (https://bipreports.azaniabank.co.tz/xmlpserver/AzaniaBank_Reports/Operations/CASA_REPORTS/CIF+FOR+CLEANUP+REPORT/CIF+FOR+CLEANUP+FINAL.xdo)" },
+            { category: "ACCOUNT OPENING", item: "Was verification of customer IDs done during account opening?" },
+            { category: "ACCOUNT OPENING", item: "Are there any customer concession on charges approved by business and captured appropriately?" },
+            { category: "ACCOUNT OPENING", item: "All charges are passes as per tarrif guide (https://bipreports.azaniabank.co.tz/xmlpserver/Revised+ABL+Reports/Operations/Interests+and+Charges/80101+Accounts++Not+Charged+with+Ledger+Fees.xdo)" },
+            { category: "ACCOUNT OPENING", item: "WereMandate files stored in safe custody?" },
+
+            // CORPORATE ACCOUNT OPENING
+            { category: "CORPORATE ACCOUNTS", item: "Were Forms filled properly?" },
+            { category: "CORPORATE ACCOUNTS", item: "Were Application forms signed by bank officers?" },
+            { category: "CORPORATE ACCOUNTS", item: "Was Brella search in respect of registered bodies done and the report(s) stamped & verified?" },
+            { category: "CORPORATE ACCOUNTS", item: "- Business licence (unexpired)" },
+            { category: "CORPORATE ACCOUNTS", item: "- Cert of incorporation/extract from registrar" },
+            { category: "CORPORATE ACCOUNTS", item: "- TIN /VAT certificate" },
+            { category: "CORPORATE ACCOUNTS", item: "- Memorandum and articles of association" },
+            { category: "CORPORATE ACCOUNTS", item: "-Board resolutions" },
+            { category: "CORPORATE ACCOUNTS", item: "-Valid ID's of directors" },
+            { category: "CORPORATE ACCOUNTS", item: "Is Information of signatories and ID's in place?" },
+            { category: "CORPORATE ACCOUNTS", item: "Were Signature and mandateuploaded into CBS?" },
+            { category: "CORPORATE ACCOUNTS", item: "Was the Site visit done, report prepared and filed?" },
+            { category: "CORPORATE ACCOUNTS", item: "Was business premises photo taken and included in the mandate file?" },
+            { category: "CORPORATE ACCOUNTS", item: "Is the CRB report in place?" },
+            { category: "CORPORATE ACCOUNTS", item: "Are the Referees in place?" },
+            { category: "CORPORATE ACCOUNTS", item: "Is Contract in place?" },
+            { category: "CORPORATE ACCOUNTS", item: "Are Mandate files stored in safe custody" },
+
+            // FIXED DEPOSITS
+            { category: "FIXED DEPOSIT", item: "- For new FDR, did the customer fill all mandatory fields in the FDR application form including the Rollover instruction if applicable?" },
+            { category: "FIXED DEPOSIT", item: "- Were forms signed by customer service officer and checked by branch supervisors?" },
+            { category: "FIXED DEPOSIT", item: "- Were the new accounts opened as per checklist ( i.e.they are AML compliant)?" },
+            { category: "FIXED DEPOSIT", item: "- For TDs booked with special rate, are the approvals in place?" },
+            { category: "FIXED DEPOSIT", item: "- Are all booked TDs recorded in the TD register?" },
+            { category: "FIXED DEPOSIT", item: "- Have the customers signed the copies of FDR to acknowledge rcceipt?" },
+            { category: "FIXED DEPOSIT", item: "- Is the FDR interest booking done properly i.e for TZS in the 365 days basis and USD 360dys basis?" },
+            { category: "FIXED DEPOSIT", item: "- Have all booked TD application forms along with receipt acknowledgement been filed in TD file?" },
+            { category: "FIXED DEPOSIT", item: "Were Application forms verified and signed by bank officers?" },
+            { category: "FIXED DEPOSIT", item: "Requests were approved by Branch Manager before processing?" },
+
+            // ACCOUNTS CLOSED & DORMANT
+            { category: "ACCOUNTS CLOSED", item: "For Customer initiated request, '-Has the customer filled the forms and forms checked by supervisor?" },
+            { category: "ACCOUNTS CLOSED", item: "For Bank initiated, '-Has the approval to close account been attached?" },
+            { category: "ACCOUNTS CLOSED", item: "Have the accounts been closed properly in the system?" },
+            { category: "ACCOUNTS CLOSED", item: "Have the closed account mandates been filed in in closed account file and accounts closed marked A/C CLOSED?" },
+            { category: "ACCOUNTS CLOSED", item: "Did the customers fill account activation form and forms were date stamped, signature verified and checked by supervisors?" },
+            { category: "ACCOUNTS CLOSED", item: "Are all activated accounts properly supported (by ID's)?" },
+            { category: "ACCOUNTS CLOSED", item: "Are dormant account activation original forms filed in customer mandate files.?" },
+            { category: "ACCOUNTS CLOSED", item: "How many accounts will turn into dormant next month (specify the action plan)" },
+            { category: "ACCOUNTS CLOSED", item: "Did you request for account closure in respect of dormant accounts with 0 balance above 1 year? (Specify date applied and number of accounts)" },
+
+            // COUNTER LEAVES
+            { category: "COUNTER LEAVES", item: "_ Did the Customer(s) sign against the leaf (in the register) to signify the application?" },
+            { category: "COUNTER LEAVES", item: "- Were the counter leaves approved by BM/BOE?" },
+            { category: "COUNTER LEAVES", item: "- Were the counter leaves charged?" },
+            { category: "COUNTER LEAVES", item: "- Did all the counter leaves registered and checked by Supervisor?" },
+
+            // CASH MANAGEMENT & TREASURY
+            { category: "CASH MANAGEMENT", item: "-Are the mutilated notes within the acceptable amounts depending on the locality? (Mention the amount and if not arrange for depositing)" },
+            { category: "CASH MANAGEMENT", item: "- Are vault snap checks conducted and recorded in Treasury register as required ? Specify the date when the snap check was done." },
+            { category: "CASH MANAGEMENT", item: "- Is the teller Intraday snap check conducted weekly and recorded in snap check register as required? Specify the date when the snap check was done." },
+            { category: "CASH MANAGEMENT", item: "- Is ATM snap check being conducted weekly and recorded as required Specify the date when the snap check was done." },
+            { category: "CASH MANAGEMENT", item: "Check if the MNO's snap check is being conducted weekly and recorded as required Specify the date when the snap check was done." },
+            { category: "CASH MANAGEMENT", item: "-Are CIT officers photo and ID's verified against the latest master list of CIT officers as per agreement in place?" },
+            { category: "CASH MANAGEMENT", item: "- Are CIT transfer copies filed properly?" },
+
+            // CUSTODIANSHIP
+            { category: "CUSTODIANSHIP", item: "- Is there key compromization on part of custodians?" },
+            { category: "CUSTODIANSHIP", item: "- Does the branch have the known list of strong room key holders and have signed the custodianship letters?" },
+            { category: "CUSTODIANSHIP", item: "- Are the strong room keys, ATM and Main entrance door movement register in place and is being signed appropriately?" },
+            { category: "CUSTODIANSHIP", item: "- Is key swaping done on half yearly basis?????? (Mention date when swap was done)" },
+
+            // FUND TRANSFERS
+            { category: "FUND TRANSFERS", item: "-Did the customer fill all required information and sign the application form?" },
+            { category: "FUND TRANSFERS", item: "-Did the the CSO and supervisor sign the form and the form was stamped?" },
+            { category: "FUND TRANSFERS", item: "- Were the supporting documents attached, stamped and verified?" },
+            { category: "FUND TRANSFERS", item: "- Was the call back to customers done and indicated in the fundtransfer as per callback procedure?" },
+            { category: "FUND TRANSFERS", item: "- Does the back office official verify the fund transfer transmission copies by compararing customer application and transmission copy and sign on the transmission copy to signify verification?" },
+            { category: "FUND TRANSFERS", item: "- Does the branch filing fundtransfer documents as per procedurei.e. the original fund transfer application should be filed in the dayswork and copy in the fund transfer file?" },
+            { category: "FUND TRANSFERS", item: "- Were all fundtransfers processed charged and those with special concession maintained?" },
+            { category: "FUND TRANSFERS", item: "- Were all fund transfers registered and signed by Bank officers?" },
+
+            // CHEQUE BOOKS
+            { category: "CHEQUE BOOKS", item: "- Was verification done before sending the order to vendor and supervisor verified and signed the order?" },
+            { category: "CHEQUE BOOKS", item: "- Are all received cheque books from HQ recorded?" },
+            { category: "CHEQUE BOOKS", item: "- Were all issued cheque books acknowledged in the Cheque issuance register and countersigned by Bank official?" },
+            { category: "CHEQUE BOOKS", item: "- Were all cheque books issued charged?" },
+            { category: "CHEQUE BOOKS", item: "- Are all the issued cheque books having the \"delivered status\" in the CBS?" },
+            { category: "CHEQUE BOOKS", item: "- Are uncollected cheque books exceeding 12 months and those for closed accounts have been segregated and perforated?" },
+
+            // TELLER OPERATIONS & CARDS
+            { category: "TELLER OPERATIONS", item: "- Are the tellers verify cash withdrawal slip/payment instruments before processing payment to customer?" },
+            { category: "TELLER OPERATIONS", item: "- Are Forex voucher attached with Supporting document (if any any/applicable)?" },
+            { category: "TELLER OPERATIONS", item: "- Are tellers print on the back of the slips?" },
+            { category: "TELLER OPERATIONS", item: "- Are the vouchers checked and ticked at the end of business or next day morning to signify callover?" },
+            { category: "TELLER OPERATIONS", item: "Take ATM cards application and check if the received forms were verified and checked by supervisor." },
+            { category: "TELLER OPERATIONS", item: "Check if branch file documents properly" },
+            { category: "TELLER OPERATIONS", item: "Check if metal box/briefcase which used to store ATM card is locked" },
+            { category: "TELLER OPERATIONS", item: "Check if customers and bank officers sign in issued ATM card issuance register." },
+            { category: "TELLER OPERATIONS", item: "Check if branchare doing ATM cards destruction for uncollected ATM cards which stayed more than six month" },
+            { category: "TELLER OPERATIONS", item: "Is ATM register signed daily by custodians and any person who enters ATM room?" },
+            { category: "TELLER OPERATIONS", item: "Does the branch do daily Emborsed and Instant card reconciliation?" },
+            { category: "TELLER OPERATIONS", item: "Were forms checked by receiver, stamped and signed by officers.(BOE/AE/AS/SBO/BM/BOM/SBM)" },
+            { category: "TELLER OPERATIONS", item: "Did all customers fill Indemnity forms and forms were verified by receiver(Casting signature), stamped and signed by officers." },
+            { category: "TELLER OPERATIONS", item: "Are IB forms filed chronologically ?" },
+            { category: "TELLER OPERATIONS", item: "Are all mobile banking processed forms checked by receiver and checker 2, verified, stamped and signed by either BOE/AE/AS/SBO/BM/BOM/SBM ?" },
+            { category: "TELLER OPERATIONS", item: "Have customers filled Indemnity forms and forms were verified by receiver(Casting signature), stamped and signed by officers?" },
+            { category: "TELLER OPERATIONS", item: "Have all the SIs processed been supported by application form?" },
+            { category: "TELLER OPERATIONS", item: "Were the filled forms verified and approved by Branch management as per procedure?" },
+            { category: "TELLER OPERATIONS", item: "Are all SIs registered and counter signed by bank officers?" },
+            { category: "TELLER OPERATIONS", item: "Are charges passed in customer account?" },
+            { category: "TELLER OPERATIONS", item: "Are all attended SI requests are filed chronologically?" },
+            { category: "TELLER OPERATIONS", item: "Are all the received customer complaints stamped verified and signed?" },
+            { category: "TELLER OPERATIONS", item: "Are all the received customer complaints registered in the CRM system and the ticket number indicated on the complain form?" },
+            { category: "TELLER OPERATIONS", item: "Are all the received customer complaint forms filed chronologically?" },
+            { category: "TELLER OPERATIONS", item: "Are the customer complaints followed up, attended and closed on time?" },
+            { category: "TELLER OPERATIONS", item: "Do the attended complaints marked closed in both the form and CRMsystem indicating date and explaining how the complain was resolved?" },
+
+            // OUTWARD CHEQUES & RECONCILIATION
+            { category: "OUTWARD CHEQUES", item: "Are all the outward cheques registered before processing?" },
+            { category: "OUTWARD CHEQUES", item: "Are the processed outward cheques verified by maker/authorizer and were signed in the cheque outward cheques report" },
+            { category: "OUTWARD CHEQUES", item: "Are the processed outward cheques kept in safe custody with supporting document( outward report) and report were signed by two custodians to signify receipt?" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Is there any outstanding entries for more than seven days in the followings accounts; 1. ATM GL's 2. MNO's GL's 3. Teller GL's 4. FD GL's 5. EFT and Outward Clearing 6.SYSTEM UPLOAD SUSPENSE A/C" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Is there any outstanding entries for more than seven days in the followings accounts; 1. Credit outstanding GL's 2. Credit Outstanding-Recoveries GL’s 3. Insurance GL's" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Please confirm if meeting was held during the month?" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Please confirm if the munites of meeting and matter arising was recorded in the appropriate format and signed ?" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Please confirm if the matter arising was fasttrack with status?" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Please confirm if the minutes and matter arising was saved in shared folder?" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Please confirm if daily verification of overdrawn account without facility was checked?" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Was there any overdrawn customer account? If yes Please mention action taken" },
+            { category: "SUSPENSE ACCOUNT RECONCILIATIONS", item: "Please confirm to have reviewed and remove the outdated notice displayed in public areas(Tellers,Banking hall,ATM room)" }
+        ];
+
         function generateRCSA306Items() {
             const branches = ["Pemba Branch", "Sabasaba Service Center", "Main Branch Dar", "Arusha Branch", "Mwanza Branch"];
-            const categories = ["Account Opening & KYC", "Cash & Vault Management", "ATM Operations", "Security & Safety Controls", "Credit Controls", "Fund Transfers"];
             const items = [];
-            
-            for (let i = 1; i <= 306; i++) {
-                const b = branches[i % branches.length];
-                const c = categories[i % categories.length];
-                const isNonCompliant = (i % 7 === 0);
-                items.push({
-                    id: i,
-                    branch: b,
-                    category: c,
-                    item: `Verification of operational control item #${i} (${c})`,
-                    status: isNonCompliant ? "NO" : (i % 11 === 0 ? "N/A" : "YES"),
-                    remarks: isNonCompliant ? "Defect flagged during monthly inspection." : "Compliant.",
-                    actionPlan: isNonCompliant ? "Remediation team assigned." : "",
-                    targetDate: isNonCompliant ? "2026-11-30" : ""
+            let idCounter = 1;
+
+            // Generate clean checklist across all branches based on authentic template questions
+            branches.forEach(branch => {
+                EXCEL_TEMPLATE_QUESTIONS.forEach((q, idx) => {
+                    const isNonCompliant = (idCounter % 9 === 0);
+                    const isNotApplicable = (idCounter % 17 === 0);
+
+                    items.push({
+                        id: idCounter++,
+                        branch: branch,
+                        category: q.category,
+                        item: q.item,
+                        status: isNonCompliant ? "NO" : (isNotApplicable ? "N/A" : "YES"),
+                        remarks: isNonCompliant ? "Followup in progress as per monthly self-assessment audit." : "",
+                        actionPlan: isNonCompliant ? "Corrective action plan logged for branch resolution." : "",
+                        targetDate: isNonCompliant ? "2026-11-30" : ""
+                    });
                 });
-            }
+            });
+
             return items;
         }
 
-        // Global State
+        // Global State Management
         let currentTab = 'maintenance';
+        let currentUserSession = 'HQ'; // Default session: HQ Manager
         let appState = {
             maintenance: [],
             licences: [],
             rcsa: []
         };
 
-        let statusChartInst = null;
-        let categoryChartInst = null;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            setupFilters();
-            switchTab('maintenance');
-        });
-
         function loadState() {
-            const stored = localStorage.getItem('azania_app_data_v2');
-            if (stored) {
+            const storedState = localStorage.getItem('azania_app_state_v2');
+            if (storedState) {
                 try {
-                    appState = JSON.parse(stored);
-                } catch(e) {
-                    initDefaultData();
+                    appState = JSON.parse(storedState);
+                } catch (e) {
+                    console.error("Error loading state from localStorage", e);
+                    loadDefaultState();
                 }
             } else {
-                initDefaultData();
+                loadDefaultState();
             }
         }
 
-        function initDefaultData() {
+        function loadDefaultState() {
             appState = {
-                maintenance: SAMPLE_MAINTENANCE_ISSUES,
-                licences: SAMPLE_LICENCES,
+                maintenance: [...INITIAL_MAINTENANCE],
+                licences: [...INITIAL_LICENCES],
                 rcsa: generateRCSA306Items()
             };
             saveState();
         }
 
         function saveState() {
-            localStorage.setItem('azania_app_data_v2', JSON.stringify(appState));
-        }
-
-        function resetData() {
-            if (confirm("Reset system back to default sample maintenance issues, licences, and 306 RCSA items?")) {
-                initDefaultData();
-                renderApp();
-                showToast("System reset to initial state!");
-            }
-        }
-
-        // Tab Switching Logic
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            document.getElementById(`module-${tab}`).classList.remove('hidden');
-
-            updateFilterDropdowns();
-            renderApp();
+            localStorage.setItem('azania_app_state_v2', JSON.stringify(appState));
         }
 
         function setupFilters() {
-            document.getElementById('searchInput').addEventListener('input', renderApp);
-            document.getElementById('branchFilter').addEventListener('change', renderApp);
-            document.getElementById('categoryFilter').addEventListener('change', renderApp);
-            document.getElementById('statusFilter').addEventListener('change', renderApp);
-        }
-
-        function updateFilterDropdowns() {
-            const data = appState[currentTab] || [];
-            const branches = ['ALL', ...new Set(data.map(i => i.branch))];
-            const categories = ['ALL', ...new Set(data.map(i => i.category))];
+            const branches = ["ALL", "Pemba Branch", "Sabasaba Service Center", "Main Branch Dar", "Arusha Branch", "Mwanza Branch"];
+            const categories = ["ALL", "Physical Security", "Power & Utilities", "HVAC Systems", "IT Infrastructure", "Statutory Licence", "Safety Certificate", "Account Opening & KYC", "Cash & Vault Management", "ATM Operations", "Security & Safety Controls", "Credit Controls", "Fund Transfers"];
+            const statuses = ["ALL", "Open", "In Progress", "Resolved", "Valid", "Renewal Pending", "Expired", "YES", "NO", "N/A", "N/E"];
 
             const bSelect = document.getElementById('branchFilter');
-            bSelect.innerHTML = branches.map(b => `<option value="${b}">${b === 'ALL' ? 'All Branches' : b}</option>`).join('');
-
             const cSelect = document.getElementById('categoryFilter');
-            cSelect.innerHTML = categories.map(c => `<option value="${c}">${c === 'ALL' ? 'All Categories' : c}</option>`).join('');
-
-            // Status filter options per tab
             const sSelect = document.getElementById('statusFilter');
-            if (currentTab === 'maintenance') {
-                sSelect.innerHTML = `
-                    <option value="ALL">All Statuses</option>
-                    <option value="Open">Open</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Resolved">Resolved</option>
-                `;
-            } else if (currentTab === 'licences') {
-                sSelect.innerHTML = `
-                    <option value="ALL">All Validity Statuses</option>
-                    <option value="Valid">Valid</option>
-                    <option value="Expiring Soon">Expiring Soon (&lt;30 days)</option>
-                    <option value="Expired">Expired</option>
-                `;
-            } else {
-                sSelect.innerHTML = `
-                    <option value="ALL">All RCSA Statuses</option>
-                    <option value="YES">YES (Compliant)</option>
-                    <option value="NO">NO (Non-Compliant)</option>
-                    <option value="N/A">N/A</option>
-                `;
-            }
-        }
 
-        function getFilteredData() {
-            const search = document.getElementById('searchInput').value.toLowerCase().trim();
-            const branch = document.getElementById('branchFilter').value;
-            const category = document.getElementById('categoryFilter').value;
-            const status = document.getElementById('statusFilter').value;
-            const showResolved = document.getElementById('toggleResolvedCheck')?.checked;
+            bSelect.innerHTML = branches.map(b => `<option value="${b}">${b === 'ALL' ? 'All Branches / Units' : b}</option>`).join('');
+            cSelect.innerHTML = categories.map(c => `<option value="${c}">${c === 'ALL' ? 'All Categories' : c}</option>`).join('');
+            sSelect.innerHTML = statuses.map(s => `<option value="${s}">${s === 'ALL' ? 'All Statuses' : s}</option>`).join('');
 
-            let list = appState[currentTab] || [];
-
-            return list.filter(item => {
-                const textMatch = search === '' || 
-                    (item.title && item.title.toLowerCase().includes(search)) ||
-                    (item.item && item.item.toLowerCase().includes(search)) ||
-                    (item.officer && item.officer.toLowerCase().includes(search));
-                
-                const bMatch = branch === 'ALL' || item.branch === branch;
-                const cMatch = category === 'ALL' || item.category === category;
-
-                let sMatch = true;
-                if (currentTab === 'maintenance') {
-                    if (!showResolved && item.status === 'Resolved' && status === 'ALL') return false;
-                    if (status !== 'ALL') sMatch = item.status === status;
-                } else if (currentTab === 'licences') {
-                    const days = getDaysRemaining(item.expiryDate);
-                    const valStatus = days < 0 ? 'Expired' : (days <= 30 ? 'Expiring Soon' : 'Valid');
-                    if (status !== 'ALL') sMatch = valStatus === status;
-                } else {
-                    if (status !== 'ALL') sMatch = item.status === status;
+            ['searchInput', 'branchFilter', 'categoryFilter', 'statusFilter'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', renderApp);
+                    el.addEventListener('change', renderApp);
                 }
-
-                return textMatch && bMatch && cMatch && sMatch;
             });
         }
 
-        function renderApp() {
-            const filtered = getFilteredData();
-            updateBadges();
+        function getDaysRemaining(dateStr) {
+            if (!dateStr) return 0;
+            const target = new Date(dateStr);
+            const today = new Date();
+            const diffTime = target - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
 
-            if (currentTab === 'maintenance') {
-                renderKPIsMaintenance(filtered);
-                renderMaintenanceTable(filtered);
-            } else if (currentTab === 'licences') {
-                renderKPIsLicences(filtered);
-                renderLicenceTable(filtered);
-            } else if (currentTab === 'rcsa') {
-                renderKPIsRcsa(filtered);
-                renderRcsaCharts(filtered);
-                renderRcsaTable(filtered);
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Reset tab button styles using standard Tailwind utility classes
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn flex-1 min-w-[150px] py-2.5 px-4 rounded-lg text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50 transition flex items-center justify-center gap-2";
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            const activeContent = document.getElementById(`module-${tabName}`);
+
+            if (activeBtn) {
+                activeBtn.className = "tab-btn flex-1 min-w-[150px] py-2.5 px-4 rounded-lg text-xs sm:text-sm font-bold bg-white dark:bg-slate-800 text-azania-navy dark:text-blue-400 shadow-sm border border-slate-200 dark:border-slate-700 transition flex items-center justify-center gap-2";
             }
+            if (activeContent) activeContent.classList.remove('hidden');
+
+            renderApp();
         }
 
         function updateBadges() {
-            const pendingMaint = appState.maintenance.filter(i => i.status !== 'Resolved').length;
-            document.getElementById('badgePendingCount').innerText = pendingMaint;
+            const pendingMaint = appState.maintenance.filter(m => m.status !== 'Resolved').length;
+            const licenceAlerts = appState.licences.filter(l => getDaysRemaining(l.expiryDate) <= 30).length;
 
-            const licenceAlerts = appState.licences.filter(i => getDaysRemaining(i.expiryDate) <= 30).length;
-            document.getElementById('badgeLicenceAlert').innerText = licenceAlerts;
+            const badgeMaint = document.getElementById('badgePendingCount');
+            const badgeLicence = document.getElementById('badgeLicenceAlert');
+
+            if (badgeMaint) badgeMaint.textContent = pendingMaint;
+            if (badgeLicence) badgeLicence.textContent = licenceAlerts;
         }
 
-        // KPI RENDERERS
         function renderKPIsMaintenance(data) {
             const container = document.getElementById('kpiContainer');
-            const open = data.filter(i => i.status === 'Open').length;
-            const inProg = data.filter(i => i.status === 'In Progress').length;
-            const high = data.filter(i => i.priority === 'High' && i.status !== 'Resolved').length;
-            const resolved = data.filter(i => i.status === 'Resolved').length;
+            const total = data.length;
+            const open = data.filter(d => d.status === 'Open').length;
+            const inProg = data.filter(d => d.status === 'In Progress').length;
+            const resolved = data.filter(d => d.status === 'Resolved').length;
 
             container.innerHTML = `
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Open Pending Tasks</span>
-                    <div class="text-2xl font-extrabold text-amber-600 mt-1">${open}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Ops Tasks</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-1">${total}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">In Progress</span>
-                    <div class="text-2xl font-extrabold text-blue-600 mt-1">${inProg}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-rose-200 dark:border-rose-950/60 shadow-sm">
+                    <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">Open Fixes</p>
+                    <h3 class="text-xl font-bold text-rose-600 dark:text-rose-400 mt-1">${open}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">High Priority Open</span>
-                    <div class="text-2xl font-extrabold text-rose-600 mt-1">${high}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-amber-200 dark:border-amber-950/60 shadow-sm">
+                    <p class="text-xs text-amber-600 dark:text-amber-400 font-medium">In Progress</p>
+                    <h3 class="text-xl font-bold text-amber-600 dark:text-amber-400 mt-1">${inProg}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Resolved Tasks</span>
-                    <div class="text-2xl font-extrabold text-emerald-600 mt-1">${resolved}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-emerald-200 dark:border-emerald-950/60 shadow-sm">
+                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Resolved Tasks</p>
+                    <h3 class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${resolved}</h3>
                 </div>
             `;
         }
@@ -645,29 +765,29 @@
         function renderKPIsLicences(data) {
             const container = document.getElementById('kpiContainer');
             const total = data.length;
-            const expired = data.filter(i => getDaysRemaining(i.expiryDate) < 0).length;
-            const expiringSoon = data.filter(i => {
-                const d = getDaysRemaining(i.expiryDate);
-                return d >= 0 && d <= 30;
+            const valid = data.filter(d => getDaysRemaining(d.expiryDate) > 30).length;
+            const expiringSoon = data.filter(d => {
+                const days = getDaysRemaining(d.expiryDate);
+                return days >= 0 && days <= 30;
             }).length;
-            const valid = data.filter(i => getDaysRemaining(i.expiryDate) > 30).length;
+            const expired = data.filter(d => getDaysRemaining(d.expiryDate) < 0).length;
 
             container.innerHTML = `
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Total Certificates</span>
-                    <div class="text-2xl font-extrabold text-slate-800 mt-1">${total}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Statutory Licences</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-1">${total}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-emerald-600 uppercase">Valid (&gt;30 Days)</span>
-                    <div class="text-2xl font-extrabold text-emerald-600 mt-1">${valid}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-emerald-200 dark:border-emerald-950/60 shadow-sm">
+                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Valid Licences</p>
+                    <h3 class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${valid}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-amber-600 uppercase">Expiring Soon (&lt;30 Days)</span>
-                    <div class="text-2xl font-extrabold text-amber-600 mt-1">${expiringSoon}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-amber-200 dark:border-amber-950/60 shadow-sm">
+                    <p class="text-xs text-amber-600 dark:text-amber-400 font-medium">Expiring &lt; 30 Days</p>
+                    <h3 class="text-xl font-bold text-amber-600 dark:text-amber-400 mt-1">${expiringSoon}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-rose-600 uppercase">Expired Licences</span>
-                    <div class="text-2xl font-extrabold text-rose-600 mt-1">${expired}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-rose-200 dark:border-rose-950/60 shadow-sm">
+                    <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">Expired Certificates</p>
+                    <h3 class="text-xl font-bold text-rose-600 dark:text-rose-400 mt-1">${expired}</h3>
                 </div>
             `;
         }
@@ -675,306 +795,434 @@
         function renderKPIsRcsa(data) {
             const container = document.getElementById('kpiContainer');
             const total = data.length;
-            const compliant = data.filter(i => i.status === 'YES').length;
-            const nonCompliant = data.filter(i => i.status === 'NO').length;
-            const rate = total > 0 ? ((compliant / total) * 100).toFixed(1) : "0.0";
+            const yes = data.filter(d => d.status === 'YES').length;
+            const no = data.filter(d => d.status === 'NO').length;
+            const na = data.filter(d => d.status === 'N/A' || d.status === 'N/E').length;
+            const rate = total > 0 ? Math.round((yes / total) * 100) : 0;
 
             container.innerHTML = `
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-slate-500 uppercase">Total Items</span>
-                    <div class="text-2xl font-extrabold text-slate-800 mt-1">${total}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">RCSA Assessment Items</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mt-1">${total}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-emerald-600 uppercase">Compliant (YES)</span>
-                    <div class="text-2xl font-extrabold text-emerald-600 mt-1">${compliant}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-emerald-200 dark:border-emerald-950/60 shadow-sm">
+                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Compliant (YES)</p>
+                    <h3 class="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">${yes}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-rose-600 uppercase">Non-Compliant (NO)</span>
-                    <div class="text-2xl font-extrabold text-rose-600 mt-1">${nonCompliant}</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-rose-200 dark:border-rose-950/60 shadow-sm">
+                    <p class="text-xs text-rose-600 dark:text-rose-400 font-medium">Defects (NO)</p>
+                    <h3 class="text-xl font-bold text-rose-600 dark:text-rose-400 mt-1">${no}</h3>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                    <span class="text-xs font-semibold text-azania-blue uppercase">Compliance Score</span>
-                    <div class="text-2xl font-extrabold text-azania-blue mt-1">${rate}%</div>
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-blue-200 dark:border-blue-950/60 shadow-sm">
+                    <p class="text-xs text-azania-navy dark:text-blue-400 font-medium">Compliance Rate</p>
+                    <h3 class="text-xl font-bold text-azania-navy dark:text-blue-400 mt-1">${rate}%</h3>
                 </div>
             `;
         }
 
-        // TABLES RENDERERS
+        function renderRcsaTable(data) {
+            const tbody = document.getElementById('rcsaTableBody');
+            const summary = document.getElementById('rcsaCountSummary');
+            if (summary) summary.textContent = `Showing ${data.length} assessment items`;
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-slate-400 dark:text-slate-500">No RCSA checklist items found.</td></tr>`;
+                return;
+            }
+
+            data.slice(0, 100).forEach(item => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-2.5 px-3 text-center font-mono text-slate-400 dark:text-slate-500 font-semibold whitespace-nowrap">#${item.id}</td>
+                        <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">${item.branch}</td>
+                        <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">${item.category}</td>
+                        <td class="py-2.5 px-3 min-w-[200px] max-w-xs md:max-w-md break-words whitespace-normal font-medium text-slate-800 dark:text-slate-200 leading-tight">${item.item}</td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <select onchange="updateInlineStatus('rcsa', ${item.id}, this.value)" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs rounded px-2 py-1 font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-azania-navy">
+                                <option value="YES" ${item.status === 'YES' ? 'selected' : ''}>YES</option>
+                                <option value="NO" ${item.status === 'NO' ? 'selected' : ''}>NO</option>
+                                <option value="N/A" ${item.status === 'N/A' ? 'selected' : ''}>N/A</option>
+                                <option value="N/E" ${item.status === 'N/E' ? 'selected' : ''}>N/E</option>
+                            </select>
+                        </td>
+                        <td class="py-2.5 px-3 min-w-[160px] max-w-xs break-words whitespace-normal text-slate-600 dark:text-slate-400 leading-tight">${item.remarks || '-'}</td>
+                        <td class="py-2.5 px-3 min-w-[160px] max-w-xs break-words whitespace-normal text-slate-600 dark:text-slate-400 leading-tight">${item.actionPlan || '-'}</td>
+                        <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">${item.targetDate || '-'}</td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <button onclick="openEditModal('rcsa', ${item.id})" class="p-1 text-slate-400 hover:text-azania-navy dark:hover:text-blue-400"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
         function renderMaintenanceTable(data) {
             const tbody = document.getElementById('maintenanceTableBody');
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400">No pending maintenance issues match filters.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400 dark:text-slate-500">No maintenance issues found.</td></tr>`;
                 return;
             }
 
             data.forEach(item => {
-                let pBadge = item.priority === 'High' ? 'bg-rose-100 text-rose-700 font-bold' : (item.priority === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600');
-                let sBadge = item.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : (item.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700');
+                let priorityColor = item.priority === 'High' ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-900' : (item.priority === 'Medium' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-900' : 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-900');
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="py-3 px-3 text-center font-mono text-slate-400 font-semibold">#${item.id}</td>
-                        <td class="py-3 px-3 font-semibold text-slate-900">${item.branch}</td>
-                        <td class="py-3 px-4 font-medium text-slate-800">${item.title}</td>
-                        <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-md text-[10px] ${pBadge}">${item.priority}</span></td>
-                        <td class="py-3 px-3 text-slate-600">${item.officer || '-'}</td>
-                        <td class="py-3 px-3 text-slate-600">${item.targetDate || '-'}</td>
-                        <td class="py-3 px-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${sBadge}">${item.status}</span></td>
-                        <td class="py-3 px-3 text-center">
-                            <button onclick="openEditModal('maintenance', ${item.id})" class="p-1 text-slate-400 hover:text-azania-blue"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteRecord('maintenance', ${item.id})" class="p-1 text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-2.5 px-3 text-center font-mono text-slate-400 dark:text-slate-500 font-semibold whitespace-nowrap">#${item.id}</td>
+                        <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">${item.branch}</td>
+                        <td class="py-2.5 px-3 min-w-[220px] max-w-xs break-words whitespace-normal font-medium text-slate-800 dark:text-slate-200 leading-tight">
+                            <div>${item.title}</div>
+                            <span class="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-semibold">${item.category}</span>
+                        </td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded border ${priorityColor}">${item.priority}</span>
+                        </td>
+                        <td class="py-2.5 px-3 font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">${item.officer}</td>
+                        <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 whitespace-nowrap">${item.targetDate || '-'}</td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <select onchange="updateInlineStatus('maintenance', ${item.id}, this.value)" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs rounded px-2 py-1 font-semibold text-slate-800 dark:text-slate-200 focus:outline-none">
+                                <option value="Open" ${item.status === 'Open' ? 'selected' : ''}>Open</option>
+                                <option value="In Progress" ${item.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Resolved" ${item.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                            </select>
+                        </td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center space-x-1">
+                                <button onclick="openEditModal('maintenance', ${item.id})" class="p-1 text-slate-400 hover:text-azania-navy dark:hover:text-blue-400"><i class="fa-solid fa-pen"></i></button>
+                                ${currentUserSession === 'HQ' ? `<button onclick="deleteRecord('maintenance', ${item.id})" class="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            </div>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        function renderLicenceTable(data) {
+        function renderLicencesTable(data) {
             const tbody = document.getElementById('licenceTableBody');
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400">No licences match filters.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400 dark:text-slate-500">No statutory licences found.</td></tr>`;
                 return;
             }
 
             data.forEach(item => {
-                const days = getDaysRemaining(item.expiryDate);
-                let badge = 'bg-emerald-100 text-emerald-700';
-                let label = `Valid (${days} days)`;
-
-                if (days < 0) {
-                    badge = 'bg-rose-100 text-rose-700 font-bold animate-pulse';
-                    label = `EXPIRED (${Math.abs(days)} days ago)`;
-                } else if (days <= 30) {
-                    badge = 'bg-amber-100 text-amber-800 font-bold';
-                    label = `EXPIRING SOON (${days} days)`;
-                }
+                const daysLeft = getDaysRemaining(item.expiryDate);
+                let daysBadge = daysLeft < 0 
+                    ? `<span class="bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 px-2 py-0.5 rounded font-bold text-[10px]">Expired (${Math.abs(daysLeft)}d ago)</span>`
+                    : (daysLeft <= 30 
+                        ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded font-bold text-[10px]">${daysLeft} days left</span>`
+                        : `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded font-bold text-[10px]">${daysLeft} days left</span>`);
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="py-3 px-3 text-center font-mono text-slate-400 font-semibold">#${item.id}</td>
-                        <td class="py-3 px-3 font-semibold text-slate-900">${item.branch}</td>
-                        <td class="py-3 px-4 font-medium text-slate-800">${item.title}</td>
-                        <td class="py-3 px-3 text-slate-600">${item.authority || '-'}</td>
-                        <td class="py-3 px-3 text-slate-800 font-medium">${item.expiryDate}</td>
-                        <td class="py-3 px-3 font-mono font-bold ${days < 0 ? 'text-rose-600' : (days <= 30 ? 'text-amber-600' : 'text-emerald-600')}">${days < 0 ? 'Expired' : days + ' days'}</td>
-                        <td class="py-3 px-3 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] ${badge}">${label}</span></td>
-                        <td class="py-3 px-3 text-center">
-                            <button onclick="openEditModal('licences', ${item.id})" class="p-1 text-slate-400 hover:text-azania-blue" title="Renew / Update"><i class="fa-solid fa-arrows-rotate"></i></button>
-                            <button onclick="deleteRecord('licences', ${item.id})" class="p-1 text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-2.5 px-3 text-center font-mono text-slate-400 dark:text-slate-500 font-semibold whitespace-nowrap">#${item.id}</td>
+                        <td class="py-2.5 px-3 font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">${item.branch}</td>
+                        <td class="py-2.5 px-3 min-w-[220px] max-w-xs break-words whitespace-normal font-medium text-slate-800 dark:text-slate-200 leading-tight">${item.title}</td>
+                        <td class="py-2.5 px-3 font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap">${item.authority}</td>
+                        <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 font-mono whitespace-nowrap">${item.expiryDate || '-'}</td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">${daysBadge}</td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <select onchange="updateInlineStatus('licences', ${item.id}, this.value)" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs rounded px-2 py-1 font-semibold text-slate-800 dark:text-slate-200 focus:outline-none">
+                                <option value="Valid" ${item.status === 'Valid' ? 'selected' : ''}>Valid</option>
+                                <option value="Renewal Pending" ${item.status === 'Renewal Pending' ? 'selected' : ''}>Renewal Pending</option>
+                                <option value="Expired" ${item.status === 'Expired' ? 'selected' : ''}>Expired</option>
+                            </select>
+                        </td>
+                        <td class="py-2.5 px-3 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center space-x-1">
+                                <button onclick="openEditModal('licences', ${item.id})" class="p-1 text-slate-400 hover:text-azania-navy dark:hover:text-blue-400"><i class="fa-solid fa-pen"></i></button>
+                                ${currentUserSession === 'HQ' ? `<button onclick="deleteRecord('licences', ${item.id})" class="p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400"><i class="fa-solid fa-trash"></i></button>` : ''}
+                            </div>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        function renderRcsaTable(data) {
-            const tbody = document.getElementById('rcsaTableBody');
-            tbody.innerHTML = '';
-            document.getElementById('rcsaCountSummary').innerText = `Showing ${data.length} assessment items`;
-
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-slate-400">No RCSA assessment items match filters.</td></tr>`;
-                return;
+        function updateInlineStatus(module, id, newStatus) {
+            const item = appState[module].find(i => i.id == id);
+            if (item) {
+                item.status = newStatus;
+                saveState();
+                renderApp();
+                showToast(`Status updated to ${newStatus}`);
             }
-
-            data.slice(0, 50).forEach(item => {
-                let badge = item.status === 'YES' ? 'bg-emerald-100 text-emerald-700' : (item.status === 'NO' ? 'bg-rose-100 text-rose-700 font-bold' : 'bg-slate-100 text-slate-600');
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="py-3 px-3 text-center font-mono text-slate-400 font-semibold">#${item.id}</td>
-                        <td class="py-3 px-3 font-semibold text-slate-900">${item.branch}</td>
-                        <td class="py-3 px-3 text-slate-600">${item.category}</td>
-                        <td class="py-3 px-4 font-medium text-slate-800">${item.item}</td>
-                        <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badge}">${item.status}</span></td>
-                        <td class="py-3 px-4 text-slate-500 italic">${item.remarks || '-'}</td>
-                        <td class="py-3 px-4 text-slate-700">${item.actionPlan || '-'}</td>
-                        <td class="py-3 px-3 text-slate-600">${item.targetDate || '-'}</td>
-                        <td class="py-3 px-3 text-center">
-                            <button onclick="openEditModal('rcsa', ${item.id})" class="p-1 text-slate-400 hover:text-azania-blue"><i class="fa-solid fa-pen"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
         }
 
-        function renderRcsaCharts(data) {
-            const yes = data.filter(i => i.status === 'YES').length;
-            const no = data.filter(i => i.status === 'NO').length;
-            const na = data.filter(i => i.status === 'N/A').length;
-
-            const ctx1 = document.getElementById('rcsaStatusChart').getContext('2d');
-            if (statusChartInst) statusChartInst.destroy();
-            statusChartInst = new Chart(ctx1, {
-                type: 'doughnut',
-                data: {
-                    labels: ['YES (Compliant)', 'NO (Non-Compliant)', 'N/A'],
-                    datasets: [{ data: [yes, no, na], backgroundColor: ['#10b981', '#f43f5e', '#64748b'] }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-
-            const categories = [...new Set(data.map(i => i.category))];
-            const ctx2 = document.getElementById('rcsaCategoryChart').getContext('2d');
-            if (categoryChartInst) categoryChartInst.destroy();
-            categoryChartInst = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: categories,
-                    datasets: [{ label: 'Compliant Count', data: categories.map(c => data.filter(i => i.category === c && i.status === 'YES').length), backgroundColor: '#0284c7' }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-
-        // MODAL LOGIC
         function openAddModal() {
+            populateModalDropdowns();
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-azania-navy dark:text-blue-400"></i> Log Issue`;
+            document.getElementById('unifiedForm').reset();
             document.getElementById('modalItemId').value = '';
             document.getElementById('modalModule').value = currentTab;
             toggleModalFields();
-            populateModalDropdowns();
             document.getElementById('itemModal').classList.remove('hidden');
         }
 
         function openEditModal(module, id) {
-            const item = appState[module].find(i => i.id === id);
+            populateModalDropdowns();
+            const item = appState[module].find(i => i.id == id);
             if (!item) return;
 
-            document.getElementById('modalItemId').value = id;
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-azania-navy dark:text-blue-400"></i> Edit Record #${item.id}`;
+            document.getElementById('modalItemId').value = item.id;
             document.getElementById('modalModule').value = module;
-            toggleModalFields();
-            populateModalDropdowns();
-
             document.getElementById('modalBranch').value = item.branch;
             document.getElementById('modalCategory').value = item.category;
+            document.getElementById('modalTitleText').value = item.title || item.item || '';
+
+            toggleModalFields();
 
             if (module === 'maintenance') {
-                document.getElementById('modalTitleText').value = item.title;
-                document.getElementById('maintPriority').value = item.priority;
-                document.getElementById('maintOfficer').value = item.officer || '';
-                document.getElementById('maintStatus').value = item.status;
+                document.getElementById('maintPriority').value = item.priority || 'Medium';
+                document.getElementById('maintOfficer').value = item.officer || 'Operations Control Manager';
+                document.getElementById('maintStatus').value = item.status || 'Open';
                 document.getElementById('maintTargetDate').value = item.targetDate || '';
             } else if (module === 'licences') {
-                document.getElementById('modalTitleText').value = item.title;
                 document.getElementById('licenceAuthority').value = item.authority || '';
                 document.getElementById('licenceExpiryDate').value = item.expiryDate || '';
             } else if (module === 'rcsa') {
-                document.getElementById('modalTitleText').value = item.item;
-                document.getElementById('rcsaStatus').value = item.status;
+                document.getElementById('rcsaStatus').value = item.status || 'YES';
+                document.getElementById('rcsaTargetDate').value = item.targetDate || '';
                 document.getElementById('rcsaRemarks').value = item.remarks || '';
                 document.getElementById('rcsaActionPlan').value = item.actionPlan || '';
-                document.getElementById('rcsaTargetDate').value = item.targetDate || '';
             }
 
             document.getElementById('itemModal').classList.remove('hidden');
+        }
+
+        function toggleModalFields() {
+            const mod = document.getElementById('modalModule').value;
+            document.getElementById('fieldsMaintenance').classList.toggle('hidden', mod !== 'maintenance');
+            document.getElementById('fieldsLicences').classList.toggle('hidden', mod !== 'licences');
+            document.getElementById('fieldsRcsa').classList.toggle('hidden', mod !== 'rcsa');
         }
 
         function closeModal() {
             document.getElementById('itemModal').classList.add('hidden');
         }
 
-        function toggleModalFields() {
-            const m = document.getElementById('modalModule').value;
-            document.getElementById('fieldsMaintenance').classList.add('hidden');
-            document.getElementById('fieldsLicences').classList.add('hidden');
-            document.getElementById('fieldsRcsa').classList.add('hidden');
-
-            if (m === 'maintenance') document.getElementById('fieldsMaintenance').classList.remove('hidden');
-            else if (m === 'licences') document.getElementById('fieldsLicences').classList.remove('hidden');
-            else if (m === 'rcsa') document.getElementById('fieldsRcsa').classList.remove('hidden');
-        }
-
-        function populateModalDropdowns() {
-            const branches = ["Pemba Branch", "Sabasaba Service Center", "Main Branch Dar", "Arusha Branch", "Mwanza Branch"];
-            const categories = ["Physical Security", "Power & Utilities", "HVAC Systems", "IT Infrastructure", "Statutory Licence", "Safety Certificate", "Account Opening & KYC", "Cash Management"];
-
-            document.getElementById('modalBranch').innerHTML = branches.map(b => `<option value="${b}">${b}</option>`).join('');
-            document.getElementById('modalCategory').innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const id = document.getElementById('modalItemId').value;
-            const module = document.getElementById('modalModule').value;
-
-            const record = {
-                id: id ? parseInt(id) : Date.now(),
-                branch: document.getElementById('modalBranch').value,
-                category: document.getElementById('modalCategory').value
-            };
-
-            if (module === 'maintenance') {
-                record.title = document.getElementById('modalTitleText').value;
-                record.priority = document.getElementById('maintPriority').value;
-                record.officer = document.getElementById('maintOfficer').value;
-                record.status = document.getElementById('maintStatus').value;
-                record.targetDate = document.getElementById('maintTargetDate').value;
-            } else if (module === 'licences') {
-                record.title = document.getElementById('modalTitleText').value;
-                record.authority = document.getElementById('licenceAuthority').value;
-                record.expiryDate = document.getElementById('licenceExpiryDate').value;
-            } else if (module === 'rcsa') {
-                record.item = document.getElementById('modalTitleText').value;
-                record.status = document.getElementById('rcsaStatus').value;
-                record.remarks = document.getElementById('rcsaRemarks').value;
-                record.actionPlan = document.getElementById('rcsaActionPlan').value;
-                record.targetDate = document.getElementById('rcsaTargetDate').value;
-            }
-
-            if (id) {
-                const index = appState[module].findIndex(i => i.id == id);
-                if (index !== -1) appState[module][index] = record;
-            } else {
-                appState[module].unshift(record);
-            }
-
-            saveState();
-            renderApp();
-            closeModal();
-            showToast("Record saved successfully!");
-        }
-
         function deleteRecord(module, id) {
-            if (confirm("Delete this record permanently?")) {
-                appState[module] = appState[module].filter(i => i.id !== id);
+            if (currentUserSession !== 'HQ') {
+                alert("Restricted: Deleting records is only allowed in HQ Session.");
+                return;
+            }
+            if (confirm("Are you sure you want to delete this record?")) {
+                appState[module] = appState[module].filter(i => i.id != id);
                 saveState();
                 renderApp();
                 showToast("Record deleted.");
             }
         }
 
-        // Helper Utilities
-        function getDaysRemaining(expiryDateStr) {
-            if (!expiryDateStr) return 999;
-            const exp = new Date(expiryDateStr);
-            const today = new Date("2026-11-10");
-            const diffTime = exp - today;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const mod = document.getElementById('modalModule').value;
+            const itemId = document.getElementById('modalItemId').value;
+
+            const branch = document.getElementById('modalBranch').value;
+            const category = document.getElementById('modalCategory').value;
+            const titleText = document.getElementById('modalTitleText').value;
+
+            if (itemId) {
+                const item = appState[mod].find(i => i.id == itemId);
+                if (item) {
+                    item.branch = branch;
+                    item.category = category;
+                    if (mod === 'rcsa') item.item = titleText;
+                    else item.title = titleText;
+
+                    if (mod === 'maintenance') {
+                        item.priority = document.getElementById('maintPriority').value;
+                        item.officer = document.getElementById('maintOfficer').value;
+                        item.status = document.getElementById('maintStatus').value;
+                        item.targetDate = document.getElementById('maintTargetDate').value;
+                    } else if (mod === 'licences') {
+                        item.authority = document.getElementById('licenceAuthority').value;
+                        item.expiryDate = document.getElementById('licenceExpiryDate').value;
+                    } else if (mod === 'rcsa') {
+                        item.status = document.getElementById('rcsaStatus').value;
+                        item.targetDate = document.getElementById('rcsaTargetDate').value;
+                        item.remarks = document.getElementById('rcsaRemarks').value;
+                        item.actionPlan = document.getElementById('rcsaActionPlan').value;
+                    }
+                }
+                showToast("Record updated successfully!");
+            } else {
+                const newId = Date.now();
+                const newItem = { id: newId, branch, category };
+
+                if (mod === 'maintenance') {
+                    newItem.title = titleText;
+                    newItem.priority = document.getElementById('maintPriority').value;
+                    newItem.officer = document.getElementById('maintOfficer').value;
+                    newItem.status = document.getElementById('maintStatus').value;
+                    newItem.targetDate = document.getElementById('maintTargetDate').value;
+                } else if (mod === 'licences') {
+                    newItem.title = titleText;
+                    newItem.authority = document.getElementById('licenceAuthority').value;
+                    newItem.expiryDate = document.getElementById('licenceExpiryDate').value;
+                    newItem.status = "Valid";
+                } else if (mod === 'rcsa') {
+                    newItem.item = titleText;
+                    newItem.status = document.getElementById('rcsaStatus').value;
+                    newItem.targetDate = document.getElementById('rcsaTargetDate').value;
+                    newItem.remarks = document.getElementById('rcsaRemarks').value;
+                    newItem.actionPlan = document.getElementById('rcsaActionPlan').value;
+                }
+
+                appState[mod].unshift(newItem);
+                showToast("New record created!");
+            }
+
+            saveState();
+            closeModal();
+            renderApp();
         }
 
         function exportCSV() {
-            const data = getFilteredData();
-            if (data.length === 0) return alert("No items to export");
-            let csv = Object.keys(data[0]).join(",") + "\n";
-            data.forEach(row => {
-                csv += Object.values(row).map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(",") + "\n";
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', `azania_${currentTab}_export.csv`);
-            a.click();
+            const data = appState[currentTab] || [];
+            if (data.length === 0) {
+                showToast("No data to export!");
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const rows = data.map(obj => headers.map(header => JSON.stringify(obj[header] || '')).join(','));
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `azania_${currentTab}_report.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("CSV report exported successfully!");
+        }
+
+        function resetData() {
+            if (confirm("Reset all stored data back to initial Excel dataset defaults?")) {
+                loadDefaultState();
+                renderApp();
+                showToast("Reset to initial dataset complete!");
+            }
         }
 
         function showToast(msg) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMessage').innerText = msg;
-            t.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            if (toast && toastMsg) {
+                toastMsg.textContent = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+                }, 3000);
+            }
+        }
+
+        function populateModalDropdowns() {
+            const branches = ["Pemba Branch", "Sabasaba Service Center", "Main Branch Dar", "Arusha Branch", "Mwanza Branch"];
+            const categories = ["Physical Security", "Power & Utilities", "HVAC Systems", "IT Infrastructure", "Statutory Licence", "Safety Certificate", "Account Opening & KYC", "Cash & Vault Management", "ATM Operations", "Security & Safety Controls", "Credit Controls", "Fund Transfers"];
+
+            const bSelect = document.getElementById('modalBranch');
+            const cSelect = document.getElementById('modalCategory');
+
+            bSelect.innerHTML = branches.map(b => `<option value="${b}">${b}</option>`).join('');
+            cSelect.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+            if (currentUserSession !== 'HQ') {
+                bSelect.value = currentUserSession;
+                bSelect.disabled = true;
+            } else {
+                bSelect.disabled = false;
+            }
+        }
+
+        function renderApp() {
+            updateBadges();
+
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const branch = currentUserSession !== 'HQ' ? currentUserSession : document.getElementById('branchFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const includeResolved = document.getElementById('toggleResolvedCheck')?.checked;
+
+            const filterFn = (item) => {
+                const textMatch = !search || 
+                    (item.title && item.title.toLowerCase().includes(search)) ||
+                    (item.item && item.item.toLowerCase().includes(search)) ||
+                    (item.remarks && item.remarks.toLowerCase().includes(search)) ||
+                    (item.officer && item.officer.toLowerCase().includes(search));
+
+                const branchMatch = branch === 'ALL' || item.branch === branch;
+                const catMatch = category === 'ALL' || item.category === category;
+                const statusMatch = status === 'ALL' || item.status === status;
+
+                return textMatch && branchMatch && catMatch && statusMatch;
+            };
+
+            if (currentTab === 'maintenance') {
+                let data = appState.maintenance.filter(filterFn);
+                if (!includeResolved) {
+                    data = data.filter(d => d.status !== 'Resolved');
+                }
+                renderKPIsMaintenance(data);
+                renderMaintenanceTable(data);
+            } else if (currentTab === 'licences') {
+                const data = appState.licences.filter(filterFn);
+                renderKPIsLicences(data);
+                renderLicencesTable(data);
+            } else if (currentTab === 'rcsa') {
+                const data = appState.rcsa.filter(filterFn);
+                renderKPIsRcsa(data);
+                renderRcsaTable(data);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadState();
+            setupFilters();
+            switchTab('maintenance');
+        });
+
+        function changeUserSession(sessionVal) {
+            currentUserSession = sessionVal;
+            
+            const branchFilter = document.getElementById('branchFilter');
+            if (sessionVal !== 'HQ') {
+                branchFilter.value = sessionVal;
+                branchFilter.disabled = true;
+            } else {
+                branchFilter.disabled = false;
+            }
+
+            const banner = document.getElementById('sessionPrivilegeBanner');
+            if (banner) {
+                if (sessionVal === 'HQ') {
+                    banner.innerHTML = `
+                        <div class="flex items-center space-x-2 text-azania-navy dark:text-blue-400 font-semibold">
+                            <i class="fa-solid fa-shield-halved text-azania-navy dark:text-blue-400"></i>
+                            <span>HQ View: Full access</span>
+                        </div>
+                        <span class="bg-blue-100 dark:bg-blue-900/60 text-azania-navy dark:text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded">All Branches</span>
+                    `;
+                } else {
+                    banner.innerHTML = `
+                        <div class="flex items-center space-x-2 text-amber-800 dark:text-amber-400 font-semibold">
+                            <i class="fa-solid fa-user-lock text-amber-600 dark:text-amber-400"></i>
+                            <span>Branch View: <strong>${sessionVal}</strong></span>
+                        </div>
+                        <span class="bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded">Branch Restricted</span>
+                    `;
+                }
+            }
+
+            renderApp();
         }
     </script>
 </body>
